@@ -35,7 +35,13 @@
     },
     "owner": "mshuman",
     "plugins": [
-      "expo-router"
+      "expo-router",
+      [
+        "expo-screen-orientation",
+        {
+          "initialOrientation": "DEFAULT"
+        }
+      ]
     ],
     "scheme": "lovat-collection"
   }

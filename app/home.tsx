@@ -1,5 +1,4 @@
-import { Stack } from "expo-router";
-import { SafeAreaView, Text, View, LayoutAnimation, ScrollView } from "react-native";
+import { SafeAreaView, View, LayoutAnimation, ScrollView } from "react-native";
 import TitleMedium from "../lib/components/text/TitleMedium";
 import TextField from "../lib/components/TextField";
 import LabelSmall from "../lib/components/text/LabelSmall";
@@ -17,7 +16,6 @@ import { DataSource } from "../lib/localCache";
 
 import TimeAgo from "../lib/components/TimeAgo";
 import { getTournament } from "../lib/storage/getTournament";
-import DropDownPicker from "react-native-dropdown-picker";
 import { ButtonGroup } from "../lib/components/ButtonGroup";
 import { MatchType, matchTypes } from "../lib/models/match";
 import { AllianceColor, allianceColors } from "../lib/models/AllianceColor";
@@ -104,6 +102,7 @@ export default function Home() {
     );
 
     function toggleMatchSelectionMode() {
+        setMeta(null);
         setMatchSelectionMode((mode) => mode === MatchSelectionMode.Automatic ? MatchSelectionMode.Manual : MatchSelectionMode.Automatic);
     }
 }
