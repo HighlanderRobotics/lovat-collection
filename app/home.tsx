@@ -21,20 +21,39 @@ import { MatchType, matchTypes } from "../lib/models/match";
 import { AllianceColor, allianceColors } from "../lib/models/AllianceColor";
 import { ScoutReportMeta } from "../lib/models/ScoutReportMeta";
 import { getScouter } from "../lib/storage/getScouter";
+import { useAtom } from "jotai";
+import { reportStateAtom } from "../lib/collection/reportStateAtom";
+import { ReportState } from "../lib/collection/ReportState";
+import { router, useNavigation } from "expo-router";
 
 enum MatchSelectionMode {
     Automatic,
     Manual,
 }
 
-function scoutMatch(meta: ScoutReportMeta) {
-    console.log(meta);
-}
-
 export default function Home() {
     const [tournament, setTournament] = useState<Tournament | null>(null);
     const [matchSelectionMode, setMatchSelectionMode] = useState(MatchSelectionMode.Automatic);
     const [meta, setMeta] = useState<ScoutReportMeta | null>(null);
+    const [reportState, setReportState] = useAtom(reportStateAtom);
+
+    const navigation = useNavigation()
+
+    const scoutMatch = () => {
+        const report: ReportState = {
+            meta: meta!,
+            events: [],
+            startPiece: false,
+        }
+
+        setReportState(report)
+    }
+
+    useEffect(() => {
+        if (!reportState) return;
+
+        router.push("/game");
+    }, [reportState])
 
     useEffect(() => {
         const fetchTournament = async () => {
@@ -93,7 +112,7 @@ export default function Home() {
                         <Button variant="primary" disabled={!meta} onPress={() => {
                             if (!meta) return;
 
-                            scoutMatch(meta);
+                            scoutMatch();
                         }}>Scout this match</Button>
                     </View>
                 </View>

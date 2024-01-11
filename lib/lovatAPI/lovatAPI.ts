@@ -1,5 +1,5 @@
 
-export const urlPrefix = "http://macbook-pro.local:3000";
+export const urlPrefix = "https://curly-space-trout-g6r64pwwj5xcwx97-3000.app.github.dev";
 
 export const get = async (url: string) => {
   return await fetch(urlPrefix + url);

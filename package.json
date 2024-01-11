@@ -19,8 +19,10 @@
     "expo-linear-gradient": "~12.3.0",
     "expo-linking": "~5.0.2",
     "expo-router": "^2.0.0",
+    "expo-screen-orientation": "~6.0.6",
     "expo-splash-screen": "~0.20.5",
     "expo-status-bar": "~1.6.0",
+    "jotai": "^2.6.1",
     "react": "18.2.0",
     "react-native": "0.72.6",
     "react-native-dropdown-picker": "^5.4.6",
@@ -29,7 +31,8 @@
     "react-native-screens": "~3.22.0",
     "react-time-ago": "^7.2.1",
     "typescript": "^5.1.3",
-    "expo-screen-orientation": "~6.0.6"
+    "react-native-svg": "13.9.0",
+    "expo-haptics": "~12.4.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"
