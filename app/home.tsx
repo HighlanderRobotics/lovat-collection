@@ -23,7 +23,7 @@ import { ScoutReportMeta } from "../lib/models/ScoutReportMeta";
 import { getScouter } from "../lib/storage/getScouter";
 import { useAtom } from "jotai";
 import { reportStateAtom } from "../lib/collection/reportStateAtom";
-import { ReportState } from "../lib/collection/ReportState";
+import { GamePhase, ReportState } from "../lib/collection/ReportState";
 import { router, useNavigation } from "expo-router";
 
 enum MatchSelectionMode {
@@ -44,6 +44,7 @@ export default function Home() {
             meta: meta!,
             events: [],
             startPiece: false,
+            gamePhase: GamePhase.Auto,
         }
 
         setReportState(report)
