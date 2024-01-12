@@ -6,13 +6,15 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { FieldImage, fieldHeight, fieldWidth } from '../../components/FieldImage';
 import { Text } from 'react-native';
 import LabelSmall from '../../components/text/LabelSmall';
-import { getAllianceColorDescription } from '../../models/AllianceColor';
+import { AllianceColor, getAllianceColorDescription } from '../../models/AllianceColor';
 import { IconButton } from '../../components/IconButton';
 import * as Haptics from 'expo-haptics';
 import { GameTimer } from './GameTimer';
+import { Checkbox } from '../../components/Checkbox';
 
 export const GameViewTemplate = (props: {
     field: React.ReactNode;
+    topLeftReplacement?: React.ReactNode;
     gamePhaseMessage: string;
     startEnabled?: boolean;
 }) => {
@@ -36,18 +38,18 @@ export const GameViewTemplate = (props: {
                         alignItems: 'center',
                     }}
                 >
-                    <View style={{ flex: 1 }} />
+                    {props.topLeftReplacement}
                     <View style={{ alignItems: 'flex-end', gap: 2, flex: 1, marginRight: 13 }}>
                         <View
                             style={{
-                                backgroundColor: getAllianceColorDescription((reportState?.meta.allianceColor)!).backgroundColor,
+                                backgroundColor: getAllianceColorDescription((reportState?.meta.allianceColor) ?? AllianceColor.Red).backgroundColor,
                                 borderRadius: 4,
                                 paddingHorizontal: 6,
                                 paddingVertical: 2,
                             }}
                         >
                             <Text style={{
-                                color: getAllianceColorDescription((reportState?.meta.allianceColor)!).foregroundColor,
+                                color: getAllianceColorDescription((reportState?.meta.allianceColor) ?? AllianceColor.Red).foregroundColor,
                                 fontFamily: 'Heebo_500Medium',
                                 fontSize: 12,
                             }}>{reportState?.meta.teamNumber}</Text>
@@ -95,3 +97,5 @@ export const GameViewTemplate = (props: {
         </>
     );
 };
+
+
