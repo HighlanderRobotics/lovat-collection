@@ -26,6 +26,5 @@ export const allianceColors = [
 ];
 
 export const getAllianceColorDescription = (color: AllianceColor): AllianceColorDescription => {
-    console.log("Getting description for " + color)
     return allianceColors.find((colorDescription) => colorDescription.color === color)!;
 }

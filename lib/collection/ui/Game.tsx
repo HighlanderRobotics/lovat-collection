@@ -104,8 +104,6 @@ const AutoCollectPieceActions = () => {
     const addEvent = useAddEvent();
     const [remainingNotes] = useAtom(remainingGroundNoteLocationsAtom);
 
-    console.log(remainingNotes);
-
     return (
         <>
             {Object.entries(groundNotePositions).map(([key, position]) => {
