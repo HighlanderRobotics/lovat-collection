@@ -94,6 +94,7 @@ export const HasNoteActions = ({ trap = false }: { trap?: boolean }) => {
                                 position: MatchEventPosition.Stage,
                             });
                         }}
+                        fieldRelativePadding={[0, 0, 0, '30%']}
                     >
                         <View
                             style={{
