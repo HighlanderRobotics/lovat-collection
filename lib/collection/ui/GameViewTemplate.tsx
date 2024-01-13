@@ -82,7 +82,7 @@ export const GameViewTemplate = (props: {
                         size={30} />}
                 </SafeAreaView>
             </View>
-            <SafeAreaView style={{ flex: 1, alignItems: 'center', position: 'relative' }}>
+            <SafeAreaView style={{ flex: 1, alignItems: 'center', position: 'relative', }}>
                 <View
                     style={{
                         aspectRatio: fieldWidth / fieldHeight,

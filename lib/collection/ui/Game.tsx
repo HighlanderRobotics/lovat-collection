@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAtom } from 'jotai';
-import { hasNote, remainingGroundNoteLocationsAtom, reportStateAtom, useAddEvent } from '../reportStateAtom';
+import { hasNote, remainingGroundNoteLocationsAtom, reportStateAtom, useAddEvent, useSetPhase } from '../reportStateAtom';
 import { router } from 'expo-router';
 import { PreMatchActions } from './actions/PreMatchActions';
 import { GameViewTemplate } from './GameViewTemplate';
@@ -15,16 +15,32 @@ import { GameAction } from './GameAction';
 import { fieldHeight, fieldWidth } from '../../components/FieldImage';
 import { View } from 'react-native';
 import { colors } from '../../colors';
+import * as Haptics from 'expo-haptics';
 
 export function Game() {
     const [reportState, setReportState] = useAtom(reportStateAtom);
+
+    const [autoTimeout, setAutoTimeout] = useState<NodeJS.Timeout | null>(null);
+
     const addEvent = useAddEvent();
+    const setPhase = useSetPhase();
 
     useEffect(() => {
         if (!reportState) {
             router.replace("/home");
         }
     }, [reportState]);
+
+    useEffect(() => {
+        if (reportState?.gamePhase === GamePhase.Auto && reportState.startTimestamp && !autoTimeout) {
+            setAutoTimeout(setTimeout(() => {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                setPhase(GamePhase.Teleop);
+            }, 18 * 1000));
+        } else {
+            setAutoTimeout(null);
+        }
+    }, [reportState?.gamePhase, reportState?.startTimestamp]);
 
     if (!reportState?.startTimestamp) {
         return (
@@ -88,6 +104,27 @@ export function Game() {
                     />
                 );
             }
+        }
+    } else if (reportState.gamePhase === GamePhase.Teleop) {
+        if (hasNote(reportState)) {
+            return (
+                <GameViewTemplate
+                    gamePhaseMessage="Teleop"
+                    field={<>
+                        <HasNoteActions trap={true} />
+                    </>}
+                />
+            );
+        } else {
+            return (
+                <GameViewTemplate
+                    gamePhaseMessage="Teleop"
+                    // field={<TeleopCollectPieceAtions />}
+                    field={<>
+
+                    </>}
+                />
+            );
         }
     }
 

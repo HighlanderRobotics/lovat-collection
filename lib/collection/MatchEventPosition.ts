@@ -6,6 +6,7 @@ export enum MatchEventPosition {
   WingNearSource = "WingNearSource",
   Amp = "Amp",
   Speaker = "Speaker",
+  Stage = "Stage",
 
   GroundNoteAllianceNearAmp = "GroundNoteAllianceNearAmp",
   GroundNoteAllianceFrontOfSpeaker = "GroundNoteAllianceFrontOfSpeaker",

@@ -4,9 +4,10 @@ import * as Haptics from 'expo-haptics';
 import { Icon } from '../../components/Icon';
 
 
-export const GameAction = ({ onPress, children, icon, color, borderRadius }: {
+export const GameAction = ({ onPress, children, icon, color, borderRadius, backgroundViewReplacement }: {
     onPress: () => void;
     children?: React.ReactNode;
+    backgroundViewReplacement?: React.ReactNode;
     icon?: string;
     color: string;
     borderRadius?: number;
@@ -27,7 +28,7 @@ export const GameAction = ({ onPress, children, icon, color, borderRadius }: {
             justifyContent: "center",
         }}
     >
-        <View
+        {backgroundViewReplacement ?? <View
             style={{
                 height: "100%",
                 width: "100%",
@@ -38,7 +39,7 @@ export const GameAction = ({ onPress, children, icon, color, borderRadius }: {
                 left: 0,
                 right: 0,
                 bottom: 0,
-            }} />
+            }} />}
         {icon && <Icon name={icon} color={color} />}
         {children}
     </TouchableOpacity>

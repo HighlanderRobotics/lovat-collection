@@ -1,5 +1,5 @@
 import { atom, useAtom } from "jotai";
-import { ReportState } from "./ReportState";
+import { GamePhase, ReportState } from "./ReportState";
 import { MatchEventType, gainNoteEvents, loseNoteEvents } from "./MatchEventType";
 import { MatchEvent } from "./MatchEvent";
 import { GroundNotePosition, MatchEventPosition, groundNotePositions } from "./MatchEventPosition";
@@ -63,6 +63,19 @@ export const useAddEvent = () => {
                         timestamp: Date.now(),
                     },
                 ]
+            });
+        }
+    }
+}
+
+export const useSetPhase = () => {
+    const [reportState, setReportState] = useAtom(reportStateAtom);
+
+    return (phase: GamePhase) => {
+        if (reportState) {
+            setReportState({
+                ...reportState,
+                gamePhase: phase,
             });
         }
     }

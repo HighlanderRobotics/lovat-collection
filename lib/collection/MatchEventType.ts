@@ -13,5 +13,5 @@ export const gainNoteEvents: MatchEventType[] = [
 export const loseNoteEvents: MatchEventType[] = [
     MatchEventType.ScoreNote,
     MatchEventType.DropNote,
-    MatchEventType.FeedNote
+    MatchEventType.FeedNote,
 ];

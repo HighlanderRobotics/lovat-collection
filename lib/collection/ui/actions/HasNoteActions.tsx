@@ -1,13 +1,19 @@
 import React from 'react';
-import { useAddEvent } from '../../reportStateAtom';
+import { reportStateAtom, useAddEvent } from '../../reportStateAtom';
 import { MatchEventType } from '../../MatchEventType';
 import { FieldElement } from '../FieldElement';
 import { colors } from '../../../colors';
 import { MatchEventPosition } from '../../MatchEventPosition';
 import { GameAction } from '../GameAction';
+import Svg, { Path, SvgProps } from "react-native-svg"
+import { View } from 'react-native';
+import { Icon } from '../../../components/Icon';
+import { useAtom, useAtomValue } from 'jotai';
+import { AllianceColor } from '../../../models/AllianceColor';
+import { FieldOrientation, fieldOrientationAtom } from '../../../models/FieldOrientation';
 
 
-export const HasNoteActions = () => {
+export const HasNoteActions = ({ trap = false }: { trap?: boolean }) => {
     const addEvent = useAddEvent();
 
     return (
@@ -27,7 +33,8 @@ export const HasNoteActions = () => {
                             type: MatchEventType.ScoreNote,
                             position: MatchEventPosition.Amp,
                         });
-                    }} />
+                    }}
+                />
             </FieldElement>
 
             <FieldElement
@@ -46,7 +53,8 @@ export const HasNoteActions = () => {
                         });
                     }}
                     color="#9CFF9A"
-                    icon="speaker" />
+                    icon="speaker"
+                />
             </FieldElement>
 
             <FieldElement
@@ -64,8 +72,84 @@ export const HasNoteActions = () => {
                             type: MatchEventType.DropNote,
                         });
                     }}
-                    icon="output_circle" />
+                    icon="output_circle"
+                />
             </FieldElement>
+
+            {trap && (
+                <FieldElement
+                    edgeInsets={[
+                        0.31,
+                        0.645,
+                        0.31,
+                        0.19,
+                    ]}
+                >
+                    <GameAction
+                        backgroundViewReplacement={<StageActionSVG />}
+                        color="#9CFF9A"
+                        onPress={() => {
+                            addEvent({
+                                type: MatchEventType.ScoreNote,
+                                position: MatchEventPosition.Stage,
+                            });
+                        }}
+                    >
+                        <View
+                            style={{
+                                flexDirection: "row",
+                            }}
+                        >
+                            <Icon name="crisis_alert" color="#9CFF9A" />
+                        </View>
+                    </GameAction>
+                </FieldElement>
+            )}
         </>
     );
 };
+
+function StageActionSVG(props: SvgProps) {
+    const reportState = useAtomValue(reportStateAtom);
+    const fieldOrientation = useAtomValue(fieldOrientationAtom);
+
+    const width = 122;
+    const height = 140;
+
+    return (
+        <View
+            style={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+            }}
+        >
+            <View
+                style={{
+                    aspectRatio: width / height,
+                }}
+            >
+                <Svg
+                    width="100%"
+                    height="100%"
+                    viewBox={`0 0 ${width} ${height}`}
+                    fill="none"
+                    scaleX={reportState?.meta.allianceColor === AllianceColor.Red ? -1 : 1}
+                    rotation={fieldOrientation === FieldOrientation.Auspicious ? 0 : 180}
+                    {...props}
+                >
+                    <Path
+                        d="M118.521 4.414l-5.781-3.365a7 7 0 00-7.042 0L3.479 60.537A7 7 0 000 66.587v6.826a7 7 0 003.48 6.05l102.218 59.488a6.998 6.998 0 007.042 0l5.781-3.365a6.998 6.998 0 003.479-6.05V10.464a7 7 0 00-3.479-6.05z"
+                        fill="#9CFF9A"
+                        fillOpacity={0.3}
+                    />
+                </Svg>
+            </View>
+        </View>
+    )
+}
+
+export default StageActionSVG
+

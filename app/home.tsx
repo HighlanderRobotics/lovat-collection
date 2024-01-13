@@ -43,7 +43,7 @@ export default function Home() {
         const report: ReportState = {
             meta: meta!,
             events: [],
-            startPiece: false,
+            startPiece: true,
             gamePhase: GamePhase.Auto,
         }
 
