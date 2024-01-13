@@ -1,5 +1,4 @@
-
-export const urlPrefix = "https://curly-space-trout-g6r64pwwj5xcwx97-3000.preview.app.github.dev";
+export const urlPrefix = process.env.EXPO_PUBLIC_API_URL;
 
 export const get = async (url: string) => {
   return await fetch(urlPrefix + url);
