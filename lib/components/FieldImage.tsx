@@ -22,7 +22,13 @@ export const FieldImage = (props: SvgProps) => {
         ].join(" ")}
         fill="none"
         {...props}
-        rotation={fieldOrientation === FieldOrientation.Auspicious ? 0 : 180}
+        style={{
+          transform: [
+            {
+              rotate: fieldOrientation === FieldOrientation.Auspicious ? "0deg" : "180deg",
+            },
+          ]
+        }}
       >
         <Path fill="#292929" stroke="#292929" d="M477.5 6.5h3v475h-3z" />
         <Circle cx={479} cy={52} r={6} fill="#424242" />

@@ -129,6 +129,14 @@ function StageActionSVG(props: SvgProps) {
             <View
                 style={{
                     aspectRatio: width / height,
+                    transform: [
+                        {
+                            scaleX: reportState?.meta.allianceColor === AllianceColor.Red ? -1 : 1,
+                        },
+                        {
+                            rotate: fieldOrientation === FieldOrientation.Auspicious ? "0deg" : "180deg",
+                        }
+                    ]
                 }}
             >
                 <Svg
@@ -136,8 +144,6 @@ function StageActionSVG(props: SvgProps) {
                     height="100%"
                     viewBox={`0 0 ${width} ${height}`}
                     fill="none"
-                    scaleX={reportState?.meta.allianceColor === AllianceColor.Red ? -1 : 1}
-                    rotation={fieldOrientation === FieldOrientation.Auspicious ? 0 : 180}
                     {...props}
                 >
                     <Path
