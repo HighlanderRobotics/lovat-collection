@@ -117,7 +117,7 @@ export default function Home() {
 
                     <MatchSelection matchSelectionMode={matchSelectionMode} onMetaChanged={setMeta} />
 
-                    <View style={{ gap: 14 }}>
+                    <View style={{ gap: 10 }}>
                         <Button variant="secondary" onPress={toggleMatchSelectionMode}>
                             {matchSelectionMode === MatchSelectionMode.Automatic
                                 ? "Enter details manually"

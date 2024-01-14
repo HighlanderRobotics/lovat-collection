@@ -49,7 +49,7 @@ export default function Reset() {
                         style={{
                             flex: 1,
                             justifyContent: 'flex-end',
-                            gap: 7,
+                            gap: 10,
                         }}
                     >
                         <Button
