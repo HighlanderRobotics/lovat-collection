@@ -43,8 +43,6 @@ export default function Home() {
     const [meta, setMeta] = useState<ScoutReportMeta | null>(null);
     const [reportState, setReportState] = useAtom(reportStateAtom);
 
-    const navigation = useNavigation()
-
     const scoutMatch = () => {
         const report: ReportState = {
             meta: meta!,
@@ -104,6 +102,7 @@ export default function Home() {
                             label="history"
                             icon="history"
                             color={colors.onBackground.default}
+                            onPress={() => router.push("/history")}
                         />
 
                         <ServiceStatus />

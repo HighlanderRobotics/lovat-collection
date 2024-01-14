@@ -6,10 +6,10 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import TitleMedium from "../../lib/components/text/TitleMedium";
 import BodyMedium from "../../lib/components/text/BodyMedium";
 import Button from "../../lib/components/Button";
-import { useAtom, useAtomValue } from "jotai";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { reportStateAtom } from "../../lib/collection/reportStateAtom";
 import { MatchIdentityLocalizationFormat, localizeMatchIdentity } from "../../lib/models/match";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { ScoutReport } from "../../lib/collection/ScoutReport";
 import { exportScoutReport } from "../../lib/collection/ReportState";
 import QRCode from 'qrcode';
@@ -17,12 +17,13 @@ import { SvgXml } from "react-native-svg";
 import { router } from "expo-router";
 import { uploadReport } from "../../lib/lovatAPI/uploadReport";
 import { Icon } from "../../lib/components/Icon";
+import { historyAtom, useAddMatchToHistory } from "../../lib/storage/historyAtom";
+import { ScoutReportMeta } from "../../lib/models/ScoutReportMeta";
+import { ScoutReportCode } from "../../lib/collection/ui/ScoutReportCode";
 
 export default function Submit() {
     const [reportState, setReportState] = useAtom(reportStateAtom);
     const [scoutReport, setScoutReport] = useState<ScoutReport | null>(null);
-
-    const [svgXml, setSvgXml] = useState<string | null>(null);
 
     const [uploaded, setUploaded] = useState(false);
     const [uploading, setUploading] = useState(false);
@@ -65,21 +66,6 @@ export default function Submit() {
         }
     }, [reportState]);
 
-    useEffect(() => {
-        if (scoutReport) {
-            QRCode
-                .toString(JSON.stringify(scoutReport), {
-                    type: 'svg',
-                    color: {
-                        dark: colors.onBackground.default,
-                        light: "#00000000",
-                    },
-                    margin: 0,
-                })
-                .then(setSvgXml)
-        }
-    }, [scoutReport])
-
     return (
         <>
             <NavBar
@@ -87,13 +73,7 @@ export default function Submit() {
             />
             <SafeAreaView edges={['bottom', 'left', 'right']} style={{ flex: 1, gap: 7 }}>
                 <View style={{ flex: 1, paddingVertical: 16, paddingHorizontal: 26 }}>
-                    <View style={{
-                        aspectRatio: 1,
-                        borderRadius: 6,
-                        overflow: 'hidden',
-                    }}>
-                        {svgXml && <SvgXml xml={svgXml} />}
-                    </View>
+                    <ScoutReportCode scoutReport={scoutReport!} />
 
                     <UploadIndicator state={uploadState} />
 
@@ -103,17 +83,29 @@ export default function Submit() {
                             justifyContent: 'flex-end',
                         }}
                     >
-                        <Button variant="primary" onPress={() => {
-                            router.replace('/');
-                            setReportState(null);
-                        }}>
-                            Done
-                        </Button>
+                        <Suspense fallback={<Button variant="primary" disabled>Done</Button>}>
+                            <DoneButton scoutReport={scoutReport!} uploadState={uploadState} meta={reportState!.meta} />
+                        </Suspense>
                     </View>
                 </View>
             </SafeAreaView>
         </>
     );
+}
+
+const DoneButton = ({ scoutReport, uploadState, meta }: { scoutReport: ScoutReport; uploadState: UploadState, meta: ScoutReportMeta }) => {
+    const setReportState = useSetAtom(reportStateAtom);
+    const addMatchToHistory = useAddMatchToHistory();
+
+    return (
+        <Button variant="primary" onPress={() => {
+            addMatchToHistory(scoutReport, uploadState === UploadState.Uploaded, meta);
+            router.replace('/');
+            setReportState(null);
+        }}>
+            Done
+        </Button>
+    )
 }
 
 enum UploadState {
