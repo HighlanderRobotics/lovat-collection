@@ -15,6 +15,6 @@ export const historyAtom = atomWithStorage<HistoryEntry[]>("history", [], storag
 export const useAddMatchToHistory = () => {
     const [history, setHistory] = useAtom(historyAtom);
     return (scoutReport: ScoutReport, uploaded: boolean, meta: ScoutReportMeta) => {
-        setHistory([...history, { scoutReport, uploaded, meta }]);
+        setHistory([{ scoutReport, uploaded, meta }, ...history]);
     };
 }

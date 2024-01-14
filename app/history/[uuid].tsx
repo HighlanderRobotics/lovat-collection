@@ -7,7 +7,7 @@ import { ActivityIndicator, View } from "react-native";
 import { useAtomValue } from "jotai";
 import { historyAtom } from "../../lib/storage/historyAtom";
 import { MatchIdentityLocalizationFormat, localizeMatchIdentity } from "../../lib/models/match";
-import { ScoutReportCode } from "../../lib/collection/ui/ScoutReportCode";
+import { ResizableQRCode, ScoutReportCode } from "../../lib/collection/ui/ScoutReportCode";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function HistoryDetails() {
@@ -46,8 +46,11 @@ const Details = () => {
                 }
             />
             <SafeAreaView edges={['bottom', 'left', 'right']} style={{ flex: 1, gap: 7 }}>
-                <View style={{ flex: 1, paddingVertical: 16, paddingHorizontal: 26 }}>
+                <View style={{ flex: 1, paddingVertical: 16 }}>
                     <ScoutReportCode scoutReport={match!.scoutReport} />
+                    <View style={{ paddingHorizontal: 26, flex: 1, }}>
+                        
+                    </View>
                 </View>
             </SafeAreaView>
         </>

@@ -19,7 +19,7 @@ import { uploadReport } from "../../lib/lovatAPI/uploadReport";
 import { Icon } from "../../lib/components/Icon";
 import { historyAtom, useAddMatchToHistory } from "../../lib/storage/historyAtom";
 import { ScoutReportMeta } from "../../lib/models/ScoutReportMeta";
-import { ScoutReportCode } from "../../lib/collection/ui/ScoutReportCode";
+import { ResizableQRCode, ScoutReportCode } from "../../lib/collection/ui/ScoutReportCode";
 
 export default function Submit() {
     const [reportState, setReportState] = useAtom(reportStateAtom);
@@ -72,20 +72,21 @@ export default function Submit() {
                 title={`${reportState!.meta.teamNumber} in ${localizeMatchIdentity(reportState!.meta.matchIdentity, MatchIdentityLocalizationFormat.Short)}`}
             />
             <SafeAreaView edges={['bottom', 'left', 'right']} style={{ flex: 1, gap: 7 }}>
-                <View style={{ flex: 1, paddingVertical: 16, paddingHorizontal: 26 }}>
+                <View style={{ flex: 1, paddingVertical: 16 }}>
                     <ScoutReportCode scoutReport={scoutReport!} />
 
-                    <UploadIndicator state={uploadState} />
-
-                    <View
-                        style={{
-                            flex: 1,
-                            justifyContent: 'flex-end',
-                        }}
-                    >
-                        <Suspense fallback={<Button variant="primary" disabled>Done</Button>}>
-                            <DoneButton scoutReport={scoutReport!} uploadState={uploadState} meta={reportState!.meta} />
-                        </Suspense>
+                    <View style={{ paddingHorizontal: 26, flex: 1 }}>
+                        <UploadIndicator state={uploadState} />
+                        <View
+                            style={{
+                                flex: 1,
+                                justifyContent: 'flex-end',
+                            }}
+                        >
+                            <Suspense fallback={<Button variant="primary" disabled>Done</Button>}>
+                                <DoneButton scoutReport={scoutReport!} uploadState={uploadState} meta={reportState!.meta} />
+                            </Suspense>
+                        </View>
                     </View>
                 </View>
             </SafeAreaView>
