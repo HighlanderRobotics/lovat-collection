@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "lovat-collection",
+    "name": "Collection",
     "slug": "lovat-collection",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -9,7 +9,7 @@
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#1f1f1f"
     },
     "assetBundlePatterns": [
       "**/*"

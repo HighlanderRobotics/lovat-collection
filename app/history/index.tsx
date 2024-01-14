@@ -1,4 +1,4 @@
-import { ActivityIndicator, Pressable, ScrollView, View } from "react-native";
+import { ActivityIndicator, Pressable, ScrollView, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { NavBar } from "../../lib/components/NavBar";
 import { IconButton } from "../../lib/components/IconButton";
@@ -6,15 +6,19 @@ import { Link, router } from "expo-router";
 import { colors } from "../../lib/colors";
 import { useAtomValue } from "jotai";
 import { HistoryEntry, historyAtom } from "../../lib/storage/historyAtom";
-import { Suspense } from "react";
+import { Suspense, useMemo, useState } from "react";
 import LabelSmall from "../../lib/components/text/LabelSmall";
 import TitleMedium from "../../lib/components/text/TitleMedium";
 import { MatchIdentityLocalizationFormat, localizeMatchIdentity } from "../../lib/models/match";
 import Heading1Small from "../../lib/components/text/Heading1Small";
 import { Icon } from "../../lib/components/Icon";
 import BodyMedium from "../../lib/components/text/BodyMedium";
+import TextField from "../../lib/components/TextField";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 export default function History() {
+    const [filterText, setFilterText] = useState('');
+
     return (
         <>
             <NavBar
@@ -29,25 +33,49 @@ export default function History() {
                         color={colors.onBackground.default}
                     />
                 }
+                bottom={
+                    <View
+                        style={{
+                            paddingTop: 14,
+                            paddingHorizontal: 10,
+                        }}
+                    >
+                        <TextField
+                            placeholder="Search"
+                            value={filterText}
+                            onChangeText={setFilterText}
+                            returnKeyType="search"
+                        />
+                    </View>
+                }
             />
             <Suspense fallback={<ActivityIndicator size="large" style={{ flex: 1 }} />}>
-                <Matches />
+                <Matches filter={filterText} />
             </Suspense>
         </>
     );
 }
 
-const Matches = () => {
+const Matches = ({ filter }: { filter: string }) => {
     const history = useAtomValue(historyAtom);
 
+    const filteredMatches = useMemo(() => {
+        if (!filter) return history;
+        return history.filter((match) => {
+            const matchIdentity = localizeMatchIdentity(match.meta.matchIdentity, MatchIdentityLocalizationFormat.Long);
+            const team = match.meta.teamNumber.toString();
+            return matchIdentity.toLowerCase().includes(filter.toLowerCase()) || team.includes(filter);
+        });
+    }, [history, filter]);
+
     return (
-        <ScrollView style={{ flex: 1, paddingVertical: 16, paddingHorizontal: 26, gap: 28 }}>
-            <SafeAreaView edges={['bottom', 'left', 'right']} style={{ flex: 1, gap: 14, paddingBottom: 200 }}>
-                {history.map((match) => (
+        <KeyboardAwareScrollView style={{ flex: 1, gap: 28 }}>
+            <SafeAreaView edges={['bottom', 'left', 'right']} style={{ flex: 1, gap: 14, paddingVertical: 16, paddingHorizontal: 26 }}>
+                {filteredMatches.map((match) => (
                     <Match match={match} key={match.scoutReport.uuid} />
                 ))}
             </SafeAreaView>
-        </ScrollView>
+        </KeyboardAwareScrollView>
     )
 }
 
@@ -84,7 +112,7 @@ const Match = ({ match }: { match: HistoryEntry }) => {
                 },
             }}
         >
-            <Pressable
+            <TouchableOpacity
                 style={{
                     backgroundColor: colors.secondaryContainer.default,
                     flexDirection: 'row',
@@ -103,7 +131,7 @@ const Match = ({ match }: { match: HistoryEntry }) => {
                     {!match.uploaded && <Icon name="error" size={24} color={colors.onBackground.default} />}
                     <Icon name="arrow_forward_ios" size={20} color={colors.onBackground.default} />
                 </View>
-            </Pressable>
+            </TouchableOpacity>
         </Link>
     )
 }

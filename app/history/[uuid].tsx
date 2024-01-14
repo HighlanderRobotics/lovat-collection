@@ -5,10 +5,12 @@ import { NavBar } from "../../lib/components/NavBar";
 import { Suspense, useMemo } from "react";
 import { ActivityIndicator, View } from "react-native";
 import { useAtomValue } from "jotai";
-import { historyAtom } from "../../lib/storage/historyAtom";
+import { historyAtom, useSetMatchUploaded } from "../../lib/storage/historyAtom";
 import { MatchIdentityLocalizationFormat, localizeMatchIdentity } from "../../lib/models/match";
 import { ResizableQRCode, ScoutReportCode } from "../../lib/collection/ui/ScoutReportCode";
 import { SafeAreaView } from "react-native-safe-area-context";
+import Button from "../../lib/components/Button";
+import { uploadReport } from "../../lib/lovatAPI/uploadReport";
 
 export default function HistoryDetails() {
     return (
@@ -30,6 +32,8 @@ const Details = () => {
         return history.find((match) => match.scoutReport.uuid === params.uuid);
     }, [history, params.uuid]);
 
+    const setMatchUploaded = useSetMatchUploaded();
+
     return (
         <>
             <NavBar
@@ -48,8 +52,17 @@ const Details = () => {
             <SafeAreaView edges={['bottom', 'left', 'right']} style={{ flex: 1, gap: 7 }}>
                 <View style={{ flex: 1, paddingVertical: 16 }}>
                     <ScoutReportCode scoutReport={match!.scoutReport} />
-                    <View style={{ paddingHorizontal: 26, flex: 1, }}>
-                        
+                    <View style={{ paddingHorizontal: 26, flex: 1, justifyContent: 'flex-end' }}>
+                        {!match!.uploaded && (
+                            <Button
+                                onPress={async () => {
+                                    await uploadReport(match!.scoutReport);
+                                    setMatchUploaded(match!.scoutReport.uuid);
+                                }}
+                            >
+                                Upload
+                            </Button>
+                        )}
                     </View>
                 </View>
             </SafeAreaView>

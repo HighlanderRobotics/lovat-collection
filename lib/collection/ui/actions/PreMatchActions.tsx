@@ -14,10 +14,11 @@ export const PreMatchActions = () => {
                     style={{
                         height: '100%',
                         width: '100%',
-                        backgroundColor: reportState?.startPosition === MatchEventPosition.WingNearAmp ? "rgba(200, 200, 200, 0.5)" : "rgba(200, 200, 200, 0.2)",
+                        backgroundColor: "#e0e0e0",
+                        opacity: reportState?.startPosition === MatchEventPosition.WingNearAmp ? 0.8 : 0.3,
                         borderRadius: 7,
                     }}
-                    activeOpacity={0.8}
+                    activeOpacity={0.2}
                     onPress={() => {
                         setReportState({
                             ...reportState!,
@@ -31,10 +32,11 @@ export const PreMatchActions = () => {
                     style={{
                         height: '100%',
                         width: '100%',
-                        backgroundColor: reportState?.startPosition === MatchEventPosition.WingFrontOfSpeaker ? "rgba(200, 200, 200, 0.5)" : "rgba(200, 200, 200, 0.2)",
+                        backgroundColor: "#e0e0e0",
+                        opacity: reportState?.startPosition === MatchEventPosition.WingFrontOfSpeaker ? 0.8 : 0.3,
                         borderRadius: 7,
                     }}
-                    activeOpacity={0.8}
+                    activeOpacity={0.2}
                     onPress={() => {
                         setReportState({
                             ...reportState!,
@@ -48,10 +50,11 @@ export const PreMatchActions = () => {
                     style={{
                         height: '100%',
                         width: '100%',
-                        backgroundColor: reportState?.startPosition === MatchEventPosition.WingCenter ? "rgba(200, 200, 200, 0.5)" : "rgba(200, 200, 200, 0.2)",
+                        backgroundColor: "#e0e0e0",
+                        opacity: reportState?.startPosition === MatchEventPosition.WingCenter ? 0.8 : 0.3,
                         borderRadius: 7,
                     }}
-                    activeOpacity={0.8}
+                    activeOpacity={0.2}
                     onPress={() => {
                         setReportState({
                             ...reportState!,
@@ -65,10 +68,11 @@ export const PreMatchActions = () => {
                     style={{
                         height: '100%',
                         width: '100%',
-                        backgroundColor: reportState?.startPosition === MatchEventPosition.WingNearSource ? "rgba(200, 200, 200, 0.5)" : "rgba(200, 200, 200, 0.2)",
+                        backgroundColor: "#e0e0e0",
+                        opacity: reportState?.startPosition === MatchEventPosition.WingNearSource ? 0.8 : 0.3,
                         borderRadius: 7,
                     }}
-                    activeOpacity={0.8}
+                    activeOpacity={0.2}
                     onPress={() => {
                         setReportState({
                             ...reportState!,

@@ -1,5 +1,5 @@
-import { useAtom } from 'jotai';
-import { reportStateAtom } from '../reportStateAtom';
+import { useAtom, useAtomValue } from 'jotai';
+import { reportStateAtom, useUndoEvent } from '../reportStateAtom';
 import { View } from 'react-native';
 import { colors } from '../../colors';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -10,8 +10,12 @@ import { AllianceColor, getAllianceColorDescription } from '../../models/Allianc
 import { IconButton } from '../../components/IconButton';
 import * as Haptics from 'expo-haptics';
 import { GameTimer } from './GameTimer';
-import { Checkbox } from '../../components/Checkbox';
-import { router, useNavigation } from 'expo-router';
+import { router } from 'expo-router';
+import { MatchEventType, matchEventTypeDescriptions, MatchEventTypeDescription } from '../MatchEventType';
+import { Animated } from 'react-native';
+import { Icon } from '../../components/Icon';
+import { useEffect, useRef, useState } from 'react';
+import { MatchEvent } from '../MatchEvent';
 
 export const GameViewTemplate = (props: {
     field: React.ReactNode;
@@ -22,7 +26,7 @@ export const GameViewTemplate = (props: {
     const [reportState, setReportState] = useAtom(reportStateAtom);
     const { gamePhaseMessage, field, startEnabled } = props;
 
-    const navigation = useNavigation();
+    const undoEvent = useUndoEvent();
 
     return (
         <>
@@ -41,7 +45,24 @@ export const GameViewTemplate = (props: {
                         alignItems: 'center',
                     }}
                 >
-                    {props.topLeftReplacement}
+                    {props.topLeftReplacement ?? (
+                        <View style={{
+                            flex: 1,
+                            flexDirection: 'row',
+                        }}>
+                            <IconButton
+                                icon="undo"
+                                label="Undo"
+                                color={colors.onBackground.default}
+                                disabled={reportState?.events.length === 0}
+                                onPress={() => {
+                                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                                    undoEvent();
+                                }}
+                            />
+                        </View>
+                    )}
+
                     <View style={{ alignItems: 'flex-end', gap: 2, flex: 1, marginRight: 13 }}>
                         <View
                             style={{
@@ -106,5 +127,4 @@ export const GameViewTemplate = (props: {
         </>
     );
 };
-
 

@@ -18,3 +18,15 @@ export const useAddMatchToHistory = () => {
         setHistory([{ scoutReport, uploaded, meta }, ...history]);
     };
 }
+
+export const useSetMatchUploaded = () => {
+    const [history, setHistory] = useAtom(historyAtom);
+    return (uuid: string) => {
+        setHistory(history.map((entry) => {
+            if (entry.scoutReport.uuid === uuid) {
+                return { ...entry, uploaded: true };
+            }
+            return entry;
+        }));
+    };
+}

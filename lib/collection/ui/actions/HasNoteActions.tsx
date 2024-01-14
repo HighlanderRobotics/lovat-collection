@@ -53,7 +53,9 @@ export const HasNoteActions = ({ trap = false }: { trap?: boolean }) => {
                         });
                     }}
                     color="#9CFF9A"
+                    iconColor="#1C1B1F"
                     icon="speaker"
+                    iconSize={48}
                 />
             </FieldElement>
 
@@ -73,6 +75,7 @@ export const HasNoteActions = ({ trap = false }: { trap?: boolean }) => {
                         });
                     }}
                     icon="output_circle"
+                    iconSize={48}
                 />
             </FieldElement>
 
@@ -101,7 +104,7 @@ export const HasNoteActions = ({ trap = false }: { trap?: boolean }) => {
                                 flexDirection: "row",
                             }}
                         >
-                            <Icon name="crisis_alert" color="#9CFF9A" />
+                            <Icon name="crisis_alert" color="#1C1B1F" size={48} />
                         </View>
                     </GameAction>
                 </FieldElement>

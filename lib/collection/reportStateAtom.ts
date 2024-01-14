@@ -104,3 +104,16 @@ export const useAddEvent = () => {
         }
     }
 }
+
+export const useUndoEvent = () => {
+    const [reportState, setReportState] = useAtom(reportStateAtom);
+
+    return () => {
+        if (reportState) {
+            setReportState({
+                ...reportState,
+                events: reportState.events.slice(0, -1),
+            });
+        }
+    }
+}

@@ -34,6 +34,8 @@ export default function Layout() {
         Heebo_600SemiBold,
         Heebo_700Bold,
         MaterialSymbols_500Rounded: require("../assets/fonts/Material-Symbols-Rounded.ttf"),
+        MaterialSymbols_500Rounded40px: require("../assets/fonts/Material-Symbols-Rounded-40px.ttf"),
+        MaterialSymbols_500Rounded48px: require("../assets/fonts/Material-Symbols-Rounded-48px.ttf"),
     });
 
     const onLayoutRootView = useCallback(async () => {

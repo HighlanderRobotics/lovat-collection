@@ -11,7 +11,11 @@ export const Icon: React.FC<IconProps> = ({ name, color, size = 24 }) => {
     return (
         <Text
             style={{
-                fontFamily: "MaterialSymbols_500Rounded",
+                fontFamily: {
+                    24: "MaterialSymbols_500Rounded",
+                    40: "MaterialSymbols_500Rounded40px",
+                    48: "MaterialSymbols_500Rounded48px",
+                }[size] ?? "MaterialSymbols_500Rounded",
                 fontSize: size,
                 color,
             }}

@@ -177,6 +177,7 @@ const FloatingActions = ({ feedEnabled = false, pickupEnabled = false }: { feedE
                 {pickupEnabled && <GameAction
                     color="#C1C337"
                     icon="upload"
+                    iconSize={48}
                     onPress={() => {
                         addEvent({
                             type: MatchEventType.PickupNote,
@@ -209,7 +210,7 @@ const FloatingActions = ({ feedEnabled = false, pickupEnabled = false }: { feedE
                         }
                     }}
                 >
-                    <Icon name="campaign" color={isAmplified ? colors.background.default : colors.onBackground.default} />
+                    <Icon name="campaign" color={isAmplified ? colors.background.default : colors.onBackground.default} size={40} />
                 </TouchableOpacity>
 
                 <TouchableOpacity
@@ -229,7 +230,7 @@ const FloatingActions = ({ feedEnabled = false, pickupEnabled = false }: { feedE
                         });
                     }}
                 >
-                    <Icon name="shield" color={colors.onBackground.default} />
+                    <Icon name="shield" color={colors.onBackground.default} size={40} />
                 </TouchableOpacity>
 
                 <View
@@ -254,7 +255,7 @@ const FloatingActions = ({ feedEnabled = false, pickupEnabled = false }: { feedE
                             });
                         }}
                     >
-                        <Icon name="conveyor_belt" color={colors.onBackground.default} />
+                        <Icon name="conveyor_belt" color={colors.onBackground.default} size={40} />
                     </TouchableOpacity>}
                 </View>
             </View>

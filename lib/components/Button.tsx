@@ -1,13 +1,14 @@
 import React, { useEffect, useRef } from 'react';
-import { TouchableOpacity, Text, ViewStyle, TextStyle, Animated } from 'react-native';
+import { TouchableOpacity, Text, ViewStyle, TextStyle, Animated, ActivityIndicator, LayoutAnimation, View } from 'react-native';
 import { colors } from '../colors';
+import BodyMedium from './text/BodyMedium';
 
 type ButtonProps = {
     variant?: 'primary' | 'secondary' | 'danger';
     disabled?: boolean;
     density?: 'comfortable' | 'compact';
     children: React.ReactNode;
-    onPress?: () => void;
+    onPress?: () => void | Promise<void>;
     flex?: number;
     borderRadius?: number;
 };
@@ -15,12 +16,38 @@ type ButtonProps = {
 const AnimatedTouchableOpacity = Animated.createAnimatedComponent(TouchableOpacity);
 const AnimatedText = Animated.createAnimatedComponent(Text);
 
-const Button: React.FC<ButtonProps> = ({ variant = 'secondary', disabled = false, density = 'comfortable', children, onPress, flex, borderRadius, }) => {
+const Button: React.FC<ButtonProps> = ({ variant = 'secondary', disabled = false, density = 'comfortable', children, onPress, flex, borderRadius }) => {
     let textColor: string = '';
     let padding: number[] = [];
     let radius: number = 0;
 
     const [pressed, setPressed] = React.useState(false);
+
+    const [promise, setPromise] = React.useState<Promise<void> | null>(null);
+
+    const [loading, setLoading] = React.useState(false);
+    const [error, setError] = React.useState<string | null>(null);
+
+    useEffect(() => {
+        if (promise) {
+            LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+            setLoading(true);
+
+            promise
+                .catch((e) => {
+                    setError(e.message);
+                })
+                .finally(() => {
+                    setLoading(false);
+
+                    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+                    setPromise(null);
+                });
+        }
+    }, [ promise ]);
+
+    const effectivelyDisabled = disabled || loading;
+
 
     textColor = variant === 'primary' ? colors.background.default : colors.onBackground.default;
 
@@ -56,20 +83,20 @@ const Button: React.FC<ButtonProps> = ({ variant = 'secondary', disabled = false
 
     useEffect(() => {
         Animated.timing(colorAnimation, {
-            toValue: disabled ? 1 : 0,
+            toValue: effectivelyDisabled ? 1 : 0,
             duration: 100,
             useNativeDriver: false,
         }).start();
-    }, [ disabled ]);
+    }, [ effectivelyDisabled ]);
 
     const backgroundColorInterpolation = colorAnimation.interpolate({
         inputRange: [0, 1],
-        outputRange: [backgroundColors.default, disabled ? backgroundColors.faded : backgroundColors.hover],
+        outputRange: [backgroundColors.default, effectivelyDisabled ? backgroundColors.faded : backgroundColors.hover],
     });
 
     const textColorInterpolation = colorAnimation.interpolate({
         inputRange: [0, 1],
-        outputRange: [textColor, disabled ? disabledTextColor : textColor],
+        outputRange: [textColor, effectivelyDisabled ? disabledTextColor : textColor],
     });
 
     const buttonStyle = {
@@ -90,20 +117,49 @@ const Button: React.FC<ButtonProps> = ({ variant = 'secondary', disabled = false
 
 
     return (
-        <AnimatedTouchableOpacity
-            style={[buttonStyle, {
-                flexDirection: 'row',
-                justifyContent: 'center',
-                alignItems: 'center',
-            }]}
-            disabled={disabled}
-            onPress={onPress}
-            activeOpacity={1}
-            onPressIn={() => setPressed(true)}
-            onPressOut={() => setPressed(false)}
-        >
-            <AnimatedText style={textStyle}>{children}</AnimatedText>
-        </AnimatedTouchableOpacity>
+        <>
+            {error && (
+                <View
+                    style={{
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        flexDirection: 'row',
+                        marginBottom: 8,
+                    }}
+                >
+                    <BodyMedium
+                        color={colors.danger.default}
+                    >
+                        {error}
+                    </BodyMedium>
+                </View>
+            )}
+            <AnimatedTouchableOpacity
+                style={[buttonStyle, {
+                    flexDirection: 'row',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    gap: 8,
+                }]}
+                disabled={effectivelyDisabled}
+                onPress={() => {
+                    if (onPress) {
+                        setError(null);
+
+                        const result = onPress();
+                        if (result instanceof Promise) {
+                            setPromise(result);
+                        }
+                    }
+                }}
+                activeOpacity={1}
+                onPressIn={() => setPressed(true)}
+                onPressOut={() => setPressed(false)}
+            >
+                {loading && <ActivityIndicator />}
+                <AnimatedText style={textStyle}>{children}</AnimatedText>
+            </AnimatedTouchableOpacity>
+        </>
     );
 };
 

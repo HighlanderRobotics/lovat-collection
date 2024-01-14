@@ -4,12 +4,14 @@ import * as Haptics from 'expo-haptics';
 import { Icon } from '../../components/Icon';
 import { useFieldRelativeDimensions } from '../useFieldRelativeDimensions';
 
-export const GameAction = ({ onPress, children, icon, color, borderRadius, backgroundViewReplacement, fieldRelativePadding }: {
+export const GameAction = ({ onPress, children, icon, color, iconColor, borderRadius, backgroundViewReplacement, fieldRelativePadding, iconSize, }: {
     onPress: () => void;
     children?: React.ReactNode;
     backgroundViewReplacement?: React.ReactNode;
-    icon?: string;
     color: string;
+    icon?: string;
+    iconColor?: string;
+    iconSize?: number;
     borderRadius?: number;
     fieldRelativePadding?: [DimensionValue, DimensionValue, DimensionValue, DimensionValue];
 }) => {
@@ -48,7 +50,7 @@ export const GameAction = ({ onPress, children, icon, color, borderRadius, backg
                     right: 0,
                     bottom: 0,
                 }} />}
-            {icon && <Icon name={icon} color={color} />}
+            {icon && <Icon name={icon} color={iconColor ?? color} size={iconSize} />}
             {children}
         </TouchableOpacity>
     );
