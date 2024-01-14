@@ -1,4 +1,4 @@
-import { SafeAreaView, View, LayoutAnimation, ScrollView } from "react-native";
+import { SafeAreaView, View, LayoutAnimation, ScrollView, Pressable } from "react-native";
 import TitleMedium from "../lib/components/text/TitleMedium";
 import TextField from "../lib/components/TextField";
 import LabelSmall from "../lib/components/text/LabelSmall";
@@ -11,7 +11,7 @@ import BodyMedium from "../lib/components/text/BodyMedium";
 import { Icon } from "../lib/components/Icon";
 import { IconButton } from "../lib/components/IconButton";
 import { useContext, useEffect, useState } from "react";
-import { ServicesContext } from "../lib/services";
+import { LoadServicesContext, ServicesContext } from "../lib/services";
 import { DataSource } from "../lib/localCache";
 
 import TimeAgo from "../lib/components/TimeAgo";
@@ -23,8 +23,14 @@ import { ScoutReportMeta } from "../lib/models/ScoutReportMeta";
 import { getScouter } from "../lib/storage/getScouter";
 import { useAtom } from "jotai";
 import { reportStateAtom } from "../lib/collection/reportStateAtom";
-import { GamePhase, ReportState } from "../lib/collection/ReportState";
+import { GamePhase, ReportState, RobotRole } from "../lib/collection/ReportState";
+import { HighNote } from "../lib/collection/HighNote";
+import { StageResult } from "../lib/collection/StageResult";
 import { router, useNavigation } from "expo-router";
+import { DriverAbility } from "../lib/collection/DriverAbility";
+import { PickUp } from "../lib/collection/PickUp";
+import 'react-native-get-random-values';
+import { v4 } from "uuid";
 
 enum MatchSelectionMode {
     Automatic,
@@ -45,6 +51,13 @@ export default function Home() {
             events: [],
             startPiece: true,
             gamePhase: GamePhase.Auto,
+            robotRole: RobotRole.Offense,
+            driverAbility: DriverAbility.Average,
+            stageResult: StageResult.Nothing,
+            highNote: HighNote.None,
+            pickUp: PickUp.Ground,
+            notes: "",
+            uuid: v4(),
         }
 
         setReportState(report)
@@ -99,6 +112,7 @@ export default function Home() {
                             label="settings"
                             icon="settings"
                             color={colors.onBackground.default}
+                            onPress={() => router.push("/settings")}
                         />
                     </View>
 
@@ -279,6 +293,7 @@ const ServiceStatus = () => {
     const [servicesStatus, setServicesStatus] = useState(ServicesStatus.Connected);
 
     const serviceValues = useContext(ServicesContext);
+    const loadServices = useContext(LoadServicesContext);
 
     let status = ServicesStatus.Connected;
 
@@ -316,7 +331,8 @@ const ServiceStatus = () => {
     }
 
     return (
-        <View
+        <Pressable
+            onPress={loadServices}
             style={{
                 alignItems: "center",
                 flexDirection: "row",
@@ -362,6 +378,6 @@ const ServiceStatus = () => {
             {servicesStatus === ServicesStatus.Unavailable && (
                 <BodyMedium color={colors.danger.default}>Unavailable</BodyMedium>
             )}
-        </View>
+        </Pressable>
     );
 };

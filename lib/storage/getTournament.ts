@@ -1,8 +1,8 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { getTournamentsCached } from "../lovatAPI/getTournaments";
+import { raceTournamentsCached } from "../lovatAPI/getTournaments";
 
 export async function getTournament() {
-    const tournaments = await getTournamentsCached();
+    const tournaments = await raceTournamentsCached();
 
     const tournamentKey = await AsyncStorage.getItem("tournament");
 
@@ -33,6 +33,7 @@ export async function getTournament() {
         const tournament = tournaments.data[tournaments.data.length - 1];
 
         if (tournament) {
+            await AsyncStorage.setItem("tournament", tournament.key);
             return tournament;
         }
 

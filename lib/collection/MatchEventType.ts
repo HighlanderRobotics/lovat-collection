@@ -1,9 +1,13 @@
 export enum MatchEventType {
-    PickupNote,
-    ScoreNote,
-    DropNote,
-    FeedNote,
     LeaveWing,
+    PickupNote,
+    DropNote,
+    ScoreNote,
+    Defend,
+    FeedNote,
+    StartAmplfying,
+    StopAmplifying,
+    StartingPosition,
 }
 
 export const gainNoteEvents: MatchEventType[] = [

@@ -1,8 +1,9 @@
-import { urlPrefix } from "./lovatAPI";
+import { get } from "./lovatAPI";
+
 
 
 export const checkTeamCode = async (code: string) => {
-  const response = await fetch(urlPrefix + "/manager/scouter/checkcode?code=" + encodeURIComponent(code));
+  const response = await get(`/manager/scouter/checkcode?code=${encodeURIComponent(code)}`);
 
   if (!response.ok) {
     throw new Error(response.statusText);

@@ -17,15 +17,21 @@ type ButtonGroupButton<T> = (T extends Key ? UnkeyedButtonGroupButton<T> : Keyed
 type ButtonGroupProps<T> = {
     buttons: ButtonGroupButton<T>[];
     selected: T;
+    direction?: ButtonGroupDirection;
     onChange: (value: T) => void;
 }
 
+export enum ButtonGroupDirection {
+    Horizontal = 'horizontal',
+    Vertical = 'vertical',
+}
+
 export function ButtonGroup<T = string>(props: ButtonGroupProps<T>) {
-    const { buttons, selected, onChange } = props;
+    const { buttons, selected, onChange, direction = ButtonGroupDirection.Horizontal } = props;
 
     return (
         <View style={{
-            flexDirection: 'row',
+            flexDirection: direction === ButtonGroupDirection.Horizontal ? 'row' : 'column',
             gap: 2,
             backgroundColor: colors.gray.hover,
             borderRadius: 7,

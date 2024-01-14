@@ -13,6 +13,8 @@ export const ServicesContext = createContext<ServiceValues>({
     teamScouters: null,
 });
 
+export const LoadServicesContext = createContext<() => Promise<void>>(async () => {});
+
 type Service<T> = {
     id: keyof ServiceValues;
     localizedDescription: string;

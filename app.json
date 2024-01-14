@@ -30,10 +30,13 @@
     },
     "extra": {
       "eas": {
-        "projectId": "8dfa3a65-643a-46b3-9550-5abd7832abb5"
+        "projectId": "a03e1f3b-bb81-4bb1-9961-2ec813f82b94"
+      },
+      "router": {
+        "origin": false
       }
     },
-    "owner": "mshuman",
+    "owner": "highlander-robotics",
     "plugins": [
       "expo-router",
       [

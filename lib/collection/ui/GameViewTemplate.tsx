@@ -11,6 +11,7 @@ import { IconButton } from '../../components/IconButton';
 import * as Haptics from 'expo-haptics';
 import { GameTimer } from './GameTimer';
 import { Checkbox } from '../../components/Checkbox';
+import { router, useNavigation } from 'expo-router';
 
 export const GameViewTemplate = (props: {
     field: React.ReactNode;
@@ -20,6 +21,8 @@ export const GameViewTemplate = (props: {
 }) => {
     const [reportState, setReportState] = useAtom(reportStateAtom);
     const { gamePhaseMessage, field, startEnabled } = props;
+
+    const navigation = useNavigation();
 
     return (
         <>
@@ -79,7 +82,13 @@ export const GameViewTemplate = (props: {
                         label="End match"
                         icon="stop"
                         color={colors.onBackground.default}
-                        size={30} />}
+                        size={30}
+                        onPress={() => {
+                            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+
+                            router.push('/game/post-match');
+                        }}
+                    />}
                 </SafeAreaView>
             </View>
             <SafeAreaView style={{ flex: 1, alignItems: 'center', position: 'relative', }}>

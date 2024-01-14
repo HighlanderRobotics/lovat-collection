@@ -6,7 +6,7 @@ export enum MatchEventPosition {
   WingNearSource = "WingNearSource",
   Amp = "Amp",
   Speaker = "Speaker",
-  Stage = "Stage",
+  Trap = "Stage",
 
   GroundNoteAllianceNearAmp = "GroundNoteAllianceNearAmp",
   GroundNoteAllianceFrontOfSpeaker = "GroundNoteAllianceFrontOfSpeaker",
@@ -17,6 +17,29 @@ export enum MatchEventPosition {
   GroundNoteCenterTowardSourceSide = "GroundNoteCenterTowardSourceSide",
   GroundNoteCenterFarthestSourceSide = "GroundNoteCenterFarthestSourceSide",
 }
+
+export type MatchEventPositionDetails = {
+  num: number;
+}
+
+export const matchEventPositions: Record<MatchEventPosition, MatchEventPositionDetails> = {
+  [MatchEventPosition.None]: { num: 0 },
+  [MatchEventPosition.WingNearAmp]: { num: 4 },
+  [MatchEventPosition.WingFrontOfSpeaker]: { num: 5 },
+  [MatchEventPosition.WingCenter]: { num: 6 },
+  [MatchEventPosition.WingNearSource]: { num: 7 },
+  [MatchEventPosition.Amp]: { num: 1 },
+  [MatchEventPosition.Speaker]: { num: 2 },
+  [MatchEventPosition.Trap]: { num: 3 },
+  [MatchEventPosition.GroundNoteAllianceNearAmp]: { num: 8 },
+  [MatchEventPosition.GroundNoteAllianceFrontOfSpeaker]: { num: 9 },
+  [MatchEventPosition.GroundNoteAllianceByStage]: { num: 10 },
+  [MatchEventPosition.GroundNoteCenterFarthestAmpSide]: { num: 11 },
+  [MatchEventPosition.GroundNoteCenterTowardAmpSide]: { num: 12 },
+  [MatchEventPosition.GroundNoteCenterCenter]: { num: 13 },
+  [MatchEventPosition.GroundNoteCenterTowardSourceSide]: { num: 14 },
+  [MatchEventPosition.GroundNoteCenterFarthestSourceSide]: { num: 15 },
+};
 
 export type StartingPosition =
   MatchEventPosition.WingNearAmp

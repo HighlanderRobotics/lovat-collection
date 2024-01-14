@@ -16,6 +16,7 @@ type TextInputProps = {
     error?: boolean;
     value?: string;
     keyboardType?: KeyboardTypeOptions;
+    multiline?: boolean;
 }
 
 const TextField = React.forwardRef<TextInput, TextInputProps>(({
@@ -31,8 +32,10 @@ const TextField = React.forwardRef<TextInput, TextInputProps>(({
         error,
         value,
         keyboardType,
+        multiline,
     }, ref) => {
         const [isFocused, setIsFocused] = useState(false);
+        
 
         return (
             <TextInput
@@ -49,6 +52,7 @@ const TextField = React.forwardRef<TextInput, TextInputProps>(({
                     borderColor: error ? colors.danger.default : 
                                 editable ? (isFocused ? colors.gray.hover : colors.gray.default) :
                                 '#2F2F2F',
+                    minHeight: density === 'comfortable' ? 44 : 33,
                 }}
                 placeholder={placeholder}
                 placeholderTextColor={editable ? "#626262" : "#3D3D3D"}
@@ -63,7 +67,9 @@ const TextField = React.forwardRef<TextInput, TextInputProps>(({
                 ref={ref}
                 onFocus={() => setIsFocused(true)}
                 onBlur={() => setIsFocused(false)}
+                blurOnSubmit={true}
                 value={value}
+                multiline={multiline}
             />
         );
 });

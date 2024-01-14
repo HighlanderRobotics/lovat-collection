@@ -58,3 +58,25 @@ export const getTournamentsCached = async () => {
         return cachedTournaments;
     }
 }
+
+export const raceTournamentsCached = async () => {
+    const cached = getLocalTournaments;
+    const server = async () => {
+        const tournaments = await getTournaments();
+        const localCache: LocalCache<Tournament[]> = {
+            data: tournaments,
+            sourcedAt: new Date().getTime(),
+            source: DataSource.Server,
+        };
+
+        return localCache;
+    }
+
+    const output = await Promise.any([cached(), server()]);
+
+    if (output === null) {
+        throw new Error("No tournaments available");
+    }
+
+    return output;
+}

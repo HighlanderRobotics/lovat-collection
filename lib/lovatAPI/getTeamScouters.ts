@@ -1,14 +1,15 @@
-import { urlPrefix } from "./lovatAPI";
 import { getTeamNumber } from "../storage/getTeamNumber";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { DataSource, LocalCache } from "../localCache";
+import { get } from "./lovatAPI";
 
 export const getTeamScouters = async () => {
   const teamNumber = await getTeamNumber();
 
-  const response = await fetch(urlPrefix + `/manager/teams/${teamNumber}/scouters`);
+  const response = await get(`/manager/scouters`);
 
   if (!response.ok) {
+    console.log(await response.text());
     throw new Error("Error fetching scouters");
   }
 

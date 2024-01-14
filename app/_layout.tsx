@@ -11,7 +11,7 @@ import {
 } from "@expo-google-fonts/heebo";
 
 import { useCallback, useEffect, useState } from "react";
-import { ServiceValues, ServicesContext, services } from "../lib/services";
+import { LoadServicesContext, ServiceValues, ServicesContext, services } from "../lib/services";
 import { DataSource } from "../lib/localCache";
 
 import TimeAgo from "javascript-time-ago";
@@ -70,9 +70,15 @@ export default function Layout() {
 
     return (
         <ServicesContext.Provider value={serviceValues}>
-            <View style={{ backgroundColor: colors.background.default, flex: 1 }} onLayout={onLayoutRootView}>
-                <Slot />
-            </View>
+            <LoadServicesContext.Provider
+                value={async () => {
+                    await loadServices();
+                }}
+            >
+                <View style={{ backgroundColor: colors.background.default, flex: 1 }} onLayout={onLayoutRootView}>
+                    <Slot />
+                </View>
+            </LoadServicesContext.Provider>
         </ServicesContext.Provider>
     );
 }

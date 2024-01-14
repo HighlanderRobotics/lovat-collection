@@ -91,7 +91,7 @@ export const HasNoteActions = ({ trap = false }: { trap?: boolean }) => {
                         onPress={() => {
                             addEvent({
                                 type: MatchEventType.ScoreNote,
-                                position: MatchEventPosition.Stage,
+                                position: MatchEventPosition.Trap,
                             });
                         }}
                         fieldRelativePadding={[0, 0, 0, '30%']}
