@@ -6,10 +6,9 @@ import { get } from "./lovatAPI";
 export const getTeamScouters = async () => {
   const teamNumber = await getTeamNumber();
 
-  const response = await get(`/manager/scouters`);
+  const response = await get(`/manager/teams/${teamNumber}/scouters`);
 
   if (!response.ok) {
-    console.log(await response.text());
     throw new Error("Error fetching scouters");
   }
 
