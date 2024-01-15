@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { TouchableOpacity, Text, ViewStyle, TextStyle, Animated, ActivityIndicator, LayoutAnimation, View } from 'react-native';
+import { TouchableOpacity, Text, ViewStyle, TextStyle, Animated, ActivityIndicator, View } from 'react-native';
 import { colors } from '../colors';
 import BodyMedium from './text/BodyMedium';
 
@@ -30,7 +30,6 @@ const Button: React.FC<ButtonProps> = ({ variant = 'secondary', disabled = false
 
     useEffect(() => {
         if (promise) {
-            LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
             setLoading(true);
 
             promise
@@ -40,7 +39,6 @@ const Button: React.FC<ButtonProps> = ({ variant = 'secondary', disabled = false
                 .finally(() => {
                     setLoading(false);
 
-                    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
                     setPromise(null);
                 });
         }
