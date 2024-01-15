@@ -154,7 +154,7 @@ const Button: React.FC<ButtonProps> = ({ variant = 'secondary', disabled = false
                 onPressIn={() => setPressed(true)}
                 onPressOut={() => setPressed(false)}
             >
-                {loading && <ActivityIndicator />}
+                {loading && <ActivityIndicator color={textColor} />}
                 <AnimatedText style={textStyle}>{children}</AnimatedText>
             </AnimatedTouchableOpacity>
         </>
