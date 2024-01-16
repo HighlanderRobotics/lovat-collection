@@ -37,6 +37,6 @@ export async function getTournament() {
             return tournament;
         }
 
-        throw new Error("No tournaments available");
+        throw new Error("Tournament not found");
     }
 }
