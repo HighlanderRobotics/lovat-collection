@@ -4,7 +4,6 @@
     "slug": "lovat-collection",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
     "userInterfaceStyle": "dark",
     "splash": {
       "image": "./assets/splash.png",
@@ -15,15 +14,20 @@
       "**/*"
     ],
     "ios": {
+      "icon": "./assets/icon.png",
       "supportsTablet": true,
       "bundleIdentifier": "com.frc8033.lovatcollection"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#350868",
+        "monochromeImage": "./assets/monochrome-icon.png"
       },
       "package": "com.frc8033.lovatcollection"
+    },
+    "androidNavigationBar": {
+      "backgroundColor": "#1f1f1f"
     },
     "web": {
       "favicon": "./assets/favicon.png"

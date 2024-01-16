@@ -16,6 +16,7 @@ import { Animated } from 'react-native';
 import { Icon } from '../../components/Icon';
 import { useEffect, useRef, useState } from 'react';
 import { MatchEvent } from '../MatchEvent';
+import { StatusBar } from 'expo-status-bar';
 
 export const GameViewTemplate = (props: {
     field: React.ReactNode;
@@ -30,10 +31,12 @@ export const GameViewTemplate = (props: {
 
     return (
         <>
+            <StatusBar hidden={true} backgroundColor={colors.background.default} />
             <View
                 style={{
                     backgroundColor: colors.secondaryContainer.default,
-                    height: 59,
+                    paddingVertical: 7,
+                    paddingHorizontal: 14,
                     flexDirection: 'row',
                     alignItems: 'center',
                 }}

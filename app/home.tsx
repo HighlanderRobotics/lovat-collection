@@ -1,4 +1,4 @@
-import { SafeAreaView, View, LayoutAnimation, ScrollView, Pressable } from "react-native";
+import { View, LayoutAnimation, ScrollView, Pressable } from "react-native";
 import TitleMedium from "../lib/components/text/TitleMedium";
 import TextField from "../lib/components/TextField";
 import LabelSmall from "../lib/components/text/LabelSmall";
@@ -31,6 +31,7 @@ import { DriverAbility } from "../lib/collection/DriverAbility";
 import { PickUp } from "../lib/collection/PickUp";
 import 'react-native-get-random-values';
 import { v4 } from "uuid";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 enum MatchSelectionMode {
     Automatic,

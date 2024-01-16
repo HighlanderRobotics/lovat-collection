@@ -20,6 +20,7 @@ import { Icon } from "../../lib/components/Icon";
 import { historyAtom, useAddMatchToHistory } from "../../lib/storage/historyAtom";
 import { ScoutReportMeta } from "../../lib/models/ScoutReportMeta";
 import { ResizableQRCode, ScoutReportCode } from "../../lib/collection/ui/ScoutReportCode";
+import { StatusBar } from "expo-status-bar";
 
 export default function Submit() {
     const [reportState, setReportState] = useAtom(reportStateAtom);
@@ -133,6 +134,8 @@ const UploadIndicator = ({ state }: { state: UploadState }) => {
     const [effectiveState, setEffectiveState] = useState(state);
 
     useEffect(() => {
+        if (state === effectiveState) return;
+
         LayoutAnimation.configureNext({
             duration: 500,
             create: {

@@ -1,5 +1,6 @@
 import { useRef, useState } from "react";
-import { SafeAreaView, Text, View, TextInput } from "react-native";
+import { Text, View, TextInput } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import TitleMedium from "../../lib/components/text/TitleMedium";
 import Button from "../../lib/components/Button";
 import TextField from "../../lib/components/TextField";
