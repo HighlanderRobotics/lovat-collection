@@ -6,14 +6,16 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import TitleMedium from '../../lib/components/text/TitleMedium';
 import { IconButton } from '../../lib/components/IconButton';
 import LabelSmall from '../../lib/components/text/LabelSmall';
-import { useAtom } from 'jotai';
+import { useAtom, useAtomValue } from 'jotai';
 import { FieldOrientation, fieldOrientationAtom } from '../../lib/models/FieldOrientation';
 import { ButtonGroup } from '../../lib/components/ButtonGroup';
 import { colors } from '../../lib/colors';
 import { FieldImage, fieldHeight, fieldWidth } from '../../lib/components/FieldImage';
 import Heading1Small from '../../lib/components/text/Heading1Small';
-import { Suspense } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { NavBar } from '../../lib/components/NavBar';
+import { getTournament, tournamentAtom } from '../../lib/storage/getTournament';
+import { Icon } from '../../lib/components/Icon';
 
 export default function Settings() {
     return (
@@ -36,14 +38,22 @@ export default function Settings() {
                     <SafeAreaView edges={['bottom', 'left', 'right']} style={{ flex: 1, gap: 14 }}>
                             <FieldOrientationEditor />
 
-                            <Button
-                                variant="danger"
-                                onPress={() => {
-                                    router.push('/settings/reset');
+                            <TournamentSelector />
+
+                            <View
+                                style={{
+                                    marginTop: 112,
                                 }}
                             >
-                                Reset all settings and data
-                            </Button>
+                                <Button
+                                    variant="secondary"
+                                    onPress={() => {
+                                        router.push('/settings/reset');
+                                    }}
+                                >
+                                    Reset all settings and data
+                                </Button>
+                            </View>
                     </SafeAreaView>
                 </ScrollView>
             </Suspense>
@@ -92,4 +102,47 @@ const FieldOrientationEditor = () => {
                 </View>
         </View>
     )
+}
+
+const TournamentSelector = () => {
+    const tournament = useAtomValue(tournamentAtom);
+
+    return (
+        <View>
+            <Heading1Small>Tournament</Heading1Small>
+            <View
+                style={{
+                    marginTop: 7,
+                    padding: 7,
+                    borderRadius: 10,
+                    backgroundColor: colors.secondaryContainer.default,
+                    gap: 7,
+                }}
+            >
+                <View
+                    style={{
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        gap: 7,
+                    }}
+                >
+                    <View
+                        style={{
+                            padding: 7,
+                        }}
+                    >
+                        <BodyMedium>{tournament ? `${tournament.date.split('-')[0]} ${tournament.name}` : "No tournament selected"}</BodyMedium>
+                    </View>
+                    <Button
+                        onPress={() => {
+                            router.push('/settings/tournament');
+                        }}
+                    >
+                        {tournament ? "Change" : "Select a tournament"}
+                    </Button>
+                </View>
+            </View>
+        </View>
+    );
 }
