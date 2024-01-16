@@ -8,7 +8,10 @@
     "ios": "expo run:ios",
     "web": "expo start --web",
     "ts:check": "tsc",
-    "build-ios": "eas build --platform ios --local --output ./build/app-release.ipa"
+    "build-ios": "eas build --platform ios --local --output ./build/app-release.ipa",
+    "build-ios-dev": "eas build --platform ios --local --output ./build/app-development.ipa --profile development",
+    "build-android": "eas build --platform android --local --output ./build/app-release.aap",
+    "build-android-dev": "eas build --platform android --local --output ./build/app-development.apk --profile development"
   },
   "dependencies": {
     "@expo-google-fonts/heebo": "^0.2.3",
