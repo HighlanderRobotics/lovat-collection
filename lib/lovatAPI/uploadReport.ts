@@ -5,7 +5,7 @@ import { post } from "./lovatAPI";
 export const uploadReport = async (report: ScoutReport) => {
   console.log("Uploading report", report);
 
-  const response = await post("/manager/scoutreports", report);
+  const response = await post("/v1/manager/scoutreports", report);
 
   console.log("Response", response);
 

@@ -26,7 +26,7 @@ type ScouterScheduleScouterEntry = {
 }
 
 export async function getScouterSchedule(tournamentKey: string): Promise<ScouterSchedule> {
-    const response = await get("/manager/scouterschedules/" + tournamentKey);
+    const response = await get("/v1/manager/scouterschedules/" + tournamentKey);
 
     if (!response.ok) {
         throw new Error("Error fetching scouter schedule");

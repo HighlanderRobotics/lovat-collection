@@ -5,7 +5,7 @@ import { post } from "./lovatAPI";
 export const addScouter = async (name: string) => {
   const teamNumber = await getTeamNumber();
 
-  const response = await post(`/manager/scouter`, {
+  const response = await post(`/v1/manager/scouter`, {
     name,
     teamNumber,
   });
