@@ -1,4 +1,4 @@
-import { View, LayoutAnimation, ScrollView, Pressable } from "react-native";
+import { View, LayoutAnimation, ScrollView, Pressable, ActivityIndicator } from "react-native";
 import TitleMedium from "../lib/components/text/TitleMedium";
 import TextField from "../lib/components/TextField";
 import LabelSmall from "../lib/components/text/LabelSmall";
@@ -10,18 +10,18 @@ import { colors } from "../lib/colors";
 import BodyMedium from "../lib/components/text/BodyMedium";
 import { Icon } from "../lib/components/Icon";
 import { IconButton } from "../lib/components/IconButton";
-import { Suspense, useContext, useEffect, useState } from "react";
+import { Suspense, useContext, useEffect, useMemo, useState } from "react";
 import { LoadServicesContext, ServicesContext } from "../lib/services";
 import { DataSource } from "../lib/localCache";
 
 import TimeAgo from "../lib/components/TimeAgo";
 import { getTournament } from "../lib/storage/getTournament";
 import { ButtonGroup } from "../lib/components/ButtonGroup";
-import { MatchType, matchTypes } from "../lib/models/match";
+import { MatchIdentity, MatchIdentityLocalizationFormat, MatchType, localizeMatchIdentity, matchTypes } from "../lib/models/match";
 import { AllianceColor, allianceColors } from "../lib/models/AllianceColor";
 import { ScoutReportMeta } from "../lib/models/ScoutReportMeta";
 import { getScouter } from "../lib/storage/getScouter";
-import { useAtom, useAtomValue } from "jotai";
+import { atom, useAtom, useAtomValue } from "jotai";
 import { reportStateAtom } from "../lib/collection/reportStateAtom";
 import { GamePhase, ReportState, RobotRole } from "../lib/collection/ReportState";
 import { HighNote } from "../lib/collection/HighNote";
@@ -32,8 +32,11 @@ import { PickUp } from "../lib/collection/PickUp";
 import 'react-native-get-random-values';
 import { v4 } from "uuid";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { getVerionsColor, scouterScheduleAtom } from "../lib/storage/scouterSchedules";
+import { ScouterScheduleMatch, getVerionsColor, scouterScheduleAtom } from "../lib/storage/scouterSchedules";
 import { loadable, unwrap } from "jotai/utils";
+import { Picker } from "react-native-wheel-pick";
+import { getTournaments, getTournamentsCached } from "../lib/lovatAPI/getTournaments";
+import { historyAtom } from "../lib/storage/historyAtom";
 
 enum MatchSelectionMode {
     Automatic,
@@ -142,30 +145,129 @@ type MatchSelectionProps = {
 const MatchSelection = ({ matchSelectionMode, onMetaChanged }:  MatchSelectionProps) => {
     switch (matchSelectionMode) {
         case MatchSelectionMode.Automatic:
-            return <AutomaticMatchSelection />;
+            return <Suspense fallback={<ActivityIndicator style={{ flex: 1 }} />}>
+                <AutomaticMatchSelection onChanged={onMetaChanged} />
+            </Suspense>;
         case MatchSelectionMode.Manual:
             return <ManualMatchSelection onChanged={onMetaChanged} />;
     }
 }
 
-const AutomaticMatchSelection = () => {
+const scouterAtom = atom(async () => {
+    const scouter = await getScouter();
+    return scouter;
+});
+
+const tournamentsAtom = atom(async () => {
+    const tournaments = await getTournamentsCached();
+    return tournaments;
+});
+
+const AutomaticMatchSelection = ({ onChanged }: { onChanged: (meta: ScoutReportMeta | null) => void }) => {
+    const scouterSchedule = useAtomValue(scouterScheduleAtom);
+    const scouter = useAtomValue(scouterAtom);
+    const tournaments = useAtomValue(tournamentsAtom);
+    const history = useAtomValue(historyAtom);
+
+    const nextMatch = useMemo(() => {
+        console.log({history})
+        if (!history || history.length === 0) return null;
+        if (!scouterSchedule) return null;
+
+        const matches = scouterSchedule.data.data.filter(match => scouter?.uuid in match.scouters);
+        const matchesWithHistory = matches.filter(match => history.some(report => report.meta.matchIdentity.matchNumber === match.matchIdentity.matchNumber && report.meta.matchIdentity.matchType === match.matchIdentity.matchType && report.meta.matchIdentity.tournamentKey === match.matchIdentity.tournamentKey));
+        matchesWithHistory.sort((a, b) => {
+            // Put qual matches first and elim matches last
+            if (a.matchIdentity.matchType === MatchType.Qualifier && b.matchIdentity.matchType !== MatchType.Qualifier) return -1;
+            if (a.matchIdentity.matchType !== MatchType.Qualifier && b.matchIdentity.matchType === MatchType.Qualifier) return 1;
+
+            // Put lower match numbers first
+            if (a.matchIdentity.matchNumber < b.matchIdentity.matchNumber) return -1;
+            if (a.matchIdentity.matchNumber > b.matchIdentity.matchNumber) return 1;
+
+            return 0;
+        });
+
+        const latestMatch = matchesWithHistory[matchesWithHistory.length - 1];
+        // Return match after latest match (lowest match number and match type still after latest match)
+        matches.sort((a, b) => {
+            // Put qual matches first and elim matches last
+            if (a.matchIdentity.matchType === MatchType.Qualifier && b.matchIdentity.matchType !== MatchType.Qualifier) return -1;
+            if (a.matchIdentity.matchType !== MatchType.Qualifier && b.matchIdentity.matchType === MatchType.Qualifier) return 1;
+
+            // Put lower match numbers first
+            if (a.matchIdentity.matchNumber < b.matchIdentity.matchNumber) return -1;
+            if (a.matchIdentity.matchNumber > b.matchIdentity.matchNumber) return 1;
+
+            return 0;
+        });
+
+        const latestMatchOrdinalNumber = matches.findIndex(match => JSON.stringify(match.matchIdentity) === JSON.stringify(latestMatch.matchIdentity));
+
+        return matches[latestMatchOrdinalNumber + 1] ?? null;
+    }, [scouterSchedule, scouter, history]);
+
+    const matchesWithScouter = useMemo(() => {
+        if (!scouterSchedule) return [];
+
+        return scouterSchedule.data.data.filter(match => scouter?.uuid in match.scouters);
+    }, [scouterSchedule, scouter]);
+
+    const matchKeyOf = (match: MatchIdentity) => `${match.tournamentKey}_${match.matchType}${match.matchNumber}`;
+
+    const [selectedMatch, setSelectedMatch] = useState<ScouterScheduleMatch | null>(null);
+
+    useEffect(() => {
+        if (!nextMatch) return;
+        console.log("Setting match", nextMatch?.matchIdentity.matchNumber);
+        setSelectedMatch(nextMatch);
+    }, [matchesWithScouter, nextMatch]);
+
+    const tournament = useMemo(() => {
+        if (!selectedMatch) return null;
+
+        return tournaments.data.find((t) => t.key === selectedMatch.matchIdentity.tournamentKey);
+    }, [selectedMatch, tournaments]);
+
+    useEffect(() => {
+        if (!selectedMatch) {
+            onChanged(null);
+            return;
+        }
+
+        onChanged({
+            scouterUUID: scouter!.uuid,
+            allianceColor: selectedMatch.scouters[scouter!.uuid].allianceColor,
+            teamNumber: selectedMatch.scouters[scouter!.uuid].teamNumber,
+            matchIdentity: selectedMatch.matchIdentity,
+        });
+    }, [selectedMatch]);
+
     return (
         <View
             style={{ alignItems: "center", justifyContent: "center", flex: 1 }}
         >
-            {/* <BodyMedium>{tournament?.date.split("-")[0]} {tournament?.name}</BodyMedium> */}
-            <BodyMedium>2023 Galileo</BodyMedium>
-            <View style={{ height: 7 }} />
-            <View style={{
-                flexDirection: "row",
-                alignItems: "center",
-                gap: 7,
-                paddingLeft: 7 + 24,
-            }}>
-                <TitleMedium>Qualifier 8</TitleMedium>
-                <Icon name="edit" color={colors.body.default} />
-            </View>
-            <Heading1Small>Scouting 8033</Heading1Small>
+            {tournament && (
+                <BodyMedium>{tournament.date.split('-')[0]} {tournament.name}</BodyMedium>
+            )}
+
+            {selectedMatch && (
+                <Heading1Small>Scouting {selectedMatch.scouters[scouter.uuid].teamNumber}</Heading1Small>
+            )}
+            
+            <Picker
+                style={{ width: "100%", height: 200, backgroundColor: "transparent" }}
+                selectedValue={selectedMatch && matchKeyOf(selectedMatch.matchIdentity)}
+                pickerData={matchesWithScouter.map(match => ({
+                    label: localizeMatchIdentity(match.matchIdentity, MatchIdentityLocalizationFormat.Long),
+                    value: matchKeyOf(match.matchIdentity),
+                }))}
+                onValueChange={(val: string) => {
+                    const match = matchesWithScouter.find(match => matchKeyOf(match.matchIdentity) === val);
+                    setSelectedMatch(match ?? null);
+                }}
+                textColor={colors.onBackground.default}
+            />
         </View>
     )
 }

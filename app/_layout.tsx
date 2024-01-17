@@ -55,15 +55,23 @@ export default function Layout() {
     });
 
     const loadServices = () => Promise.allSettled(services.map(async service => {
-        const value = await service.get();
+        try {
+            console.log(`Loading service ${service.id}`);
+            const value = await service.get();
 
-        setServiceValues((values) => ({
-            ...values,
-            [service.id]: value,
-        }));
+            setServiceValues((values) => ({
+                ...values,
+                [service.id]: value,
+            }));
 
-        if (service.id === "scouterSchedule") {
-            setScouterSchedule(async () => value as LocalCache<ScouterSchedule>);
+            if (service.id === "scouterSchedule") {
+                setScouterSchedule(async () => value as LocalCache<ScouterSchedule>);
+                console.log(`Loaded scouter schedule ${value.data.hash}`);
+            }
+            console.log(`Loaded service ${service.id}`);
+        } catch (e) {
+            console.error(`Failed to load service ${service.id}`);
+            console.error(e);
         }
     }));
 

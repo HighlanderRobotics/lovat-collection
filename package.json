@@ -24,6 +24,7 @@
     "expo-haptics": "~12.4.0",
     "expo-linear-gradient": "~12.3.0",
     "expo-linking": "~5.0.2",
+    "expo-navigation-bar": "~2.3.0",
     "expo-router": "^2.0.0",
     "expo-screen-orientation": "~6.0.6",
     "expo-splash-screen": "~0.20.5",
@@ -40,10 +41,10 @@
     "react-native-screens": "~3.22.0",
     "react-native-svg": "13.9.0",
     "react-native-swiper-flatlist": "^3.2.3",
+    "react-native-wheel-pick": "^1.2.2",
     "react-time-ago": "^7.2.1",
     "typescript": "^5.1.3",
-    "uuid": "^9.0.1",
-    "expo-navigation-bar": "~2.3.0"
+    "uuid": "^9.0.1"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

@@ -1,7 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { get } from "../lovatAPI/lovatAPI";
-import { AllianceColor } from "../models/AllianceColor";
-import { MatchIdentity } from "../models/match";
+import { AllianceColor, allianceColors } from "../models/AllianceColor";
+import { MatchIdentity, MatchType, matchTypes } from "../models/match";
 import { getTournament, tournamentAtom } from "./getTournament";
 import { DataSource, LocalCache } from "../localCache";
 import { useAtomValue, atom } from "jotai";
@@ -13,7 +13,7 @@ export type ScouterSchedule = {
     data: ScouterScheduleMatch[];
 }
 
-type ScouterScheduleMatch = {
+export type ScouterScheduleMatch = {
     matchIdentity: MatchIdentity;
     scouters: {
         [scouterUUID: string]: ScouterScheduleScouterEntry;
@@ -32,7 +32,34 @@ export async function getScouterSchedule(tournamentKey: string): Promise<Scouter
         throw new Error("Error fetching scouter schedule");
     }
 
-    const schedule: ScouterSchedule = {...await response.json(), tournamentKey};
+    const json = await response.json();
+
+    json.data = json.data.map((match: any) => {
+        const matchType = matchTypes.find((matchType) => matchType.num === match.matchType)?.type;
+
+        if (!matchType) throw new Error("Invalid match type: " + match.matchType);
+
+        return {
+            ...match,
+            matchIdentity: {
+                tournamentKey,
+                matchType,
+                matchNumber: match.matchNumber,
+            } as MatchIdentity,
+            scouters: Object.fromEntries(Object.entries(match.scouters).map(([key, value]: any) => {
+                return [key, {
+                    ...value,
+                    teamNumber: value.team,
+                    allianceColor: value.allianceColor === "red" ? AllianceColor.Red : AllianceColor.Blue,
+                }]
+            })),
+        }
+    });
+
+    const schedule: ScouterSchedule = {
+        ...json,
+        tournamentKey
+    };
 
     cacheScouterSchedule(schedule);
 
