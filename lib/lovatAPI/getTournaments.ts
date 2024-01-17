@@ -75,7 +75,7 @@ export const raceTournamentsCached = async () => {
     const output = await Promise.any([cached(), server()]);
 
     if (output === null) {
-        throw new Error("No tournaments available");
+        return await server();
     }
 
     return output;
