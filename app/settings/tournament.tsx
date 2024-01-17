@@ -15,6 +15,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { Icon } from "../../lib/components/Icon";
+import BodyMedium from "../../lib/components/text/BodyMedium";
 
 const tournamentsAtom = atom(raceTournamentsCached);
 
@@ -116,7 +117,8 @@ const TournamentItem = ({ tournament }: { tournament: Tournament }) => {
                     flex: 1,
                 }}
             >
-                <Heading1Small>{tournament.name}</Heading1Small>
+                <Heading1Small>{tournament.date.split('-')[0]} {tournament.name}</Heading1Small>
+                <BodyMedium>{tournament.location}</BodyMedium>
             </View>
             <Suspense>
                 <SelectedIndicator tournament={tournament} />
