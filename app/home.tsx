@@ -10,7 +10,7 @@ import { colors } from "../lib/colors";
 import BodyMedium from "../lib/components/text/BodyMedium";
 import { Icon } from "../lib/components/Icon";
 import { IconButton } from "../lib/components/IconButton";
-import { useContext, useEffect, useState } from "react";
+import { Suspense, useContext, useEffect, useState } from "react";
 import { LoadServicesContext, ServicesContext } from "../lib/services";
 import { DataSource } from "../lib/localCache";
 
@@ -21,7 +21,7 @@ import { MatchType, matchTypes } from "../lib/models/match";
 import { AllianceColor, allianceColors } from "../lib/models/AllianceColor";
 import { ScoutReportMeta } from "../lib/models/ScoutReportMeta";
 import { getScouter } from "../lib/storage/getScouter";
-import { useAtom } from "jotai";
+import { useAtom, useAtomValue } from "jotai";
 import { reportStateAtom } from "../lib/collection/reportStateAtom";
 import { GamePhase, ReportState, RobotRole } from "../lib/collection/ReportState";
 import { HighNote } from "../lib/collection/HighNote";
@@ -32,6 +32,8 @@ import { PickUp } from "../lib/collection/PickUp";
 import 'react-native-get-random-values';
 import { v4 } from "uuid";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { getVerionsColor, scouterScheduleAtom } from "../lib/storage/scouterSchedules";
+import { loadable, unwrap } from "jotai/utils";
 
 enum MatchSelectionMode {
     Automatic,
@@ -79,16 +81,7 @@ export default function Home() {
 
     return (
         <>
-            <LinearGradient
-                colors={["#335544", "transparent"]}
-                style={{
-                    position: "absolute",
-                    left: 0,
-                    right: 0,
-                    top: 0,
-                    height: 400,
-                }}
-            />
+            <ScheduleColorGradient />
 
             <SafeAreaView style={{ flex: 1 }}>
                 <View style={{ flex: 1, paddingVertical: 16, paddingHorizontal: 26 }}>
@@ -282,6 +275,35 @@ const ManualMatchSelection = (props: ManualMatchSelectionProps) => {
         </ScrollView>
     )
 };
+
+const unwrappedScouterScheduleAtom = unwrap(scouterScheduleAtom, (prev) => prev);
+
+const ScheduleColorGradient = () => {
+    const scouterSchedule = useAtomValue(unwrappedScouterScheduleAtom);
+    const [color, setColor] = useState("transparent");
+
+
+    useEffect(() => {
+        if (scouterSchedule?.data.hash) {
+            setColor(getVerionsColor(scouterSchedule?.data.hash, 30, 30));
+        } else {
+            setColor(colors.danger.default);
+        }
+    }, [scouterSchedule]);
+
+    return (
+        <LinearGradient
+            colors={[color, "transparent"]}
+            style={{
+                position: "absolute",
+                left: 0,
+                right: 0,
+                top: 0,
+                height: 400,
+            }}
+        />
+    )
+}
 
 enum ServicesStatus {
     Connected,

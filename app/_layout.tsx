@@ -12,11 +12,13 @@ import {
 
 import { useCallback, useEffect, useState } from "react";
 import { LoadServicesContext, ServiceValues, ServicesContext, services } from "../lib/services";
-import { DataSource } from "../lib/localCache";
+import { DataSource, LocalCache } from "../lib/localCache";
 
 import TimeAgo from "javascript-time-ago";
 import en from 'javascript-time-ago/locale/en.json'
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useAtom, useSetAtom } from "jotai";
+import { ScouterSchedule, scouterScheduleAtom } from "../lib/storage/scouterSchedules";
 
 const {UIManager} = NativeModules;
 
@@ -38,6 +40,8 @@ export default function Layout() {
         MaterialSymbols_500Rounded48px: require("../assets/fonts/Material-Symbols-Rounded-48px.ttf"),
     });
 
+    const setScouterSchedule = useSetAtom(scouterScheduleAtom);
+
     const onLayoutRootView = useCallback(async () => {
         if (fontsLoaded || fontError) {
             await SplashScreen.hideAsync();
@@ -47,6 +51,7 @@ export default function Layout() {
     const [serviceValues, setServiceValues] = useState<ServiceValues>({
         teamScouters: null,
         tournaments: null,
+        scouterSchedule: null,
     });
 
     const loadServices = () => Promise.allSettled(services.map(async service => {
@@ -56,12 +61,16 @@ export default function Layout() {
             ...values,
             [service.id]: value,
         }));
+
+        if (service.id === "scouterSchedule") {
+            setScouterSchedule(async () => value as LocalCache<ScouterSchedule>);
+        }
     }));
 
     useEffect(() => {
         loadServices();
 
-        const interval = setInterval(loadServices, 60 * 2 * 1000);
+        const interval = setInterval(loadServices, 2 * 60 * 1000);
 
         return () => clearInterval(interval);
     }, []);
