@@ -16,6 +16,7 @@
   "dependencies": {
     "@expo-google-fonts/heebo": "^0.2.3",
     "@react-native-async-storage/async-storage": "1.18.2",
+    "@react-native-picker/picker": "2.4.10",
     "@types/react": "~18.2.14",
     "expo": "~49.0.15",
     "expo-constants": "~14.4.2",

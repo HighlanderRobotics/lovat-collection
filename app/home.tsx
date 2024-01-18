@@ -255,19 +255,21 @@ const AutomaticMatchSelection = ({ onChanged }: { onChanged: (meta: ScoutReportM
                 <Heading1Small>Scouting {selectedMatch.scouters[scouter.uuid].teamNumber}</Heading1Small>
             )}
             
-            <Picker
-                style={{ width: "100%", height: 200, backgroundColor: "transparent" }}
-                selectedValue={selectedMatch && matchKeyOf(selectedMatch.matchIdentity)}
-                pickerData={matchesWithScouter.map(match => ({
-                    label: localizeMatchIdentity(match.matchIdentity, MatchIdentityLocalizationFormat.Long),
-                    value: matchKeyOf(match.matchIdentity),
-                }))}
-                onValueChange={(val: string) => {
-                    const match = matchesWithScouter.find(match => matchKeyOf(match.matchIdentity) === val);
-                    setSelectedMatch(match ?? null);
-                }}
-                textColor={colors.onBackground.default}
-            />
+            <View style={{ height: 200, width: "100%", justifyContent: "center", alignItems: "center" }}>
+                {(matchesWithScouter.length >= 1) ? <Picker
+                    style={{ width: "100%", height: "100%", backgroundColor: "transparent" }}
+                    selectedValue={selectedMatch && matchKeyOf(selectedMatch.matchIdentity)}
+                    pickerData={matchesWithScouter.map(match => ({
+                        label: localizeMatchIdentity(match.matchIdentity, MatchIdentityLocalizationFormat.Long),
+                        value: matchKeyOf(match.matchIdentity),
+                    }))}
+                    onValueChange={(val: string) => {
+                        const match = matchesWithScouter.find(match => matchKeyOf(match.matchIdentity) === val);
+                        setSelectedMatch(match ?? null);
+                    }}
+                    textColor={colors.onBackground.default}
+                /> : <BodyMedium>No matches found</BodyMedium>}
+            </View>
         </View>
     )
 }
