@@ -204,7 +204,7 @@ const AutomaticMatchSelection = ({ onChanged }: { onChanged: (meta: ScoutReportM
 
         const latestMatchOrdinalNumber = matches.findIndex(match => JSON.stringify(match.matchIdentity) === JSON.stringify(latestMatch.matchIdentity));
 
-        return matches[latestMatchOrdinalNumber + 1] ?? null;
+        return matches[latestMatchOrdinalNumber + 1] ?? matches[0];
     }, [scouterSchedule, scouter, history]);
 
     const matchesWithScouter = useMemo(() => {
@@ -213,12 +213,12 @@ const AutomaticMatchSelection = ({ onChanged }: { onChanged: (meta: ScoutReportM
         return scouterSchedule.data.data.filter(match => scouter?.uuid in match.scouters);
     }, [scouterSchedule, scouter]);
 
-    const matchKeyOf = (match: MatchIdentity) => `${match.tournamentKey}_${match.matchType}${match.matchNumber}`;
+    const matchKeyOf = (match: MatchIdentity) => `${match.tournamentKey}_${matchTypes.find(t => t.type === match.matchType)?.shortName.toLowerCase()}${match.matchNumber}`;
 
     const [selectedMatch, setSelectedMatch] = useState<ScouterScheduleMatch | null>(null);
 
     useEffect(() => {
-        if (!nextMatch) return;
+        if (!nextMatch || selectedMatch) return;
         console.log("Setting match", nextMatch?.matchIdentity.matchNumber);
         setSelectedMatch(nextMatch);
     }, [matchesWithScouter, nextMatch]);
@@ -248,15 +248,15 @@ const AutomaticMatchSelection = ({ onChanged }: { onChanged: (meta: ScoutReportM
             style={{ alignItems: "center", justifyContent: "center", flex: 1 }}
         >
             {tournament && (
-                <BodyMedium>{tournament.date.split('-')[0]} {tournament.name}</BodyMedium>
+                <Heading1Small color={colors.body.default}>{tournament.date.split('-')[0]} {tournament.name}</Heading1Small>
             )}
 
             {selectedMatch && (
-                <Heading1Small>Scouting {selectedMatch.scouters[scouter.uuid].teamNumber}</Heading1Small>
+                <TitleMedium>Scouting {selectedMatch.scouters[scouter.uuid].teamNumber}</TitleMedium>
             )}
-            
+
             <View style={{ height: 200, width: "100%", justifyContent: "center", alignItems: "center" }}>
-                {(matchesWithScouter.length >= 1) ? <Picker
+                {(matchesWithScouter.length && selectedMatch != null) ? <Picker
                     style={{ width: "100%", height: "100%", backgroundColor: "transparent" }}
                     selectedValue={selectedMatch && matchKeyOf(selectedMatch.matchIdentity)}
                     pickerData={matchesWithScouter.map(match => ({
