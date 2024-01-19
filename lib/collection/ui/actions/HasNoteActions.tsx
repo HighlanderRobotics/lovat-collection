@@ -11,6 +11,7 @@ import { Icon } from '../../../components/Icon';
 import { useAtom, useAtomValue } from 'jotai';
 import { AllianceColor } from '../../../models/AllianceColor';
 import { FieldOrientation, fieldOrientationAtom } from '../../../models/FieldOrientation';
+import AmpIcon from '../Amp';
 
 
 export const HasNoteActions = ({ trap = false }: { trap?: boolean }) => {
@@ -34,7 +35,9 @@ export const HasNoteActions = ({ trap = false }: { trap?: boolean }) => {
                             position: MatchEventPosition.Amp,
                         });
                     }}
-                />
+                >
+                    <AmpIcon />
+                </GameAction>
             </FieldElement>
 
             <FieldElement
