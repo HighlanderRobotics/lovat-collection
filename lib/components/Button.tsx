@@ -9,6 +9,7 @@ type ButtonProps = {
     disabled?: boolean;
     density?: 'comfortable' | 'compact';
     children: React.ReactNode;
+    loadingChildren?: React.ReactNode;
     onPress?: () => void | Promise<void>;
     flex?: number;
     borderRadius?: number;
@@ -17,7 +18,7 @@ type ButtonProps = {
 const AnimatedTouchableOpacity = Animated.createAnimatedComponent(TouchableOpacity);
 const AnimatedText = Animated.createAnimatedComponent(Text);
 
-const Button: React.FC<ButtonProps> = ({ variant = 'secondary', filled = true, disabled = false, density = 'comfortable', children, onPress, flex, borderRadius }) => {
+const Button: React.FC<ButtonProps> = ({ variant = 'secondary', filled = true, disabled = false, density = 'comfortable', children, onPress, flex, borderRadius, loadingChildren }) => {
     let textColor: string = '';
     let padding: number[] = [];
     let radius: number = 0;
@@ -159,8 +160,8 @@ const Button: React.FC<ButtonProps> = ({ variant = 'secondary', filled = true, d
                 onPressIn={() => setPressed(true)}
                 onPressOut={() => setPressed(false)}
             >
-                {loading && <ActivityIndicator color={textColor} />}
-                <AnimatedText style={textStyle}>{children}</AnimatedText>
+                {loading && <ActivityIndicator color={filled ? textColor : backgroundColors.default} />}
+                <AnimatedText style={textStyle}>{loading ? ( loadingChildren ?? children ) : children}</AnimatedText>
             </AnimatedTouchableOpacity>
         </>
     );
