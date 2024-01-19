@@ -59,6 +59,7 @@ const Details = () => {
                                     await uploadReport(match!.scoutReport);
                                     setMatchUploaded(match!.scoutReport.uuid);
                                 }}
+                                loadingChildren="Uploading"
                             >
                                 Upload
                             </Button>
