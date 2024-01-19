@@ -3,6 +3,7 @@ import { colors } from "../colors";
 import BodyMedium from "./text/BodyMedium";
 import { Key } from "react";
 import Button from "./Button";
+import * as Haptics from 'expo-haptics';
 
 type UnkeyedButtonGroupButton<T> = {
     label: string;
@@ -46,7 +47,10 @@ export function ButtonGroup<T = string>(props: ButtonGroupProps<T>) {
                         flex={1}
                         borderRadius={0}
                         variant={isSelected ? 'primary' : 'secondary'}
-                        onPress={() => onChange(button.value)}
+                        onPress={() => {
+                            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                            onChange(button.value)
+                        }}
                     >
                         {button.label}
                     </Button>
