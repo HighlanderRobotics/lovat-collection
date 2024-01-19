@@ -5,6 +5,7 @@ import BodyMedium from './text/BodyMedium';
 
 type ButtonProps = {
     variant?: 'primary' | 'secondary' | 'danger';
+    filled?: boolean;
     disabled?: boolean;
     density?: 'comfortable' | 'compact';
     children: React.ReactNode;
@@ -16,7 +17,7 @@ type ButtonProps = {
 const AnimatedTouchableOpacity = Animated.createAnimatedComponent(TouchableOpacity);
 const AnimatedText = Animated.createAnimatedComponent(Text);
 
-const Button: React.FC<ButtonProps> = ({ variant = 'secondary', disabled = false, density = 'comfortable', children, onPress, flex, borderRadius }) => {
+const Button: React.FC<ButtonProps> = ({ variant = 'secondary', filled = true, disabled = false, density = 'comfortable', children, onPress, flex, borderRadius }) => {
     let textColor: string = '';
     let padding: number[] = [];
     let radius: number = 0;
@@ -51,7 +52,11 @@ const Button: React.FC<ButtonProps> = ({ variant = 'secondary', disabled = false
 
     const backgroundColors = {
         primary: colors.victoryPurple,
-        secondary: colors.gray,
+        secondary: filled ? colors.gray : {
+            ...colors.onBackground,
+            faded: colors.gray.default,
+            hover: colors.gray.hover,
+        },
         danger: colors.danger,
     }[variant];
 
@@ -98,7 +103,7 @@ const Button: React.FC<ButtonProps> = ({ variant = 'secondary', disabled = false
     });
 
     const buttonStyle = {
-        backgroundColor: backgroundColorInterpolation,
+        backgroundColor: filled ? backgroundColorInterpolation : 'transparent',
         paddingVertical: padding[0],
         paddingHorizontal: padding[1],
         flex,
@@ -106,7 +111,7 @@ const Button: React.FC<ButtonProps> = ({ variant = 'secondary', disabled = false
     };
 
     const textStyle = {
-        color: textColorInterpolation,
+        color: filled ? textColorInterpolation : backgroundColorInterpolation,
         fontFamily: 'Heebo_500Medium',
         fontSize: density === 'comfortable' ? 16 : 14,
         fontWeight: "500",

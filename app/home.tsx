@@ -115,16 +115,16 @@ export default function Home() {
                     <MatchSelection matchSelectionMode={matchSelectionMode} onMetaChanged={setMeta} />
 
                     <View style={{ gap: 10 }}>
-                        <Button variant="secondary" onPress={toggleMatchSelectionMode}>
-                            {matchSelectionMode === MatchSelectionMode.Automatic
-                                ? "Enter details manually"
-                                : "Use scouter schedule"}
-                        </Button>
                         <Button variant="primary" disabled={!meta} onPress={() => {
                             if (!meta) return;
 
                             scoutMatch();
                         }}>Scout this match</Button>
+                        <Button variant="primary" filled={false} onPress={toggleMatchSelectionMode}>
+                            {matchSelectionMode === MatchSelectionMode.Automatic
+                                ? "Enter details manually"
+                                : "Use scouter schedule"}
+                        </Button>
                     </View>
                 </View>
             </SafeAreaView>
