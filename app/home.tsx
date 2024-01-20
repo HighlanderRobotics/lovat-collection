@@ -169,9 +169,15 @@ const AutomaticMatchSelection = ({ onChanged }: { onChanged: (meta: ScoutReportM
     const tournaments = useAtomValue(tournamentsAtom);
     const history = useAtomValue(historyAtom);
 
+    const matchesWithScouter = useMemo(() => {
+        if (!scouterSchedule) return [];
+
+        return scouterSchedule.data.data.filter(match => scouter?.uuid in match.scouters);
+    }, [scouterSchedule, scouter]);
+
     const nextMatch = useMemo(() => {
         console.log({history})
-        if (!history || history.length === 0) return null;
+        if (!history || history.length === 0) return matchesWithScouter[0] ?? null;
         if (!scouterSchedule) return null;
 
         const matches = scouterSchedule.data.data.filter(match => scouter?.uuid in match.scouters);
@@ -204,14 +210,8 @@ const AutomaticMatchSelection = ({ onChanged }: { onChanged: (meta: ScoutReportM
 
         const latestMatchOrdinalNumber = matches.findIndex(match => JSON.stringify(match.matchIdentity) === JSON.stringify(latestMatch.matchIdentity));
 
-        return matches[latestMatchOrdinalNumber + 1] ?? matches[0];
+        return matches[latestMatchOrdinalNumber + 1] ?? matchesWithScouter[0];
     }, [scouterSchedule, scouter, history]);
-
-    const matchesWithScouter = useMemo(() => {
-        if (!scouterSchedule) return [];
-
-        return scouterSchedule.data.data.filter(match => scouter?.uuid in match.scouters);
-    }, [scouterSchedule, scouter]);
 
     const matchKeyOf = (match: MatchIdentity) => `${match.tournamentKey}_${matchTypes.find(t => t.type === match.matchType)?.shortName.toLowerCase()}${match.matchNumber}`;
 
@@ -256,7 +256,7 @@ const AutomaticMatchSelection = ({ onChanged }: { onChanged: (meta: ScoutReportM
             )}
 
             <View style={{ height: 200, width: "100%", justifyContent: "center", alignItems: "center" }}>
-                {(matchesWithScouter.length && selectedMatch != null) ? <Picker
+                {(matchesWithScouter.length >= 1 && selectedMatch != null) ? <Picker
                     style={{ width: "100%", height: "100%", backgroundColor: "transparent" }}
                     selectedValue={selectedMatch && matchKeyOf(selectedMatch.matchIdentity)}
                     pickerData={matchesWithScouter.map(match => ({
