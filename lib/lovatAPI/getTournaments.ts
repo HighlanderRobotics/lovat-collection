@@ -13,10 +13,11 @@ export const getTournaments = async () => {
     }
 
     const json = await response.json();
+    const tournaments: Tournament[] = json["tournaments"];
 
-    cacheTournaments(json);
+    cacheTournaments(tournaments);
 
-    return json as Tournament[];
+    return tournaments;
 }
 
 const cacheTournaments = async (tournaments: Tournament[]) => {
@@ -74,7 +75,7 @@ export const raceTournamentsCached = async () => {
 
     const output = await Promise.any([cached(), server()]);
 
-    if (output === null) {
+    if (!output || output.data === undefined || output.data === null) {
         return await server();
     }
 

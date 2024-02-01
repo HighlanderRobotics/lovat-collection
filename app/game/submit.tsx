@@ -74,7 +74,7 @@ export default function Submit() {
             />
             <SafeAreaView edges={['bottom', 'left', 'right']} style={{ flex: 1, gap: 7 }}>
                 <View style={{ flex: 1, paddingVertical: 16 }}>
-                    <ScoutReportCode scoutReport={scoutReport!} />
+                    {scoutReport && <ScoutReportCode scoutReport={scoutReport!} />}
 
                     <View style={{ paddingHorizontal: 26, flex: 1 }}>
                         <UploadIndicator state={uploadState} />
@@ -85,7 +85,7 @@ export default function Submit() {
                             }}
                         >
                             <Suspense fallback={<Button variant="primary" disabled>Done</Button>}>
-                                <DoneButton scoutReport={scoutReport!} uploadState={uploadState} meta={reportState!.meta} />
+                                {scoutReport && <DoneButton scoutReport={scoutReport!} uploadState={uploadState} meta={reportState!.meta} />}
                             </Suspense>
                         </View>
                     </View>

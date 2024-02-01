@@ -12,6 +12,7 @@ type ReportChunk = {
     index: number;
     total: number;
     data: string;
+    uuid: string;
 }
 
 function splitScoutReportIntoCodes(scoutReport: ScoutReport): ReportChunk[] {
@@ -23,6 +24,7 @@ function splitScoutReportIntoCodes(scoutReport: ScoutReport): ReportChunk[] {
             index: i,
             total: Math.ceil(json.length / maxCodeLength),
             data: json.slice(i, i + maxCodeLength),
+            uuid: scoutReport.uuid,
         });
     }
 
