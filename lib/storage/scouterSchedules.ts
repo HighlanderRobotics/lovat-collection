@@ -135,12 +135,17 @@ export const getVerionsColor = (hash: string, saturation: number, value: number)
 }
 
 export const scouterScheduleAtom = atomWithDefault(async (get) => {
-    const tournament = await get(tournamentAtom);
+    try {
+        const tournament = await get(tournamentAtom);
 
-    if (!tournament) {
-        return null;
+        if (!tournament) {
+            return null;
+        }
+
+        return await getCurrentScouterScheduleCached();
+    } catch (e) {
+        console.error(e);
+        return undefined;
     }
-
-    return await getCurrentScouterScheduleCached();
 });
 
