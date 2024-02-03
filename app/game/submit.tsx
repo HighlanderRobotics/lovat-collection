@@ -1,34 +1,29 @@
-import { ActivityIndicator, LayoutAnimation, ScrollView, View } from "react-native";
+import { ActivityIndicator, LayoutAnimation, View } from "react-native";
 import { NavBar } from "../../lib/components/NavBar";
-import { IconButton } from "../../lib/components/IconButton";
 import { colors } from "../../lib/colors";
 import { SafeAreaView } from "react-native-safe-area-context";
-import TitleMedium from "../../lib/components/text/TitleMedium";
 import BodyMedium from "../../lib/components/text/BodyMedium";
 import Button from "../../lib/components/Button";
-import { useAtom, useAtomValue, useSetAtom } from "jotai";
+import { useAtomValue, useSetAtom } from "jotai";
 import { reportStateAtom } from "../../lib/collection/reportStateAtom";
 import { MatchIdentityLocalizationFormat, localizeMatchIdentity } from "../../lib/models/match";
 import { Suspense, useEffect, useState } from "react";
 import { ScoutReport } from "../../lib/collection/ScoutReport";
 import { exportScoutReport } from "../../lib/collection/ReportState";
-import QRCode from 'qrcode';
-import { SvgXml } from "react-native-svg";
 import { router } from "expo-router";
 import { uploadReport } from "../../lib/lovatAPI/uploadReport";
 import { Icon } from "../../lib/components/Icon";
-import { historyAtom, useAddMatchToHistory } from "../../lib/storage/historyAtom";
+import { useAddMatchToHistory } from "../../lib/storage/historyAtom";
 import { ScoutReportMeta } from "../../lib/models/ScoutReportMeta";
-import { ResizableQRCode, ScoutReportCode } from "../../lib/collection/ui/ScoutReportCode";
-import { StatusBar } from "expo-status-bar";
+import { ScoutReportCode } from "../../lib/collection/ui/ScoutReportCode";
 
 export default function Submit() {
-    const [reportState, setReportState] = useAtom(reportStateAtom);
+    const reportState = useAtomValue(reportStateAtom);
     const [scoutReport, setScoutReport] = useState<ScoutReport | null>(null);
 
     const [uploaded, setUploaded] = useState(false);
     const [uploading, setUploading] = useState(false);
-    const [uploadError, setUploadError] = useState(false);
+    const [uploadError, setUploadError] = useState<Error | null>(null);
 
     const [uploadState, setUploadState] = useState(UploadState.None);
 
@@ -37,6 +32,8 @@ export default function Submit() {
             setUploadState(UploadState.Uploading);
         } else if (uploaded) {
             setUploadState(UploadState.Uploaded);
+        } else if (uploadError?.message === 'Scout report already uploaded') {
+            setUploadState(UploadState.AlreadyUploaded);
         } else if (uploadError) {
             setUploadState(UploadState.Error);
         } else {
@@ -56,7 +53,7 @@ export default function Submit() {
                 .catch((e) => {
                     console.error(e);
                     setUploading(false);
-                    setUploadError(true);
+                    setUploadError(e);
                 })
         }
     }, [scoutReport]);
@@ -114,6 +111,7 @@ enum UploadState {
     None,
     Uploading,
     Uploaded,
+    AlreadyUploaded,
     Error,
 }
 
@@ -125,6 +123,8 @@ const UploadIndicatorInner = ({ state }: { state: UploadState }) => {
             return <BodyMedium>Uploading</BodyMedium>;
         case UploadState.Uploaded:
             return <BodyMedium>Uploaded</BodyMedium>;
+        case UploadState.AlreadyUploaded:
+            return <BodyMedium>Already uploaded</BodyMedium>;
         case UploadState.Error:
             return <BodyMedium color={colors.danger.default}>Upload failed</BodyMedium>;
     }
@@ -188,9 +188,8 @@ const UploadIndicator = ({ state }: { state: UploadState }) => {
                         alignItems: 'center',
                     }}
                 >
-                    {effectiveState === UploadState.None && <ActivityIndicator size="small" color={colors.onBackground.default} />}
-                    {effectiveState === UploadState.Uploading && <ActivityIndicator size="small" color={colors.onBackground.default} />}
-                    {effectiveState === UploadState.Uploaded && <Icon name="check" color="#44ca6c" size={16} />}
+                    {effectiveState === UploadState.None || effectiveState === UploadState.Uploading && <ActivityIndicator size="small" color={colors.onBackground.default} />}
+                    {effectiveState === UploadState.Uploaded || effectiveState == UploadState.AlreadyUploaded && <Icon name="check" color="#44ca6c" size={16} />}
                     {effectiveState === UploadState.Error && <Icon name="error" color={colors.danger.default} size={16} />}
                 </View>
                 <UploadIndicatorInner state={effectiveState} />
