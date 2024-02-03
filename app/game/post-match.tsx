@@ -158,13 +158,25 @@ export default function PostMatch() {
                         />
                     </View>
 
-                    <Button
-                        onPress={() => {
-                            router.push('/game/submit');
-                        }}
-                    >
-                        Submit
-                    </Button>
+                    <View style={{ gap: 10 }}>
+                        <Button
+                            variant="primary"
+                            onPress={() => {
+                                router.push('/game/submit');
+                            }}
+                        >
+                            Submit
+                        </Button>
+                        <Button
+                            variant="secondary"
+                            onPress={() => {
+                                setReportState(null);
+                                router.replace('/');
+                            }}
+                        >
+                            Discard match
+                        </Button>
+                    </View>
                 </SafeAreaView>
             </KeyboardAwareScrollView>
         </>
