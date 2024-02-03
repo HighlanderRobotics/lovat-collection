@@ -10,7 +10,15 @@ export const uploadReport = async (report: ScoutReport) => {
   console.log("Response", response);
 
   if (!response.ok) {
-    console.log(JSON.stringify(report), await response.text(), response.status);
-    throw new Error("Error uploading report");
+    let error;
+
+    try {
+      const json = await response.json();
+      error = new Error(json.displayError ?? "Error uploading report");
+    } catch (e) {
+      error = new Error("Error uploading report");
+    }
+
+    throw error;
   }
 };
