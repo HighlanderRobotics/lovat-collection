@@ -97,16 +97,3 @@ export const ScoutReportCode = ({ scoutReport }: { scoutReport: ScoutReport; }) 
         </>
     );
 };
-
-const BubbleIndicator = ({ index, currentIndex }: { index: number; currentIndex: number; }) => {
-    return (
-        <View
-            style={{
-                width: 8,
-                height: 8,
-                borderRadius: 4,
-                backgroundColor: index === currentIndex ? colors.victoryPurple.default : colors.gray.default,
-            }}
-        />
-    );
-}
