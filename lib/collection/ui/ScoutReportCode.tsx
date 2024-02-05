@@ -110,20 +110,3 @@ const BubbleIndicator = ({ index, currentIndex }: { index: number; currentIndex:
         />
     );
 }
-
-const BubbleIndicators = ({ total, currentIndex }: { total: number; currentIndex: number; }) => {
-    return (
-        <View
-            style={{
-                flexDirection: 'row',
-                justifyContent: 'center',
-                alignItems: 'center',
-                gap: 4,
-            }}
-        >
-            {Array.from({ length: total }).map((_, index) => (
-                <BubbleIndicator key={index} index={index} currentIndex={currentIndex} />
-            ))}
-        </View>
-    );
-}
