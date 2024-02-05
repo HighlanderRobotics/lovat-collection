@@ -155,6 +155,8 @@ const FloatingActions = ({ feedEnabled = false, pickupEnabled = false }: { feedE
     const isAmplified = useAtomValue(isAmplifiedAtom);
     const fieldOrientation = useAtomValue(fieldOrientationAtom);
 
+    const [defenseHighlighted, setDefenseHighlighted] = useState(false);
+
     const addEvent = useAddEvent();
 
     return (
@@ -216,7 +218,7 @@ const FloatingActions = ({ feedEnabled = false, pickupEnabled = false }: { feedE
                     accessibilityLabel="Defend"
                     style={{
                         flex: 1,
-                        backgroundColor: colors.secondaryContainer.default,
+                        backgroundColor: defenseHighlighted ? colors.danger.default : colors.secondaryContainer.default,
                         borderRadius: 7,
                         alignItems: 'center',
                         justifyContent: 'center',
@@ -227,6 +229,9 @@ const FloatingActions = ({ feedEnabled = false, pickupEnabled = false }: { feedE
                         addEvent({
                             type: MatchEventType.Defend,
                         });
+
+                        setDefenseHighlighted(true);
+                        setTimeout(() => setDefenseHighlighted(false), 200);
                     }}
                 >
                     <Icon name="shield" color={colors.onBackground.default} size={40} />
