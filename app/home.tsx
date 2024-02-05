@@ -8,7 +8,6 @@ import Heading1Small from "../lib/components/text/Heading1Small";
 import { LinearGradient } from "expo-linear-gradient";
 import { colors } from "../lib/colors";
 import BodyMedium from "../lib/components/text/BodyMedium";
-import { Icon } from "../lib/components/Icon";
 import { IconButton } from "../lib/components/IconButton";
 import { Suspense, useContext, useEffect, useMemo, useState } from "react";
 import { LoadServicesContext, ServicesContext } from "../lib/services";
@@ -26,16 +25,16 @@ import { reportStateAtom } from "../lib/collection/reportStateAtom";
 import { GamePhase, ReportState, RobotRole } from "../lib/collection/ReportState";
 import { HighNote } from "../lib/collection/HighNote";
 import { StageResult } from "../lib/collection/StageResult";
-import { router, useNavigation } from "expo-router";
+import { router } from "expo-router";
 import { DriverAbility } from "../lib/collection/DriverAbility";
 import { PickUp } from "../lib/collection/PickUp";
 import 'react-native-get-random-values';
 import { v4 } from "uuid";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ScouterScheduleMatch, getVerionsColor, scouterScheduleAtom } from "../lib/storage/scouterSchedules";
-import { loadable, unwrap } from "jotai/utils";
+import { unwrap } from "jotai/utils";
 import { Picker } from "react-native-wheel-pick";
-import { getTournaments, getTournamentsCached } from "../lib/lovatAPI/getTournaments";
+import { getTournamentsCached } from "../lib/lovatAPI/getTournaments";
 import { historyAtom } from "../lib/storage/historyAtom";
 
 enum MatchSelectionMode {

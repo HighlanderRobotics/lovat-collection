@@ -1,21 +1,18 @@
-import { Link, router } from 'expo-router';
+import { router } from 'expo-router';
 import { ActivityIndicator, ScrollView, View } from 'react-native';
 import BodyMedium from '../../lib/components/text/BodyMedium';
 import Button from '../../lib/components/Button';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import TitleMedium from '../../lib/components/text/TitleMedium';
 import { IconButton } from '../../lib/components/IconButton';
-import LabelSmall from '../../lib/components/text/LabelSmall';
 import { useAtom, useAtomValue } from 'jotai';
 import { FieldOrientation, fieldOrientationAtom } from '../../lib/models/FieldOrientation';
 import { ButtonGroup } from '../../lib/components/ButtonGroup';
 import { colors } from '../../lib/colors';
 import { FieldImage, fieldHeight, fieldWidth } from '../../lib/components/FieldImage';
 import Heading1Small from '../../lib/components/text/Heading1Small';
-import { Suspense, useEffect, useState } from 'react';
+import { Suspense } from 'react';
 import { NavBar } from '../../lib/components/NavBar';
-import { getTournament, tournamentAtom } from '../../lib/storage/getTournament';
-import { Icon } from '../../lib/components/Icon';
+import { tournamentAtom } from '../../lib/storage/getTournament';
 
 export default function Settings() {
     return (

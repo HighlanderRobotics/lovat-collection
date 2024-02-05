@@ -1,21 +1,17 @@
-import { ScrollView, View } from "react-native";
+import { View } from "react-native";
 import { NavBar } from "../../lib/components/NavBar";
-import { IconButton } from "../../lib/components/IconButton";
-import { router, useNavigation } from "expo-router";
-import { colors } from "../../lib/colors";
+import { router } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
-import TitleMedium from "../../lib/components/text/TitleMedium";
-import BodyMedium from "../../lib/components/text/BodyMedium";
 import Button from "../../lib/components/Button";
 import LabelSmall from "../../lib/components/text/LabelSmall";
 import { ButtonGroup, ButtonGroupDirection } from "../../lib/components/ButtonGroup";
 import { RobotRole } from "../../lib/collection/ReportState";
 import { reportStateAtom } from "../../lib/collection/reportStateAtom";
 import { useAtom } from "jotai";
-import { DriverAbility, DriverAbilityDescription, driverAbilityDescriptions } from "../../lib/collection/DriverAbility";
+import { DriverAbility, driverAbilityDescriptions } from "../../lib/collection/DriverAbility";
 import { StageResult, stageResultDescriptions } from "../../lib/collection/StageResult";
 import { HighNote, highNoteDescriptions } from "../../lib/collection/HighNote";
-import { PickUp, PickUpDescription, pickUpDescriptions } from "../../lib/collection/PickUp";
+import { PickUp, pickUpDescriptions } from "../../lib/collection/PickUp";
 import TextField from "../../lib/components/TextField";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 

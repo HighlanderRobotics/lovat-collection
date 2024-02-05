@@ -1,4 +1,4 @@
-import { Slot, SplashScreen, Stack } from "expo-router";
+import { Slot, SplashScreen } from "expo-router";
 import { NativeModules, View } from "react-native";
 import { colors } from "../lib/colors";
 
@@ -12,12 +12,11 @@ import {
 
 import { useCallback, useEffect, useState } from "react";
 import { LoadServicesContext, ServiceValues, ServicesContext, services } from "../lib/services";
-import { DataSource, LocalCache } from "../lib/localCache";
+import { LocalCache } from "../lib/localCache";
 
 import TimeAgo from "javascript-time-ago";
 import en from 'javascript-time-ago/locale/en.json'
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useAtom, useSetAtom } from "jotai";
+import { useSetAtom } from "jotai";
 import { ScouterSchedule, scouterScheduleAtom } from "../lib/storage/scouterSchedules";
 
 const {UIManager} = NativeModules;

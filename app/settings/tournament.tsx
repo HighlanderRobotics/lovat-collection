@@ -1,4 +1,4 @@
-import { atom, useAtom, useAtomValue } from "jotai";
+import { atom, useAtomValue } from "jotai";
 import { raceTournamentsCached } from "../../lib/lovatAPI/getTournaments";
 import { tournamentAtom, useSetTournament } from "../../lib/storage/getTournament";
 import { Suspense, useMemo, useState } from "react";
@@ -6,7 +6,6 @@ import { ActivityIndicator } from "react-native";
 import Heading1Small from "../../lib/components/text/Heading1Small";
 import { View } from "react-native";
 import TextField from "../../lib/components/TextField";
-import Button from "../../lib/components/Button";
 import { router } from "expo-router";
 import { colors } from "../../lib/colors";
 import { IconButton } from "../../lib/components/IconButton";

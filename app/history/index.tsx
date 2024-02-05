@@ -1,4 +1,4 @@
-import { ActivityIndicator, Pressable, ScrollView, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { NavBar } from "../../lib/components/NavBar";
 import { IconButton } from "../../lib/components/IconButton";
@@ -7,8 +7,6 @@ import { colors } from "../../lib/colors";
 import { useAtomValue } from "jotai";
 import { HistoryEntry, historyAtom } from "../../lib/storage/historyAtom";
 import { Suspense, useMemo, useState } from "react";
-import LabelSmall from "../../lib/components/text/LabelSmall";
-import TitleMedium from "../../lib/components/text/TitleMedium";
 import { MatchIdentityLocalizationFormat, localizeMatchIdentity } from "../../lib/models/match";
 import Heading1Small from "../../lib/components/text/Heading1Small";
 import { Icon } from "../../lib/components/Icon";

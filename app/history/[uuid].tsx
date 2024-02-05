@@ -7,7 +7,7 @@ import { ActivityIndicator, View } from "react-native";
 import { useAtomValue } from "jotai";
 import { historyAtom, useSetMatchUploaded } from "../../lib/storage/historyAtom";
 import { MatchIdentityLocalizationFormat, localizeMatchIdentity } from "../../lib/models/match";
-import { ResizableQRCode, ScoutReportCode } from "../../lib/collection/ui/ScoutReportCode";
+import { ScoutReportCode } from "../../lib/collection/ui/ScoutReportCode";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Button from "../../lib/components/Button";
 import { uploadReport } from "../../lib/lovatAPI/uploadReport";

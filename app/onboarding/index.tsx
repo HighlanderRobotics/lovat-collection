@@ -1,4 +1,4 @@
-import { Link, router } from 'expo-router';
+import { router } from 'expo-router';
 import { View } from 'react-native';
 import BodyMedium from '../../lib/components/text/BodyMedium';
 import Button from '../../lib/components/Button';
