@@ -1,6 +1,5 @@
-import { Pressable, View } from "react-native";
+import { View } from "react-native";
 import { colors } from "../colors";
-import BodyMedium from "./text/BodyMedium";
 import { Key } from "react";
 import Button from "./Button";
 import * as Haptics from 'expo-haptics';

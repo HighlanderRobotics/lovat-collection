@@ -8,7 +8,7 @@ import { GameAction } from '../GameAction';
 import Svg, { Path, SvgProps } from "react-native-svg"
 import { View } from 'react-native';
 import { Icon } from '../../../components/Icon';
-import { useAtom, useAtomValue } from 'jotai';
+import { useAtomValue } from 'jotai';
 import { AllianceColor } from '../../../models/AllianceColor';
 import { FieldOrientation, fieldOrientationAtom } from '../../../models/FieldOrientation';
 import AmpIcon from '../Amp';

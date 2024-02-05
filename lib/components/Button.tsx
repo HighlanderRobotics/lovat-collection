@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { TouchableOpacity, Text, ViewStyle, TextStyle, Animated, ActivityIndicator, View } from 'react-native';
+import { TouchableOpacity, Text, Animated, ActivityIndicator, View } from 'react-native';
 import { colors } from '../colors';
 import BodyMedium from './text/BodyMedium';
 

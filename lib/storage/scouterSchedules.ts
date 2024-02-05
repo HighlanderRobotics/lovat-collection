@@ -1,10 +1,9 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { get } from "../lovatAPI/lovatAPI";
-import { AllianceColor, allianceColors } from "../models/AllianceColor";
-import { MatchIdentity, MatchType, matchTypes } from "../models/match";
+import { AllianceColor } from "../models/AllianceColor";
+import { MatchIdentity, matchTypes } from "../models/match";
 import { getTournament, tournamentAtom } from "./getTournament";
 import { DataSource, LocalCache } from "../localCache";
-import { useAtomValue, atom } from "jotai";
 import { atomWithDefault } from "jotai/utils";
 
 export type ScouterSchedule = {

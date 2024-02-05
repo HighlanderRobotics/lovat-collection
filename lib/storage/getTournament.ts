@@ -1,6 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { raceTournamentsCached } from "../lovatAPI/getTournaments";
-import { atom, useAtom, useSetAtom } from "jotai";
+import { useSetAtom } from "jotai";
 import { atomWithDefault } from "jotai/utils";
 
 export async function getTournament() {

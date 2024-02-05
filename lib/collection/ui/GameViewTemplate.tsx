@@ -1,4 +1,4 @@
-import { useAtom, useAtomValue } from 'jotai';
+import { useAtom } from 'jotai';
 import { reportStateAtom, useUndoEvent } from '../reportStateAtom';
 import { View } from 'react-native';
 import { colors } from '../../colors';
@@ -11,11 +11,6 @@ import { IconButton } from '../../components/IconButton';
 import * as Haptics from 'expo-haptics';
 import { GameTimer } from './GameTimer';
 import { router } from 'expo-router';
-import { MatchEventType, matchEventTypeDescriptions, MatchEventTypeDescription } from '../MatchEventType';
-import { Animated } from 'react-native';
-import { Icon } from '../../components/Icon';
-import { useEffect, useRef, useState } from 'react';
-import { MatchEvent } from '../MatchEvent';
 import { StatusBar } from 'expo-status-bar';
 
 export const GameViewTemplate = (props: {

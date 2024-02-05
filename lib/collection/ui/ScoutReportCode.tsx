@@ -1,4 +1,4 @@
-import { Text, View } from "react-native";
+import { View } from "react-native";
 import { colors } from "../../colors";
 import { useEffect, useState } from "react";
 import { ScoutReport } from "../ScoutReport";

@@ -1,5 +1,5 @@
 import * as React from "react"
-import Svg, { Mask, Path, G, SvgProps } from "react-native-svg"
+import Svg, { Path, SvgProps } from "react-native-svg"
 
 function AmpIcon(props: SvgProps) {
   return (

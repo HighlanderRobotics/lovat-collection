@@ -1,4 +1,4 @@
-import { KeyboardTypeOptions, Text, View } from 'react-native'
+import { KeyboardTypeOptions } from 'react-native'
 import { colors } from '../colors'
 import { TextInput } from 'react-native';
 import React, { useState } from 'react';

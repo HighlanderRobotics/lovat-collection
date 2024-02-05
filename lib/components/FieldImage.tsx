@@ -1,6 +1,5 @@
 import { useAtom } from "jotai";
-import React, { useEffect, useState } from "react";
-import { LayoutAnimation, View } from "react-native";
+import React from "react";
 import Svg, { SvgProps, Path, Circle, Rect } from "react-native-svg"
 import { FieldOrientation, fieldOrientationAtom } from "../models/FieldOrientation";
 

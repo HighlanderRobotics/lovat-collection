@@ -12,7 +12,6 @@ import { ExitWingAction } from './actions/ExitWingAction';
 import * as Haptics from 'expo-haptics';
 import { AutoCollectPieceActions } from './actions/AutoCollectPieceActions';
 import { TouchableOpacity, View } from 'react-native';
-import { FieldElement } from './FieldElement';
 import { colors } from '../../colors';
 import { Icon } from '../../components/Icon';
 import { AllianceColor } from '../../models/AllianceColor';
