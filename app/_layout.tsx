@@ -1,4 +1,4 @@
-import { Slot, SplashScreen } from "expo-router";
+import { Slot, SplashScreen, Stack } from "expo-router";
 import { NativeModules, View } from "react-native";
 import { colors } from "../lib/colors";
 
@@ -94,7 +94,12 @@ export default function Layout() {
                 }}
             >
                 <View style={{ backgroundColor: colors.background.default, flex: 1 }} onLayout={onLayoutRootView}>
-                    <Slot />
+                    <Stack screenOptions={{
+                        headerShown: false,
+                        contentStyle: {
+                            backgroundColor: colors.background.default,
+                        }
+                    }} />
                 </View>
             </LoadServicesContext.Provider>
         </ServicesContext.Provider>
