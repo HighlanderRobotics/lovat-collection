@@ -1,4 +1,4 @@
-import { router } from 'expo-router';
+
 import { ActivityIndicator, KeyboardAvoidingView, ScrollView, TouchableOpacity, View } from 'react-native';
 import BodyMedium from '../../lib/components/text/BodyMedium';
 import Button from '../../lib/components/Button';
@@ -11,6 +11,8 @@ import { colors } from '../../lib/colors';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { addScouter } from '../../lib/lovatAPI/addScouter';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useNavigation } from 'expo-router';
+import { CommonActions } from '@react-navigation/native'
 
 export default function Name() {
     const [loading, setLoading] = useState(true);
@@ -18,6 +20,8 @@ export default function Name() {
     const [scouters, setScouters] = useState<Scouter[] | null>(null);
 
     const [fieldText, setFieldText] = useState('');
+
+    const navigation = useNavigation();
 
     useEffect(() => {
         const fetchScouters = async () => {
@@ -41,7 +45,9 @@ export default function Name() {
         try {
             await AsyncStorage.setItem("scouter", JSON.stringify(scouter));
             await AsyncStorage.setItem("onboarding-complete", "true");
-            router.push("/home");
+            navigation.dispatch(CommonActions.reset({
+                routes: [{key: "index", name: "index"}]
+            }))
         } catch (e: any) {
             setError(e.message);
         } finally {
