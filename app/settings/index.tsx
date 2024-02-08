@@ -118,9 +118,9 @@ const TournamentSelector = () => {
             >
                 <View
                     style={{
-                        flexDirection: 'row',
+                        flexDirection: 'column',
                         justifyContent: 'space-between',
-                        alignItems: 'center',
+                        alignItems: 'stretch',
                         gap: 7,
                     }}
                 >
