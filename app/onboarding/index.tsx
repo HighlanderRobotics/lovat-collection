@@ -1,4 +1,4 @@
-import { router } from 'expo-router';
+import { Stack, router } from 'expo-router';
 import { View } from 'react-native';
 import BodyMedium from '../../lib/components/text/BodyMedium';
 import Button from '../../lib/components/Button';
@@ -8,6 +8,12 @@ import TitleMedium from '../../lib/components/text/TitleMedium';
 export default function OnboardingWelcome() {
     return (
         <SafeAreaView style={{ flex: 1 }}>
+            <Stack.Screen
+                options={{
+                    animation: "fade",
+                    animationDuration: 1000,
+                }}
+            />
             <View style={{ flex: 1, paddingVertical: 16, paddingHorizontal: 26 }}>
                 <TitleMedium>Welcome to Lovat&nbsp;Collection</TitleMedium>
                 <BodyMedium>Let's get you ready to scout.</BodyMedium>

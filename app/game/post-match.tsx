@@ -19,6 +19,11 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 export default function PostMatch() {
     const [reportState, setReportState] = useAtom(reportStateAtom);
 
+    if (!reportState) {
+        router.replace('/');
+        return null;
+    }
+
     return (
         <>
             <NavBar

@@ -2,7 +2,7 @@ import { ActivityIndicator, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { NavBar } from "../../lib/components/NavBar";
 import { IconButton } from "../../lib/components/IconButton";
-import { Link, router } from "expo-router";
+import { Link, Stack, router } from "expo-router";
 import { colors } from "../../lib/colors";
 import { useAtomValue } from "jotai";
 import { HistoryEntry, historyAtom } from "../../lib/storage/historyAtom";
@@ -19,6 +19,9 @@ export default function History() {
 
     return (
         <>
+            <Stack.Screen options={{
+                animation: 'slide_from_left',
+            }} />
             <NavBar
                 title="History"
                 left={

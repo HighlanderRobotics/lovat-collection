@@ -10,7 +10,7 @@ import { AllianceColor, getAllianceColorDescription } from '../../models/Allianc
 import { IconButton } from '../../components/IconButton';
 import * as Haptics from 'expo-haptics';
 import { GameTimer } from './GameTimer';
-import { router } from 'expo-router';
+import { Link, router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 
 export const GameViewTemplate = (props: {
@@ -97,17 +97,17 @@ export const GameViewTemplate = (props: {
                             });
                         }} />}
 
-                    {reportState?.startTimestamp && <IconButton
-                        label="End match"
-                        icon="stop"
-                        color={colors.onBackground.default}
-                        size={30}
-                        onPress={() => {
-                            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-
-                            router.push('/game/post-match');
-                        }}
-                    />}
+                    {reportState?.startTimestamp && 
+                        <IconButton
+                            label="End match"
+                            icon="stop"
+                            color={colors.onBackground.default}
+                            size={30}
+                            onPress={() => {
+                                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                                router.replace('/game/post-match');
+                            }}
+                        />}
                 </SafeAreaView>
             </View>
             <SafeAreaView style={{ flex: 1, alignItems: 'center', position: 'relative', }}>

@@ -25,7 +25,7 @@ import { reportStateAtom } from "../lib/collection/reportStateAtom";
 import { GamePhase, ReportState, RobotRole } from "../lib/collection/ReportState";
 import { HighNote } from "../lib/collection/HighNote";
 import { StageResult } from "../lib/collection/StageResult";
-import { router } from "expo-router";
+import { Stack, router } from "expo-router";
 import { DriverAbility } from "../lib/collection/DriverAbility";
 import { PickUp } from "../lib/collection/PickUp";
 import 'react-native-get-random-values';
@@ -69,7 +69,7 @@ export default function Home() {
     useEffect(() => {
         if (!reportState) return;
 
-        router.push("/game");
+        router.replace("/game");
     }, [reportState])
 
     useEffect(() => {
@@ -83,6 +83,11 @@ export default function Home() {
 
     return (
         <>
+            <Stack.Screen
+                options={{
+                    animation: "fade",
+                }}
+            />
             <ScheduleColorGradient />
 
             <SafeAreaView style={{ flex: 1 }}>
