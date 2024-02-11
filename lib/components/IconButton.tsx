@@ -14,15 +14,18 @@ type IconButtonProps = {
 
 export const IconButton: React.FC<IconButtonProps> = ({ icon, label, color, size, disabled, onPress, ref }) => {
     return (
-        <Pressable
-            onPress={onPress}
-            accessibilityLabel={label}
-            disabled={disabled}
-            ref={ref}
-        >
-            <View style={{ opacity: disabled ? 0.5 : 1 }}>
-                <Icon name={icon} color={color} size={size} />
-            </View>
-        </Pressable>
+        <View style={{ margin: -10 }}>
+            <Pressable
+                onPress={onPress}
+                accessibilityLabel={label}
+                disabled={disabled}
+                ref={ref}
+                style={{ padding: 10 }}
+            >
+                <View style={{ opacity: disabled ? 0.5 : 1 }}>
+                    <Icon name={icon} color={color} size={size} />
+                </View>
+            </Pressable>
+        </View>
     );
 };
