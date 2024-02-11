@@ -1,6 +1,6 @@
 import { View } from "react-native";
 import { NavBar } from "../../lib/components/NavBar";
-import { router } from "expo-router";
+import { router, useNavigation } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Button from "../../lib/components/Button";
 import LabelSmall from "../../lib/components/text/LabelSmall";
@@ -14,15 +14,21 @@ import { HighNote, highNoteDescriptions } from "../../lib/collection/HighNote";
 import { PickUp, pickUpDescriptions } from "../../lib/collection/PickUp";
 import TextField from "../../lib/components/TextField";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import { CommonActions } from '@react-navigation/native'
 
 
 export default function PostMatch() {
     const [reportState, setReportState] = useAtom(reportStateAtom);
 
+    const navigation = useNavigation();
+
     if (!reportState) {
-        router.replace('/');
+        navigation.dispatch(CommonActions.reset({
+            routes: [{key: "index", name: "index"}]
+        }))
         return null;
     }
+
 
     return (
         <>
@@ -172,7 +178,9 @@ export default function PostMatch() {
                             variant="secondary"
                             onPress={() => {
                                 setReportState(null);
-                                router.replace('/');
+                                navigation.dispatch(CommonActions.reset({
+                                    routes: [{key: "index", name: "index"}]
+                                }))
                             }}
                         >
                             Discard match

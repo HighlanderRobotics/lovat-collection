@@ -18,6 +18,7 @@ export const GameViewTemplate = (props: {
     topLeftReplacement?: React.ReactNode;
     gamePhaseMessage: string;
     startEnabled?: boolean;
+    onEnd: () => void;
 }) => {
     const [reportState, setReportState] = useAtom(reportStateAtom);
     const { gamePhaseMessage, field, startEnabled } = props;
@@ -103,10 +104,7 @@ export const GameViewTemplate = (props: {
                             icon="stop"
                             color={colors.onBackground.default}
                             size={30}
-                            onPress={() => {
-                                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                                router.replace('/game/post-match');
-                            }}
+                            onPress={props.onEnd}
                         />}
                 </SafeAreaView>
             </View>

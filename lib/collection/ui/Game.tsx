@@ -44,6 +44,9 @@ export function Game() {
                 });
             }, 10 * 1000));
         } else {
+            if (amplificationTimeout) {
+                clearTimeout(amplificationTimeout);
+            }
             setAmplificationTimeout(null);
         }
     }, [isAmplified])
@@ -54,14 +57,31 @@ export function Game() {
                 Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
                 setPhase(GamePhase.Teleop);
             }, 18 * 1000));
+
+            return () => {
+                if (autoTimeout) {
+                    clearTimeout(autoTimeout);
+                }
+            }
         } else {
+            if (autoTimeout) {
+                clearTimeout(autoTimeout);
+            }
             setAutoTimeout(null);
         }
     }, [reportState?.gamePhase, reportState?.startTimestamp]);
 
+    const onEnd = () => {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+        if (autoTimeout) clearTimeout(autoTimeout);
+        if (amplificationTimeout) clearTimeout(amplificationTimeout);
+        router.replace('/game/post-match');
+    }
+
     if (!reportState?.startTimestamp) {
         return (
             <GameViewTemplate
+                onEnd={onEnd}
                 gamePhaseMessage="Pre-match"
                 field={<PreMatchActions />}
                 topLeftReplacement={<Checkbox
@@ -86,6 +106,7 @@ export function Game() {
             if (hasExited) {
                 return (
                     <GameViewTemplate
+                        onEnd={onEnd}
                         gamePhaseMessage="Autonomous"
                         field={<>
                             <HasNoteActions />
@@ -95,6 +116,7 @@ export function Game() {
             } else {
                 return (
                     <GameViewTemplate
+                        onEnd={onEnd}
                         gamePhaseMessage="Autonomous"
                         field={<>
                             <HasNoteActions />
@@ -107,6 +129,7 @@ export function Game() {
             if (hasExited) {
                 return (
                     <GameViewTemplate
+                        onEnd={onEnd}
                         gamePhaseMessage="Autonomous"
                         field={<AutoCollectPieceActions />}
                     />
@@ -114,6 +137,7 @@ export function Game() {
             } else {
                 return (
                     <GameViewTemplate
+                        onEnd={onEnd}
                         gamePhaseMessage="Autonomous"
                         field={<>
                             <ExitWingAction />
@@ -126,6 +150,7 @@ export function Game() {
         if (hasNote(reportState)) {
             return (
                 <GameViewTemplate
+                    onEnd={onEnd}
                     gamePhaseMessage="Teleop"
                     field={<>
                         <FloatingActions feedEnabled />
@@ -136,6 +161,7 @@ export function Game() {
         } else {
             return (
                 <GameViewTemplate
+                    onEnd={onEnd}
                     gamePhaseMessage="Teleop"
                     field={<FloatingActions pickupEnabled />}
                 />
@@ -145,6 +171,7 @@ export function Game() {
 
     return (
         <GameViewTemplate
+            onEnd={onEnd}
             gamePhaseMessage="Unknown phase"
             field={<></>} />
     );
