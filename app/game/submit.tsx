@@ -13,7 +13,7 @@ import { exportScoutReport } from "../../lib/collection/ReportState";
 import { router } from "expo-router";
 import { uploadReport } from "../../lib/lovatAPI/uploadReport";
 import { Icon } from "../../lib/components/Icon";
-import { useAddMatchToHistory } from "../../lib/storage/historyAtom";
+import { useUpsertMatchToHistory } from "../../lib/storage/historyAtom";
 import { ScoutReportMeta } from "../../lib/models/ScoutReportMeta";
 import { ScoutReportCode } from "../../lib/collection/ui/ScoutReportCode";
 
@@ -26,6 +26,8 @@ export default function Submit() {
     const [uploadError, setUploadError] = useState<Error | null>(null);
 
     const [uploadState, setUploadState] = useState(UploadState.None);
+
+    const upsertMatchToHistory = useUpsertMatchToHistory();
 
     useEffect(() => {
         if (uploading) {
@@ -49,11 +51,13 @@ export default function Submit() {
                 .then(() => {
                     setUploading(false);
                     setUploaded(true);
+                    upsertMatchToHistory(scoutReport, true, reportState!.meta);
                 })
                 .catch((e) => {
                     console.error(e);
                     setUploading(false);
                     setUploadError(e);
+                    upsertMatchToHistory(scoutReport, false, reportState!.meta);
                 })
         }
     }, [scoutReport]);
@@ -94,11 +98,11 @@ export default function Submit() {
 
 const DoneButton = ({ scoutReport, uploadState, meta }: { scoutReport: ScoutReport; uploadState: UploadState, meta: ScoutReportMeta }) => {
     const setReportState = useSetAtom(reportStateAtom);
-    const addMatchToHistory = useAddMatchToHistory();
+    const upsertMatchToHistory = useUpsertMatchToHistory();
 
     return (
         <Button variant="primary" onPress={() => {
-            addMatchToHistory(scoutReport, uploadState === UploadState.Uploaded, meta);
+            upsertMatchToHistory(scoutReport, uploadState === UploadState.Uploaded, meta);
             router.replace('/');
             setReportState(null);
         }}>

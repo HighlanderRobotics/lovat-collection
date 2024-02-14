@@ -12,9 +12,15 @@ export type HistoryEntry = {
 
 export const historyAtom = atomWithStorage<HistoryEntry[]>("history", [], storage);
 
-export const useAddMatchToHistory = () => {
+export const useUpsertMatchToHistory = () => {
     const [history, setHistory] = useAtom(historyAtom);
     return (scoutReport: ScoutReport, uploaded: boolean, meta: ScoutReportMeta) => {
+        if (history.some((entry) => entry.scoutReport.uuid === scoutReport.uuid)) {
+            const newHistory = history.filter((entry) => entry.scoutReport.uuid !== scoutReport.uuid);
+            setHistory([{ scoutReport, uploaded, meta }, ...newHistory]);
+            return;
+        }
+
         setHistory([{ scoutReport, uploaded, meta }, ...history]);
     };
 }
