@@ -31,7 +31,7 @@ import { PickUp } from "../lib/collection/PickUp";
 import 'react-native-get-random-values';
 import { v4 } from "uuid";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { ScouterScheduleMatch, getVerionsColor, scouterScheduleAtom } from "../lib/storage/scouterSchedules";
+import { ScouterScheduleMatch, getCurrentScouterScheduleCached, getScouterScheduleCached, getVerionsColor, scouterScheduleAtom } from "../lib/storage/scouterSchedules";
 import { unwrap } from "jotai/utils";
 import { Picker } from "react-native-wheel-pick";
 import { getTournamentsCached } from "../lib/lovatAPI/getTournaments";
@@ -157,24 +157,25 @@ const MatchSelection = ({ matchSelectionMode, onMetaChanged }:  MatchSelectionPr
     }
 }
 
-const scouterAtom = atom(async () => {
-    const scouter = await getScouter();
-    return scouter;
-});
-
-const tournamentsAtom = atom(async () => {
-    const tournaments = await getTournamentsCached();
-    return tournaments;
-});
-
 const AutomaticMatchSelection = ({ onChanged }: { onChanged: (meta: ScoutReportMeta | null) => void }) => {
-    const scouterSchedule = useAtomValue(scouterScheduleAtom);
-    const scouter = useAtomValue(scouterAtom);
-    const tournaments = useAtomValue(tournamentsAtom);
     const history = useAtomValue(historyAtom);
 
+    const services = useContext(ServicesContext);
+    const { scouterSchedule, tournaments } = services;
+
+    const [scouter, setScouter] = useState<Scouter | null>(null);
+
+    useEffect(() => {
+        const fetchScouter = async () => {
+            const scouter = await getScouter();
+            setScouter(scouter ?? null);
+        };
+
+        fetchScouter();
+    }, []);
+
     const matchesWithScouter = useMemo(() => {
-        if (!scouterSchedule) return [];
+        if (!scouterSchedule || !scouter) return [];
 
         return scouterSchedule.data.data.filter(match => scouter?.uuid in match.scouters);
     }, [scouterSchedule, scouter]);
@@ -184,7 +185,7 @@ const AutomaticMatchSelection = ({ onChanged }: { onChanged: (meta: ScoutReportM
         if (!history || history.length === 0) return matchesWithScouter[0] ?? null;
         if (!scouterSchedule) return null;
 
-        const matches = scouterSchedule.data.data.filter(match => scouter?.uuid in match.scouters);
+        const matches = scouterSchedule.data.data.filter(match => scouter && scouter?.uuid in match.scouters);
         const matchesWithHistory = matches.filter(match => history.some(report => report.meta.matchIdentity.matchNumber === match.matchIdentity.matchNumber && report.meta.matchIdentity.matchType === match.matchIdentity.matchType && report.meta.matchIdentity.tournamentKey === match.matchIdentity.tournamentKey));
         matchesWithHistory.sort((a, b) => {
             // Put qual matches first and elim matches last
@@ -228,7 +229,7 @@ const AutomaticMatchSelection = ({ onChanged }: { onChanged: (meta: ScoutReportM
     }, [matchesWithScouter, nextMatch]);
 
     const tournament = useMemo(() => {
-        if (!selectedMatch) return null;
+        if (!selectedMatch || !tournaments) return null;
 
         return tournaments.data.find((t) => t.key === selectedMatch.matchIdentity.tournamentKey);
     }, [selectedMatch, tournaments]);
@@ -246,6 +247,8 @@ const AutomaticMatchSelection = ({ onChanged }: { onChanged: (meta: ScoutReportM
             matchIdentity: selectedMatch.matchIdentity,
         });
     }, [selectedMatch]);
+
+    if (!scouter || !tournaments) return null;
 
     return (
         <View
