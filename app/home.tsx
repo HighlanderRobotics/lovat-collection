@@ -199,6 +199,8 @@ const AutomaticMatchSelection = ({ onChanged }: { onChanged: (meta: ScoutReportM
             return 0;
         });
 
+        if (matchesWithHistory.length === 0) return matchesWithScouter[0];
+
         const latestMatch = matchesWithHistory[matchesWithHistory.length - 1];
         // Return match after latest match (lowest match number and match type still after latest match)
         matches.sort((a, b) => {
@@ -247,6 +249,12 @@ const AutomaticMatchSelection = ({ onChanged }: { onChanged: (meta: ScoutReportM
             matchIdentity: selectedMatch.matchIdentity,
         });
     }, [selectedMatch]);
+
+    useEffect(() => {
+        if (matchesWithScouter.length === 0) {
+            onChanged(null);
+        }
+    }, [matchesWithScouter]);
 
     if (!scouter || !tournaments) return null;
 
