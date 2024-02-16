@@ -9,7 +9,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { colors } from "../lib/colors";
 import BodyMedium from "../lib/components/text/BodyMedium";
 import { IconButton } from "../lib/components/IconButton";
-import { Suspense, useContext, useEffect, useMemo, useState } from "react";
+import { Suspense, useCallback, useContext, useEffect, useLayoutEffect, useMemo, useState } from "react";
 import { LoadServicesContext, ServicesContext } from "../lib/services";
 import { DataSource } from "../lib/localCache";
 
@@ -25,7 +25,7 @@ import { reportStateAtom } from "../lib/collection/reportStateAtom";
 import { GamePhase, ReportState, RobotRole } from "../lib/collection/ReportState";
 import { HighNote } from "../lib/collection/HighNote";
 import { StageResult } from "../lib/collection/StageResult";
-import { Stack, router } from "expo-router";
+import { Stack, router, useFocusEffect } from "expo-router";
 import { DriverAbility } from "../lib/collection/DriverAbility";
 import { PickUp } from "../lib/collection/PickUp";
 import 'react-native-get-random-values';
@@ -47,6 +47,12 @@ export default function Home() {
     const [matchSelectionMode, setMatchSelectionMode] = useState(MatchSelectionMode.Automatic);
     const [meta, setMeta] = useState<ScoutReportMeta | null>(null);
     const [reportState, setReportState] = useAtom(reportStateAtom);
+
+    const loadServices = useContext(LoadServicesContext);
+
+    useFocusEffect(useCallback(() => {
+        loadServices();
+    }, []));
 
     const scoutMatch = () => {
         const report: ReportState = {
