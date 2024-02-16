@@ -509,7 +509,7 @@ const ServiceStatus = () => {
                     }[servicesStatus],
                 }}
             />}
-            <View style={{ width: 7 }} />
+            <View style={{ width: effectiveServicesLoading ? 2 : 9 }} />
             {servicesStatus === ServicesStatus.Connected && (
                 <BodyMedium>Connected</BodyMedium>
             )}
