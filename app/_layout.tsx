@@ -11,7 +11,7 @@ import {
 } from "@expo-google-fonts/heebo";
 
 import { useCallback, useEffect, useState } from "react";
-import { LoadServicesContext, ServiceValues, ServicesContext, services } from "../lib/services";
+import { LoadServicesContext, ServiceValues, ServicesContext, services, servicesLoadingAtom } from "../lib/services";
 import { LocalCache } from "../lib/localCache";
 
 import TimeAgo from "javascript-time-ago";
@@ -29,6 +29,8 @@ TimeAgo.addDefaultLocale(en);
 SplashScreen.preventAutoHideAsync();
 
 export default function Layout() {
+    const setServicesLoading = useSetAtom(servicesLoadingAtom);
+
     const [fontsLoaded, fontError] = useFonts({
         Heebo_400Regular,
         Heebo_500Medium,
@@ -53,26 +55,30 @@ export default function Layout() {
         scouterSchedule: null,
     });
 
-    const loadServices = () => Promise.allSettled(services.map(async service => {
-        try {
-            console.log(`Loading service ${service.id}`);
-            const value = await service.get();
+    const loadServices = async () => {
+        setServicesLoading(true);
+        await Promise.allSettled(services.map(async service => {
+            try {
+                console.log(`Loading service ${service.id}`);
+                const value = await service.get();
 
-            setServiceValues((values) => ({
-                ...values,
-                [service.id]: value,
-            }));
+                setServiceValues((values) => ({
+                    ...values,
+                    [service.id]: value,
+                }));
 
-            if (service.id === "scouterSchedule") {
-                setScouterSchedule(async () => value as LocalCache<ScouterSchedule>);
-                console.log(`Loaded scouter schedule ${value.data.hash}`);
+                if (service.id === "scouterSchedule") {
+                    setScouterSchedule(async () => value as LocalCache<ScouterSchedule>);
+                    console.log(`Loaded scouter schedule ${value.data.hash}`);
+                }
+                console.log(`Loaded service ${service.id}`);
+            } catch (e) {
+                console.error(`Failed to load service ${service.id}`);
+                console.error(e);
             }
-            console.log(`Loaded service ${service.id}`);
-        } catch (e) {
-            console.error(`Failed to load service ${service.id}`);
-            console.error(e);
-        }
-    }));
+        }));
+        setServicesLoading(false);
+    };
 
     useEffect(() => {
         loadServices();

@@ -3,6 +3,7 @@ import { getTournamentsCached } from "./lovatAPI/getTournaments";
 import { getTeamScoutersCached } from "./lovatAPI/getTeamScouters";
 import { LocalCache } from "./localCache";
 import { ScouterSchedule, getCurrentScouterScheduleCached } from "./storage/scouterSchedules";
+import { atom } from "jotai";
 
 export type ServiceValues = {
     tournaments: LocalCache<Tournament[]> | null;
@@ -17,6 +18,8 @@ export const ServicesContext = createContext<ServiceValues>({
 });
 
 export const LoadServicesContext = createContext<() => Promise<void>>(async () => {});
+
+export const servicesLoadingAtom = atom(false);
 
 type Service<T> = {
     id: keyof ServiceValues;

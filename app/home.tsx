@@ -10,7 +10,7 @@ import { colors } from "../lib/colors";
 import BodyMedium from "../lib/components/text/BodyMedium";
 import { IconButton } from "../lib/components/IconButton";
 import { Suspense, useCallback, useContext, useEffect, useLayoutEffect, useMemo, useState } from "react";
-import { LoadServicesContext, ServicesContext } from "../lib/services";
+import { LoadServicesContext, ServicesContext, servicesLoadingAtom } from "../lib/services";
 import { DataSource } from "../lib/localCache";
 
 import TimeAgo from "../lib/components/TimeAgo";
@@ -439,6 +439,9 @@ enum ServicesStatus {
 const ServiceStatus = () => {
     const [servicesStatus, setServicesStatus] = useState(ServicesStatus.Connected);
 
+    const servicesLoading = useAtomValue(servicesLoadingAtom);
+    const [effectiveServicesLoading, setEffectiveServicesLoading] = useState(servicesLoading);
+
     const serviceValues = useContext(ServicesContext);
     const loadServices = useContext(LoadServicesContext);
 
@@ -453,7 +456,7 @@ const ServiceStatus = () => {
         status = ServicesStatus.Unavailable;
     }
 
-    if (status !== servicesStatus) {
+    if (status !== servicesStatus || servicesLoading !== effectiveServicesLoading) {
         LayoutAnimation.configureNext({
             duration: 400,
             create: {
@@ -475,6 +478,7 @@ const ServiceStatus = () => {
         });
 
         setServicesStatus(status);
+        setEffectiveServicesLoading(servicesLoading);
     }
 
     return (
@@ -484,7 +488,8 @@ const ServiceStatus = () => {
                 alignItems: "center",
                 flexDirection: "row",
                 backgroundColor: colors.secondaryContainer.default,
-                paddingHorizontal: 14,
+                paddingRight: 14,
+                paddingLeft: effectiveServicesLoading ? 8 : 14,
                 paddingVertical: 6,
                 borderRadius: 50,
                 borderColor: colors.gray.default,
@@ -492,7 +497,7 @@ const ServiceStatus = () => {
                 overflow: "hidden",
             }}
         >
-            <View
+            {effectiveServicesLoading ? <ActivityIndicator /> : <View
                 style={{
                     width: 7,
                     height: 7,
@@ -503,7 +508,7 @@ const ServiceStatus = () => {
                         [ServicesStatus.Unavailable]: colors.danger.default,
                     }[servicesStatus],
                 }}
-            />
+            />}
             <View style={{ width: 7 }} />
             {servicesStatus === ServicesStatus.Connected && (
                 <BodyMedium>Connected</BodyMedium>
