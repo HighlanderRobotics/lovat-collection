@@ -19,9 +19,6 @@ export default function History() {
 
     return (
         <>
-            <Stack.Screen options={{
-                animation: 'slide_from_left',
-            }} />
             <NavBar
                 title="History"
                 left={
