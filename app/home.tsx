@@ -153,10 +153,13 @@ type MatchSelectionProps = {
 }
 
 const MatchSelection = ({ matchSelectionMode, onMetaChanged }:  MatchSelectionProps) => {
+    const services = useContext(ServicesContext);
+    const { scouterSchedule } = services
+
     switch (matchSelectionMode) {
         case MatchSelectionMode.Automatic:
             return <Suspense fallback={<ActivityIndicator style={{ flex: 1 }} />}>
-                <AutomaticMatchSelection onChanged={onMetaChanged} />
+                <AutomaticMatchSelection onChanged={onMetaChanged} key={scouterSchedule?.data.hash} />
             </Suspense>;
         case MatchSelectionMode.Manual:
             return <ManualMatchSelection onChanged={onMetaChanged} />;
