@@ -193,7 +193,7 @@ const UploadIndicator = ({ state }: { state: UploadState }) => {
                     }}
                 >
                     {effectiveState === UploadState.None || effectiveState === UploadState.Uploading && <ActivityIndicator size="small" color={colors.onBackground.default} />}
-                    {effectiveState === UploadState.Uploaded || effectiveState == UploadState.AlreadyUploaded && <Icon name="check" color="#44ca6c" size={16} />}
+                    {(effectiveState === UploadState.Uploaded || effectiveState == UploadState.AlreadyUploaded) && <Icon name="check" color="#44ca6c" size={16} />}
                     {effectiveState === UploadState.Error && <Icon name="error" color={colors.danger.default} size={16} />}
                 </View>
                 <UploadIndicatorInner state={effectiveState} />
