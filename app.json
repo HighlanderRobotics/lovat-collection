@@ -15,7 +15,7 @@
     ],
     "ios": {
       "icon": "./assets/icon.png",
-      "supportsTablet": true,
+      "supportsTablet": false,
       "bundleIdentifier": "com.frc8033.lovatcollection"
     },
     "android": {
