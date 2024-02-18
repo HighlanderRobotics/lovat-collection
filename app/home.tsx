@@ -14,7 +14,7 @@ import { LoadServicesContext, ServicesContext, servicesLoadingAtom } from "../li
 import { DataSource } from "../lib/localCache";
 
 import TimeAgo from "../lib/components/TimeAgo";
-import { getTournament } from "../lib/storage/getTournament";
+import { getTournament, tournamentAtom } from "../lib/storage/getTournament";
 import { ButtonGroup } from "../lib/components/ButtonGroup";
 import { MatchIdentity, MatchIdentityLocalizationFormat, MatchType, localizeMatchIdentity, matchTypes } from "../lib/models/match";
 import { AllianceColor, allianceColors } from "../lib/models/AllianceColor";
@@ -156,10 +156,14 @@ const MatchSelection = ({ matchSelectionMode, onMetaChanged }:  MatchSelectionPr
     const services = useContext(ServicesContext);
     const { scouterSchedule } = services
 
+    const tournament = useAtomValue(tournamentAtom);
+
+    const scouterScheduleForTournament = (scouterSchedule?.data.data.length ?? 0) > 0 && scouterSchedule?.data.data[0].matchIdentity.tournamentKey === tournament?.key ? scouterSchedule : null;
+
     switch (matchSelectionMode) {
         case MatchSelectionMode.Automatic:
             return <Suspense fallback={<ActivityIndicator style={{ flex: 1 }} />}>
-                <AutomaticMatchSelection onChanged={onMetaChanged} key={scouterSchedule?.data.hash} />
+                <AutomaticMatchSelection onChanged={onMetaChanged} key={scouterScheduleForTournament?.data.hash} />
             </Suspense>;
         case MatchSelectionMode.Manual:
             return <ManualMatchSelection onChanged={onMetaChanged} />;
@@ -174,6 +178,9 @@ const AutomaticMatchSelection = ({ onChanged }: { onChanged: (meta: ScoutReportM
 
     const [scouter, setScouter] = useState<Scouter | null>(null);
 
+    const selectedTournament = useAtomValue(tournamentAtom);
+    const scouterScheduleForTournament = (scouterSchedule?.data.data.length ?? 0) > 0 && scouterSchedule?.data.data[0].matchIdentity.tournamentKey === selectedTournament?.key ? scouterSchedule : null;
+
     useEffect(() => {
         const fetchScouter = async () => {
             const scouter = await getScouter();
@@ -184,17 +191,17 @@ const AutomaticMatchSelection = ({ onChanged }: { onChanged: (meta: ScoutReportM
     }, []);
 
     const matchesWithScouter = useMemo(() => {
-        if (!scouterSchedule || !scouter) return [];
+        if (!scouterScheduleForTournament || !scouter) return [];
 
-        return scouterSchedule.data.data.filter(match => scouter?.uuid in match.scouters);
-    }, [scouterSchedule, scouter]);
+        return scouterScheduleForTournament.data.data.filter(match => scouter?.uuid in match.scouters);
+    }, [scouterScheduleForTournament, scouter]);
 
     const nextMatch = useMemo(() => {
         console.log({history})
         if (!history || history.length === 0) return matchesWithScouter[0] ?? null;
-        if (!scouterSchedule) return null;
+        if (!scouterScheduleForTournament) return null;
 
-        const matches = scouterSchedule.data.data.filter(match => scouter && scouter?.uuid in match.scouters);
+        const matches = scouterScheduleForTournament.data.data.filter(match => scouter && scouter?.uuid in match.scouters);
         const matchesWithHistory = matches.filter(match => history.some(report => report.meta.matchIdentity.matchNumber === match.matchIdentity.matchNumber && report.meta.matchIdentity.matchType === match.matchIdentity.matchType && report.meta.matchIdentity.tournamentKey === match.matchIdentity.tournamentKey));
         matchesWithHistory.sort((a, b) => {
             // Put qual matches first and elim matches last
@@ -227,7 +234,7 @@ const AutomaticMatchSelection = ({ onChanged }: { onChanged: (meta: ScoutReportM
         const latestMatchOrdinalNumber = matches.findIndex(match => JSON.stringify(match.matchIdentity) === JSON.stringify(latestMatch.matchIdentity));
 
         return matches[latestMatchOrdinalNumber + 1] ?? matchesWithScouter[0];
-    }, [scouterSchedule, scouter, history]);
+    }, [scouterScheduleForTournament, scouter, history]);
 
     const matchKeyOf = (match: MatchIdentity) => `${match.tournamentKey}_${matchTypes.find(t => t.type === match.matchType)?.shortName.toLowerCase()}${match.matchNumber}`;
 
@@ -408,17 +415,23 @@ const ManualMatchSelection = (props: ManualMatchSelectionProps) => {
 const unwrappedScouterScheduleAtom = unwrap(scouterScheduleAtom, (prev) => prev);
 
 const ScheduleColorGradient = () => {
-    const scouterSchedule = useAtomValue(unwrappedScouterScheduleAtom);
+    const services = useContext(ServicesContext);
+    const { scouterSchedule } = services
+
+    const tournament = useAtomValue(tournamentAtom);
+
+    const scouterScheduleForTournament = (scouterSchedule?.data.data.length ?? 0) > 0 && scouterSchedule?.data.data[0].matchIdentity.tournamentKey === tournament?.key ? scouterSchedule : null;
+
     const [color, setColor] = useState("transparent");
 
 
     useEffect(() => {
-        if (scouterSchedule?.data.hash) {
-            setColor(getVerionsColor(scouterSchedule?.data.hash, 30, 30));
+        if (scouterScheduleForTournament?.data.hash) {
+            setColor(getVerionsColor(scouterScheduleForTournament?.data.hash, 30, 30));
         } else {
             setColor(colors.danger.default);
         }
-    }, [scouterSchedule]);
+    }, [scouterScheduleForTournament]);
 
     return (
         <LinearGradient
