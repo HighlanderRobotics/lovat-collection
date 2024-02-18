@@ -1,6 +1,6 @@
 import { View } from "react-native";
 import { NavBar } from "../../lib/components/NavBar";
-import { router, useNavigation } from "expo-router";
+import { Stack, router, useNavigation } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Button from "../../lib/components/Button";
 import LabelSmall from "../../lib/components/text/LabelSmall";
@@ -32,6 +32,7 @@ export default function PostMatch() {
 
     return (
         <>
+            <Stack.Screen options={{ orientation: 'portrait_up', animationDuration: 0, animationTypeForReplace: "push", animation: "flip" }} />
             <NavBar
                 title="Post match"
             />
