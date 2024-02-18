@@ -49,7 +49,7 @@ export async function getScouterSchedule(tournamentKey: string): Promise<Scouter
                 return [key, {
                     ...value,
                     teamNumber: value.team,
-                    allianceColor: value.allianceColor === "red" ? AllianceColor.Red : AllianceColor.Blue,
+                    allianceColor: value.alliance === "red" ? AllianceColor.Red : AllianceColor.Blue,
                 }]
             })),
         }
