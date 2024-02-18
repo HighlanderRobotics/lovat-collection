@@ -1,7 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { raceTournamentsCached } from "../lovatAPI/getTournaments";
 import { useSetAtom } from "jotai";
-import { atomWithDefault } from "jotai/utils";
+import { RESET, atomWithDefault } from "jotai/utils";
 
 export async function getTournament() {
     const tournaments = await raceTournamentsCached();
@@ -55,9 +55,14 @@ export const tournamentAtom = atomWithDefault(async () => {
 export const useSetTournament = () => {
     const setTournament = useSetAtom(tournamentAtom);
 
-    return async (tournament: Tournament) => {
-        await AsyncStorage.setItem("tournament", tournament.key);
-        setTournament(async () => tournament);
+    return async (tournament: Tournament | null) => {
+        if (tournament) {
+            await AsyncStorage.setItem("tournament", tournament.key);
+            setTournament(async () => tournament);
+        } else {
+            await AsyncStorage.removeItem("tournament");
+            setTournament(RESET);
+        }
     }
 };
 
