@@ -36,6 +36,7 @@ import { unwrap } from "jotai/utils";
 import { Picker } from "react-native-wheel-pick";
 import { getTournamentsCached } from "../lib/lovatAPI/getTournaments";
 import { historyAtom } from "../lib/storage/historyAtom";
+import { startMatchEnabledAtom } from "./_layout";
 
 enum MatchSelectionMode {
     Automatic,
@@ -47,6 +48,8 @@ export default function Home() {
     const [matchSelectionMode, setMatchSelectionMode] = useState(MatchSelectionMode.Automatic);
     const [meta, setMeta] = useState<ScoutReportMeta | null>(null);
     const [reportState, setReportState] = useAtom(reportStateAtom);
+
+    const startMatchEnabled = useAtomValue(startMatchEnabledAtom);
 
     const loadServices = useContext(LoadServicesContext);
 
@@ -125,7 +128,7 @@ export default function Home() {
                     <MatchSelection matchSelectionMode={matchSelectionMode} onMetaChanged={setMeta} />
 
                     <View style={{ gap: 10 }}>
-                        <Button variant="primary" disabled={!meta} onPress={() => {
+                        <Button variant="primary" disabled={!meta || !startMatchEnabled} onPress={() => {
                             if (!meta) return;
 
                             scoutMatch();

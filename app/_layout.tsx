@@ -1,4 +1,4 @@
-import { Slot, SplashScreen, Stack } from "expo-router";
+import { SplashScreen, Stack } from "expo-router";
 import { NativeModules, View } from "react-native";
 import { colors } from "../lib/colors";
 
@@ -16,7 +16,7 @@ import { LocalCache } from "../lib/localCache";
 
 import TimeAgo from "javascript-time-ago";
 import en from 'javascript-time-ago/locale/en.json'
-import { useSetAtom } from "jotai";
+import { atom, useSetAtom } from "jotai";
 import { ScouterSchedule, scouterScheduleAtom } from "../lib/storage/scouterSchedules";
 
 const {UIManager} = NativeModules;
@@ -28,8 +28,22 @@ TimeAgo.addDefaultLocale(en);
 
 SplashScreen.preventAutoHideAsync();
 
+export const startMatchEnabledAtom = atom(false);
+
 export default function Layout() {
     const setServicesLoading = useSetAtom(servicesLoadingAtom);
+    
+    const setStartMatchEnabled = useSetAtom(startMatchEnabledAtom);
+
+    useEffect(() => {
+        const timeout = setTimeout(() => {
+            setStartMatchEnabled(true);
+        }, 2000);
+
+        return () => {
+            clearTimeout(timeout);
+        }
+    });
 
     const [fontsLoaded, fontError] = useFonts({
         Heebo_400Regular,
