@@ -11,8 +11,10 @@
     "build-ios": "eas build --platform ios --local --output ./build/app-release.ipa",
     "build-ios-dev": "eas build --platform ios --local --output ./build/app-development.ipa --profile development",
     "build-ios-dev-simulator": "eas build --platform ios --local --output ./build/app-development.zip --profile development-simulator",
+    "build-ios-staging": "eas build --platform ios --local --output ./build/app-staging.ipa --profile staging",
     "build-android": "eas build --platform android --local --output ./build/app-release.aab",
-    "build-android-dev": "eas build --platform android --local --output ./build/app-development.apk --profile development"
+    "build-android-dev": "eas build --platform android --local --output ./build/app-development.apk --profile development",
+    "build-android-staging": "eas build --platform android --local --output ./build/app-development.aab --profile staging"
   },
   "dependencies": {
     "@expo-google-fonts/heebo": "^0.2.3",

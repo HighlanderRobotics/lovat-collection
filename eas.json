@@ -24,6 +24,11 @@
         "buildType": "apk"
       }
     },
+    "staging": {
+      "env": {
+        "EXPO_PUBLIC_API_URL": "https://lovat-server-staging.up.railway.app"
+      }
+    },
     "production": {}
   },
   "submit": {
