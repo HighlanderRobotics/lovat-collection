@@ -24,7 +24,8 @@
         "backgroundColor": "#350868",
         "monochromeImage": "./assets/monochrome-icon.png"
       },
-      "package": "com.frc8033.lovatcollection"
+      "package": "com.frc8033.lovatcollection",
+      "versionCode": 2
     },
     "androidNavigationBar": {
       "backgroundColor": "#1f1f1f"
