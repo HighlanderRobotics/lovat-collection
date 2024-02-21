@@ -108,16 +108,27 @@ export const GameViewTemplate = (props: {
                         />}
                 </SafeAreaView>
             </View>
-            <SafeAreaView style={{ flex: 1, alignItems: 'center', position: 'relative', }}>
-                <View
-                    style={{
-                        aspectRatio: fieldWidth / fieldHeight,
-                        flex: 1,
-                    }}
-                >
-                    <FieldImage />
-
-                    {field}
+            <SafeAreaView edges={['bottom', 'left', 'right']} style={{ flex: 1, backgroundColor: "#0000ff33" }}>
+                <View style={{
+                    height: "100%",
+                    width: "100%",
+                    backgroundColor: "#00ff0033",
+                    flexDirection: "row",
+                    alignItems: "stretch",
+                    justifyContent: "center",
+                }}>
+                    <View
+                        style={{
+                            position: "relative",
+                            aspectRatio: fieldWidth / fieldHeight,
+                            backgroundColor: "#ff000033",
+                            maxWidth: "100%",
+                            maxHeight: "100%",
+                        }}
+                    >
+                        <FieldImage />
+                        {field}
+                    </View>
                 </View>
             </SafeAreaView>
         </>
