@@ -7,14 +7,18 @@ import TitleMedium from '../../lib/components/text/TitleMedium';
 
 export default function OnboardingWelcome() {
     return (
-        <SafeAreaView style={{ flex: 1 }}>
+        <SafeAreaView style={{
+            flex: 1,
+            flexDirection: "row",
+            justifyContent: "center",
+        }}>
             <Stack.Screen
                 options={{
                     animation: "fade",
                     animationDuration: 1000,
                 }}
             />
-            <View style={{ flex: 1, paddingVertical: 16, paddingHorizontal: 26 }}>
+            <View style={{ flex: 1, paddingVertical: 16, paddingHorizontal: 26, maxWidth: 550 }}>
                 <TitleMedium>Welcome to Lovat&nbsp;Collection</TitleMedium>
                 <BodyMedium>Let's get you ready to scout.</BodyMedium>
                 <View style={{ paddingTop: 50, alignItems: "flex-end" }}>

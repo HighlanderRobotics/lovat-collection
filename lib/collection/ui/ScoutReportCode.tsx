@@ -6,7 +6,7 @@ import QRCode from 'qrcode';
 import { SvgXml } from "react-native-svg";
 import SwiperFlatList from "react-native-swiper-flatlist";
 
-const maxCodeLength = 1000;
+const maxCodeLength = 600;
 
 type ReportChunk = {
     index: number;

@@ -1,7 +1,7 @@
 import { View } from "react-native";
 import { NavBar } from "../../lib/components/NavBar";
 import { IconButton } from "../../lib/components/IconButton";
-import { router, useNavigation } from "expo-router";
+import { Stack, router, useNavigation } from "expo-router";
 import { colors } from "../../lib/colors";
 import { SafeAreaView } from "react-native-safe-area-context";
 import TitleMedium from "../../lib/components/text/TitleMedium";
@@ -42,8 +42,8 @@ export default function Reset() {
                     />
                 }
             />
-            <SafeAreaView edges={['bottom', 'left', 'right']} style={{ flex: 1, gap: 7 }}>
-                <View style={{ flex: 1, paddingVertical: 16, paddingHorizontal: 26 }}>
+            <SafeAreaView edges={['bottom', 'left', 'right']} style={{ flex: 1, gap: 7, alignItems: "center" }}>
+                <View style={{ flex: 1, marginVertical: 16, marginHorizontal: 26, maxWidth: 450 }}>
                     <TitleMedium>Are you sure?</TitleMedium>
                     <BodyMedium>
                         You're about to permanently delete all Lovat Collection data stored on this device. This includes all settings, cached data, and match history.

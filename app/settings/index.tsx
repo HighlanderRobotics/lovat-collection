@@ -32,11 +32,13 @@ export default function Settings() {
             />
             <Suspense fallback={<ActivityIndicator style={{ flex: 1 }} />}>
                 <ScrollView style={{ flex: 1, paddingVertical: 16, paddingHorizontal: 26 }}>
-                    <SafeAreaView edges={['bottom', 'left', 'right']} style={{ flex: 1, gap: 14 }}>
+                    <SafeAreaView edges={['bottom', 'left', 'right']} style={{ flex: 1, gap: 14, flexDirection: "row", justifyContent: "center" }}>
+                        <View style={{
+                            maxWidth: 450, 
+                            gap: 14,
+                        }}>
                             <FieldOrientationEditor />
-
                             <TournamentSelector />
-
                             <View
                                 style={{
                                     marginTop: 112,
@@ -51,6 +53,7 @@ export default function Settings() {
                                     Reset all settings and data
                                 </Button>
                             </View>
+                        </View>
                     </SafeAreaView>
                 </ScrollView>
             </Suspense>

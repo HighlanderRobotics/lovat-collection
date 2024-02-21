@@ -36,14 +36,23 @@ export default function History() {
                         style={{
                             paddingTop: 14,
                             paddingHorizontal: 10,
+                            flexDirection: "row",
+                            justifyContent: "center",
                         }}
                     >
-                        <TextField
-                            placeholder="Search"
-                            value={filterText}
-                            onChangeText={setFilterText}
-                            returnKeyType="search"
-                        />
+                        <View
+                            style={{
+                                maxWidth: 800,
+                                flex: 1,
+                            }}
+                        >
+                            <TextField
+                                placeholder="Search"
+                                value={filterText}
+                                onChangeText={setFilterText}
+                                returnKeyType="search"
+                            />
+                        </View>
                     </View>
                 }
             />
@@ -67,8 +76,8 @@ const Matches = ({ filter }: { filter: string }) => {
     }, [history, filter]);
 
     return (
-        <KeyboardAwareScrollView style={{ flex: 1, gap: 28 }}>
-            <SafeAreaView edges={['bottom', 'left', 'right']} style={{ flex: 1, gap: 14, paddingVertical: 16, paddingHorizontal: 26 }}>
+        <KeyboardAwareScrollView style={{ flex: 1, gap: 28 }} contentContainerStyle={{ flexDirection: "row", justifyContent: "center" }}>
+            <SafeAreaView edges={['bottom', 'left', 'right']} style={{ flex: 1, gap: 14, marginVertical: 16, marginHorizontal: 26, maxWidth: 800 }}>
                 {filteredMatches.map((match) => (
                     <Match match={match} key={match.scoutReport.uuid} />
                 ))}

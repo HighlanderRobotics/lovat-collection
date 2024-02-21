@@ -58,8 +58,8 @@ export default function Name() {
     const filteredScouters = scouters?.filter((scouter) => scouter.name.toLowerCase().includes(fieldText.toLowerCase()));
 
     return (
-        <SafeAreaView style={{ flex: 1 }}>
-            <View style={{ flex: 1, paddingVertical: 16, paddingHorizontal: 26 }}>
+        <SafeAreaView style={{ flex: 1, flexDirection: "row", justifyContent: "center" }}>
+            <View style={{ flex: 1, paddingVertical: 16, paddingHorizontal: 26, maxWidth: 550 }}>
                 <TitleMedium>Enter your name</TitleMedium>
                 <TextField
                     autoFocus

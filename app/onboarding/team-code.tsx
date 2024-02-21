@@ -36,8 +36,8 @@ export default function TeamCode() {
     }
 
     return (
-        <SafeAreaView style={{ flex: 1 }}>
-            <View style={{ flex: 1, paddingVertical: 16, paddingHorizontal: 26, gap: 7 }}>
+        <SafeAreaView style={{ flex: 1, flexDirection: "row", justifyContent: "center" }}>
+            <View style={{ flex: 1, paddingVertical: 16, paddingHorizontal: 26, gap: 7, maxWidth: 550 }}>
                 <TitleMedium>Enter your team's code</TitleMedium>
                 <TextField
                     placeholder="Code"

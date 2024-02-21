@@ -73,8 +73,8 @@ export default function Submit() {
             <NavBar
                 title={`${reportState!.meta.teamNumber} in ${localizeMatchIdentity(reportState!.meta.matchIdentity, MatchIdentityLocalizationFormat.Short)}`}
             />
-            <SafeAreaView edges={['bottom', 'left', 'right']} style={{ flex: 1, gap: 7 }}>
-                <View style={{ flex: 1, paddingVertical: 16 }}>
+            <SafeAreaView edges={['bottom', 'left', 'right']} style={{ flex: 1, gap: 7, flexDirection: "row", justifyContent: "center" }}>
+                <View style={{ flex: 1, paddingVertical: 16, maxWidth: 450 }}>
                     {scoutReport && <ScoutReportCode scoutReport={scoutReport!} />}
 
                     <View style={{ paddingHorizontal: 26, flex: 1 }}>

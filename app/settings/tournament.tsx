@@ -40,20 +40,24 @@ export default function Tournament() {
                         style={{
                             paddingTop: 14,
                             paddingHorizontal: 10,
+                            flexDirection: "row",
+                            justifyContent: "center",
                         }}
                     >
-                        <TextField
-                            placeholder="Search"
-                            value={filter}
-                            onChangeText={setFilter}
-                            returnKeyType="search"
-                        />
+                        <View style={{ maxWidth: 800, flex: 1 }}>
+                            <TextField
+                                placeholder="Search"
+                                value={filter}
+                                onChangeText={setFilter}
+                                returnKeyType="search"
+                            />
+                        </View>
                     </View>
                 }
             />
             <Suspense fallback={<ActivityIndicator style={{ flex: 1 }} />}>
                 <KeyboardAwareScrollView style={{ flex: 1, paddingVertical: 16, paddingHorizontal: 26 }}>
-                    <SafeAreaView edges={['bottom', 'left', 'right']} style={{ flex: 1, gap: 14 }}>
+                    <SafeAreaView edges={['bottom', 'left', 'right']} style={{ flex: 1, gap: 14, flexDirection: "row", justifyContent: "center" }}>
                         <TournamentSelector filter={filter} />
                     </SafeAreaView>
                 </KeyboardAwareScrollView>
@@ -81,6 +85,7 @@ const TournamentSelector = ({ filter }: { filter: string }) => {
             style={{
                 flex: 1,
                 gap: 14,
+                maxWidth: 800,
             }}
         >
             {filteredTournaments.map((tournament) => (

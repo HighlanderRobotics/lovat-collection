@@ -49,8 +49,8 @@ const Details = () => {
                     />
                 }
             />
-            <SafeAreaView edges={['bottom', 'left', 'right']} style={{ flex: 1, gap: 7 }}>
-                <View style={{ flex: 1, paddingVertical: 16 }}>
+            <SafeAreaView edges={['bottom', 'left', 'right']} style={{ flex: 1, gap: 7, flexDirection: "row", justifyContent: "center" }}>
+                <View style={{ flex: 1, paddingVertical: 16, maxWidth: 450 }}>
                     <ScoutReportCode scoutReport={match!.scoutReport} />
                     <View style={{ paddingHorizontal: 26, flex: 1, justifyContent: 'flex-end' }}>
                         {!match!.uploaded && (

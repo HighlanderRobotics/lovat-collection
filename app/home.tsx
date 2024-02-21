@@ -125,19 +125,21 @@ export default function Home() {
                         />
                     </View>
 
-                    <MatchSelection matchSelectionMode={matchSelectionMode} onMetaChanged={setMeta} />
-
-                    <View style={{ gap: 10 }}>
-                        <Button variant="primary" disabled={!meta || !startMatchEnabled} onPress={() => {
-                            if (!meta) return;
-
-                            scoutMatch();
-                        }}>Scout this match</Button>
-                        <Button variant="primary" filled={false} onPress={toggleMatchSelectionMode}>
-                            {matchSelectionMode === MatchSelectionMode.Automatic
-                                ? "Enter details manually"
-                                : "Use scouter schedule"}
-                        </Button>
+                    <View style={{ flex: 1, flexDirection: "row", justifyContent: "center" }}>
+                        <View style={{ justifyContent: "space-between", alignItems: "stretch", flex: 1, maxWidth: 450 }}>
+                            <MatchSelection matchSelectionMode={matchSelectionMode} onMetaChanged={setMeta} />
+                            <View style={{ gap: 10 }}>
+                                <Button variant="primary" disabled={!meta || !startMatchEnabled} onPress={() => {
+                                    if (!meta) return;
+                                    scoutMatch();
+                                }}>Scout this match</Button>
+                                <Button variant="primary" filled={false} onPress={toggleMatchSelectionMode}>
+                                    {matchSelectionMode === MatchSelectionMode.Automatic
+                                        ? "Enter details manually"
+                                        : "Use scouter schedule"}
+                                </Button>
+                            </View>
+                        </View>
                     </View>
                 </View>
             </SafeAreaView>

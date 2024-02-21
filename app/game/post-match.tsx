@@ -36,8 +36,8 @@ export default function PostMatch() {
             <NavBar
                 title="Post match"
             />
-            <KeyboardAwareScrollView style={{ flex: 1, paddingVertical: 16, paddingHorizontal: 26, gap: 28 }}>
-                <SafeAreaView edges={['bottom', 'left', 'right']} style={{ flex: 1, gap: 7, paddingBottom: 200 }}>
+            <KeyboardAwareScrollView style={{ flex: 1, paddingVertical: 16, paddingHorizontal: 26, gap: 28 }} contentContainerStyle={{ flexDirection: "row", justifyContent: "center" }}>
+                <SafeAreaView edges={['bottom', 'left', 'right']} style={{ flex: 1, gap: 7, paddingBottom: 200, maxWidth: 550 }}>
                     <View style={{ gap: 7 }}>
                         <LabelSmall>Robot role</LabelSmall>
                         <ButtonGroup
