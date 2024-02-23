@@ -34,7 +34,8 @@ export default function Settings() {
                 <ScrollView style={{ flex: 1, paddingVertical: 16, paddingHorizontal: 26 }}>
                     <SafeAreaView edges={['bottom', 'left', 'right']} style={{ flex: 1, gap: 14, flexDirection: "row", justifyContent: "center" }}>
                         <View style={{
-                            maxWidth: 450, 
+                            flex: 1,
+                            maxWidth: 450,
                             gap: 14,
                         }}>
                             <FieldOrientationEditor />
