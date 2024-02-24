@@ -49,6 +49,18 @@
         {
           "initialOrientation": "PORTRAIT_UP"
         }
+      ],
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "compileSdkVersion": 33,
+            "targetSdkVersion": 33,
+            "minSdkVersion": 23,
+            "buildToolsVersion": "33.0.0",
+            "kotlinVersion": "1.6.20"
+          }
+        }
       ]
     ],
     "scheme": "lovat-collection"

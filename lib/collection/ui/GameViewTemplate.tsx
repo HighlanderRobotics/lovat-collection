@@ -12,6 +12,7 @@ import * as Haptics from 'expo-haptics';
 import { GameTimer } from './GameTimer';
 import { Link, router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
+import * as DropdownMenu from 'zeego/dropdown-menu'
 
 export const GameViewTemplate = (props: {
     field: React.ReactNode;
@@ -99,13 +100,23 @@ export const GameViewTemplate = (props: {
                         }} />}
 
                     {reportState?.startTimestamp && 
-                        <IconButton
-                            label="End match"
-                            icon="stop"
-                            color={colors.onBackground.default}
-                            size={30}
-                            onPress={props.onEnd}
-                        />}
+                        <DropdownMenu.Root>
+                            <DropdownMenu.Trigger>
+                                <IconButton
+                                    label="End match"
+                                    icon="stop"
+                                    color={colors.onBackground.default}
+                                    size={30}
+                                />
+                            </DropdownMenu.Trigger>
+
+                            <DropdownMenu.Content>
+                                <DropdownMenu.Item key="end" onSelect={props.onEnd}>
+                                    <DropdownMenu.ItemTitle>End match</DropdownMenu.ItemTitle>    
+                                </DropdownMenu.Item>
+                            </DropdownMenu.Content>
+                        </DropdownMenu.Root>
+                    }
                 </SafeAreaView>
             </View>
             <SafeAreaView edges={['bottom', 'left', 'right']} style={{ flex: 1 }}>
