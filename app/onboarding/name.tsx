@@ -11,8 +11,7 @@ import { colors } from '../../lib/colors';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { addScouter } from '../../lib/lovatAPI/addScouter';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useNavigation } from 'expo-router';
-import { CommonActions } from '@react-navigation/native'
+import { router, useNavigation } from 'expo-router';
 
 export default function Name() {
     const [loading, setLoading] = useState(true);
@@ -44,10 +43,7 @@ export default function Name() {
 
         try {
             await AsyncStorage.setItem("scouter", JSON.stringify(scouter));
-            await AsyncStorage.setItem("onboarding-complete", "true");
-            navigation.dispatch(CommonActions.reset({
-                routes: [{key: "index", name: "index"}]
-            }))
+            router.push("/onboarding/tournaments");
         } catch (e: any) {
             setError(e.message);
         } finally {
@@ -62,15 +58,16 @@ export default function Name() {
             <View style={{ flex: 1, paddingVertical: 16, paddingHorizontal: 26, maxWidth: 550 }}>
                 <TitleMedium>Enter your name</TitleMedium>
                 <TextField
-                    autoFocus
                     onChangeText={(text) => setFieldText(text)}
                 />
 
                 <LoadingView loading={loading} />
                 <ErrorView error={error} />
 
-                <ScoutersView scouters={filteredScouters} onSubmit={submitScouter} filterText={fieldText} />
-                <NewScouterPrompt visible={!!fieldText && !filteredScouters?.length} name={fieldText} onSubmit={submitScouter} />
+                {!loading && <>
+                    <ScoutersView scouters={filteredScouters} onSubmit={submitScouter} filterText={fieldText} />
+                    <NewScouterPrompt visible={!!fieldText && !filteredScouters?.length} name={fieldText} onSubmit={submitScouter} />
+                </>}
             </View>
         </SafeAreaView>
     );
