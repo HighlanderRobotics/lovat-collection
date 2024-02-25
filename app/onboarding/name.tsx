@@ -54,7 +54,7 @@ export default function Name() {
     const filteredScouters = scouters?.filter((scouter) => scouter.name.toLowerCase().includes(fieldText.toLowerCase()));
 
     return (
-        <SafeAreaView style={{ flex: 1, flexDirection: "row", justifyContent: "center" }}>
+        <SafeAreaView style={{ flex: 1, flexDirection: "row", justifyContent: "center" }} edges={['top', 'right', 'left']}>
             <View style={{ flex: 1, paddingVertical: 16, paddingHorizontal: 26, maxWidth: 550 }}>
                 <TitleMedium>Enter your name</TitleMedium>
                 <TextField
@@ -64,10 +64,10 @@ export default function Name() {
                 <LoadingView loading={loading} />
                 <ErrorView error={error} />
 
-                {!loading && <>
+                {!loading && <KeyboardAvoidingView style={{ flex: 1, justifyContent: "center" }} behavior="padding">
                     <ScoutersView scouters={filteredScouters} onSubmit={submitScouter} filterText={fieldText} />
                     <NewScouterPrompt visible={!!fieldText && !filteredScouters?.length} name={fieldText} onSubmit={submitScouter} />
-                </>}
+                </KeyboardAvoidingView>}
             </View>
         </SafeAreaView>
     );
@@ -97,7 +97,7 @@ const NewScouterPrompt = ({ visible, name, onSubmit }: { visible: boolean, name:
     }
 
     return (
-        <KeyboardAvoidingView style={{ flex: 1, justifyContent: "center", alignItems: "center" }} behavior="padding">
+        <View style={{ alignItems: "center" }}>
             <View style={{ padding: 10 }}>
                 <BodyMedium>Scouter "{name}" not found.</BodyMedium>
             </View>
@@ -105,7 +105,7 @@ const NewScouterPrompt = ({ visible, name, onSubmit }: { visible: boolean, name:
 
             <LoadingView loading={loading} />
             <ErrorView error={error} />
-        </KeyboardAvoidingView>
+        </View>
     );
 }
 
@@ -113,23 +113,25 @@ const ScoutersView = ({ scouters, onSubmit, filterText }: { scouters?: Scouter[]
     if (!scouters || scouters.length === 0) return null;
 
     return (
-        <KeyboardAwareScrollView style={{ flex: 1, paddingVertical: 10 }}>
-            {scouters.map((scouter) => (
-                <TouchableOpacity
-                    key={scouter.uuid}
-                    style={{
-                        paddingVertical: 10,
-                        paddingHorizontal: 10,
-                        borderRadius: 7,
-                        backgroundColor: colors.secondaryContainer.default,
-                        marginBottom: 10
-                    }}
-                    onPress={() => onSubmit && onSubmit(scouter)}
-                >
-                    <BodyMedium>{scouter.name}</BodyMedium>
-                </TouchableOpacity>
-            ))}
-        </KeyboardAwareScrollView>
+        <ScrollView style={{ flex: 1, paddingVertical: 10 }}>
+            <View style={{ paddingBottom: 80 }}>
+                {scouters.map((scouter) => (
+                    <TouchableOpacity
+                        key={scouter.uuid}
+                        style={{
+                            paddingVertical: 10,
+                            paddingHorizontal: 10,
+                            borderRadius: 7,
+                            backgroundColor: colors.secondaryContainer.default,
+                            marginBottom: 10
+                        }}
+                        onPress={() => onSubmit && onSubmit(scouter)}
+                    >
+                        <BodyMedium>{scouter.name}</BodyMedium>
+                    </TouchableOpacity>
+                ))}
+            </View>
+        </ScrollView>
     )
 
 }
