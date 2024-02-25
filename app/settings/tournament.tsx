@@ -76,7 +76,7 @@ const TournamentSelector = ({ filter }: { filter: string }) => {
     const filteredTournaments = useMemo(() => {
         if (!filter) return tournaments;
         return tournaments.filter((tournament) => {
-            return tournament.name.toLowerCase().includes(filter.toLowerCase());
+            return `${tournament.date.split('-')[0]} ${tournament.name}`.toLowerCase().includes(filter.toLowerCase());
         });
     }, [tournaments, filter]);
 
