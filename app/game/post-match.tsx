@@ -7,7 +7,7 @@ import LabelSmall from "../../lib/components/text/LabelSmall";
 import { ButtonGroup, ButtonGroupDirection } from "../../lib/components/ButtonGroup";
 import { RobotRole } from "../../lib/collection/ReportState";
 import { reportStateAtom } from "../../lib/collection/reportStateAtom";
-import { useAtom } from "jotai";
+import { useAtom, useAtomValue } from "jotai";
 import { DriverAbility, driverAbilityDescriptions } from "../../lib/collection/DriverAbility";
 import { StageResult, stageResultDescriptions } from "../../lib/collection/StageResult";
 import { HighNote, highNoteDescriptions } from "../../lib/collection/HighNote";
@@ -15,10 +15,13 @@ import { PickUp, pickUpDescriptions } from "../../lib/collection/PickUp";
 import TextField from "../../lib/components/TextField";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { CommonActions } from '@react-navigation/native'
+import { trainingModeAtom } from "../settings";
+import BodyMedium from "../../lib/components/text/BodyMedium";
 
 
 export default function PostMatch() {
     const [reportState, setReportState] = useAtom(reportStateAtom);
+    const trainingModeEnabled = useAtomValue(trainingModeAtom);
 
     const navigation = useNavigation();
 
@@ -168,6 +171,7 @@ export default function PostMatch() {
 
                     <View style={{ gap: 10 }}>
                         <Button
+                            disabled={trainingModeEnabled}
                             variant="primary"
                             onPress={() => {
                                 router.push('/game/submit');
@@ -186,6 +190,10 @@ export default function PostMatch() {
                         >
                             Discard match
                         </Button>
+
+                        {trainingModeEnabled && (
+                            <BodyMedium>Disable training mode in settings to submit data.</BodyMedium>
+                        )}
                     </View>
                 </SafeAreaView>
             </KeyboardAwareScrollView>

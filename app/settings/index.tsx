@@ -13,6 +13,12 @@ import Heading1Small from '../../lib/components/text/Heading1Small';
 import { Suspense } from 'react';
 import { NavBar } from '../../lib/components/NavBar';
 import { tournamentAtom } from '../../lib/storage/getTournament';
+import { atomWithStorage } from 'jotai/utils';
+import { storage } from '../../lib/storage/jotaiStorage';
+import { Switch } from 'react-native-gesture-handler';
+import LabelSmall from '../../lib/components/text/LabelSmall';
+
+export const trainingModeAtom = atomWithStorage<boolean>("trainingMode", false, storage);
 
 export default function Settings() {
     return (
@@ -40,6 +46,7 @@ export default function Settings() {
                         }}>
                             <FieldOrientationEditor />
                             <TournamentSelector />
+                            <TrainingModeSelector />
                             <View
                                 style={{
                                     marginTop: 112,
@@ -60,6 +67,47 @@ export default function Settings() {
             </Suspense>
         </>
     );
+}
+
+const TrainingModeSelector = () => {
+    const [trainingModeEnabled, setTrainingModeEnabled] = useAtom(trainingModeAtom);
+
+    // <View
+    //             style={{
+    //                 marginTop: 7,
+    //                 padding: 7,
+    //                 borderRadius: 10,
+    //                 backgroundColor: colors.secondaryContainer.default,
+    //                 gap: 7,
+    //             }}
+    //         ></View>
+
+    return (
+        <View style={{ gap: 7 }}>
+            <View style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
+                marginTop: 7,
+                padding: 14,
+                borderRadius: 10,
+                backgroundColor: colors.secondaryContainer.default,
+                gap: 7,
+            }}>
+                <LabelSmall>Training mode</LabelSmall>
+                <Switch
+                    trackColor={{
+                        true: colors.victoryPurple.default,
+                        false: colors.gray.default,
+                    }}
+                    thumbColor={colors.background.default}
+                    value={trainingModeEnabled}
+                    onChange={() => setTrainingModeEnabled(!trainingModeEnabled)}
+                />
+            </View>
+            <BodyMedium>Disables data saving and uploading for training, testing, etc.</BodyMedium>
+        </View>
+    )
 }
 
 const FieldOrientationEditor = () => {
