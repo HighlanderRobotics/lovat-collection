@@ -49,7 +49,8 @@ export default function Settings() {
                             <TrainingModeSelector />
                             <View
                                 style={{
-                                    marginTop: 112,
+                                    marginTop: 50,
+                                    marginBottom: 50,
                                 }}
                             >
                                 <Button
