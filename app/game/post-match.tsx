@@ -1,4 +1,4 @@
-import { View } from "react-native";
+import { Alert, View } from "react-native";
 import { NavBar } from "../../lib/components/NavBar";
 import { Stack, router, useNavigation } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -182,10 +182,21 @@ export default function PostMatch() {
                         <Button
                             variant="secondary"
                             onPress={() => {
-                                setReportState(null);
-                                navigation.dispatch(CommonActions.reset({
-                                    routes: [{key: "index", name: "index"}]
-                                }))
+                                Alert.alert("Discard match?", "You will lose all of the data that you recorded.", [
+                                    {
+                                        text: "Cancel",
+                                    },
+                                    {
+                                        text: "Discard",
+                                        style: "destructive",
+                                        onPress: () => {
+                                            setReportState(null);
+                                            navigation.dispatch(CommonActions.reset({
+                                                routes: [{key: "index", name: "index"}]
+                                            }))
+                                        }
+                                    },
+                                ])
                             }}
                         >
                             Discard match
