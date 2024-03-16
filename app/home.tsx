@@ -126,8 +126,10 @@ export default function Home() {
                     </View>
 
                     <View style={{ flex: 1, flexDirection: "row", justifyContent: "center" }}>
-                        <View style={{ justifyContent: "space-between", alignItems: "stretch", flex: 1, maxWidth: 450 }}>
-                            <MatchSelection matchSelectionMode={matchSelectionMode} onMetaChanged={setMeta} />
+                        <View style={{ alignItems: "stretch", flex: 1, maxWidth: 450 }}>
+                            <View style={{ flex: 1 }}>
+                                <MatchSelection matchSelectionMode={matchSelectionMode} onMetaChanged={setMeta} />
+                            </View>
                             <View style={{ gap: 10 }}>
                                 <Button variant="primary" disabled={!meta || !startMatchEnabled} onPress={() => {
                                     if (!meta) return;
