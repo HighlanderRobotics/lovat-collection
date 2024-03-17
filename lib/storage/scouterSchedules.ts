@@ -81,7 +81,7 @@ const cacheScouterSchedule = async (schedule: ScouterSchedule) => {
     await AsyncStorage.setItem("scouter-schedule-" + schedule.tournamentKey, JSON.stringify(scheduleCache));
 }
 
-const getLocalScouterSchedule = async (tournamentKey: string) => {
+export const getLocalScouterSchedule = async (tournamentKey: string) => {
     const cachedScheduleString = await AsyncStorage.getItem("scouter-schedule-" + tournamentKey);
 
     if (!cachedScheduleString) {

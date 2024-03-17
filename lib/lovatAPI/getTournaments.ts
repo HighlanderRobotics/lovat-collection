@@ -30,7 +30,7 @@ const cacheTournaments = async (tournaments: Tournament[]) => {
     await AsyncStorage.setItem("tournaments-cache", JSON.stringify(cachedTournaments));
 }
 
-const getLocalTournaments = async () => {
+export const getLocalTournaments = async () => {
     const cachedTournamentsString = await AsyncStorage.getItem("tournaments-cache");
 
     if (!cachedTournamentsString) {

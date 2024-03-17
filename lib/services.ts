@@ -1,9 +1,10 @@
 import { createContext } from "react";
-import { getTournamentsCached } from "./lovatAPI/getTournaments";
-import { getTeamScoutersCached } from "./lovatAPI/getTeamScouters";
+import { getLocalTournaments, getTournamentsCached } from "./lovatAPI/getTournaments";
+import { getLocalTeamScouters, getTeamScoutersCached } from "./lovatAPI/getTeamScouters";
 import { LocalCache } from "./localCache";
-import { ScouterSchedule, getCurrentScouterScheduleCached } from "./storage/scouterSchedules";
+import { ScouterSchedule, getCurrentScouterScheduleCached, getLocalScouterSchedule } from "./storage/scouterSchedules";
 import { atom } from "jotai";
+import { getTournament } from "./storage/getTournament";
 
 export type ServiceValues = {
     tournaments: LocalCache<Tournament[]> | null;
@@ -25,6 +26,7 @@ type Service<T> = {
     id: keyof ServiceValues;
     localizedDescription: string;
     get: () => Promise<LocalCache<T>>;
+    getLocal: () => Promise<LocalCache<T> | null>;
 }
 
 export const services: Service<any>[] = [
@@ -32,15 +34,23 @@ export const services: Service<any>[] = [
         id: "tournaments",
         localizedDescription: "Tournaments",
         get: getTournamentsCached,
+        getLocal: getLocalTournaments,
     },
     {
         id: "teamScouters",
         localizedDescription: "Scouters",
         get: getTeamScoutersCached,
+        getLocal: getLocalTeamScouters,
     },
     {
         id: "scouterSchedule",
         localizedDescription: "Scouter Schedule",
         get: getCurrentScouterScheduleCached,
+        getLocal: async () => {
+            const tournamentKey = (await getTournament())?.key
+            if (!tournamentKey) return null;
+
+            return getLocalScouterSchedule(tournamentKey);
+        },
     }
 ]

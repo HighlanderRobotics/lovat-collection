@@ -29,7 +29,7 @@ const cacheTeamScouters = async (scouters: Scouter[]) => {
   await AsyncStorage.setItem("scouters-cache", JSON.stringify(cachedScouters));
 }
 
-const getLocalTeamScouters = async () => {
+export const getLocalTeamScouters = async () => {
   const cachedScoutersString = await AsyncStorage.getItem("scouters-cache");
 
   if (!cachedScoutersString) {

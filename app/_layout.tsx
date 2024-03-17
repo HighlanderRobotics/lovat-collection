@@ -18,6 +18,7 @@ import TimeAgo from "javascript-time-ago";
 import en from 'javascript-time-ago/locale/en.json'
 import { atom, useSetAtom } from "jotai";
 import { ScouterSchedule, scouterScheduleAtom } from "../lib/storage/scouterSchedules";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const {UIManager} = NativeModules;
 
@@ -74,6 +75,16 @@ export default function Layout() {
         await Promise.allSettled(services.map(async service => {
             try {
                 console.log(`Loading service ${service.id}`);
+
+                const localValue = await service.getLocal();
+
+                if (localValue && !serviceValues[service.id]) {
+                    setServiceValues((values) => ({
+                        ...values,
+                        [service.id]: localValue,
+                    }));
+                }
+
                 const value = await service.get();
 
                 setServiceValues((values) => ({
