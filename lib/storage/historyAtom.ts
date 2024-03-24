@@ -36,3 +36,10 @@ export const useSetMatchUploaded = () => {
         }));
     };
 }
+
+export const useDeleteMatchFromHistory = () => {
+    const [history, setHistory] = useAtom(historyAtom);
+    return (uuid: string) => {
+        setHistory(history.filter((entry) => entry.scoutReport.uuid !== uuid));
+    };
+}

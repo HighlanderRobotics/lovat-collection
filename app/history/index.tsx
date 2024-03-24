@@ -1,11 +1,11 @@
-import { ActivityIndicator, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, Alert, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { NavBar } from "../../lib/components/NavBar";
 import { IconButton } from "../../lib/components/IconButton";
 import { Link, Stack, router } from "expo-router";
 import { colors } from "../../lib/colors";
 import { useAtomValue } from "jotai";
-import { HistoryEntry, historyAtom } from "../../lib/storage/historyAtom";
+import { HistoryEntry, historyAtom, useDeleteMatchFromHistory, useSetMatchUploaded } from "../../lib/storage/historyAtom";
 import { Suspense, useMemo, useState } from "react";
 import { MatchIdentityLocalizationFormat, localizeMatchIdentity } from "../../lib/models/match";
 import Heading1Small from "../../lib/components/text/Heading1Small";
@@ -13,6 +13,9 @@ import { Icon } from "../../lib/components/Icon";
 import BodyMedium from "../../lib/components/text/BodyMedium";
 import TextField from "../../lib/components/TextField";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import * as ContextMenu from 'zeego/context-menu'
+import { ScoutReportCode } from "../../lib/collection/ui/ScoutReportCode";
+import { uploadReport } from "../../lib/lovatAPI/uploadReport";
 
 export default function History() {
     const [filterText, setFilterText] = useState('');
@@ -109,36 +112,99 @@ const Match = ({ match }: { match: HistoryEntry }) => {
         }
     }
 
+    const setMatchUploaded = useSetMatchUploaded();
+    const deleteMatchFromHistory = useDeleteMatchFromHistory();
+
     return (
-        <Link
-            asChild
-            href={{
-                pathname: '/history/[uuid]',
-                params: {
-                    uuid: match.scoutReport.uuid,
-                },
-            }}
-        >
-            <TouchableOpacity
-                style={{
-                    backgroundColor: colors.secondaryContainer.default,
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    paddingVertical: 10,
-                    paddingHorizontal: 14,
-                    borderRadius: 7,
-                }}
-            >
-                <View>
-                    <Heading1Small>{localizeMatchIdentity(match.meta.matchIdentity, MatchIdentityLocalizationFormat.Long)}</Heading1Small>
-                    <BodyMedium>{match.meta.teamNumber} • {localizeDate(new Date(match.scoutReport.startTime))}</BodyMedium>
-                </View>
-                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 7 }}>
-                    {!match.uploaded && <Icon name="error" size={24} color={colors.onBackground.default} />}
-                    <Icon name="arrow_forward_ios" size={20} color={colors.onBackground.default} />
-                </View>
-            </TouchableOpacity>
-        </Link>
+        <ContextMenu.Root>
+            <ContextMenu.Trigger>
+                <Link
+                    asChild
+                    href={{
+                        pathname: '/history/[uuid]',
+                        params: {
+                            uuid: match.scoutReport.uuid,
+                        },
+                    }}
+                >
+                    <TouchableOpacity
+                        style={{
+                            backgroundColor: colors.secondaryContainer.default,
+                            flexDirection: 'row',
+                            justifyContent: 'space-between',
+                            alignItems: 'center',
+                            paddingVertical: 10,
+                            paddingHorizontal: 14,
+                            borderRadius: 7,
+                        }}
+                    >
+                        <View>
+                            <Heading1Small>{localizeMatchIdentity(match.meta.matchIdentity, MatchIdentityLocalizationFormat.Long)}</Heading1Small>
+                            <BodyMedium>{match.meta.teamNumber} • {localizeDate(new Date(match.scoutReport.startTime))}</BodyMedium>
+                        </View>
+                        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 7 }}>
+                            {!match.uploaded && <Icon name="error" size={24} color={colors.onBackground.default} />}
+                            <Icon name="arrow_forward_ios" size={20} color={colors.onBackground.default} />
+                        </View>
+                    </TouchableOpacity>
+                </Link>
+            </ContextMenu.Trigger>
+            <ContextMenu.Content>
+                {!match.uploaded && 
+                    <ContextMenu.Item
+                        key="upload"
+                        onSelect={async () => {
+                            try {
+                                await uploadReport(match!.scoutReport);
+                                setMatchUploaded(match!.scoutReport.uuid);
+                            } catch (e) {
+                                let message;
+
+                                if (typeof (e as any)["message"] == "string") {
+                                    const error = e as { message: string };
+                                    message = error.message;
+                                }
+
+                                Alert.alert("Failed to upload", message)
+                            }
+                        }}
+                    >
+                    <ContextMenu.ItemIcon
+                        ios={{
+                            name: "arrow.up.to.line"
+                        }}
+                        androidIconName="upload"
+                    />
+                    <ContextMenu.ItemTitle>Upload report</ContextMenu.ItemTitle>    
+                </ContextMenu.Item>}
+                <ContextMenu.Item
+                    key="delete"
+                    destructive
+                    onSelect={() => {
+                        Alert.alert("Discard data", "Are you sure you want to discard this match data?", [
+                            {
+                                text: "Cancel",
+                                style: "cancel"
+                            },
+                            {
+                                text: "Discard",
+                                style: "destructive",
+                                onPress: () => {
+                                    deleteMatchFromHistory(match.scoutReport.uuid);
+                                }
+                            }
+                        ])
+                    }}
+                >
+                    <ContextMenu.ItemIcon
+                        ios={{
+                            name: "trash"
+                        }}
+                        androidIconName="delete"
+                    />
+                    <ContextMenu.ItemTitle>Discard data</ContextMenu.ItemTitle>    
+                </ContextMenu.Item>
+            </ContextMenu.Content>
+        </ContextMenu.Root>
     )
 }
