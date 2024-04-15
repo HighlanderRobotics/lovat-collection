@@ -1,4 +1,4 @@
-import { View, LayoutAnimation, ScrollView, Pressable, ActivityIndicator } from "react-native";
+import { View, LayoutAnimation, ScrollView, Pressable, ActivityIndicator, Platform } from "react-native";
 import TitleMedium from "../lib/components/text/TitleMedium";
 import TextField from "../lib/components/TextField";
 import LabelSmall from "../lib/components/text/LabelSmall";
@@ -297,7 +297,7 @@ const AutomaticMatchSelection = ({ onChanged }: { onChanged: (meta: ScoutReportM
                 {(matchesWithScouter.length >= 1 && selectedMatch != null) ? <Picker
                     style={{ width: "100%", height: "100%", backgroundColor: "transparent" }}
                     selectedValue={selectedMatch && matchKeyOf(selectedMatch.matchIdentity)}
-                    key={selectedMatch && matchKeyOf(selectedMatch.matchIdentity)}
+                    key={Platform.OS === "ios" ? selectedMatch && matchKeyOf(selectedMatch.matchIdentity) : undefined}
                     pickerData={matchesWithScouter.map(match => ({
                         label: localizeMatchIdentity(match.matchIdentity, MatchIdentityLocalizationFormat.Long),
                         value: matchKeyOf(match.matchIdentity),
