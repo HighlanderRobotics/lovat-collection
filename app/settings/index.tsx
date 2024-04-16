@@ -1,5 +1,5 @@
-import { router } from 'expo-router';
-import { ActivityIndicator, ScrollView, View } from 'react-native';
+import { Link, router } from 'expo-router';
+import { ActivityIndicator, ScrollView, TouchableOpacity, View } from 'react-native';
 import BodyMedium from '../../lib/components/text/BodyMedium';
 import Button from '../../lib/components/Button';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -17,6 +17,8 @@ import { atomWithStorage } from 'jotai/utils';
 import { storage } from '../../lib/storage/jotaiStorage';
 import { Switch } from 'react-native-gesture-handler';
 import LabelSmall from '../../lib/components/text/LabelSmall';
+import { qrCodeSizeAtom } from './qrcode-size';
+import { Icon } from '../../lib/components/Icon';
 
 export const trainingModeAtom = atomWithStorage<boolean>("trainingMode", false, storage);
 
@@ -47,6 +49,7 @@ export default function Settings() {
                             <FieldOrientationEditor />
                             <TournamentSelector />
                             <TrainingModeSelector />
+                            <QRCodeSizeLink />
                             <View
                                 style={{
                                     marginTop: 50,
@@ -111,45 +114,74 @@ const TrainingModeSelector = () => {
     )
 }
 
+const QRCodeSizeLink = () => {
+    const qrCodeSize = useAtomValue(qrCodeSizeAtom);
+
+    return (
+        <Link href="/settings/qrcode-size" asChild>
+            <TouchableOpacity
+                style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    marginTop: 7,
+                    padding: 14,
+                    borderRadius: 10,
+                    backgroundColor: colors.secondaryContainer.default,
+                    gap: 7,
+                }}
+            >
+                <LabelSmall>QR Code size</LabelSmall>
+                <View style={{ flexDirection: "row", alignItems: "center", gap: 4 }}>
+                    <BodyMedium>
+                        {qrCodeSize === 600 ? "Default" : (qrCodeSize < 600 ? "Quicker scans" : "Fewer codes")}
+                    </BodyMedium>
+                    <Icon name="arrow_forward_ios" size={18} color={colors.body.default} />
+                </View>
+            </TouchableOpacity>
+        </Link>
+    )
+}
+
 const FieldOrientationEditor = () => {
     const [fieldOrientation, setFieldOrientation] = useAtom(fieldOrientationAtom);
 
     return (
         <View>
             <Heading1Small>Field orientation</Heading1Small>
+            <View
+                style={{
+                    marginTop: 7,
+                    padding: 7,
+                    borderRadius: 10,
+                    backgroundColor: colors.secondaryContainer.default,
+                    gap: 7,
+                }}
+            >
                 <View
                     style={{
-                        marginTop: 7,
-                        padding: 7,
-                        borderRadius: 10,
-                        backgroundColor: colors.secondaryContainer.default,
-                        gap: 7,
+                        aspectRatio: fieldWidth / fieldHeight,
                     }}
                 >
-                    <View
-                        style={{
-                            aspectRatio: fieldWidth / fieldHeight,
-                        }}
-                    >
-                        <FieldImage />
-                    </View>
-                    <ButtonGroup
-                        buttons={[
-                            {
-                                label: 'Auspicious',
-                                value: FieldOrientation.Auspicious,
-                            },
-                            {
-                                label: 'Sinister',
-                                value: FieldOrientation.Sinister,
-                            },
-                        ]}
-                        selected={fieldOrientation}
-                        onChange={(value) => {
-                            setFieldOrientation(value);
-                        }}
-                    />
+                    <FieldImage />
                 </View>
+                <ButtonGroup
+                    buttons={[
+                        {
+                            label: 'Auspicious',
+                            value: FieldOrientation.Auspicious,
+                        },
+                        {
+                            label: 'Sinister',
+                            value: FieldOrientation.Sinister,
+                        },
+                    ]}
+                    selected={fieldOrientation}
+                    onChange={(value) => {
+                        setFieldOrientation(value);
+                    }}
+                />
+            </View>
         </View>
     )
 }

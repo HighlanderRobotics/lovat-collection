@@ -5,8 +5,8 @@ import { ScoutReport } from "../ScoutReport";
 import QRCode from 'qrcode';
 import { SvgXml } from "react-native-svg";
 import SwiperFlatList from "react-native-swiper-flatlist";
-
-const maxCodeLength = 600;
+import { useAtomValue } from "jotai";
+import { qrCodeSizeAtom } from "../../../app/settings/qrcode-size";
 
 type ReportChunk = {
     index: number;
@@ -15,7 +15,7 @@ type ReportChunk = {
     uuid: string;
 }
 
-function splitScoutReportIntoCodes(scoutReport: ScoutReport): ReportChunk[] {
+function splitScoutReportIntoCodes(scoutReport: ScoutReport, maxCodeLength: number): ReportChunk[] {
     const json = JSON.stringify(scoutReport);
     const chunks: ReportChunk[] = [];
 
@@ -58,8 +58,10 @@ export const ResizableQRCode = ({ chunk }: { chunk: ScoutReport; }) => {
     );
 };
 
-export const ScoutReportCode = ({ scoutReport }: { scoutReport: ScoutReport; }) => {
-    const chunks = splitScoutReportIntoCodes(scoutReport);
+export const ScoutReportCode = ({ scoutReport }: { scoutReport: ScoutReport }) => {
+    const maxCodeLength = useAtomValue(qrCodeSizeAtom);
+
+    const chunks = splitScoutReportIntoCodes(scoutReport, maxCodeLength);
     const showPagination = chunks.length > 1;
 
     return (
