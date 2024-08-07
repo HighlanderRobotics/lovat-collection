@@ -1,9 +1,12 @@
 import { AllianceColor } from "./AllianceColor";
-import { MatchIdentity } from "./match";
+import { matchIdentitySchema } from "./match";
+import { z } from "zod";
 
-export type ScoutReportMeta = {
-  scouterUUID: string;
-  matchIdentity: MatchIdentity;
-  teamNumber: number;
-  allianceColor: AllianceColor;
-};
+export const scoutReportMetaSchema = z.object({
+  scouterUUID: z.string(),
+  matchIdentity: matchIdentitySchema,
+  teamNumber: z.number(),
+  allianceColor: z.nativeEnum(AllianceColor),
+});
+
+export type ScoutReportMeta = z.infer<typeof scoutReportMetaSchema>;

@@ -17,6 +17,7 @@ import { NavBar } from "../../lib/components/NavBar";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Tournament } from "../../lib/models/tournament";
 
 export default function OnboardingTournaments() {
   const [filter, setFilter] = useState("");

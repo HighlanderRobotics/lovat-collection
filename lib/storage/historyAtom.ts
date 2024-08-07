@@ -1,19 +1,25 @@
 import { atomWithStorage } from "jotai/utils";
-import { ScoutReport } from "../collection/ScoutReport";
-import { storage } from "./jotaiStorage";
+import { ScoutReport, scoutReportSchema } from "../collection/ScoutReport";
+import { createStorage } from "./jotaiStorage";
 import { useAtom } from "jotai";
-import { ScoutReportMeta } from "../models/ScoutReportMeta";
+import {
+  ScoutReportMeta,
+  scoutReportMetaSchema,
+} from "../models/ScoutReportMeta";
+import { z } from "zod";
 
-export type HistoryEntry = {
-  scoutReport: ScoutReport;
-  meta: ScoutReportMeta;
-  uploaded: boolean;
-};
+export const historyEntrySchema = z.object({
+  scoutReport: scoutReportSchema,
+  meta: scoutReportMetaSchema,
+  uploaded: z.boolean(),
+});
+
+export type HistoryEntry = z.infer<typeof historyEntrySchema>;
 
 export const historyAtom = atomWithStorage<HistoryEntry[]>(
   "history",
   [],
-  storage,
+  createStorage(z.array(historyEntrySchema)),
 );
 
 export const useUpsertMatchToHistory = () => {

@@ -2,6 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { getScouter } from "../storage/getScouter";
 import { get } from "./lovatAPI";
 import { DataSource, LocalCache } from "../localCache";
+import { Tournament } from "../models/tournament";
 
 export const getTournaments = async () => {
   const scouter = await getScouter();

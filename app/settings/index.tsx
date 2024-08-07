@@ -26,16 +26,17 @@ import { Suspense } from "react";
 import { NavBar } from "../../lib/components/NavBar";
 import { tournamentAtom } from "../../lib/storage/getTournament";
 import { atomWithStorage } from "jotai/utils";
-import { storage } from "../../lib/storage/jotaiStorage";
+import { createStorage } from "../../lib/storage/jotaiStorage";
 import { Switch } from "react-native-gesture-handler";
 import LabelSmall from "../../lib/components/text/LabelSmall";
 import { qrCodeSizeAtom } from "./qrcode-size";
 import { Icon } from "../../lib/components/Icon";
+import { z } from "zod";
 
 export const trainingModeAtom = atomWithStorage<boolean>(
   "trainingMode",
   false,
-  storage,
+  createStorage(z.boolean()),
 );
 
 export default function Settings() {
