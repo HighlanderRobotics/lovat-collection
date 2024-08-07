@@ -4,15 +4,15 @@ import z, { ZodType } from "zod";
 
 export const createStorage = <Value extends ZodType>(schema: Value) =>
   createJSONStorage<z.infer<Value>>(() => ({
-    getItem: async (key: string) => {
+    getItem: async (key) => {
       const value = await AsyncStorage.getItem(key);
-      if (value === null) return undefined;
-      return schema.parse(JSON.parse(value));
+      if (value === null) return null;
+      return JSON.stringify(schema.parse(JSON.parse(value)));
     },
-    setItem: async (key: string, value: z.infer<Value>) => {
-      await AsyncStorage.setItem(key, JSON.stringify(value));
+    setItem: async (key, value) => {
+      await AsyncStorage.setItem(key, value);
     },
-    removeItem: async (key: string) => {
+    removeItem: async (key) => {
       await AsyncStorage.removeItem(key);
     },
   }));
