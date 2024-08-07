@@ -1,6 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createJSONStorage } from "jotai/utils";
-import { AsyncStorage as JotaiAsyncStorage } from "jotai/vanilla/utils/atomWithStorage";
 import z, { ZodType } from "zod";
 
 export const createStorage = <Value extends ZodType>(schema: Value) =>
