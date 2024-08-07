@@ -24,7 +24,7 @@ export default function Reset() {
     navigation.dispatch(
       CommonActions.reset({
         routes: [{ key: "index", name: "index" }],
-      })
+      }),
     );
   };
 

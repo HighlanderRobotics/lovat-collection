@@ -31,7 +31,7 @@ export const ServicesContext = createContext<ServiceValues>({
 });
 
 export const LoadServicesContext = createContext<() => Promise<void>>(
-  async () => {}
+  async () => {},
 );
 
 export const servicesLoadingAtom = atom(false);

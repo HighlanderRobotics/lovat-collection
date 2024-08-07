@@ -104,7 +104,7 @@ export default function Layout() {
 
           if (service.id === "scouterSchedule") {
             setScouterSchedule(
-              async () => value as LocalCache<ScouterSchedule>
+              async () => value as LocalCache<ScouterSchedule>,
             );
             console.log(`Loaded scouter schedule ${value.data.hash}`);
           }
@@ -113,7 +113,7 @@ export default function Layout() {
           console.error(`Failed to load service ${service.id}`);
           console.error(e);
         }
-      })
+      }),
     );
     setServicesLoading(false);
   };

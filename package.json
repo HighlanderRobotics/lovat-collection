@@ -9,6 +9,8 @@
     "web": "expo start --web",
     "ts:check": "tsc",
     "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "build-ios": "eas build --platform ios --local --output ./build/app-release.ipa",
     "build-ios-dev": "eas build --platform ios --local --output ./build/app-development.ipa --profile development",
     "build-ios-dev-simulator": "eas build --platform ios --local --output ./build/app-development.zip --profile development-simulator",
@@ -66,7 +68,9 @@
     "@types/qrcode": "^1.5.5",
     "@types/uuid": "^9.0.7",
     "eslint": "^9.8.0",
+    "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-react": "^7.35.0",
+    "prettier": "3.3.3",
     "typescript-eslint": "^8.0.1"
   },
   "private": true,

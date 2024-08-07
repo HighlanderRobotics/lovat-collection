@@ -35,7 +35,7 @@ const TextField: ForwardRefRenderFunction<TextInput, TextInputProps> = (
     keyboardType,
     multiline,
   },
-  ref
+  ref,
 ) => {
   const [isFocused, setIsFocused] = useState(false);
 
@@ -56,10 +56,10 @@ const TextField: ForwardRefRenderFunction<TextInput, TextInputProps> = (
         borderColor: error
           ? colors.danger.default
           : editable
-          ? isFocused
-            ? colors.gray.hover
-            : colors.gray.default
-          : "#2F2F2F",
+            ? isFocused
+              ? colors.gray.hover
+              : colors.gray.default
+            : "#2F2F2F",
         minHeight: density === "comfortable" ? 44 : 33,
       }}
       placeholder={placeholder}

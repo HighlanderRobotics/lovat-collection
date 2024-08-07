@@ -25,7 +25,7 @@ type ScouterScheduleScouterEntry = {
 };
 
 export async function getScouterSchedule(
-  tournamentKey: string
+  tournamentKey: string,
 ): Promise<ScouterSchedule> {
   const response = await get("/v1/manager/scouterschedules/" + tournamentKey);
 
@@ -39,7 +39,7 @@ export async function getScouterSchedule(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   json.data = json.data.map((match: any) => {
     const matchType = matchTypes.find(
-      (matchType) => matchType.num === match.matchType
+      (matchType) => matchType.num === match.matchType,
     )?.type;
 
     if (!matchType) throw new Error("Invalid match type: " + match.matchType);
@@ -67,7 +67,7 @@ export async function getScouterSchedule(
                   : AllianceColor.Blue,
             },
           ];
-        })
+        }),
       ),
     };
   });
@@ -97,13 +97,13 @@ const cacheScouterSchedule = async (schedule: ScouterSchedule) => {
 
   await AsyncStorage.setItem(
     "scouter-schedule-" + schedule.tournamentKey,
-    JSON.stringify(scheduleCache)
+    JSON.stringify(scheduleCache),
   );
 };
 
 export const getLocalScouterSchedule = async (tournamentKey: string) => {
   const cachedScheduleString = await AsyncStorage.getItem(
-    "scouter-schedule-" + tournamentKey
+    "scouter-schedule-" + tournamentKey,
   );
 
   if (!cachedScheduleString) {
@@ -111,7 +111,7 @@ export const getLocalScouterSchedule = async (tournamentKey: string) => {
   }
 
   const cachedSchedule = JSON.parse(
-    cachedScheduleString
+    cachedScheduleString,
   ) as LocalCache<ScouterSchedule>;
 
   return cachedSchedule;
@@ -148,7 +148,7 @@ export const getCurrentScouterScheduleCached = async () => {
 export const getVerionsColor = (
   hash: string,
   saturation: number,
-  value: number
+  value: number,
 ) => {
   let sum = 0;
 

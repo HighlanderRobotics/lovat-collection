@@ -77,7 +77,7 @@ export const GameViewTemplate = (props: {
             <View
               style={{
                 backgroundColor: getAllianceColorDescription(
-                  reportState?.meta.allianceColor ?? AllianceColor.Red
+                  reportState?.meta.allianceColor ?? AllianceColor.Red,
                 ).backgroundColor,
                 borderRadius: 4,
                 paddingHorizontal: 6,
@@ -87,7 +87,7 @@ export const GameViewTemplate = (props: {
               <Text
                 style={{
                   color: getAllianceColorDescription(
-                    reportState?.meta.allianceColor ?? AllianceColor.Red
+                    reportState?.meta.allianceColor ?? AllianceColor.Red,
                   ).foregroundColor,
                   fontFamily: "Heebo_500Medium",
                   fontSize: 12,

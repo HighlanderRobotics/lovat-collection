@@ -84,7 +84,7 @@ const Matches = ({ filter }: { filter: string }) => {
     return history.filter((match) => {
       const matchIdentity = localizeMatchIdentity(
         match.meta.matchIdentity,
-        MatchIdentityLocalizationFormat.Long
+        MatchIdentityLocalizationFormat.Long,
       );
       const team = match.meta.teamNumber.toString();
       return (
@@ -178,7 +178,7 @@ const Match = ({ match }: { match: HistoryEntry }) => {
               <Heading1Small>
                 {localizeMatchIdentity(
                   match.meta.matchIdentity,
-                  MatchIdentityLocalizationFormat.Long
+                  MatchIdentityLocalizationFormat.Long,
                 )}
               </Heading1Small>
               <BodyMedium>
@@ -258,7 +258,7 @@ const Match = ({ match }: { match: HistoryEntry }) => {
                     deleteMatchFromHistory(match.scoutReport.uuid);
                   },
                 },
-              ]
+              ],
             );
           }}
         >

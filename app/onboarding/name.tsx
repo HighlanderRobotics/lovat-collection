@@ -70,7 +70,7 @@ export default function Name() {
   };
 
   const filteredScouters = scouters?.filter((scouter) =>
-    scouter.name.toLowerCase().includes(fieldText.toLowerCase())
+    scouter.name.toLowerCase().includes(fieldText.toLowerCase()),
   );
 
   return (

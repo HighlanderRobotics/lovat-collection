@@ -77,7 +77,7 @@ enum MatchSelectionMode {
 export default function Home() {
   const [, setTournament] = useState<Tournament | null>(null);
   const [matchSelectionMode, setMatchSelectionMode] = useState(
-    MatchSelectionMode.Automatic
+    MatchSelectionMode.Automatic,
   );
   const [meta, setMeta] = useState<ScoutReportMeta | null>(null);
   const [reportState, setReportState] = useAtom(reportStateAtom);
@@ -89,7 +89,7 @@ export default function Home() {
   useFocusEffect(
     useCallback(() => {
       loadServices();
-    }, [])
+    }, []),
   );
 
   const scoutMatch = () => {
@@ -203,7 +203,7 @@ export default function Home() {
     setMatchSelectionMode((mode) =>
       mode === MatchSelectionMode.Automatic
         ? MatchSelectionMode.Manual
-        : MatchSelectionMode.Automatic
+        : MatchSelectionMode.Automatic,
     );
   }
 }
@@ -277,7 +277,7 @@ const AutomaticMatchSelection = ({
     if (!scouterScheduleForTournament || !scouter) return [];
 
     return scouterScheduleForTournament.data.data.filter(
-      (match) => scouter?.uuid in match.scouters
+      (match) => scouter?.uuid in match.scouters,
     );
   }, [scouterScheduleForTournament, scouter]);
 
@@ -287,7 +287,7 @@ const AutomaticMatchSelection = ({
     if (!scouterScheduleForTournament) return null;
 
     const matches = scouterScheduleForTournament.data.data.filter(
-      (match) => scouter && scouter?.uuid in match.scouters
+      (match) => scouter && scouter?.uuid in match.scouters,
     );
     const matchesWithHistory = matches.filter((match) =>
       history.some(
@@ -297,8 +297,8 @@ const AutomaticMatchSelection = ({
           report.meta.matchIdentity.matchType ===
             match.matchIdentity.matchType &&
           report.meta.matchIdentity.tournamentKey ===
-            match.matchIdentity.tournamentKey
-      )
+            match.matchIdentity.tournamentKey,
+      ),
     );
     matchesWithHistory.sort((a, b) => {
       // Put qual matches first and elim matches last
@@ -347,7 +347,7 @@ const AutomaticMatchSelection = ({
     const latestMatchOrdinalNumber = matches.findIndex(
       (match) =>
         JSON.stringify(match.matchIdentity) ===
-        JSON.stringify(latestMatch.matchIdentity)
+        JSON.stringify(latestMatch.matchIdentity),
     );
 
     return matches[latestMatchOrdinalNumber + 1] ?? matchesWithScouter[0];
@@ -371,7 +371,7 @@ const AutomaticMatchSelection = ({
     if (!selectedMatch || !tournaments) return null;
 
     return tournaments.data.find(
-      (t) => t.key === selectedMatch.matchIdentity.tournamentKey
+      (t) => t.key === selectedMatch.matchIdentity.tournamentKey,
     );
   }, [selectedMatch, tournaments]);
 
@@ -437,13 +437,13 @@ const AutomaticMatchSelection = ({
             pickerData={matchesWithScouter.map((match) => ({
               label: localizeMatchIdentity(
                 match.matchIdentity,
-                MatchIdentityLocalizationFormat.Long
+                MatchIdentityLocalizationFormat.Long,
               ),
               value: matchKeyOf(match.matchIdentity),
             }))}
             onValueChange={(val: string) => {
               const match = matchesWithScouter.find(
-                (match) => matchKeyOf(match.matchIdentity) === val
+                (match) => matchKeyOf(match.matchIdentity) === val,
               );
               setSelectedMatch(match ?? null);
             }}
@@ -587,7 +587,7 @@ const ScheduleColorGradient = () => {
   useEffect(() => {
     if (scouterScheduleForTournament?.data.hash) {
       setColor(
-        getVerionsColor(scouterScheduleForTournament?.data.hash, 30, 30)
+        getVerionsColor(scouterScheduleForTournament?.data.hash, 30, 30),
       );
     } else {
       setColor(colors.danger.default);
@@ -616,7 +616,7 @@ enum ServicesStatus {
 
 const ServiceStatus = () => {
   const [servicesStatus, setServicesStatus] = useState(
-    ServicesStatus.Connected
+    ServicesStatus.Connected,
   );
 
   const servicesLoading = useAtomValue(servicesLoadingAtom);
@@ -630,7 +630,7 @@ const ServiceStatus = () => {
 
   if (
     Object.values(serviceValues).some(
-      (service) => service?.source === DataSource.Cache
+      (service) => service?.source === DataSource.Cache,
     )
   ) {
     status = ServicesStatus.Cached;
