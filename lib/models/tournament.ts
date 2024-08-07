@@ -1,6 +1,6 @@
-interface Tournament {
-    key: string;
-    name: string;
-    location: string;
-    date: string;
-}
+export type Tournament = {
+  key: string;
+  name: string;
+  location: string;
+  date: string;
+};
