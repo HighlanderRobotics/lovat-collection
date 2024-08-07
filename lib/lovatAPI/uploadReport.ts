@@ -1,7 +1,6 @@
 import { ScoutReport } from "../collection/ScoutReport";
 import { post } from "./lovatAPI";
 
-
 export const uploadReport = async (report: ScoutReport) => {
   console.log("Uploading report", report);
 
@@ -15,7 +14,7 @@ export const uploadReport = async (report: ScoutReport) => {
     try {
       const json = await response.json();
       error = new Error(json.displayError ?? "Error uploading report");
-    } catch (e) {
+    } catch {
       error = new Error("Error uploading report");
     }
 

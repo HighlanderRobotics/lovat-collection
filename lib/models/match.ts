@@ -1,62 +1,71 @@
+import { z } from "zod";
+
 export enum MatchType {
-    Qualifier = "QUALIFIER",
-    Elimination = "PLAYOFF",
+  Qualifier = "QUALIFIER",
+  Elimination = "PLAYOFF",
 }
 
 export type MatchTypeDescription = {
-    type: MatchType;
-    localizedDescription: string;
-    localizedDescriptionPlural: string;
-    localizedDescriptionAbbreviated: string;
-    localizedDescriptionAbbreviatedPlural: string;
-    shortName: string;
-    num: number;
-}
+  type: MatchType;
+  localizedDescription: string;
+  localizedDescriptionPlural: string;
+  localizedDescriptionAbbreviated: string;
+  localizedDescriptionAbbreviatedPlural: string;
+  shortName: string;
+  num: number;
+};
 
 export const matchTypes: MatchTypeDescription[] = [
-    {
-        type: MatchType.Qualifier,
-        localizedDescription: 'Qualifier',
-        localizedDescriptionPlural: 'Qualifiers',
-        localizedDescriptionAbbreviated: 'Qual',
-        localizedDescriptionAbbreviatedPlural: 'Quals',
-        shortName: 'QM',
-        num: 0,
-    },
-    {
-        type: MatchType.Elimination,
-        localizedDescription: 'Elimination',
-        localizedDescriptionPlural: 'Eliminations',
-        localizedDescriptionAbbreviated: 'Elim',
-        localizedDescriptionAbbreviatedPlural: 'Elims',
-        shortName: 'EM',
-        num: 1,
-    },
+  {
+    type: MatchType.Qualifier,
+    localizedDescription: "Qualifier",
+    localizedDescriptionPlural: "Qualifiers",
+    localizedDescriptionAbbreviated: "Qual",
+    localizedDescriptionAbbreviatedPlural: "Quals",
+    shortName: "QM",
+    num: 0,
+  },
+  {
+    type: MatchType.Elimination,
+    localizedDescription: "Elimination",
+    localizedDescriptionPlural: "Eliminations",
+    localizedDescriptionAbbreviated: "Elim",
+    localizedDescriptionAbbreviatedPlural: "Elims",
+    shortName: "EM",
+    num: 1,
+  },
 ];
 
-export type MatchIdentity = {
-    tournamentKey: string;
-    matchType: MatchType;
-    matchNumber: number;
-}
+export const matchIdentitySchema = z.object({
+  tournamentKey: z.string(),
+  matchType: z.nativeEnum(MatchType),
+  matchNumber: z.number(),
+});
+
+export type MatchIdentity = z.infer<typeof matchIdentitySchema>;
 
 export enum MatchIdentityLocalizationFormat {
-    Short,
-    Long,
-    Full,
+  Short,
+  Long,
+  Full,
 }
 
-export function localizeMatchIdentity(matchIdentity: MatchIdentity, format: MatchIdentityLocalizationFormat): string {
-    const matchType = matchTypes.find((matchType) => matchType.type === matchIdentity.matchType);
-    if (!matchType) {
-        throw new Error(`No match type for ${matchIdentity.matchType}`);
-    }
-    switch (format) {
-        case MatchIdentityLocalizationFormat.Short:
-            return `${matchType.shortName}${matchIdentity.matchNumber}`;
-        case MatchIdentityLocalizationFormat.Long:
-            return `${matchType.localizedDescription} ${matchIdentity.matchNumber}`;
-        case MatchIdentityLocalizationFormat.Full:
-            return `${matchIdentity.tournamentKey} ${matchType.localizedDescription} ${matchIdentity.matchNumber}`;
-    }
+export function localizeMatchIdentity(
+  matchIdentity: MatchIdentity,
+  format: MatchIdentityLocalizationFormat,
+): string {
+  const matchType = matchTypes.find(
+    (matchType) => matchType.type === matchIdentity.matchType,
+  );
+  if (!matchType) {
+    throw new Error(`No match type for ${matchIdentity.matchType}`);
+  }
+  switch (format) {
+    case MatchIdentityLocalizationFormat.Short:
+      return `${matchType.shortName}${matchIdentity.matchNumber}`;
+    case MatchIdentityLocalizationFormat.Long:
+      return `${matchType.localizedDescription} ${matchIdentity.matchNumber}`;
+    case MatchIdentityLocalizationFormat.Full:
+      return `${matchIdentity.tournamentKey} ${matchType.localizedDescription} ${matchIdentity.matchNumber}`;
+  }
 }

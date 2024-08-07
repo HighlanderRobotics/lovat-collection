@@ -20,9 +20,12 @@ export enum MatchEventPosition {
 
 export type MatchEventPositionDetails = {
   num: number;
-}
+};
 
-export const matchEventPositions: Record<MatchEventPosition, MatchEventPositionDetails> = {
+export const matchEventPositions: Record<
+  MatchEventPosition,
+  MatchEventPositionDetails
+> = {
   [MatchEventPosition.None]: { num: 0 },
   [MatchEventPosition.WingNearAmp]: { num: 4 },
   [MatchEventPosition.WingFrontOfSpeaker]: { num: 5 },
@@ -42,19 +45,19 @@ export const matchEventPositions: Record<MatchEventPosition, MatchEventPositionD
 };
 
 export type StartingPosition =
-  MatchEventPosition.WingNearAmp
+  | MatchEventPosition.WingNearAmp
   | MatchEventPosition.WingFrontOfSpeaker
   | MatchEventPosition.WingCenter
   | MatchEventPosition.WingNearSource;
 
 export type GroundNotePositionDetails = {
   fieldCoordinates: {
-    x: number,
-    y: number,
+    x: number;
+    y: number;
   };
-}
+};
 
-export let groundNotePositions: {
+export const groundNotePositions: {
   [key in MatchEventPosition]?: GroundNotePositionDetails;
 } = {
   [MatchEventPosition.GroundNoteAllianceNearAmp]: {

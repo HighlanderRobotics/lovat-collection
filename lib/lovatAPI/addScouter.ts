@@ -1,6 +1,6 @@
+import { Scouter } from "../models/scouter";
 import { getTeamNumber } from "../storage/getTeamNumber";
 import { post } from "./lovatAPI";
-
 
 export const addScouter = async (name: string) => {
   const teamNumber = await getTeamNumber();
