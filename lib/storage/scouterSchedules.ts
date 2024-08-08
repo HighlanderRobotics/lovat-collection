@@ -1,28 +1,43 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { get } from "../lovatAPI/lovatAPI";
 import { AllianceColor } from "../models/AllianceColor";
-import { MatchIdentity, matchTypes } from "../models/match";
+import { matchIdentitySchema } from "../models/match";
 import { getTournament, tournamentAtom } from "./getTournament";
 import { DataSource, LocalCache } from "../localCache";
 import { atomWithDefault } from "jotai/utils";
+import { z } from "zod";
 
-export type ScouterSchedule = {
-  tournamentKey: string;
-  hash: string;
-  data: ScouterScheduleMatch[];
-};
+const scouterScheduleScouterEntrySchema = z.object({
+  teamNumber: z.number(),
+  allianceColor: z
+    .union([z.nativeEnum(AllianceColor), z.string()])
+    .transform((value) => {
+      if (typeof value === "string") {
+        return value === "red" ? AllianceColor.Red : AllianceColor.Blue;
+      } else {
+        return value;
+      }
+    }),
+});
 
-export type ScouterScheduleMatch = {
-  matchIdentity: MatchIdentity;
-  scouters: {
-    [scouterUUID: string]: ScouterScheduleScouterEntry;
-  };
-};
+export type ScouterScheduleScouterEntry = z.infer<
+  typeof scouterScheduleScouterEntrySchema
+>;
 
-type ScouterScheduleScouterEntry = {
-  teamNumber: number;
-  allianceColor: AllianceColor;
-};
+const scouterScheduleMatchSchema = z.object({
+  matchIdentity: matchIdentitySchema,
+  scouters: z.record(scouterScheduleScouterEntrySchema),
+});
+
+export type ScouterScheduleMatch = z.infer<typeof scouterScheduleMatchSchema>;
+
+const scouterScheduleSchema = z.object({
+  tournamentKey: z.string(),
+  hash: z.string(),
+  data: z.array(scouterScheduleMatchSchema),
+});
+
+export type ScouterSchedule = z.infer<typeof scouterScheduleSchema>;
 
 export async function getScouterSchedule(
   tournamentKey: string,
@@ -35,47 +50,10 @@ export async function getScouterSchedule(
 
   const json = await response.json();
 
-  // This will be fixed with zod
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  json.data = json.data.map((match: any) => {
-    const matchType = matchTypes.find(
-      (matchType) => matchType.num === match.matchType,
-    )?.type;
-
-    if (!matchType) throw new Error("Invalid match type: " + match.matchType);
-
-    return {
-      ...match,
-      matchIdentity: {
-        tournamentKey,
-        matchType,
-        matchNumber: match.matchNumber,
-      } as MatchIdentity,
-      scouters: Object.fromEntries(
-        Object.entries(match.scouters).map(([key, value]) => {
-          return [
-            key,
-            {
-              // @ts-expect-error this will all be fixed with zod
-              ...value,
-              // @ts-expect-error this will all be fixed with zod
-              teamNumber: value.team,
-              allianceColor:
-                // @ts-expect-error this will all be fixed with zod
-                value.alliance === "red"
-                  ? AllianceColor.Red
-                  : AllianceColor.Blue,
-            },
-          ];
-        }),
-      ),
-    };
-  });
-
-  const schedule: ScouterSchedule = {
+  const schedule = scouterScheduleSchema.parse({
     ...json,
     tournamentKey,
-  };
+  });
 
   cacheScouterSchedule(schedule);
 
