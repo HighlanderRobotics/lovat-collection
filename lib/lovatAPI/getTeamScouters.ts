@@ -1,7 +1,8 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { DataSource, LocalCache } from "../localCache";
 import { get } from "./lovatAPI";
-import { Scouter } from "../models/scouter";
+import { Scouter, scouterSchema } from "../models/scouter";
+import { z } from "zod";
 
 export const getTeamScouters = async () => {
   const response = await get(`/v1/manager/scouters`);
@@ -10,11 +11,11 @@ export const getTeamScouters = async () => {
     throw new Error("Error fetching scouters");
   }
 
-  const json = await response.json();
+  const json = z.array(scouterSchema).parse(await response.json());
 
   cacheTeamScouters(json);
 
-  return json as Scouter[];
+  return json;
 };
 
 const cacheTeamScouters = async (scouters: Scouter[]) => {
