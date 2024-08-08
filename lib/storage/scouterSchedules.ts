@@ -5,6 +5,23 @@ import { MatchIdentity, matchTypes } from "../models/match";
 import { getTournament, tournamentAtom } from "./getTournament";
 import { DataSource, LocalCache } from "../localCache";
 import { atomWithDefault } from "jotai/utils";
+import { z } from "zod";
+
+const scouterScheduleResponseSchema = z.object({
+  hash: z.string(),
+  data: z.array(
+    z.object({
+      matchType: z.number(),
+      matchNumber: z.number(),
+      scouters: z.record(
+        z.object({
+          team: z.number(),
+          alliance: z.union([z.literal("red"), z.literal("blue")]),
+        }),
+      ),
+    }),
+  ),
+});
 
 export type ScouterSchedule = {
   tournamentKey: string;
@@ -33,11 +50,9 @@ export async function getScouterSchedule(
     throw new Error("Error fetching scouter schedule");
   }
 
-  const json = await response.json();
+  const json = scouterScheduleResponseSchema.parse(await response.json());
 
-  // This will be fixed with zod
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  json.data = json.data.map((match: any) => {
+  const data = json.data.map((match) => {
     const matchType = matchTypes.find(
       (matchType) => matchType.num === match.matchType,
     )?.type;
@@ -56,12 +71,9 @@ export async function getScouterSchedule(
           return [
             key,
             {
-              // @ts-expect-error this will all be fixed with zod
               ...value,
-              // @ts-expect-error this will all be fixed with zod
               teamNumber: value.team,
               allianceColor:
-                // @ts-expect-error this will all be fixed with zod
                 value.alliance === "red"
                   ? AllianceColor.Red
                   : AllianceColor.Blue,
@@ -73,7 +85,8 @@ export async function getScouterSchedule(
   });
 
   const schedule: ScouterSchedule = {
-    ...json,
+    data: data,
+    hash: json.hash,
     tournamentKey,
   };
 
