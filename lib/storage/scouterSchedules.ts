@@ -1,43 +1,45 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { get } from "../lovatAPI/lovatAPI";
 import { AllianceColor } from "../models/AllianceColor";
-import { matchIdentitySchema } from "../models/match";
+import { MatchIdentity, matchTypes } from "../models/match";
 import { getTournament, tournamentAtom } from "./getTournament";
 import { DataSource, LocalCache } from "../localCache";
 import { atomWithDefault } from "jotai/utils";
 import { z } from "zod";
 
-const scouterScheduleScouterEntrySchema = z.object({
-  teamNumber: z.number(),
-  allianceColor: z
-    .union([z.nativeEnum(AllianceColor), z.string()])
-    .transform((value) => {
-      if (typeof value === "string") {
-        return value === "red" ? AllianceColor.Red : AllianceColor.Blue;
-      } else {
-        return value;
-      }
-    }),
-});
-
-export type ScouterScheduleScouterEntry = z.infer<
-  typeof scouterScheduleScouterEntrySchema
->;
-
-const scouterScheduleMatchSchema = z.object({
-  matchIdentity: matchIdentitySchema,
-  scouters: z.record(scouterScheduleScouterEntrySchema),
-});
-
-export type ScouterScheduleMatch = z.infer<typeof scouterScheduleMatchSchema>;
-
-const scouterScheduleSchema = z.object({
-  tournamentKey: z.string(),
+const scouterScheduleResponseSchema = z.object({
   hash: z.string(),
-  data: z.array(scouterScheduleMatchSchema),
+  data: z.array(
+    z.object({
+      matchType: z.number(),
+      matchNumber: z.number(),
+      scouters: z.record(
+        z.object({
+          team: z.number(),
+          alliance: z.union([z.literal("red"), z.literal("blue")]),
+        }),
+      ),
+    }),
+  ),
 });
 
-export type ScouterSchedule = z.infer<typeof scouterScheduleSchema>;
+export type ScouterSchedule = {
+  tournamentKey: string;
+  hash: string;
+  data: ScouterScheduleMatch[];
+};
+
+export type ScouterScheduleMatch = {
+  matchIdentity: MatchIdentity;
+  scouters: {
+    [scouterUUID: string]: ScouterScheduleScouterEntry;
+  };
+};
+
+type ScouterScheduleScouterEntry = {
+  teamNumber: number;
+  allianceColor: AllianceColor;
+};
 
 export async function getScouterSchedule(
   tournamentKey: string,
@@ -48,12 +50,45 @@ export async function getScouterSchedule(
     throw new Error("Error fetching scouter schedule");
   }
 
-  const json = await response.json();
+  const json = scouterScheduleResponseSchema.parse(await response.json());
 
-  const schedule = scouterScheduleSchema.parse({
-    ...json,
-    tournamentKey,
+  const data = json.data.map((match) => {
+    const matchType = matchTypes.find(
+      (matchType) => matchType.num === match.matchType,
+    )?.type;
+
+    if (!matchType) throw new Error("Invalid match type: " + match.matchType);
+
+    return {
+      ...match,
+      matchIdentity: {
+        tournamentKey,
+        matchType,
+        matchNumber: match.matchNumber,
+      } as MatchIdentity,
+      scouters: Object.fromEntries(
+        Object.entries(match.scouters).map(([key, value]) => {
+          return [
+            key,
+            {
+              ...value,
+              teamNumber: value.team,
+              allianceColor:
+                value.alliance === "red"
+                  ? AllianceColor.Red
+                  : AllianceColor.Blue,
+            },
+          ];
+        }),
+      ),
+    };
   });
+
+  const schedule: ScouterSchedule = {
+    data: data,
+    hash: json.hash,
+    tournamentKey,
+  };
 
   cacheScouterSchedule(schedule);
 
