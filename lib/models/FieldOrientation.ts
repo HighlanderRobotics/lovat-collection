@@ -10,5 +10,9 @@ export enum FieldOrientation {
 export const fieldOrientationAtom = atomWithStorage(
   "fieldOrientation",
   FieldOrientation.Auspicious,
-  createStorage(z.nativeEnum(FieldOrientation)),
+  // createStorage(z.nativeEnum(FieldOrientation)),
+  createStorage(z.union([
+    z.literal(0),
+    z.literal(1),
+  ]))
 );

@@ -78,7 +78,7 @@ export default function History() {
 
 const Matches = ({ filter }: { filter: string }) => {
   const history = useAtomValue(historyAtom);
-
+  console.log(history);
   const filteredMatches = useMemo(() => {
     if (!filter) return history;
     return history.filter((match) => {
