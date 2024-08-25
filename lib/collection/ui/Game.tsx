@@ -77,11 +77,24 @@ export function Game() {
         if (amplificationTimeout) clearTimeout(amplificationTimeout);
         router.replace('/game/post-match');
     }
+    const onRestart = () => {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+        if (autoTimeout) clearTimeout(autoTimeout);
+        if (amplificationTimeout) clearTimeout(amplificationTimeout);
+        console.log("restart ");
+        setReportState({
+            ...reportState!,
+            events: [],
+            gamePhase: GamePhase.Auto,
+            startTimestamp: undefined,
+        })
+    }
 
     if (!reportState?.startTimestamp) {
         return (
             <GameViewTemplate
                 onEnd={onEnd}
+                onRestart={onRestart}
                 gamePhaseMessage="Pre-match"
                 field={<PreMatchActions />}
                 topLeftReplacement={<Checkbox
@@ -107,6 +120,7 @@ export function Game() {
                 return (
                     <GameViewTemplate
                         onEnd={onEnd}
+                        onRestart={onRestart}
                         gamePhaseMessage="Autonomous"
                         field={<>
                             <HasNoteActions />
@@ -117,6 +131,7 @@ export function Game() {
                 return (
                     <GameViewTemplate
                         onEnd={onEnd}
+                        onRestart={onRestart}
                         gamePhaseMessage="Autonomous"
                         field={<>
                             <HasNoteActions />
@@ -130,6 +145,7 @@ export function Game() {
                 return (
                     <GameViewTemplate
                         onEnd={onEnd}
+                        onRestart={onRestart}
                         gamePhaseMessage="Autonomous"
                         field={<AutoCollectPieceActions />}
                     />
@@ -138,6 +154,7 @@ export function Game() {
                 return (
                     <GameViewTemplate
                         onEnd={onEnd}
+                        onRestart={onRestart}
                         gamePhaseMessage="Autonomous"
                         field={<>
                             <ExitWingAction />
@@ -151,6 +168,7 @@ export function Game() {
             return (
                 <GameViewTemplate
                     onEnd={onEnd}
+                    onRestart={onRestart}
                     gamePhaseMessage="Teleop"
                     field={<>
                         <FloatingActions feedEnabled />
@@ -162,6 +180,7 @@ export function Game() {
             return (
                 <GameViewTemplate
                     onEnd={onEnd}
+                    onRestart={onRestart}
                     gamePhaseMessage="Teleop"
                     field={<FloatingActions pickupEnabled />}
                 />
@@ -172,6 +191,7 @@ export function Game() {
     return (
         <GameViewTemplate
             onEnd={onEnd}
+            onRestart={onRestart}
             gamePhaseMessage="Unknown phase"
             field={<></>} />
     );
