@@ -17,6 +17,7 @@ import { Icon } from '../../components/Icon';
 import { AllianceColor } from '../../models/AllianceColor';
 import { GameAction } from './GameAction';
 import { FieldOrientation, fieldOrientationAtom } from '../../models/FieldOrientation';
+import { Alert } from 'react-native';
 
 export function Game() {
     const [reportState, setReportState] = useAtom(reportStateAtom);
@@ -82,12 +83,23 @@ export function Game() {
         if (autoTimeout) clearTimeout(autoTimeout);
         if (amplificationTimeout) clearTimeout(amplificationTimeout);
         console.log("restart ");
-        setReportState({
-            ...reportState!,
-            events: [],
-            gamePhase: GamePhase.Auto,
-            startTimestamp: undefined,
-        })
+        Alert.alert("Restart match?", "You will lose all of the data that you recorded.", [
+            {
+                text: "Cancel",
+            },
+            {
+                text: "Restart",
+                style: "destructive",
+                onPress: () => {
+                    setReportState({
+                        ...reportState!,
+                        events: [],
+                        gamePhase: GamePhase.Auto,
+                        startTimestamp: undefined,
+                    })
+                }
+            },
+        ])
     }
 
     if (!reportState?.startTimestamp) {
