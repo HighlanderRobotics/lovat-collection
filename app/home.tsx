@@ -20,7 +20,7 @@ import { MatchIdentity, MatchIdentityLocalizationFormat, MatchType, localizeMatc
 import { AllianceColor, allianceColors } from "../lib/models/AllianceColor";
 import { ScoutReportMeta } from "../lib/models/ScoutReportMeta";
 import { getScouter } from "../lib/storage/getScouter";
-import { atom, useAtom, useAtomValue } from "jotai";
+import { atom, useAtom, useAtomValue, useSetAtom } from "jotai";
 import { reportStateAtom } from "../lib/collection/reportStateAtom";
 import { GamePhase, ReportState, RobotRole } from "../lib/collection/ReportState";
 import { HighNote } from "../lib/collection/HighNote";
@@ -32,11 +32,13 @@ import 'react-native-get-random-values';
 import { v4 } from "uuid";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ScouterScheduleMatch, getCurrentScouterScheduleCached, getScouterScheduleCached, getVerionsColor, scouterScheduleAtom } from "../lib/storage/scouterSchedules";
-import { unwrap } from "jotai/utils";
+import { atomWithReset, atomWithStorage, unwrap } from "jotai/utils";
 import { Picker } from "react-native-wheel-pick";
 import { getTournamentsCached } from "../lib/lovatAPI/getTournaments";
 import { historyAtom } from "../lib/storage/historyAtom";
 import { startMatchEnabledAtom } from "./_layout";
+import { impersonatedAtom } from "./settings/impersonation";
+
 
 enum MatchSelectionMode {
     Automatic,
@@ -47,6 +49,16 @@ export default function Home() {
     const [tournament, setTournament] = useState<Tournament | null>(null);
     const [matchSelectionMode, setMatchSelectionMode] = useState(MatchSelectionMode.Automatic);
     const [meta, setMeta] = useState<ScoutReportMeta | null>(null);
+
+    const originalUUIDAtomValue = useAtomValue(originalUUIDAtom);
+
+    if (meta != null) {
+        if (meta.scouterUUID != originalUUIDAtomValue && originalUUIDAtomValue != "") {
+            console.log("Setting meta");
+            setMeta({...meta, scouterUUID: originalUUIDAtomValue});
+        }
+    }
+
     const [reportState, setReportState] = useAtom(reportStateAtom);
 
     const startMatchEnabled = useAtomValue(startMatchEnabledAtom);
@@ -177,21 +189,46 @@ const MatchSelection = ({ matchSelectionMode, onMetaChanged }:  MatchSelectionPr
     }
 }
 
+const originalUUIDAtom = atom("");
+
 const AutomaticMatchSelection = ({ onChanged }: { onChanged: (meta: ScoutReportMeta | null) => void }) => {
     const history = useAtomValue(historyAtom);
+
+    const impersonatedAtomValue = useAtomValue(impersonatedAtom);
 
     const services = useContext(ServicesContext);
     const { scouterSchedule, tournaments } = services;
 
     const [scouter, setScouter] = useState<Scouter | null>(null);
+    
+    const originalUUIDAtomValue = useAtomValue(originalUUIDAtom);
+    const setOriginalUUIDAtomValue = useSetAtom(originalUUIDAtom);
+
+    let originalUUID = "";
+    
+
+    if (scouter != null) {
+        if (impersonatedAtomValue.uuid != "") {
+            if (scouter.uuid != impersonatedAtomValue.uuid) {
+                originalUUID = scouter.uuid;
+                console.log(originalUUID);
+                setScouter({...scouter, uuid: impersonatedAtomValue.uuid});
+            }
+        }
+    }
+    
+    if (originalUUIDAtomValue != originalUUID) {
+        setOriginalUUIDAtomValue(originalUUID);
+    }
+    
 
     const selectedTournament = useAtomValue(tournamentAtom);
     const scouterScheduleForTournament = (scouterSchedule?.data.data.length ?? 0) > 0 && scouterSchedule?.data.data[0].matchIdentity.tournamentKey === selectedTournament?.key ? scouterSchedule : null;
 
     useEffect(() => {
         const fetchScouter = async () => {
-            const scouter = await getScouter();
-            setScouter(scouter ?? null);
+            const scouters = await getScouter();
+            setScouter(scouters ?? null);
         };
 
         fetchScouter();
@@ -200,7 +237,7 @@ const AutomaticMatchSelection = ({ onChanged }: { onChanged: (meta: ScoutReportM
     const matchesWithScouter = useMemo(() => {
         if (!scouterScheduleForTournament || !scouter) return [];
 
-        return scouterScheduleForTournament.data.data.filter(match => scouter?.uuid in match.scouters);
+        return scouterScheduleForTournament.data.data.filter(match => scouter.uuid in match.scouters);
     }, [scouterScheduleForTournament, scouter]);
 
     const nextMatch = useMemo(() => {

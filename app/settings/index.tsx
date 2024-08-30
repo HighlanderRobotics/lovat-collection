@@ -1,24 +1,27 @@
 import { Link, router } from 'expo-router';
-import { ActivityIndicator, ScrollView, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Pressable, ScrollView, TouchableOpacity, View } from 'react-native';
 import BodyMedium from '../../lib/components/text/BodyMedium';
 import Button from '../../lib/components/Button';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { IconButton } from '../../lib/components/IconButton';
-import { useAtom, useAtomValue } from 'jotai';
+import { atom, useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { FieldOrientation, fieldOrientationAtom } from '../../lib/models/FieldOrientation';
 import { ButtonGroup } from '../../lib/components/ButtonGroup';
 import { colors } from '../../lib/colors';
 import { FieldImage, fieldHeight, fieldWidth } from '../../lib/components/FieldImage';
 import Heading1Small from '../../lib/components/text/Heading1Small';
-import { Suspense } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { NavBar } from '../../lib/components/NavBar';
 import { tournamentAtom } from '../../lib/storage/getTournament';
-import { atomWithStorage } from 'jotai/utils';
+import { atomWithStorage, loadable } from 'jotai/utils';
 import { storage } from '../../lib/storage/jotaiStorage';
 import { Switch } from 'react-native-gesture-handler';
 import LabelSmall from '../../lib/components/text/LabelSmall';
 import { qrCodeSizeAtom } from './qrcode-size';
 import { Icon } from '../../lib/components/Icon';
+import Scouter, { impersonatedAtom } from './impersonation';
+import { getTeamScouters } from '../../lib/lovatAPI/getTeamScouters';
+import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
 
 export const trainingModeAtom = atomWithStorage<boolean>("trainingMode", false, storage);
 
@@ -49,6 +52,7 @@ export default function Settings() {
                             <FieldOrientationEditor />
                             <TournamentSelector />
                             <TrainingModeSelector />
+                            <ImpersonationToggle />
                             <QRCodeSizeLink />
                             <View
                                 style={{
@@ -227,4 +231,77 @@ const TournamentSelector = () => {
             </View>
         </View>
     );
+}
+const impersonationAtom = atomWithStorage<boolean>("impersonation", false, storage);
+const ImpersonationToggle = () => {
+    const [impersonationEnabled, setImpersonationEnabled] = useAtom(impersonationAtom);
+    const setImpersonatedAtom = useSetAtom(impersonatedAtom);
+
+    return (
+        <View style={{ gap: 7 }}>
+            <View style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
+                marginTop: 7,
+                padding: 14,
+                borderRadius: 10,
+                backgroundColor: colors.secondaryContainer.default,
+                gap: 7,
+            }}>
+                <LabelSmall>Scouter Impersonation </LabelSmall>
+                <Switch
+                    trackColor={{
+                        true: colors.victoryPurple.default,
+                        false: colors.gray.default,
+                    }}
+                    thumbColor={colors.background.default}
+                    value={impersonationEnabled}
+                    onChange={() => {
+                        if (impersonationEnabled) {
+                            setImpersonatedAtom({name:"", uuid:"",})
+                        }
+                        setImpersonationEnabled(!impersonationEnabled);
+                    }}
+                />
+            </View>
+            <Impersonation enabled={impersonationEnabled}/>
+            <BodyMedium>Allows user to scout match assigned to other scouter.</BodyMedium>
+        </View>
+    )
+}
+
+const Impersonation = ({enabled = false}) => {
+    const impersonatedAtomValue = useAtomValue(impersonatedAtom);
+
+    if (enabled) {
+        return (
+            <Link href={"/settings/impersonation"} asChild>
+                <TouchableOpacity 
+                    style={{
+                        flexDirection: "row",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        marginTop: 7,
+                        padding: 14,
+                        borderRadius: 10,
+                        backgroundColor: colors.secondaryContainer.default,
+                        gap: 7,
+                    }}
+                >
+                    <LabelSmall>Scouter Impersonated</LabelSmall>
+                    <View style={{ flexDirection: "row", alignItems: "center", gap: 4 }}>
+                        <BodyMedium>
+                            <Suspense>
+                            {impersonatedAtomValue.name}
+                            </Suspense>
+                        </BodyMedium>
+                        <Icon name="arrow_forward_ios" size={18} color={colors.body.default} />
+                    </View>
+                </TouchableOpacity>
+            </Link>
+        )
+    } else {
+        return
+    }
 }
