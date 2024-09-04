@@ -38,6 +38,7 @@ import { getTournamentsCached } from "../lib/lovatAPI/getTournaments";
 import { historyAtom } from "../lib/storage/historyAtom";
 import { startMatchEnabledAtom } from "./_layout";
 import { impersonatedAtom } from "./settings/impersonation";
+import { storage } from "../lib/storage/jotaiStorage";
 
 
 enum MatchSelectionMode {
@@ -51,10 +52,9 @@ export default function Home() {
     const [meta, setMeta] = useState<ScoutReportMeta | null>(null);
 
     const originalUUIDAtomValue = useAtomValue(originalUUIDAtom);
-
+    
     if (meta != null) {
         if (meta.scouterUUID != originalUUIDAtomValue && originalUUIDAtomValue != "") {
-            console.log("Setting meta");
             setMeta({...meta, scouterUUID: originalUUIDAtomValue});
         }
     }
@@ -189,7 +189,7 @@ const MatchSelection = ({ matchSelectionMode, onMetaChanged }:  MatchSelectionPr
     }
 }
 
-const originalUUIDAtom = atom("");
+const originalUUIDAtom = atomWithStorage<string>("uuid", "", storage);
 
 const AutomaticMatchSelection = ({ onChanged }: { onChanged: (meta: ScoutReportMeta | null) => void }) => {
     const history = useAtomValue(historyAtom);
@@ -211,13 +211,12 @@ const AutomaticMatchSelection = ({ onChanged }: { onChanged: (meta: ScoutReportM
         if (impersonatedAtomValue.uuid != "") {
             if (scouter.uuid != impersonatedAtomValue.uuid) {
                 originalUUID = scouter.uuid;
-                console.log(originalUUID);
                 setScouter({...scouter, uuid: impersonatedAtomValue.uuid});
             }
         }
     }
     
-    if (originalUUIDAtomValue != originalUUID) {
+    if (originalUUIDAtomValue != originalUUID && originalUUID != "") {
         setOriginalUUIDAtomValue(originalUUID);
     }
     

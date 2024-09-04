@@ -117,7 +117,7 @@ function useScoutersInSchedule() {
             });
         }
     })
-    console.log(scouterID);
+
     return scouterID;
 }
 
@@ -177,7 +177,7 @@ const ScouterItem = ({scouter}: { scouter: ScouterId}) => {
 
 const SelectedIndicator = ({ scouter }: { scouter: ScouterId }) => {
     const selectedScouter = useAtomValue(impersonatedAtom);
-    console.log(JSON.stringify(selectedScouter));
+
     if (selectedScouter.uuid === scouter.uuid) {
         return (
             <Icon name="check" color={colors.onBackground.default} />
