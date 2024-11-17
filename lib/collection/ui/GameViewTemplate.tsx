@@ -70,7 +70,6 @@ export const GameViewTemplate = (props: {
               />
             </View>
           )}
-
           <View
             style={{ alignItems: "flex-end", gap: 2, flex: 1, marginRight: 13 }}
           >

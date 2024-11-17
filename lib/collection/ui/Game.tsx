@@ -27,12 +27,28 @@ import {
   fieldOrientationAtom,
 } from "../../models/FieldOrientation";
 
+type MatchStateType = {
+  field: React.ReactNode,
+  gamePhaseMessage: string,
+  topLeftReplacement?: React.ReactNode,
+}
+
 export function Game() {
   const [reportState, setReportState] = useAtom(reportStateAtom);
   const isAmplified = useAtomValue(isAmplifiedAtom);
 
-  const addEvent = useAddEvent();
-
+  const addEvent = useAddEvent(); 
+  const matchStates: {[key: string]: MatchStateType} = {
+    preMatch: {field: <PreMatchActions />, gamePhaseMessage: "Pre-match", topLeftReplacement: <Checkbox label="Loaded with a note" checked={reportState?.startPiece} onChange={(checked) => { setReportState({ ...reportState!, startPiece: checked, }); }} />},
+    AutoExitedNote: {field: <HasNoteActions />, gamePhaseMessage: "Autonomous"},
+    AutoNotExitedNote: {field: <><HasNoteActions />, <ExitWingAction /></>, gamePhaseMessage: "Autonomous"},
+    AutoExitedNoNote: {field: <AutoCollectPieceActions />, gamePhaseMessage: "Autonomous"},
+    AutoNotExitedNoNote: {field: <ExitWingAction/>, gamePhaseMessage: "Autonomous"},
+    TeleopNote: {field: <><FloatingActions feedEnabled />, <HasNoteActions trap /></>, gamePhaseMessage: "Teleop"},
+    TeleopNoNote: {field: <FloatingActions pickupEnabled />, gamePhaseMessage: "Teleop"},
+    UnknownPhase: {field: <></>, gamePhaseMessage: "Problem finding phase"}
+  }
+  const [gameViewParams, setGameViewParams] = useState<MatchStateType>(matchStates.preMatch)
   const [autoTimeout, setAutoTimeout] = useState<NodeJS.Timeout | null>(null);
   const [amplificationTimeout, setAmplificationTimeout] =
     useState<NodeJS.Timeout | null>(null);
@@ -99,22 +115,8 @@ export function Game() {
   if (!reportState?.startTimestamp) {
     return (
       <GameViewTemplate
+        {...gameViewParams}
         onEnd={onEnd}
-        gamePhaseMessage="Pre-match"
-        field={<PreMatchActions />}
-        topLeftReplacement={
-          <Checkbox
-            label="Loaded with a note"
-            checked={reportState?.startPiece}
-            onChange={(checked) => {
-              setReportState({
-                ...reportState!,
-                startPiece: checked,
-              });
-            }}
-          />
-        }
-        startEnabled={reportState?.startPosition !== undefined}
       />
     );
   }
@@ -125,87 +127,26 @@ export function Game() {
     );
 
     if (hasNote(reportState)) {
-      if (hasExited) {
-        return (
-          <GameViewTemplate
-            onEnd={onEnd}
-            gamePhaseMessage="Autonomous"
-            field={
-              <>
-                <HasNoteActions />
-              </>
-            }
-          />
-        );
-      } else {
-        return (
-          <GameViewTemplate
-            onEnd={onEnd}
-            gamePhaseMessage="Autonomous"
-            field={
-              <>
-                <HasNoteActions />
-                <ExitWingAction />
-              </>
-            }
-          />
-        );
+      if (hasExited) { // During auto, has note, has left
+        setGameViewParams(matchStates.AutoExitedNote)
+      } else { // During auto, hasn't left, has note
+        setGameViewParams(matchStates.AutoNotExitedNote)
       }
-    } else {
-      if (hasExited) {
-        return (
-          <GameViewTemplate
-            onEnd={onEnd}
-            gamePhaseMessage="Autonomous"
-            field={<AutoCollectPieceActions />}
-          />
-        );
-      } else {
-        return (
-          <GameViewTemplate
-            onEnd={onEnd}
-            gamePhaseMessage="Autonomous"
-            field={
-              <>
-                <ExitWingAction />
-              </>
-            }
-          />
-        );
+    } else { // No note, during auto
+      if (hasExited) { // no note, during auto, has left 
+        setGameViewParams(matchStates.AutoExitedNoNote)
+      } else { // no note, during auto, hasn't left
+        setGameViewParams(matchStates.AutoNotExitedNoNote)
       }
     }
   } else if (reportState.gamePhase === GamePhase.Teleop) {
-    if (hasNote(reportState)) {
-      return (
-        <GameViewTemplate
-          onEnd={onEnd}
-          gamePhaseMessage="Teleop"
-          field={
-            <>
-              <FloatingActions feedEnabled />
-              <HasNoteActions trap />
-            </>
-          }
-        />
-      );
-    } else {
-      return (
-        <GameViewTemplate
-          onEnd={onEnd}
-          gamePhaseMessage="Teleop"
-          field={<FloatingActions pickupEnabled />}
-        />
-      );
+    if (hasNote(reportState)) { // During Teleop, has note
+      setGameViewParams(matchStates.TeleopNote)
+    } else { // Teleop, no note 
+      setGameViewParams(matchStates.TeleopNoNote)
     }
   }
-
-  return (
-    <GameViewTemplate
-      onEnd={onEnd}
-      gamePhaseMessage="Unknown phase"
-      field={<></>}
-    />
-  );
+  setGameViewParams(matchStates.UnknownPhase)
 }
 
 const FloatingActions = ({
@@ -233,12 +174,8 @@ const FloatingActions = ({
         left: 0,
         flexDirection:
           fieldOrientation === FieldOrientation.Auspicious
-            ? reportState?.meta.allianceColor === AllianceColor.Blue
-              ? "row"
-              : "row-reverse"
-            : reportState?.meta.allianceColor === AllianceColor.Blue
-              ? "row-reverse"
-              : "row",
+          ? (reportState?.meta.allianceColor === AllianceColor.Blue ? "row" : "row-reverse")
+          : (reportState?.meta.allianceColor === AllianceColor.Blue ? "row-reverse" : "row"),
         padding: 4,
         gap: 4,
       }}
