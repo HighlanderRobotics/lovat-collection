@@ -22,8 +22,7 @@ import { ScoutReportMeta } from "../lib/models/ScoutReportMeta";
 import { getScouter } from "../lib/storage/getScouter";
 import { atom, useAtom, useAtomValue } from "jotai";
 import { reportStateAtom } from "../lib/collection/reportStateAtom";
-import { GamePhase, ReportState, RobotRole } from "../lib/collection/ReportState";
-import { HighNote } from "../lib/collection/HighNote";
+import { GamePhase, GamePiece, ReportState, RobotRole } from "../lib/collection/ReportState";
 import { ChargingResult } from "../lib/collection/ChargingResult";
 import { Stack, router, useFocusEffect } from "expo-router";
 import { DriverAbility } from "../lib/collection/DriverAbility";
@@ -61,12 +60,12 @@ export default function Home() {
         const report: ReportState = {
             meta: meta!,
             events: [],
-            startPiece: true,
+            startPiece: GamePiece.None,
             gamePhase: GamePhase.Auto,
             robotRole: RobotRole.Offense,
             driverAbility: DriverAbility.Average,
-            stageResult: ChargingResult.Nothing,
-            highNote: HighNote.None,
+            autoChargingResult: ChargingResult.Nothing,
+            endChargingResult: ChargingResult.Nothing,
             pickUp: PickUp.Ground,
             notes: "",
             uuid: v4(),

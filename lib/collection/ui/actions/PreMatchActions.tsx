@@ -15,32 +15,14 @@ export const PreMatchActions = () => {
                         height: '100%',
                         width: '100%',
                         backgroundColor: "#e0e0e0",
-                        opacity: reportState?.startPosition === MatchEventPosition.WingNearAmp ? 0.8 : 0.3,
+                        opacity: reportState?.startPosition === MatchEventPosition.StartOne ? 0.8 : 0.3,
                         borderRadius: 7,
                     }}
                     activeOpacity={0.2}
                     onPress={() => {
                         setReportState({
                             ...reportState!,
-                            startPosition: MatchEventPosition.WingNearAmp,
-                        });
-                    }} />
-            </FieldElement>
-
-            <FieldElement edgeInsets={[0.21, 0.88, 0.54, 0.06]}>
-                <TouchableOpacity
-                    style={{
-                        height: '100%',
-                        width: '100%',
-                        backgroundColor: "#e0e0e0",
-                        opacity: reportState?.startPosition === MatchEventPosition.WingFrontOfSpeaker ? 0.8 : 0.3,
-                        borderRadius: 7,
-                    }}
-                    activeOpacity={0.2}
-                    onPress={() => {
-                        setReportState({
-                            ...reportState!,
-                            startPosition: MatchEventPosition.WingFrontOfSpeaker,
+                            startPosition: MatchEventPosition.StartOne,
                         });
                     }} />
             </FieldElement>
@@ -51,14 +33,14 @@ export const PreMatchActions = () => {
                         height: '100%',
                         width: '100%',
                         backgroundColor: "#e0e0e0",
-                        opacity: reportState?.startPosition === MatchEventPosition.WingCenter ? 0.8 : 0.3,
+                        opacity: reportState?.startPosition === MatchEventPosition.StartTwo ? 0.8 : 0.3,
                         borderRadius: 7,
                     }}
                     activeOpacity={0.2}
                     onPress={() => {
                         setReportState({
                             ...reportState!,
-                            startPosition: MatchEventPosition.WingCenter,
+                            startPosition: MatchEventPosition.StartTwo,
                         });
                     }} />
             </FieldElement>
@@ -69,14 +51,14 @@ export const PreMatchActions = () => {
                         height: '100%',
                         width: '100%',
                         backgroundColor: "#e0e0e0",
-                        opacity: reportState?.startPosition === MatchEventPosition.WingNearSource ? 0.8 : 0.3,
+                        opacity: reportState?.startPosition === MatchEventPosition.StartThree ? 0.8 : 0.3,
                         borderRadius: 7,
                     }}
                     activeOpacity={0.2}
                     onPress={() => {
                         setReportState({
                             ...reportState!,
-                            startPosition: MatchEventPosition.WingNearSource,
+                            startPosition: MatchEventPosition.StartThree,
                         });
                     }} />
             </FieldElement>

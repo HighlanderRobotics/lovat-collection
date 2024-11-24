@@ -28,7 +28,10 @@ export const GameViewTemplate = (props: {
 
     return (
         <>
-            <StatusBar hidden={true} backgroundColor={colors.background.default} />
+            <StatusBar 
+                hidden={true} 
+                backgroundColor={colors.background.default} 
+            />
             <View
                 style={{
                     backgroundColor: colors.secondaryContainer.default,

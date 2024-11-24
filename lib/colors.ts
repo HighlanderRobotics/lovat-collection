@@ -26,4 +26,7 @@ export const colors = {
     body: {
         default: "#b8b8b8",
     },
+    yellow: {
+        default: "#c1c337"
+    }
 };
