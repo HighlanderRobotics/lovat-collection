@@ -1,13 +1,12 @@
 import { ScoutReportMeta } from "../models/ScoutReportMeta";
 import { matchTypes } from "../models/match";
 import { DriverAbility, driverAbilityDescriptions } from "./DriverAbility";
-import { HighNote, highNoteDescriptions } from "./HighNote";
 import { MatchEvent } from "./MatchEvent";
 import { StartingPosition, matchEventPositions } from "./MatchEventPosition";
 import { MatchEventType } from "./MatchEventType";
 import { PickUp, pickUpDescriptions } from "./PickUp";
 import { ScoutReport, ScoutReportEvent } from "./ScoutReport";
-import { StageResult, stageResultDescriptions } from "./StageResult";
+import { ChargingResult, chargingResultDescriptions } from "./ChargingResult";
 
 export enum GamePhase {
     Auto,
@@ -28,19 +27,19 @@ export enum GamePiece {
 }
 
 export type ReportState = {
-    uuid: string;
-    meta: ScoutReportMeta;
-    events: MatchEvent[];
-    startTimestamp?: Date;
-    startPosition?: StartingPosition;
-    startPiece: GamePiece;
-    gamePhase: GamePhase;
-    robotRole: RobotRole;
-    driverAbility: DriverAbility;
-    stageResult: StageResult;
-    // highNote: HighNote;
-    pickUp: PickUp;
-    notes: string;
+    uuid: string
+    meta: ScoutReportMeta
+    events: MatchEvent[]
+    startTimestamp?: Date
+    startPosition?: StartingPosition
+    startPiece: GamePiece
+    gamePhase: GamePhase
+    robotRole: RobotRole
+    driverAbility: DriverAbility
+    autoChargingResult: ChargingResult
+    endChargingResult: ChargingResult
+    pickUp: PickUp
+    notes: string
 };
 
 export function exportScoutReport(reportState: ReportState): ScoutReport {
@@ -55,21 +54,19 @@ export function exportScoutReport(reportState: ReportState): ScoutReport {
         startTime: reportState.startTimestamp?.getTime() ?? 0,
         notes: reportState.notes,
         robotRole: reportState.robotRole,
-        stage: stageResultDescriptions[reportState.stageResult].num,
-        // highNote: highNoteDescriptions[reportState.highNote].num,
+        stage: chargingResultDescriptions[reportState.endChargingResult].num,
         pickUp: pickUpDescriptions[reportState.pickUp].num,
         driverAbility: driverAbilityDescriptions[reportState.driverAbility].numericalRating,
         scouterUuid: reportState.meta.scouterUUID,
         teamNumber: reportState.meta.teamNumber,
         events: [
-            ...(reportState.startPiece !== GamePiece.None
-                ? [
-                      [
-                          0,
-                          reportState.startPiece === GamePiece.Cone ? MatchEventType.PickupCone : MatchEventType.PickupCube,
-                          matchEventPositions[reportState.startPosition!].num,
-                      ] as ScoutReportEvent,
-                  ]
+            ...(reportState.startPiece !== GamePiece.None ? [
+                    [
+                        0,
+                        reportState.startPiece === GamePiece.Cone ? MatchEventType.PickupCone : MatchEventType.PickupCube,
+                        matchEventPositions[reportState.startPosition!].num,
+                    ] as ScoutReportEvent,
+                ]
                 : []),
             ...(reportState.startPosition
                 ? [

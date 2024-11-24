@@ -33,10 +33,10 @@ type MatchStateType = {
 }
 
 export function Game() {
-  const [reportState, setReportState] = useAtom(reportStateAtom);
+    const [reportState, setReportState] = useAtom(reportStateAtom);
 
-  const addEvent = useAddEvent(); 
-  const matchStates: Record<string, MatchStateType> = {
+    const addEvent = useAddEvent(); 
+    const matchStates: Record<string, MatchStateType> = {
     preMatch: {
         field: <PreMatchActions />, 
         gamePhaseMessage: "Pre-match", 
@@ -80,88 +80,75 @@ export function Game() {
         field: <></>, 
         gamePhaseMessage: "Problem finding phase"
     }
-  }
-  const [gameViewParams, setGameViewParams] = useState<MatchStateType>(matchStates.preMatch)
-  const [autoTimeout, setAutoTimeout] = useState<NodeJS.Timeout | null>(null);
-  const [amplificationTimeout, setAmplificationTimeout] =
+    }
+    const [gameViewParams, setGameViewParams] = useState<MatchStateType>(matchStates.preMatch)
+    const [autoTimeout, setAutoTimeout] = useState<NodeJS.Timeout | null>(null);
+    const [amplificationTimeout, setAmplificationTimeout] =
     useState<NodeJS.Timeout | null>(null);
 
-  const setPhase = useSetAtom(gamePhaseAtom);
+    const setPhase = useSetAtom(gamePhaseAtom);
 
-  useEffect(() => {
+    useEffect(() => {
     if (!reportState) {
-      router.replace("/home");
+        router.replace("/home");
     }
-  }, [reportState]);
+    }, [reportState]);
 
-  useEffect(() => {
+    useEffect(() => {
     if (
-      reportState?.gamePhase === GamePhase.Auto &&
-      reportState.startTimestamp &&
-      !autoTimeout
+        reportState?.gamePhase === GamePhase.Auto &&
+        reportState.startTimestamp &&
+        !autoTimeout
     ) {
-      setAutoTimeout(
+        setAutoTimeout(
         setTimeout(() => {
-          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-          setPhase(GamePhase.Teleop);
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+            setPhase(GamePhase.Teleop);
         }, 18 * 1000),
-      );
+        );
 
-      return () => {
+        return () => {
         if (autoTimeout) {
-          clearTimeout(autoTimeout);
+            clearTimeout(autoTimeout);
         }
-      };
+        };
     } else {
-      if (autoTimeout) {
+        if (autoTimeout) {
         clearTimeout(autoTimeout);
-      }
-      setAutoTimeout(null);
+        }
+        setAutoTimeout(null);
     }
-  }, [reportState?.gamePhase, reportState?.startTimestamp]);
+    }, [reportState?.gamePhase, reportState?.startTimestamp]);
 
-  const onEnd = () => {
+    const onEnd = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     if (autoTimeout) clearTimeout(autoTimeout);
     if (amplificationTimeout) clearTimeout(amplificationTimeout);
     router.replace("/game/post-match");
-  };
+    };
 
-  if (!reportState?.startTimestamp) {
+    if (!reportState?.startTimestamp) {
     return (
-      <GameViewTemplate
+        <GameViewTemplate
         {...gameViewParams}
         onEnd={onEnd}
-      />
+        />
     );
-  }
+    }
 
-  if (reportState.gamePhase === GamePhase.Auto) {
+    if (reportState.gamePhase === GamePhase.Auto) {
     const hasExited = reportState.events.some(
-      (event) => event.type === MatchEventType.LeaveWing,
+        (event) => event.type === MatchEventType.LeaveWing,
     );
-
-    if (hasPiece(reportState)) {
-      if (hasExited) { // During auto, has note, has left
-        setGameViewParams(matchStates.AutoExitedNote)
-      } else { // During auto, hasn't left, has note
-        setGameViewParams(matchStates.AutoNotExitedNote)
-      }
-    } else { // No note, during auto
-      if (hasExited) { // no note, during auto, has left 
-        setGameViewParams(matchStates.AutoExitedNoNote)
-      } else { // no note, during auto, hasn't left
-        setGameViewParams(matchStates.AutoNotExitedNoNote)
-      }
+        if (hasPiece(reportState)) {
+            setGameViewParams( hasExited ? matchStates.AutoExitedNote : matchStates.AutoNotExitedNote )
+        } else {
+            setGameViewParams( hasExited ? matchStates.AutoExitedNoNote : matchStates.AutoNotExitedNoNote )
+        }
+    } else if (reportState.gamePhase === GamePhase.Teleop) {
+        setGameViewParams( hasPiece(reportState) ? matchStates.TeleopNote : matchStates.TeleopNoNote )
     }
-  } else if (reportState.gamePhase === GamePhase.Teleop) {
-    if (hasPiece(reportState)) { // During Teleop, has note
-      setGameViewParams(matchStates.TeleopNote)
-    } else { // Teleop, no note 
-      setGameViewParams(matchStates.TeleopNoNote)
-    }
-  }
-  setGameViewParams(matchStates.UnknownPhase)
+    setGameViewParams(matchStates.UnknownPhase)
 }
 
 const FloatingActions = ({
@@ -180,19 +167,19 @@ const FloatingActions = ({
 
   return (
     <View
-      style={{
+        style={{
         position: "absolute",
         top: 0,
         right: 0,
         bottom: 0,
         left: 0,
         flexDirection:
-          fieldOrientation === FieldOrientation.Auspicious
-          ? (reportState?.meta.allianceColor === AllianceColor.Blue ? "row" : "row-reverse")
-          : (reportState?.meta.allianceColor === AllianceColor.Blue ? "row-reverse" : "row"),
+            fieldOrientation === FieldOrientation.Auspicious
+            ? (reportState?.meta.allianceColor === AllianceColor.Blue ? "row" : "row-reverse")
+            : (reportState?.meta.allianceColor === AllianceColor.Blue ? "row-reverse" : "row"),
         padding: 4,
         gap: 4,
-      }}
+        }}
     >
       {/* <View style={{ flex: 1.8 }}>
         {pickupEnabled && (

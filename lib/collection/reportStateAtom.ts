@@ -1,7 +1,7 @@
 import { atom, useAtom } from "jotai";
 import { GamePhase, GamePiece, ReportState } from "./ReportState";
 import { MatchEventType, gainPieceEvents, losePieceEvents } from "./MatchEventType";
-import { GroundNotePosition, MatchEventPosition, groundNotePositions } from "./MatchEventPosition";
+import { groundPieces, MatchEventPosition } from "./MatchEventPosition";
 
 export const reportStateAtom = atom<ReportState | null>(null);
 export const gamePhaseAtom = atom(
@@ -18,14 +18,14 @@ export const gamePhaseAtom = atom(
     }
 );
 
-export const remainingGroundNoteLocationsAtom = atom<GroundNotePosition[] | null>((get) => {
+export const remainingGroundNoteLocationsAtom = atom<MatchEventPosition[] | null>((get) => {
     const reportState = get(reportStateAtom);
 
     if (!reportState) {
         return null;
     }
 
-    const remainingGroundPieceLocations: GroundNotePosition[] = Object.keys(groundNotePositions) as GroundNotePosition[];
+    const remainingGroundPieceLocations: MatchEventPosition[] = groundPieces;
 
     for (let i = 0; i < reportState.events.length; i++) {
         const event = reportState.events[i];
@@ -38,50 +38,26 @@ export const remainingGroundNoteLocationsAtom = atom<GroundNotePosition[] | null
     return remainingGroundPieceLocations;
 });
 
-// export const isAmplifiedAtom = atom<boolean>((get) => {
-//     const reportState = get(reportStateAtom);
-
-//     if (!reportState) {
-//         return false;
-//     }
-
-//     let isAmplified = false;
-
-//     for (let i = 0; i < reportState.events.length; i++) {
-//         const event = reportState.events[i];
-
-//         if (event.type === MatchEventType.StartAmplfying) {
-//             isAmplified = true;
-//         }
-
-//         if (event.type === MatchEventType.StopAmplifying) {
-//             isAmplified = false;
-//         }
-//     }
-
-//     return isAmplified;
-// });
-
 export const hasPiece = (reportState: ReportState) => {
-    let hasNote = GamePiece.None;
+    let piece = GamePiece.None;
 
     if (reportState.startPiece) {
-        hasNote = reportState.startPiece;
+        piece = reportState.startPiece;
     }
 
     for (let i = 0; i < reportState.events.length; i++) {
         const event = reportState.events[i];
         
         if (losePieceEvents.includes(event.type)) {
-            hasNote = GamePiece.None;
+            piece = GamePiece.None;
         }
 
         if (gainPieceEvents.includes(event.type)) {
-            hasNote = event.type === MatchEventType.PickupCone ? GamePiece.Cone : GamePiece.Cube;
+            piece = event.type === MatchEventType.PickupCone ? GamePiece.Cone : GamePiece.Cube;
         }
     }
 
-    return hasNote;
+    return piece;
 }
 
 export const useAddEvent = () => {

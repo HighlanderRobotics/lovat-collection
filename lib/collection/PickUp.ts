@@ -14,17 +14,17 @@ export type PickUpDescription = {
 export const pickUpDescriptions: Record<PickUp, PickUpDescription> = {
     [PickUp.Ground]: {
         localizedDescription: "Ground",
-        localizedLongDescription: "The robot collects notes from the ground.",
+        localizedLongDescription: "The robot collects game pieces from the ground.",
         num: 0,
     },
     [PickUp.Chute]: {
         localizedDescription: "Chute",
-        localizedLongDescription: "The robot collects notes from the chute.",
+        localizedLongDescription: "The robot collects game pieces from the chute.",
         num: 1,
     },
     [PickUp.Both]: {
         localizedDescription: "Both",
-        localizedLongDescription: "The robot collects notes from both the ground and the chute.",
+        localizedLongDescription: "The robot collects game pieces from both the ground and the chute.",
         num: 2,
     },
 };

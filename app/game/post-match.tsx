@@ -4,13 +4,12 @@ import { Stack, router, useNavigation } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Button from "../../lib/components/Button";
 import LabelSmall from "../../lib/components/text/LabelSmall";
-import { ButtonGroup, ButtonGroupDirection } from "../../lib/components/ButtonGroup";
+import { ButtonGroup, ButtonGroupDirection, UnkeyedButtonGroupButton } from "../../lib/components/ButtonGroup";
 import { RobotRole } from "../../lib/collection/ReportState";
 import { reportStateAtom } from "../../lib/collection/reportStateAtom";
 import { useAtom, useAtomValue } from "jotai";
 import { DriverAbility, driverAbilityDescriptions } from "../../lib/collection/DriverAbility";
-import { StageResult, stageResultDescriptions } from "../../lib/collection/StageResult";
-import { HighNote, highNoteDescriptions } from "../../lib/collection/HighNote";
+import { ChargingResult, chargingResultDescriptions } from "../../lib/collection/ChargingResult";
 import { PickUp, pickUpDescriptions } from "../../lib/collection/PickUp";
 import TextField from "../../lib/components/TextField";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
@@ -35,127 +34,145 @@ export default function PostMatch() {
 
     return (
         <>
-            <Stack.Screen options={{ orientation: 'portrait_up', animationDuration: 0, animationTypeForReplace: "push", animation: "flip" }} />
+            <Stack.Screen 
+                options={{ 
+                    orientation: 'portrait_up', 
+                    animationDuration: 0, 
+                    animationTypeForReplace: "push", 
+                    animation: "flip" 
+                }} 
+            />
             <NavBar
                 title="Post match"
             />
-            <KeyboardAwareScrollView style={{ flex: 1, paddingVertical: 16, paddingHorizontal: 26, gap: 28 }} contentContainerStyle={{ flexDirection: "row", justifyContent: "center" }}>
-                <SafeAreaView edges={['bottom', 'left', 'right']} style={{ flex: 1, gap: 7, paddingBottom: 200, maxWidth: 550 }}>
-                    <View style={{ gap: 7 }}>
-                        <LabelSmall>Robot role</LabelSmall>
-                        <ButtonGroup
-                            direction={ButtonGroupDirection.Vertical}
-                            buttons={[
-                                {
-                                    label: 'Offense',
-                                    value: RobotRole.Offense,
-                                },
-                                {
-                                    label: 'Defense',
-                                    value: RobotRole.Defense,
-                                },
-                                {
-                                    label: 'Feeder',
-                                    value: RobotRole.Feeder,
-                                },
-                                {
-                                    label: 'Immobile',
-                                    value: RobotRole.Immobile,
-                                }
-                            ]}
-                            selected={reportState!.robotRole}
-                            onChange={(value) => {
-                                setReportState({
-                                    ...reportState!,
-                                    robotRole: value,
-                                })
-                            }}
-                        />
-                    </View>
-
-                    <View style={{ gap: 7 }}>
-                        <LabelSmall>Driver ability</LabelSmall>
-                        <ButtonGroup
-                            buttons={
-                                Object.keys(driverAbilityDescriptions).map((key) => {
-                                    return {
-                                        label: driverAbilityDescriptions[key as DriverAbility].numericalRating.toString(),
-                                        value: key as DriverAbility,
-                                    }
-                                })
+            <KeyboardAwareScrollView 
+                style={{ 
+                    flex: 1, 
+                    paddingVertical: 16, 
+                    paddingHorizontal: 26, 
+                    gap: 28 
+                }} 
+                contentContainerStyle={{ 
+                    flexDirection: "row", 
+                    justifyContent: "center" 
+                }}
+            >
+                <SafeAreaView 
+                    edges={['bottom', 'left', 'right']} 
+                    style={{ 
+                        flex: 1, 
+                        gap: 7, 
+                        paddingBottom: 200, 
+                        maxWidth: 550 
+                    }}
+                >
+                    <PostMatchGroupSection
+                        name={"Robot Role"}
+                        items={[
+                            {
+                                label: 'Offense',
+                                value: RobotRole.Offense,
+                            },
+                            {
+                                label: 'Defense',
+                                value: RobotRole.Defense,
+                            },
+                            {
+                                label: 'Feeder',
+                                value: RobotRole.Feeder,
+                            },
+                            {
+                                label: 'Immobile',
+                                value: RobotRole.Immobile,
                             }
-                            selected={reportState!.driverAbility}
-                            onChange={(value) => {
-                                setReportState({
-                                    ...reportState!,
-                                    driverAbility: value,
-                                })
-                            }}
-                        />
-                    </View>
+                        ]}
+                        onChange={(value) => 
+                            setReportState({
+                                ...reportState,
+                                robotRole: value,
+                            })
+                        }
+                        selected={reportState!.robotRole}
+                    />
 
-                    <View style={{ gap: 7 }}>
-                        <LabelSmall>Stage result</LabelSmall>
-                        <ButtonGroup
-                            direction={ButtonGroupDirection.Vertical}
-                            buttons={Object.keys(stageResultDescriptions).map((key) => {
-                                return {
-                                    label: stageResultDescriptions[key as StageResult].localizedDescription.toString(),
-                                    value: key as StageResult,
-                                }
-                            })}
-                            selected={reportState!.stageResult}
-                            onChange={(value) => {
-                                setReportState({
-                                    ...reportState!,
-                                    stageResult: value,
-                                })
-                            }}
-                        />
-                    </View>
+                    <PostMatchGroupSection 
+                        name={"Driver Ability"}
+                        items={
+                            Object.keys(driverAbilityDescriptions).map((key) => ({
+                                label: driverAbilityDescriptions[key as DriverAbility].numericalRating.toString(),
+                                value: key as DriverAbility,
+                            }))
+                        }
+                        onChange={(value) => 
+                            setReportState({
+                                ...reportState,
+                                driverAbility: value,
+                            })
+                        }
+                        selected={reportState!.driverAbility}
+                        direction={ButtonGroupDirection.Horizontal}
+                    />
 
-                    <View style={{ gap: 7 }}>
-                        <LabelSmall>High note</LabelSmall>
-                        <ButtonGroup
-                            direction={ButtonGroupDirection.Vertical}
-                            buttons={Object.keys(highNoteDescriptions).map((key) => {
-                                return {
-                                    label: highNoteDescriptions[key as HighNote].localizedDescription.toString(),
-                                    value: key as HighNote,
-                                }
-                            })}
-                            selected={reportState!.highNote}
-                            onChange={(value) => {
-                                setReportState({
-                                    ...reportState!,
-                                    highNote: value,
-                                })
-                            }}
-                        />
-                    </View>
+                    <PostMatchGroupSection
+                        name={"Endgame Charging Result"}
+                        items={
+                            Object.keys(chargingResultDescriptions).map((key) => ({
+                                label: chargingResultDescriptions[key as ChargingResult].localizedDescription.toString(),
+                                value: key as ChargingResult,
+                            }))
+                        }
+                        onChange={(value) => 
+                            setReportState({
+                                ...reportState,
+                                endChargingResult: value,
+                            })
+                        }
+                        selected={reportState!.endChargingResult}
+                    /> 
 
-                    <View style={{ gap: 7 }}>
-                        <LabelSmall>Pick up</LabelSmall>
-                        <ButtonGroup
-                            direction={ButtonGroupDirection.Vertical}
-                            buttons={Object.keys(pickUpDescriptions).map((key) => {
-                                return {
-                                    label: pickUpDescriptions[key as PickUp].localizedDescription.toString(),
-                                    value: key as PickUp,
-                                }
-                            })}
-                            selected={reportState!.pickUp}
-                            onChange={(value) => {
-                                setReportState({
-                                    ...reportState!,
-                                    pickUp: value,
-                                })
-                            }}
-                        />
-                    </View>
+                    <PostMatchGroupSection
+                        name={"Autonomus Charging Result"}
+                        items={
+                            Object.keys(chargingResultDescriptions).map((key) => ({
+                                label: chargingResultDescriptions[key as ChargingResult].localizedDescription.toString(),
+                                value: key as ChargingResult,
+                            }))
+                        }
+                        onChange={(value) => 
+                            setReportState({
+                                ...reportState,
+                                autoChargingResult: value,
+                            })
+                        }
+                        selected={reportState!.endChargingResult}
+                    /> 
+                    
+                    <PostMatchGroupSection 
+                        name={"Pick Up"}
+                        items={
+                            Object.keys(pickUpDescriptions).map((key) => ({
+                                label: pickUpDescriptions[key as PickUp].localizedDescription.toString(),
+                                value: key as PickUp,
+                            }))
+                        }
+                        onChange={(value) => 
+                            setReportState({
+                                ...reportState,
+                                pickUp: value,
+                            })
+                        }
+                        selected={reportState!.pickUp}
+                    />
 
-                    <View style={{ gap: 7, marginBottom: 18, }}>
-                        <LabelSmall>Notes</LabelSmall>
+                    <View 
+                        style={{ 
+                            gap: 7, 
+                            marginBottom: 18, 
+                        }}
+                    >
+                        <LabelSmall>
+                            Notes
+                        </LabelSmall>
                         <TextField
                             value={reportState!.notes}
                             onChangeText={(text) => {
@@ -169,7 +186,11 @@ export default function PostMatch() {
                         />
                     </View>
 
-                    <View style={{ gap: 10 }}>
+                    <View 
+                        style={{
+                            gap: 10 
+                        }}
+                    >
                         <Button
                             disabled={trainingModeEnabled}
                             variant="primary"
@@ -203,11 +224,46 @@ export default function PostMatch() {
                         </Button>
 
                         {trainingModeEnabled && (
-                            <BodyMedium>Disable training mode in settings to submit data.</BodyMedium>
+                            <BodyMedium>
+                                Disable training mode in settings to submit data.
+                            </BodyMedium>
                         )}
                     </View>
                 </SafeAreaView>
             </KeyboardAwareScrollView>
         </>
     );
+}
+
+function PostMatchGroupSection(props: {
+    name: string, 
+    onChange: (value: any) => void, 
+    selected: any, 
+    direction?: ButtonGroupDirection, 
+    items: UnkeyedButtonGroupButton<any>[]
+}) {
+    const [name, onChange, selected, direction, items] = [
+        props.name,
+        props.onChange,
+        props.selected,
+        props.direction ?? ButtonGroupDirection.Vertical,
+        props.items,
+    ]
+    return (
+        <View 
+            style={{ 
+                gap: 7 
+            }}
+        >
+            <LabelSmall>
+                {name}
+            </LabelSmall>
+            <ButtonGroup
+                direction={direction}
+                buttons={items}
+                selected={selected}
+                onChange={onChange}
+            />
+        </View>
+    )
 }

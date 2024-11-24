@@ -1,10 +1,12 @@
-import { View } from "react-native";
+import { TouchableOpacity, View } from "react-native";
 import { colors } from "../colors";
 import { Key } from "react";
 import Button from "./Button";
 import * as Haptics from 'expo-haptics';
+import BodyMedium from "./text/BodyMedium";
+import LabelSmall from "./text/LabelSmall";
 
-type UnkeyedButtonGroupButton<T> = {
+export type UnkeyedButtonGroupButton<T> = {
     label: string;
     value: T;
     key?: undefined;
@@ -33,7 +35,7 @@ export function ButtonGroup<T = string>(props: ButtonGroupProps<T>) {
         <View style={{
             flexDirection: direction === ButtonGroupDirection.Horizontal ? 'row' : 'column',
             gap: 2,
-            backgroundColor: colors.gray.hover,
+            backgroundColor: colors.background.default,
             borderRadius: 7,
             overflow: 'hidden',
         }}>
@@ -41,18 +43,24 @@ export function ButtonGroup<T = string>(props: ButtonGroupProps<T>) {
                 const isSelected = button.value === selected;
 
                 return (
-                    <Button
+                    <TouchableOpacity
                         key={button.key ?? button.value}
-                        flex={1}
-                        borderRadius={0}
-                        variant={isSelected ? 'primary' : 'secondary'}
+                        style={{
+                            flex: 1,
+                            borderRadius: 0,
+                            backgroundColor: isSelected ? colors.victoryPurple.default : colors.secondaryContainer.default,
+                        }}
                         onPress={() => {
-                            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
                             onChange(button.value)
                         }}
                     >
-                        {button.label}
-                    </Button>
+                        <View style={{paddingHorizontal: 10, paddingVertical: 10, alignItems: "center"}}>
+                            <LabelSmall color={isSelected ? colors.background.default : colors.onBackground.default}>
+                                {button.label}
+                            </LabelSmall>
+                        </View>
+                    </TouchableOpacity>
                 );
             })}
         </View>

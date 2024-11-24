@@ -24,7 +24,7 @@ import { atom, useAtom, useAtomValue } from "jotai";
 import { reportStateAtom } from "../lib/collection/reportStateAtom";
 import { GamePhase, ReportState, RobotRole } from "../lib/collection/ReportState";
 import { HighNote } from "../lib/collection/HighNote";
-import { StageResult } from "../lib/collection/StageResult";
+import { ChargingResult } from "../lib/collection/ChargingResult";
 import { Stack, router, useFocusEffect } from "expo-router";
 import { DriverAbility } from "../lib/collection/DriverAbility";
 import { PickUp } from "../lib/collection/PickUp";
@@ -65,7 +65,7 @@ export default function Home() {
             gamePhase: GamePhase.Auto,
             robotRole: RobotRole.Offense,
             driverAbility: DriverAbility.Average,
-            stageResult: StageResult.Nothing,
+            stageResult: ChargingResult.Nothing,
             highNote: HighNote.None,
             pickUp: PickUp.Ground,
             notes: "",
