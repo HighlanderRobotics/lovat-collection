@@ -1,65 +1,73 @@
 export enum MatchEventType {
     LeaveWing,
-    PickupNote,
-    DropNote,
-    ScoreNote,
+    PickupCone,
+    PickupCube,
+    DropPiece,
     Defend,
-    FeedNote,
-    StartAmplfying,
-    StopAmplifying,
+
+    ScorePiece,
+
+    ChargingEngaged,
+    ChargingTipped,
+    ChargingFailed,
+    
     StartingPosition,
 }
+
 
 export type MatchEventTypeDescription = {
     name: string;
     icon: string;
 }
 
-export const matchEventTypeDescriptions: Record<MatchEventType, MatchEventTypeDescription> = {
-    [MatchEventType.LeaveWing]: {
-        name: "Leave Wing",
-        icon: "exit_to_app",
-    },
-    [MatchEventType.PickupNote]: {
-        name: "Pick Up Note",
-        icon: "upload",
-    },
-    [MatchEventType.DropNote]: {
-        name: "Drop Note",
-        icon: "output_circle",
-    },
-    [MatchEventType.ScoreNote]: {
-        name: "Score Note",
-        icon: "sports_score",
-    },
-    [MatchEventType.Defend]: {
-        name: "Defend",
-        icon: "shield",
-    },
-    [MatchEventType.FeedNote]: {
-        name: "Feed Note",
-        icon: "conveyor_belt",
-    },
-    [MatchEventType.StartAmplfying]: {
-        name: "Start Amplifying",
-        icon: "campaign",
-    },
-    [MatchEventType.StopAmplifying]: {
-        name: "Stop Amplifying",
-        icon: "volume_off",
-    },
-    [MatchEventType.StartingPosition]: {
-        name: "Starting Position",
-        icon: "play_arrow",
-    },
-};
+// export const matchEventTypeDescriptions: Record<MatchEventType, MatchEventTypeDescription> = {
+//     [MatchEventType.LeaveWing]: {
+//         name: "Leave Wing",
+//         icon: "exit_to_app",
+//     },
+//     [MatchEventType.PickupCone]: {
+//         name: "Pick Up Cone",
+//         icon: "upload",
+//     },
+//     [MatchEventType.PickupCube]: {
+//         name: "Pick Up Cube",
+//         icon: "upload",
+//     },
+//     [MatchEventType.DropPiece]: {
+//         name: "Drop Piece",
+//         icon: "output_circle",
+//     },
 
-export const gainNoteEvents: MatchEventType[] = [
-    MatchEventType.PickupNote,
+//     [MatchEventType.GridOneLow | MatchEventType.GridTwoLow | MatchEventType.GridThreeLow | MatchEventType.GenericLow]: {
+//         name: "Place Low",
+//         icon: "",
+//     },
+//     [MatchEventType.GridOneMedium | MatchEventType.GridTwoMedium | MatchEventType.GridThreeMedium | MatchEventType.GenericMedium]: {
+
+//     },
+//     [MatchEventType.GridOneHigh | MatchEventType.GridTwoHigh | MatchEventType.GridThreeHigh | MatchEventType.GenericHigh]: {
+
+//     },
+
+//     [MatchEventType.Defend]: {
+//         name: "Defend",
+//         icon: "shield",
+//     },
+//     // [MatchEventType.ChargingEngaged]: {
+
+//     // },
+//     [MatchEventType.StartingPosition]: {
+//         name: "Starting Position",
+//         icon: "play_arrow",
+//     },
+// };
+
+export const gainPieceEvents: MatchEventType[] = [
+    MatchEventType.PickupCone,
+    MatchEventType.PickupCube,
 ];
 
-export const loseNoteEvents: MatchEventType[] = [
-    MatchEventType.ScoreNote,
-    MatchEventType.DropNote,
-    MatchEventType.FeedNote,
+export const losePieceEvents: MatchEventType[] = [
+    MatchEventType.ScorePiece,
+    MatchEventType.DropPiece,
 ];

@@ -21,18 +21,24 @@ export enum RobotRole {
     Immobile,
 }
 
+export enum GamePiece {
+    None,
+    Cube,
+    Cone
+}
+
 export type ReportState = {
     uuid: string;
     meta: ScoutReportMeta;
     events: MatchEvent[];
     startTimestamp?: Date;
     startPosition?: StartingPosition;
-    startPiece: boolean;
+    startPiece: GamePiece;
     gamePhase: GamePhase;
     robotRole: RobotRole;
     driverAbility: DriverAbility;
     stageResult: StageResult;
-    highNote: HighNote;
+    // highNote: HighNote;
     pickUp: PickUp;
     notes: string;
 };
@@ -50,17 +56,17 @@ export function exportScoutReport(reportState: ReportState): ScoutReport {
         notes: reportState.notes,
         robotRole: reportState.robotRole,
         stage: stageResultDescriptions[reportState.stageResult].num,
-        highNote: highNoteDescriptions[reportState.highNote].num,
+        // highNote: highNoteDescriptions[reportState.highNote].num,
         pickUp: pickUpDescriptions[reportState.pickUp].num,
         driverAbility: driverAbilityDescriptions[reportState.driverAbility].numericalRating,
         scouterUuid: reportState.meta.scouterUUID,
         teamNumber: reportState.meta.teamNumber,
         events: [
-            ...(reportState.startPiece
+            ...(reportState.startPiece !== GamePiece.None
                 ? [
                       [
                           0,
-                          MatchEventType.PickupNote,
+                          reportState.startPiece === GamePiece.Cone ? MatchEventType.PickupCone : MatchEventType.PickupCube,
                           matchEventPositions[reportState.startPosition!].num,
                       ] as ScoutReportEvent,
                   ]

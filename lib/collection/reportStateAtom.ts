@@ -1,6 +1,6 @@
 import { atom, useAtom } from "jotai";
-import { GamePhase, ReportState } from "./ReportState";
-import { MatchEventType, gainNoteEvents, loseNoteEvents } from "./MatchEventType";
+import { GamePhase, GamePiece, ReportState } from "./ReportState";
+import { MatchEventType, gainPieceEvents, losePieceEvents } from "./MatchEventType";
 import { GroundNotePosition, MatchEventPosition, groundNotePositions } from "./MatchEventPosition";
 
 export const reportStateAtom = atom<ReportState | null>(null);
@@ -38,46 +38,46 @@ export const remainingGroundNoteLocationsAtom = atom<GroundNotePosition[] | null
     return remainingGroundPieceLocations;
 });
 
-export const isAmplifiedAtom = atom<boolean>((get) => {
-    const reportState = get(reportStateAtom);
+// export const isAmplifiedAtom = atom<boolean>((get) => {
+//     const reportState = get(reportStateAtom);
 
-    if (!reportState) {
-        return false;
-    }
+//     if (!reportState) {
+//         return false;
+//     }
 
-    let isAmplified = false;
+//     let isAmplified = false;
 
-    for (let i = 0; i < reportState.events.length; i++) {
-        const event = reportState.events[i];
+//     for (let i = 0; i < reportState.events.length; i++) {
+//         const event = reportState.events[i];
 
-        if (event.type === MatchEventType.StartAmplfying) {
-            isAmplified = true;
-        }
+//         if (event.type === MatchEventType.StartAmplfying) {
+//             isAmplified = true;
+//         }
 
-        if (event.type === MatchEventType.StopAmplifying) {
-            isAmplified = false;
-        }
-    }
+//         if (event.type === MatchEventType.StopAmplifying) {
+//             isAmplified = false;
+//         }
+//     }
 
-    return isAmplified;
-});
+//     return isAmplified;
+// });
 
-export const hasNote = (reportState: ReportState) => {
-    let hasNote = false;
+export const hasPiece = (reportState: ReportState) => {
+    let hasNote = GamePiece.None;
 
     if (reportState.startPiece) {
-        hasNote = true;
+        hasNote = reportState.startPiece;
     }
 
     for (let i = 0; i < reportState.events.length; i++) {
         const event = reportState.events[i];
         
-        if (loseNoteEvents.includes(event.type)) {
-            hasNote = false;
+        if (losePieceEvents.includes(event.type)) {
+            hasNote = GamePiece.None;
         }
 
-        if (gainNoteEvents.includes(event.type)) {
-            hasNote = true;
+        if (gainPieceEvents.includes(event.type)) {
+            hasNote = event.type === MatchEventType.PickupCone ? GamePiece.Cone : GamePiece.Cube;
         }
     }
 
