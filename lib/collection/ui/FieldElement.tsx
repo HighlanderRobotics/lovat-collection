@@ -19,23 +19,23 @@ export const FieldElement = (props: {
     const [reportState] = useAtom(reportStateAtom);
     const allianceColor = reportState?.meta.allianceColor;
 
-    const [givenTop, givenRight, givenButtom, givenLeft] = edgeInsets;
+    const [givenTop, givenRight, givenBottom, givenLeft] = edgeInsets;
 
     const top = useMemo(() => {
         if (fieldOrientation === FieldOrientation.Auspicious) {
             return givenTop;
         } else {
-            return givenButtom;
+            return givenBottom;
         }
-    }, [respectAlliance, fieldOrientation, givenTop, givenButtom]);
+    }, [respectAlliance, fieldOrientation, givenTop, givenBottom]);
 
     const bottom = useMemo(() => {
         if (fieldOrientation === FieldOrientation.Auspicious) {
-            return givenButtom;
+            return givenBottom;
         } else {
             return givenTop;
         }
-    }, [respectAlliance, fieldOrientation, givenTop, givenButtom]);
+    }, [respectAlliance, fieldOrientation, givenTop, givenBottom]);
 
     const left = useMemo(() => {
         if (fieldOrientation === FieldOrientation.Auspicious) {

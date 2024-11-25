@@ -144,7 +144,7 @@ export default function PostMatch() {
                                 autoChargingResult: value,
                             })
                         }
-                        selected={reportState!.endChargingResult}
+                        selected={reportState!.autoChargingResult}
                     /> 
                     
                     <PostMatchGroupSection 

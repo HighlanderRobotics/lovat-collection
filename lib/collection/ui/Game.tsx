@@ -13,7 +13,7 @@ import { GameViewTemplate } from "./GameViewTemplate";
 import { GamePhase, GamePiece } from "../ReportState";
 import { Checkbox } from "../../components/Checkbox";
 import { MatchEventType } from "../MatchEventType";
-import { HasNoteActions } from "./actions/HasNoteActions";
+import { HasPieceActions } from "./actions/HasPieceActions";
 import { ExitWingAction } from "./actions/ExitWingAction";
 import * as Haptics from "expo-haptics";
 import { AutoCollectPieceActions } from "./actions/AutoCollectPieceActions";
@@ -33,6 +33,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { GameTimer } from "./GameTimer";
 import * as DropdownMenu from 'zeego/dropdown-menu'
 import { fieldHeight, FieldImage, fieldWidth } from "../../components/FieldImage";
+import { MatchEventPosition } from "../MatchEventPosition";
+import TitleMedium from "../../components/text/TitleMedium";
 
 type MatchStateType = {
   field: React.ReactNode,
@@ -41,16 +43,19 @@ type MatchStateType = {
   startEnabled?: boolean,
 }
 
+export enum FieldOverlay {
+    None,
+    Score,
+    Charge,
+}
+
 export function Game() {
     const [reportState, setReportState] = useAtom(reportStateAtom);
-    // const reportState = useAtomValue(reportStateAtom)
-    // const setReportState = useSetAtom(reportStateAtom)
-    console.log(reportState)
-
     const addEvent = useAddEvent(); 
     const undoEvent = useUndoEvent();
     
     const setPhase = useSetAtom(gamePhaseAtom);
+    const [overlay, setOverlay] = useState<[FieldOverlay, 1 | 2 | 3 | null]>([FieldOverlay.None, null]) 
 
     useEffect(() => {
     if (!reportState) {
@@ -121,12 +126,12 @@ export function Game() {
             </View>
         },
         AutoExitedNote: {
-            field: <HasNoteActions />, 
+            field: <HasPieceActions auto={true} setOverlay={setOverlay} />, 
             gamePhaseMessage: "Autonomous"
         },
         AutoNotExitedNote: {
             field: <>
-                <HasNoteActions /> 
+                <HasPieceActions auto={true} setOverlay={setOverlay} /> 
                 <ExitWingAction />
             </>,
             gamePhaseMessage: "Autonomous"
@@ -142,7 +147,7 @@ export function Game() {
         TeleopNote: {
             field: <>
                 <FloatingActions feedEnabled />,
-                <HasNoteActions trap />
+                <HasPieceActions auto={false} setOverlay={setOverlay} />
             </>,
             gamePhaseMessage: "Teleop"
         },
@@ -324,8 +329,149 @@ export function Game() {
                             maxHeight: "100%",
                         }}
                     >
-                        <FieldImage />
-                        {gameViewParams.field}
+                        <FieldImage 
+                            color={(reportState?.meta.allianceColor) ?? AllianceColor.Red}
+                        />
+                        {overlay[0] === FieldOverlay.None && gameViewParams.field}
+                        {overlay[0] === FieldOverlay.Score && 
+                            <View
+                                style={{
+                                    width: "100%",
+                                    height: "100%",
+                                    position: "absolute",
+                                }}
+                            >
+                                <View
+                                    style={{
+                                        marginHorizontal: "5%",
+                                        marginVertical: "2%",
+                                        padding: 10,
+                                        flexGrow: 1,
+                                        borderRadius: 7,
+                                        borderWidth: 2,
+                                        borderColor: colors.gray.default,
+                                        flexDirection: "row",
+                                        gap: 10,
+                                        overflow: "visible",
+                                    }}
+                                >
+                                    <TouchableOpacity
+                                        onPress={() => {
+                                            addEvent({
+                                                type: MatchEventType.ScorePiece,
+                                                position: (
+                                                    overlay[1] === null ?
+                                                        MatchEventPosition.ScoreHigh
+                                                        :overlay[1] === 1 ?
+                                                            MatchEventPosition.GridOneHigh
+                                                            :overlay[1] === 2 ?
+                                                                MatchEventPosition.GridTwoHigh
+                                                                :MatchEventPosition.GridThreeHigh
+                                                )
+                                            })
+                                            setOverlay([FieldOverlay.None, null])
+                                        }}
+                                        style={{
+                                            backgroundColor: colors.secondaryContainer.default,
+                                            borderRadius: 7,
+                                            flexGrow: 1,
+                                            alignItems: "center",
+                                            justifyContent: "center"
+                                        }}
+                                    >
+                                        <TitleMedium>
+                                            High
+                                        </TitleMedium>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity
+                                        onPress={() => {
+                                            addEvent({
+                                                type: MatchEventType.ScorePiece,
+                                                position: (
+                                                    overlay[1] === null ?
+                                                        MatchEventPosition.ScoreMid
+                                                        :overlay[1] === 1 ?
+                                                            MatchEventPosition.GridOneMid
+                                                            :overlay[1] === 2 ?
+                                                                MatchEventPosition.GridTwoMid
+                                                                :MatchEventPosition.GridThreeMid
+                                                )
+                                            })
+                                            setOverlay([FieldOverlay.None, null])
+                                        }}
+                                        style={{
+                                            backgroundColor: colors.secondaryContainer.default,
+                                            borderRadius: 7,
+                                            flexGrow: 1,
+                                            alignItems: "center",
+                                            justifyContent: "center"
+                                        }}
+                                    >
+                                        <TitleMedium>
+                                            Mid
+                                        </TitleMedium>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity
+                                        onPress={() => {
+                                            addEvent({
+                                                type: MatchEventType.ScorePiece,
+                                                position: (
+                                                    overlay[1] === null ?
+                                                        MatchEventPosition.ScoreLow
+                                                        :overlay[1] === 1 ?
+                                                            MatchEventPosition.GridOneLow
+                                                            :overlay[1] === 2 ?
+                                                                MatchEventPosition.GridTwoLow
+                                                                :MatchEventPosition.GridThreeLow
+                                                )
+                                            })
+                                            setOverlay([FieldOverlay.None, null])
+                                        }}
+                                        style={{
+                                            backgroundColor: colors.secondaryContainer.default,
+                                            borderRadius: 7,
+                                            flexGrow: 1,
+                                            alignItems: "center",
+                                            justifyContent: "center"
+                                        }}
+                                    >
+                                        <TitleMedium>
+                                            High
+                                        </TitleMedium>
+                                    </TouchableOpacity>
+                                    <View
+                                        style={{
+                                            position: "absolute",
+                                            right: 0,
+                                            top: 0,
+                                            marginTop: -10,
+                                            marginRight: -10,
+                                            paddingLeft: 2,
+                                            backgroundColor: colors.background.default
+                                        }}
+                                    >
+                                        <IconButton
+                                            icon="cancel"
+                                            label="Cancel"
+                                            size={20}
+                                            color={colors.danger.default}
+                                            onPress={() => setOverlay([FieldOverlay.None, null])}
+                                        />
+                                    </View>
+                                </View>
+                            </View>
+                        }
+                        {overlay[0] === FieldOverlay.Charge && 
+                            <View
+                                style={{
+                                    width: "100%",
+                                    height: "100%",
+                                    backgroundColor: colors.yellow.default + "87"
+                                }}
+                            >
+
+                            </View>
+                        }
                     </View>
                 </View>
             </SafeAreaView>
@@ -369,7 +515,7 @@ const FloatingActions = ({
             color="#C1C337"
             icon="upload"
             iconSize={48}
-            onPress={() => {
+            onPress={() => { 
               addEvent({
                 type: MatchEventType.PickupNote,
               });

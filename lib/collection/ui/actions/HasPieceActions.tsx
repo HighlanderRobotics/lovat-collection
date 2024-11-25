@@ -12,14 +12,97 @@ import { useAtomValue } from 'jotai';
 import { AllianceColor } from '../../../models/AllianceColor';
 import { FieldOrientation, fieldOrientationAtom } from '../../../models/FieldOrientation';
 import AmpIcon from '../Amp';
+import { FieldOverlay } from '../Game';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 
-export const HasNoteActions = ({ trap = false }: { trap?: boolean }) => {
+export const HasPieceActions = (props: {auto?: boolean, setOverlay: React.Dispatch<React.SetStateAction<[FieldOverlay, 1 | 2 | 3 | null]>>}) => {
     const addEvent = useAddEvent();
+    const auto = props.auto ?? false
 
     return (
         <>
             <FieldElement
+                edgeInsets={[0.02, 0.01, 0, 0.015]}
+            >
+                <View
+                    style={{
+                        flexDirection: "column",
+                        gap: 10,
+                        flexGrow: 1,
+                        width: "15%",
+                        marginBottom: 5
+                    }}
+                >
+                    {auto ? 
+                    <>
+                        <View
+                            style={{
+                                height: "31%"
+                            }}
+                        >
+                            <TouchableOpacity
+                                onPress={() => {
+                                    props.setOverlay([FieldOverlay.Score, 1])
+                                }}
+
+                                style={{
+                                    backgroundColor: "#9CFF9A"+"4e",
+                                    borderRadius: 7,
+                                    width: "100%",
+                                    height: "100%",
+                                }}
+                                
+                            />
+                        </View>
+                        <View
+                            style={{
+                                height: "31%"
+                            }}
+                        >
+                        <TouchableOpacity
+                            onPress={() => {
+                                props.setOverlay([FieldOverlay.Score, 2])
+                            }}
+                            
+                            style={{
+                                backgroundColor: "#9CFF9A"+"4e",
+                                borderRadius: 7,
+                                width: "100%",
+                                height: "100%",
+                            }}
+                        />
+                        </View>
+                        <View
+                            style={{
+                                height: "31%"
+                            }}
+                        >
+                        <TouchableOpacity
+                            onPress={() => {
+                                props.setOverlay([FieldOverlay.Score, 3])
+                            }}
+                            
+                            style={{
+                                backgroundColor: "#9CFF9A"+"4e",
+                                borderRadius: 7,
+                                width: "100%",
+                                height: "100%",
+                            }}
+                        />
+                        </View>
+                    </>
+                    :<>
+                        <GameAction
+                            onPress={() => {
+                                props.setOverlay([FieldOverlay.Score, null])
+                            }}
+                            color="#9CFF9A"
+                        />
+                    </>}
+                </View>
+            </FieldElement>
+            {/* <FieldElement
                 edgeInsets={[
                     0,
                     0.87,
@@ -111,7 +194,7 @@ export const HasNoteActions = ({ trap = false }: { trap?: boolean }) => {
                         </View>
                     </GameAction>
                 </FieldElement>
-            )}
+            )} */}
         </>
     );
 };
