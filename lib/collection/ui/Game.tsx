@@ -66,7 +66,7 @@ export function Game() {
     
     const matchStates: Record<string, MatchStateType> = {
         preMatch: {
-            field: <PreMatchActions />, 
+            field: <PreMatchActions />,
             gamePhaseMessage: "Pre-match", 
             startEnabled: reportState?.startPosition !== undefined,
             topLeftReplacement: <View
@@ -125,41 +125,45 @@ export function Game() {
                 </View>
             </View>
         },
-        AutoExitedNote: {
-            field: <HasPieceActions auto={true} setOverlay={setOverlay} />, 
+        AutoExitedPiece: {
+            field: <>
+                <HasPieceActions auto={true} setOverlay={setOverlay} />
+                <FloatingActions />
+            </>, 
             gamePhaseMessage: "Autonomous"
         },
-        AutoNotExitedNote: {
+        AutoNotExitedPiece: {
             field: <>
                 <HasPieceActions auto={true} setOverlay={setOverlay} /> 
+                <FloatingActions />
                 <ExitWingAction />
             </>,
             gamePhaseMessage: "Autonomous"
         },
-        AutoExitedNoNote: {
+        AutoExitedNoPiece: {
             field: <AutoCollectPieceActions />, 
             gamePhaseMessage: "Autonomous"
         },
-        AutoNotExitedNoNote: {
+        AutoNotExitedNoPiece: {
             field: <ExitWingAction/>,
             gamePhaseMessage: "Autonomous"
         },
-        TeleopNote: {
+        TeleopPiece: {
             field: <>
-                <FloatingActions feedEnabled />,
+                <FloatingActions />,
                 <HasPieceActions auto={false} setOverlay={setOverlay} />
             </>,
             gamePhaseMessage: "Teleop"
         },
-        TeleopNoNote: {
-            field: <FloatingActions pickupEnabled />, 
+        TeleopNoPiece: {
+            field: <FloatingActions />, 
             gamePhaseMessage: "Teleop"
         },
         UnknownPhase: {
             field: <></>, 
             gamePhaseMessage: "Problem finding phase"
         }
-    }
+    } as const;
     // const [gameViewParams, setGameViewParams] = useState<MatchStateType>(matchStates.preMatch)
     const [autoTimeout, setAutoTimeout] = useState<NodeJS.Timeout | null>(null);
     const [amplificationTimeout, setAmplificationTimeout] =
@@ -208,22 +212,22 @@ export function Game() {
                 (event) => event.type === MatchEventType.LeaveWing,
             )
             if (hasPiece(reportState)) {
-                return ( hasExited ? matchStates.AutoExitedNote : matchStates.AutoNotExitedNote )
+                return ( hasExited ? matchStates.AutoExitedPiece : matchStates.AutoNotExitedPiece )
             } else {
-                return ( hasExited ? matchStates.AutoExitedNoNote : matchStates.AutoNotExitedNoNote )
+                return ( hasExited ? matchStates.AutoExitedNoPiece : matchStates.AutoNotExitedNoPiece )
             }
         } else if (reportState?.gamePhase === GamePhase.Teleop) {
-            return ( hasPiece(reportState) ? matchStates.TeleopNote : matchStates.TeleopNoNote )
+            return ( hasPiece(reportState) ? matchStates.TeleopPiece : matchStates.TeleopNoPiece )
         }
         return (matchStates.UnknownPhase)
     }, [reportState])
 
     return (
         <>
-            <StatusBar 
+            {/* <StatusBar 
                 hidden={true} 
                 backgroundColor={colors.background.default} 
-            />
+            /> */}
             <View
                 style={{
                     backgroundColor: colors.secondaryContainer.default,
@@ -241,10 +245,12 @@ export function Game() {
                     }}
                 >
                     {gameViewParams.topLeftReplacement ?? (
-                        <View style={{
-                            flex: 1,
-                            flexDirection: 'row',
-                        }}>
+                        <View 
+                            style={{
+                                flex: 1,
+                                flexDirection: 'row',
+                            }}
+                        >
                             <IconButton
                                 icon="undo"
                                 label="Undo"
@@ -258,7 +264,14 @@ export function Game() {
                         </View>
                     )}
 
-                    <View style={{ alignItems: 'flex-end', gap: 2, flex: 1, marginRight: 13 }}>
+                    <View 
+                        style={{ 
+                            alignItems: 'flex-end', 
+                            gap: 2, 
+                            flex: 1, 
+                            marginRight: 13 
+                        }}
+                    >
                         <View
                             style={{
                                 backgroundColor: getAllianceColorDescription((reportState?.meta.allianceColor) ?? AllianceColor.Red).backgroundColor,
@@ -267,15 +280,18 @@ export function Game() {
                                 paddingVertical: 2,
                             }}
                         >
-                            <Text style={{
-                                color: getAllianceColorDescription((reportState?.meta.allianceColor) ?? AllianceColor.Red).foregroundColor,
-                                fontFamily: 'Heebo_500Medium',
-                                fontSize: 12,
-                            }}>{reportState?.meta.teamNumber}</Text>
+                            <Text 
+                                style={{
+                                    color: getAllianceColorDescription((reportState?.meta.allianceColor) ?? AllianceColor.Red).foregroundColor,
+                                    fontFamily: 'Heebo_500Medium',
+                                    fontSize: 12,
+                                }}
+                            >
+                                {reportState?.meta.teamNumber}
+                            </Text>
                         </View>
                         <LabelSmall color={colors.body.default}>
-                            {gameViewParams.gamePhaseMessage} • <GameTimer
-                                startTime={reportState?.startTimestamp} />
+                            {gameViewParams.gamePhaseMessage} • <GameTimer startTime={reportState?.startTimestamp} />
                         </LabelSmall>
                     </View>
 
@@ -436,7 +452,7 @@ export function Game() {
                                         }}
                                     >
                                         <TitleMedium>
-                                            High
+                                            Low
                                         </TitleMedium>
                                     </TouchableOpacity>
                                     <View
@@ -469,7 +485,7 @@ export function Game() {
                                     backgroundColor: colors.yellow.default + "87"
                                 }}
                             >
-
+                                {null}
                             </View>
                         }
                     </View>
@@ -479,13 +495,7 @@ export function Game() {
     )
 }
 
-const FloatingActions = ({
-    feedEnabled = false,
-    pickupEnabled = false,
-}: {
-    feedEnabled?: boolean;
-    pickupEnabled?: boolean;
-}) => {
+const FloatingActions = () => {
     const reportState = useAtomValue(reportStateAtom);
     const fieldOrientation = useAtomValue(fieldOrientationAtom);
 
@@ -498,23 +508,24 @@ const FloatingActions = ({
     return (
         <View
             style={{
-            position: "absolute",
-            top: 0,
-            right: 0,
-            bottom: 0,
-            left: 0,
-            flexDirection:
-                fieldOrientation === FieldOrientation.Auspicious
-                ? (reportState?.meta.allianceColor === AllianceColor.Blue ? "row" : "row-reverse")
-                : (reportState?.meta.allianceColor === AllianceColor.Blue ? "row-reverse" : "row"),
-            padding: 4,
-            gap: 4,
+                position: "absolute",
+                top: 0,
+                right: 0,
+                bottom: 0,
+                left: 0,
+                flexDirection:
+                    fieldOrientation === FieldOrientation.Auspicious
+                    ? (reportState?.meta.allianceColor === AllianceColor.Blue ? "row" : "row-reverse")
+                    : (reportState?.meta.allianceColor === AllianceColor.Blue ? "row-reverse" : "row"),
+                padding: 4,
+                gap: 4,
             }}
         >
             <View
                 style={{
                     position: "absolute",
                     left: 20,
+                    // right: 20,
                     flexDirection: 'row',
                     height: "100%",
                     gap: 10,
@@ -591,7 +602,7 @@ const FloatingActions = ({
                         justifyContent: "center",
                         height: "60%",
                         width: 60,
-                        borderColor: colors.gray.default,
+                        borderColor: reportState?.gamePhase !== GamePhase.Auto ? colors.gray.default : "#00000000",
                         borderWidth: 1,
                     }}
                     
@@ -608,7 +619,7 @@ const FloatingActions = ({
                     }}
                 >
                     <Icon 
-                        name="shield" 
+                        name={reportState?.gamePhase !== GamePhase.Auto ? "shield" : ""} 
                         color={colors.onBackground.default} 
                         size={40} 
                     />
@@ -636,11 +647,11 @@ const FloatingActions = ({
                         }
                     }}
                 >
-                    {holdingPiece ? <Icon
-                        name="output_circle"
+                    <Icon
+                        name={holdingPiece ? "output_circle" : ""}
                         color={colors.onBackground.default}
                         size={48}
-                    /> : null}
+                    />
                 </TouchableOpacity>
             </View>
         </View>

@@ -18,25 +18,12 @@ export const gamePhaseAtom = atom(
     }
 );
 
-export const remainingGroundNoteLocationsAtom = atom<MatchEventPosition[] | null>((get) => {
-    const reportState = get(reportStateAtom);
-
-    if (!reportState) {
-        return null;
-    }
-
-    const remainingGroundPieceLocations: MatchEventPosition[] = groundPieces;
-
-    for (let i = 0; i < reportState.events.length; i++) {
-        const event = reportState.events[i];
-
-        if (event.position && remainingGroundPieceLocations.includes(event.position)) {
-            remainingGroundPieceLocations.splice(remainingGroundPieceLocations.indexOf(event.position), 1);
-        }
-    }
-
-    return remainingGroundPieceLocations;
-});
+export const groundPiecesAtom = atom<Record<MatchEventPosition, GamePiece>>(
+    Object.values(groundPieces).reduce(
+        (acc, curr) => ({...acc, [curr]: GamePiece.None}), 
+        {} as Record<MatchEventPosition, GamePiece>
+    )
+)
 
 export const hasPiece = (reportState: ReportState) => {
     let piece = GamePiece.None;

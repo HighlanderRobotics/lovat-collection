@@ -16,7 +16,7 @@ export const ExitWingAction = () => {
                 0.02,
                 0.31,
                 0.02,
-                0.125,
+                0.225,
             ]}
         >
             <GameAction
