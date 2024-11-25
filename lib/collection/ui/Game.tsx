@@ -480,144 +480,169 @@ export function Game() {
 }
 
 const FloatingActions = ({
-  feedEnabled = false,
-  pickupEnabled = false,
+    feedEnabled = false,
+    pickupEnabled = false,
 }: {
-  feedEnabled?: boolean;
-  pickupEnabled?: boolean;
+    feedEnabled?: boolean;
+    pickupEnabled?: boolean;
 }) => {
-  const reportState = useAtomValue(reportStateAtom);
-  const fieldOrientation = useAtomValue(fieldOrientationAtom);
+    const reportState = useAtomValue(reportStateAtom);
+    const fieldOrientation = useAtomValue(fieldOrientationAtom);
 
-  const [defenseHighlighted, setDefenseHighlighted] = useState(false);
+    const [defenseHighlighted, setDefenseHighlighted] = useState(false);
+    
+    const holdingPiece = hasPiece(reportState!)
 
-  const addEvent = useAddEvent();
+    const addEvent = useAddEvent();
 
-  return (
-    <View
-        style={{
-        position: "absolute",
-        top: 0,
-        right: 0,
-        bottom: 0,
-        left: 0,
-        flexDirection:
-            fieldOrientation === FieldOrientation.Auspicious
-            ? (reportState?.meta.allianceColor === AllianceColor.Blue ? "row" : "row-reverse")
-            : (reportState?.meta.allianceColor === AllianceColor.Blue ? "row-reverse" : "row"),
-        padding: 4,
-        gap: 4,
-        }}
-    >
-      {/* <View style={{ flex: 1.8 }}>
-        {pickupEnabled && (
-          <GameAction
-            color="#C1C337"
-            icon="upload"
-            iconSize={48}
-            onPress={() => { 
-              addEvent({
-                type: MatchEventType.PickupNote,
-              });
+    return (
+        <View
+            style={{
+            position: "absolute",
+            top: 0,
+            right: 0,
+            bottom: 0,
+            left: 0,
+            flexDirection:
+                fieldOrientation === FieldOrientation.Auspicious
+                ? (reportState?.meta.allianceColor === AllianceColor.Blue ? "row" : "row-reverse")
+                : (reportState?.meta.allianceColor === AllianceColor.Blue ? "row-reverse" : "row"),
+            padding: 4,
+            gap: 4,
             }}
-          />
-        )}
-      </View>
-
-      <View style={{ flex: 1, gap: 4 }}>
-        {/* <TouchableOpacity
-          accessibilityLabel="Amplify"
-          style={{
-            flex: 1,
-            backgroundColor: isAmplified
-              ? colors.victoryPurple.default
-              : colors.secondaryContainer.default,
-            borderRadius: 7,
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-          activeOpacity={0.9}
-          onPress={() => {
-            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-            if (isAmplified) {
-              addEvent({
-                type: MatchEventType.StopAmplifying,
-              });
-            } else {
-              addEvent({
-                type: MatchEventType.StartAmplfying,
-              });
-            }
-          }}
         >
-          <Icon
-            name="campaign"
-            color={
-              isAmplified
-                ? colors.background.default
-                : colors.onBackground.default
-            }
-            size={40}
-          />
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          accessibilityLabel="Defend"
-          style={{
-            flex: 1,
-            backgroundColor: defenseHighlighted
-              ? colors.danger.default
-              : colors.secondaryContainer.default,
-            borderRadius: 7,
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-          activeOpacity={0.9}
-          onPress={() => {
-            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-            addEvent({
-              type: MatchEventType.Defend,
-            });
-
-            setDefenseHighlighted(true);
-            setTimeout(() => setDefenseHighlighted(false), 200);
-          }}
-        >
-          <Icon name="shield" color={colors.onBackground.default} size={40} />
-        </TouchableOpacity>
-
-         <View
-          style={{
-            flex: 1,
-          }}
-        >
-          {feedEnabled && (
-            <TouchableOpacity
-              accessibilityLabel="Feed note"
-              style={{
-                flex: 1,
-                backgroundColor: colors.secondaryContainer.default,
-                borderRadius: 7,
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-              activeOpacity={0.9}
-              onPress={() => {
-                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                addEvent({
-                  type: MatchEventType.FeedNote,
-                });
-              }}
+            <View
+                style={{
+                    position: "absolute",
+                    left: 20,
+                    flexDirection: 'row',
+                    height: "100%",
+                    gap: 10,
+                }}
             >
-              <Icon
-                name="conveyor_belt"
-                color={colors.onBackground.default}
-                size={40}
-              />
-            </TouchableOpacity>
-          )}
-        </View> 
-      </View> */}
-    </View>
-  );
+                {!(reportState?.gamePhase === GamePhase.Auto || holdingPiece) && 
+                    <View
+                        style={{
+                            height: "90%",
+                            alignSelf: "center",
+                            flexDirection: "column",
+                            width: 180,
+                            gap: 10,
+                        }}
+                    >
+                        <TouchableOpacity
+                            style={{
+                                borderRadius: 7,
+                                backgroundColor: colors.victoryPurple.default+"4d",
+                                flexGrow: 1,
+                                alignItems: "center",
+                                justifyContent: "center",
+                            }}
+                            onPress={() => {
+                                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
+                                addEvent({
+                                    type: MatchEventType.PickupCube
+                                })
+                            }}
+                            activeOpacity={0.6}
+                        >
+                            <Icon
+                                name="frc_cube"
+                                color={colors.victoryPurple.default}
+                                size={40}
+                            />
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            style={{
+                                borderRadius: 7,
+                                backgroundColor: colors.yellow.default+"4d",
+                                flexGrow: 1,
+                                alignItems: "center",
+                                justifyContent: "center",
+                            }}
+                            onPress={() => {
+                                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
+                                addEvent({
+                                    type: MatchEventType.PickupCone
+                                })
+                            }}
+                            activeOpacity={0.6}
+                        >
+                            <Icon
+                                name="frc_cone"
+                                color={colors.yellow.default}
+                                size={40}
+                            />
+                        </TouchableOpacity>
+                    </View>
+                }
+                <TouchableOpacity
+                    accessibilityLabel="Defend"
+                    style={{
+                        flex: 1,
+                        backgroundColor: reportState?.gamePhase !== GamePhase.Auto 
+                        ? defenseHighlighted
+                            ? colors.victoryPurple.default
+                            : colors.secondaryContainer.default
+                        : "#00000000",
+                        borderRadius: 7,
+                        alignSelf: "center",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        height: "60%",
+                        width: 60,
+                        borderColor: colors.gray.default,
+                        borderWidth: 1,
+                    }}
+                    
+                    activeOpacity={0.9}
+                    onPress={() => {
+                        if (reportState?.gamePhase !== GamePhase.Auto) {
+                            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                            addEvent({
+                                type: MatchEventType.Defend,
+                            });
+                            setDefenseHighlighted(true);
+                            setTimeout(() => setDefenseHighlighted(false), 200);
+                        }
+                    }}
+                >
+                    <Icon 
+                        name="shield" 
+                        color={colors.onBackground.default} 
+                        size={40} 
+                    />
+                </TouchableOpacity>
+                <TouchableOpacity
+                    accessibilityLabel="Drop Piece"
+                    style={{
+                        flex: 1,
+                        backgroundColor: holdingPiece ? colors.gray.hover+"cd" : "#00000000",
+                        borderRadius: 7,
+                        alignSelf: "center",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        height: "60%",
+                        width: 80,
+                    }}
+                    
+                    activeOpacity={0.9}
+                    onPress={() => {
+                        if (holdingPiece) {
+                            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                            addEvent({
+                                type: MatchEventType.DropPiece
+                            });
+                        }
+                    }}
+                >
+                    {holdingPiece ? <Icon
+                        name="output_circle"
+                        color={colors.onBackground.default}
+                        size={48}
+                    /> : null}
+                </TouchableOpacity>
+            </View>
+        </View>
+    );
 };

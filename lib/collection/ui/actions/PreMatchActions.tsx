@@ -10,7 +10,7 @@ export const PreMatchActions = () => {
     return (
         <>
             <FieldElement
-                edgeInsets={[0, 0, 0, 0.125]}
+                edgeInsets={[0, 0.125, 0, 0.125]}
             >
                 <View
                     style={{
@@ -18,7 +18,7 @@ export const PreMatchActions = () => {
                         padding: 10,
                         gap: 10,
                         height: "100%",
-                        width: 120
+                        width: "25%",
                     }}
                 >
                     <TouchableOpacity

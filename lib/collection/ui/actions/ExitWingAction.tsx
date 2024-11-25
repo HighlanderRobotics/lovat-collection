@@ -4,6 +4,7 @@ import { MatchEventType } from '../../MatchEventType';
 import { FieldElement } from '../FieldElement';
 import { GameAction } from '../GameAction';
 import { colors } from '../../../colors';
+import { MatchEventPosition } from '../../MatchEventPosition';
 
 
 export const ExitWingAction = () => {
@@ -12,10 +13,10 @@ export const ExitWingAction = () => {
     return (
         <FieldElement
             edgeInsets={[
-                0,
-                0,
-                0.21,
-                0.14,
+                0.02,
+                0.31,
+                0.02,
+                0.125,
             ]}
         >
             <GameAction
@@ -23,6 +24,7 @@ export const ExitWingAction = () => {
                 onPress={() => {
                     addEvent({
                         type: MatchEventType.LeaveWing,
+                        position: MatchEventPosition.None
                     });
                 }} />
         </FieldElement>

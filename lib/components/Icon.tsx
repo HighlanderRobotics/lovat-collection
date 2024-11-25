@@ -37,10 +37,10 @@ export const Icon: React.FC<IconProps> = ({ name, color, size = 24 }) => {
                 width={`${size}px`}
                 height={`${size}px`}
             >
-                <Path d="M2 21H22" stroke={color} strokeWidth="2" fill={"none"}/>
-                <Path d="M18 21L14 3H10L6 21" stroke={color} strokeWidth="2" fill={"none"}/>
-                <Path d="M9 9H15" stroke={color} strokeWidth="2" fill={"none"}/>
-                <Path d="M8 12H16" stroke={color} strokeWidth="2" fill={"none"}/>
+                <Path d="M2 21H22" stroke={color} strokeWidth="2" fill={"none"} scale={size/24}/>
+                <Path d="M18 21L14 3H10L6 21" stroke={color} strokeWidth="2" fill={"none"} scale={size/24}/>
+                <Path d="M9 9H15" stroke={color} strokeWidth="2" fill={"none"} scale={size/24}/>
+                <Path d="M8 12H16" stroke={color} strokeWidth="2" fill={"none"} scale={size/24}/>
             </Svg>
         )
     }
