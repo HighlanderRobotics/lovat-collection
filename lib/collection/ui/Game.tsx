@@ -35,6 +35,7 @@ import * as DropdownMenu from 'zeego/dropdown-menu'
 import { fieldHeight, FieldImage, fieldWidth } from "../../components/FieldImage";
 import { MatchEventPosition } from "../MatchEventPosition";
 import TitleMedium from "../../components/text/TitleMedium";
+import { PreMatchSelectPieceActions } from "./actions/PreMatchSelectPieceActions";
 
 type MatchStateType = {
   field: React.ReactNode,
@@ -66,7 +67,10 @@ export function Game() {
     
     const matchStates: Record<string, MatchStateType> = {
         preMatch: {
-            field: <PreMatchActions />,
+            field: <>
+                <PreMatchActions />
+                <PreMatchSelectPieceActions />
+            </>,
             gamePhaseMessage: "Pre-match", 
             startEnabled: reportState?.startPosition !== undefined,
             topLeftReplacement: <View
@@ -127,16 +131,16 @@ export function Game() {
         },
         AutoExitedPiece: {
             field: <>
-                <HasPieceActions auto={true} setOverlay={setOverlay} />
                 <FloatingActions />
+                <HasPieceActions auto={true} setOverlay={setOverlay} />
             </>, 
             gamePhaseMessage: "Autonomous"
         },
         AutoNotExitedPiece: {
-            field: <>
-                <HasPieceActions auto={true} setOverlay={setOverlay} /> 
+            field: <> 
                 <FloatingActions />
                 <ExitWingAction />
+                <HasPieceActions auto={true} setOverlay={setOverlay} />
             </>,
             gamePhaseMessage: "Autonomous"
         },
@@ -351,6 +355,7 @@ export function Game() {
                         {overlay[0] === FieldOverlay.None && gameViewParams.field}
                         {overlay[0] === FieldOverlay.Score && 
                             <View
+                                key={"ScoreOverlay"}
                                 style={{
                                     width: "100%",
                                     height: "100%",
@@ -496,6 +501,7 @@ export function Game() {
 }
 
 const FloatingActions = () => {
+    // Fix this mess at some point
     const reportState = useAtomValue(reportStateAtom);
     const fieldOrientation = useAtomValue(fieldOrientationAtom);
 

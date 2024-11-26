@@ -35,12 +35,38 @@ export const HasPieceActions = (props: {auto?: boolean, setOverlay: React.Dispat
                     }}
                 >
                     {auto ? 
-                        <>
-                            <View
+                        ([1, 2, 3] as (1|2|3)[]).map((item) => (
+                            <TouchableOpacity
+                                key={item}
+                                onPress={() => {
+                                    props.setOverlay([FieldOverlay.Score, item])
+                                }}
+
+                                style={{
+                                    flexDirection: "column",
+                                    flexBasis: "31%",
+                                    flex: 1,
+                                    width: "100%",
+                                    backgroundColor: "#9CFF9A"+"4e",
+                                    borderRadius: 7,
+                                }}
+                            />
+                        ))
+                        // <>
+                            
+                            /* <View
                                 style={{
                                     height: "31%"
                                 }}
+
                             >
+                                <GameAction
+                                    onPress={() => {
+                                        props.setOverlay([FieldOverlay.Score, 1])
+                                    }}
+                                    
+                                    color='#9CFF9A'
+                                />
                                 <TouchableOpacity
                                     onPress={() => {
                                         props.setOverlay([FieldOverlay.Score, 1])
@@ -53,13 +79,20 @@ export const HasPieceActions = (props: {auto?: boolean, setOverlay: React.Dispat
                                         height: "100%",
                                     }}
                                     
-                                />
+                                /> 
                             </View>
                             <View
                                 style={{
                                     height: "31%"
                                 }}
                             >
+                                <GameAction
+                                    onPress={() => {
+                                        props.setOverlay([FieldOverlay.Score, 2])
+                                    }}
+                                    
+                                    color='#9CFF9A'
+                                /> 
                                 <TouchableOpacity
                                     onPress={() => {
                                         props.setOverlay([FieldOverlay.Score, 2])
@@ -71,14 +104,21 @@ export const HasPieceActions = (props: {auto?: boolean, setOverlay: React.Dispat
                                         width: "100%",
                                         height: "100%",
                                     }}
-                                />
+                                /> 
                             </View>
-                            <View
-                                style={{
-                                    height: "31%"
-                                }}
-                            >
-                                <TouchableOpacity
+                            // <View
+                            //     style={{
+                            //         height: "31%"
+                            //     }}
+                            // >
+                            //     <GameAction
+                            //         onPress={() => {
+                            //             props.setOverlay([FieldOverlay.Score, 3])
+                            //         }}
+
+                            //         color='#9CFF9A'
+                            //     />
+                                {/* <TouchableOpacity
                                     onPress={() => {
                                         props.setOverlay([FieldOverlay.Score, 3])
                                     }}
@@ -89,9 +129,9 @@ export const HasPieceActions = (props: {auto?: boolean, setOverlay: React.Dispat
                                         width: "100%",
                                         height: "100%",
                                     }}
-                                />
-                            </View>
-                        </>
+                                /> 
+                            </View> */
+                        // </>
                         :<>
                             <GameAction
                                 onPress={() => {

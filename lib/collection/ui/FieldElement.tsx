@@ -12,8 +12,8 @@ export const FieldElement = (props: {
     respectAlliance?: boolean;
 }) => {
     const {
-        edgeInsets, respectAlliance = true,
-    } = props;
+        edgeInsets, respectAlliance = false,
+    } = {...props, respectAlliance: false};
 
     const [fieldOrientation] = useAtom(fieldOrientationAtom);
     const [reportState] = useAtom(reportStateAtom);
@@ -21,37 +21,44 @@ export const FieldElement = (props: {
 
     const [givenTop, givenRight, givenBottom, givenLeft] = edgeInsets;
 
-    const top = useMemo(() => {
-        if (fieldOrientation === FieldOrientation.Auspicious) {
-            return givenTop;
-        } else {
-            return givenBottom;
-        }
-    }, [respectAlliance, fieldOrientation, givenTop, givenBottom]);
+    // const top = useMemo(() => {
+    //     if (fieldOrientation === FieldOrientation.Auspicious) {
+    //         return givenTop;
+    //     } else {
+    //         return givenBottom;
+    //     }
+    // }, [respectAlliance, fieldOrientation, givenTop, givenBottom]);
 
-    const bottom = useMemo(() => {
-        if (fieldOrientation === FieldOrientation.Auspicious) {
-            return givenBottom;
-        } else {
-            return givenTop;
-        }
-    }, [respectAlliance, fieldOrientation, givenTop, givenBottom]);
+    // const bottom = useMemo(() => {
+    //     if (fieldOrientation === FieldOrientation.Auspicious) {
+    //         return givenBottom;
+    //     } else {
+    //         return givenTop;
+    //     }
+    // }, [respectAlliance, fieldOrientation, givenTop, givenBottom]);
 
-    const left = useMemo(() => {
-        if (fieldOrientation === FieldOrientation.Auspicious) {
-            return respectAlliance ? (allianceColor === AllianceColor.Blue ? givenLeft : givenRight) : givenLeft;
-        } else {
-            return respectAlliance ? (allianceColor === AllianceColor.Blue ? givenRight : givenLeft) : givenRight;
-        }
-    }, [respectAlliance, fieldOrientation, givenLeft, givenRight]);
+    // const left = useMemo(() => {
+    //     if (fieldOrientation === FieldOrientation.Auspicious) {
+    //         return respectAlliance ? (allianceColor === AllianceColor.Blue ? givenLeft : givenRight) : givenLeft;
+    //     } else {
+    //         return respectAlliance ? (allianceColor === AllianceColor.Blue ? givenRight : givenLeft) : givenRight;
+    //     }
+    // }, [respectAlliance, fieldOrientation, givenLeft, givenRight]);
 
-    const right = useMemo(() => {
-        if (fieldOrientation === FieldOrientation.Auspicious) {
-            return respectAlliance ? (allianceColor === AllianceColor.Blue ? givenRight : givenLeft) : givenRight;
-        } else {
-            return respectAlliance ? (allianceColor === AllianceColor.Blue ? givenLeft : givenRight) : givenLeft;
-        }
-    }, [respectAlliance, fieldOrientation, givenLeft, givenRight]);
+    // const right = useMemo(() => {
+    //     if (fieldOrientation === FieldOrientation.Auspicious) {
+    //         return respectAlliance ? (allianceColor === AllianceColor.Blue ? givenRight : givenLeft) : givenRight;
+    //     } else {
+    //         return respectAlliance ? (allianceColor === AllianceColor.Blue ? givenLeft : givenRight) : givenLeft;
+    //     }
+    // }, [respectAlliance, fieldOrientation, givenLeft, givenRight]);
+
+    const [top, bottom, right, left] = [
+        givenTop,
+        givenBottom,
+        givenLeft,
+        givenRight
+    ]
 
     return (
         <View
