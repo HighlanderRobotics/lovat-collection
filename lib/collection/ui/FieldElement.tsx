@@ -69,6 +69,7 @@ export const FieldElement = (props: {
                 bottom: `${bottom * 100}%`,
                 left: `${left * 100}%`,
             }}
+            pointerEvents='box-none'
         >
             {props.children}
         </View>

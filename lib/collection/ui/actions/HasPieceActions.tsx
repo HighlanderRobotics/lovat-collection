@@ -33,6 +33,7 @@ export const HasPieceActions = (props: {auto?: boolean, setOverlay: React.Dispat
                         width: "15%",
                         marginBottom: 5
                     }}
+                    pointerEvents='box-none'
                 >
                     {auto ? 
                         ([1, 2, 3] as (1|2|3)[]).map((item) => (

@@ -154,7 +154,7 @@ export function Game() {
         },
         TeleopPiece: {
             field: <>
-                <FloatingActions />,
+                <FloatingActions />
                 <HasPieceActions auto={false} setOverlay={setOverlay} />
             </>,
             gamePhaseMessage: "Teleop"
@@ -333,14 +333,21 @@ export function Game() {
                     }
                 </SafeAreaView>
             </View>
-            <SafeAreaView edges={['bottom', 'left', 'right']} style={{ flex: 1 }}>
-                <View style={{
-                    height: "100%",
-                    width: "100%",
-                    flexDirection: "row",
-                    alignItems: "stretch",
-                    justifyContent: "center",
-                }}>
+            <SafeAreaView 
+                edges={['bottom', 'left', 'right']} 
+                style={{ 
+                    flex: 1
+                }}
+            >
+                <View 
+                    style={{
+                        height: "100%",
+                        width: "100%",
+                        flexDirection: "row",
+                        alignItems: "stretch",
+                        justifyContent: "center",
+                    }}
+                >
                     <View
                         style={{
                             position: "relative",
@@ -519,13 +526,11 @@ const FloatingActions = () => {
                 right: 0,
                 bottom: 0,
                 left: 0,
-                flexDirection:
-                    fieldOrientation === FieldOrientation.Auspicious
-                    ? (reportState?.meta.allianceColor === AllianceColor.Blue ? "row" : "row-reverse")
-                    : (reportState?.meta.allianceColor === AllianceColor.Blue ? "row-reverse" : "row"),
+                flexDirection: "row-reverse",
                 padding: 4,
                 gap: 4,
             }}
+            pointerEvents='box-none'
         >
             <View
                 style={{
@@ -536,6 +541,7 @@ const FloatingActions = () => {
                     height: "100%",
                     gap: 10,
                 }}
+                pointerEvents='box-none'
             >
                 {!(reportState?.gamePhase === GamePhase.Auto || holdingPiece) && 
                     <View
@@ -546,6 +552,7 @@ const FloatingActions = () => {
                             width: 180,
                             gap: 10,
                         }}
+                        pointerEvents='box-none'
                     >
                         <TouchableOpacity
                             style={{
@@ -645,6 +652,7 @@ const FloatingActions = () => {
                     
                     activeOpacity={0.9}
                     onPress={() => {
+                        console.log("pressed defense")
                         if (holdingPiece) {
                             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
                             addEvent({
