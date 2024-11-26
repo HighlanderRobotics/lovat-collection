@@ -5,9 +5,9 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import Button from "../../lib/components/Button";
 import LabelSmall from "../../lib/components/text/LabelSmall";
 import { ButtonGroup, ButtonGroupDirection, UnkeyedButtonGroupButton } from "../../lib/components/ButtonGroup";
-import { RobotRole } from "../../lib/collection/ReportState";
-import { reportStateAtom } from "../../lib/collection/reportStateAtom";
-import { useAtom, useAtomValue } from "jotai";
+import { exportScoutReport, GamePiece, RobotRole } from "../../lib/collection/ReportState";
+import { groundPiecesAtom, reportStateAtom } from "../../lib/collection/reportStateAtom";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { DriverAbility, driverAbilityDescriptions } from "../../lib/collection/DriverAbility";
 import { ChargingResult, chargingResultDescriptions } from "../../lib/collection/ChargingResult";
 import { PickUp, pickUpDescriptions } from "../../lib/collection/PickUp";
@@ -16,11 +16,14 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import { CommonActions } from '@react-navigation/native'
 import { trainingModeAtom } from "../settings";
 import BodyMedium from "../../lib/components/text/BodyMedium";
+import { MatchEventType } from "../../lib/collection/MatchEventType";
+import { groundPieces, MatchEventPosition } from "../../lib/collection/MatchEventPosition";
 
 
 export default function PostMatch() {
     const [reportState, setReportState] = useAtom(reportStateAtom);
     const trainingModeEnabled = useAtomValue(trainingModeAtom);
+    const setGroundPieces = useSetAtom(groundPiecesAtom)
 
     const navigation = useNavigation();
 
@@ -117,16 +120,16 @@ export default function PostMatch() {
                         name={"Endgame Charging Result"}
                         items={
                             Object.keys(chargingResultDescriptions).map((key) => ({
-                                label: chargingResultDescriptions[key as ChargingResult].localizedDescription.toString(),
-                                value: key as ChargingResult,
+                                label: chargingResultDescriptions[Number(key) as ChargingResult].localizedDescription.toString(),
+                                value: Number(key) as ChargingResult,
                             }))
                         }
-                        onChange={(value) => 
+                        onChange={(value) => { 
                             setReportState({
-                                ...reportState,
-                                endChargingResult: value,
+                                ...reportState!,
+                                endChargingResult: value
                             })
-                        }
+                        }}
                         selected={reportState!.endChargingResult}
                     /> 
 
@@ -134,16 +137,16 @@ export default function PostMatch() {
                         name={"Autonomus Charging Result"}
                         items={
                             Object.keys(chargingResultDescriptions).map((key) => ({
-                                label: chargingResultDescriptions[key as ChargingResult].localizedDescription.toString(),
-                                value: key as ChargingResult,
+                                label: chargingResultDescriptions[Number(key) as ChargingResult].localizedDescription.toString(),
+                                value: Number(key) as ChargingResult,
                             }))
                         }
-                        onChange={(value) => 
+                        onChange={(value) => { 
                             setReportState({
                                 ...reportState,
-                                autoChargingResult: value,
+                                autoChargingResult: value
                             })
-                        }
+                        }}
                         selected={reportState!.autoChargingResult}
                     /> 
                     
@@ -211,7 +214,14 @@ export default function PostMatch() {
                                         text: "Discard",
                                         style: "destructive",
                                         onPress: () => {
+                                            console.log(exportScoutReport(reportState))
                                             setReportState(null);
+                                            setGroundPieces(
+                                                Object.values(groundPieces).reduce(
+                                                    (acc, curr) => ({...acc, [curr]: GamePiece.None}), 
+                                                    {} as Record<MatchEventPosition, GamePiece>
+                                                )
+                                            )
                                             navigation.dispatch(CommonActions.reset({
                                                 routes: [{key: "index", name: "index"}]
                                             }))

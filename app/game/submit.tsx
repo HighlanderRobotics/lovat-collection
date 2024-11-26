@@ -5,17 +5,18 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import BodyMedium from "../../lib/components/text/BodyMedium";
 import Button from "../../lib/components/Button";
 import { useAtomValue, useSetAtom } from "jotai";
-import { reportStateAtom } from "../../lib/collection/reportStateAtom";
+import { groundPiecesAtom, reportStateAtom } from "../../lib/collection/reportStateAtom";
 import { MatchIdentityLocalizationFormat, localizeMatchIdentity } from "../../lib/models/match";
 import { Suspense, useEffect, useState } from "react";
 import { ScoutReport } from "../../lib/collection/ScoutReport";
-import { exportScoutReport } from "../../lib/collection/ReportState";
+import { exportScoutReport, GamePiece } from "../../lib/collection/ReportState";
 import { router } from "expo-router";
 import { uploadReport } from "../../lib/lovatAPI/uploadReport";
 import { Icon } from "../../lib/components/Icon";
 import { useUpsertMatchToHistory } from "../../lib/storage/historyAtom";
 import { ScoutReportMeta } from "../../lib/models/ScoutReportMeta";
 import { ScoutReportCode } from "../../lib/collection/ui/ScoutReportCode";
+import { groundPieces, MatchEventPosition } from "../../lib/collection/MatchEventPosition";
 
 export default function Submit() {
     const reportState = useAtomValue(reportStateAtom);
@@ -98,6 +99,7 @@ export default function Submit() {
 
 const DoneButton = ({ scoutReport, uploadState, meta }: { scoutReport: ScoutReport; uploadState: UploadState, meta: ScoutReportMeta }) => {
     const setReportState = useSetAtom(reportStateAtom);
+    const setGroundPieces = useSetAtom(groundPiecesAtom);
     const upsertMatchToHistory = useUpsertMatchToHistory();
 
     return (
@@ -105,6 +107,12 @@ const DoneButton = ({ scoutReport, uploadState, meta }: { scoutReport: ScoutRepo
             upsertMatchToHistory(scoutReport, uploadState === UploadState.Uploaded, meta);
             router.replace('/');
             setReportState(null);
+            setGroundPieces(
+                Object.values(groundPieces).reduce(
+                    (acc, curr) => ({...acc, [curr]: GamePiece.None}), 
+                    {} as Record<MatchEventPosition, GamePiece>
+                )
+            )
         }}>
             Done
         </Button>

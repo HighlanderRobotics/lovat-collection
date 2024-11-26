@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import {
   gamePhaseAtom,
+  groundPiecesAtom,
   hasPiece,
   reportStateAtom,
   useAddEvent,
@@ -33,9 +34,11 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { GameTimer } from "./GameTimer";
 import * as DropdownMenu from 'zeego/dropdown-menu'
 import { fieldHeight, FieldImage, fieldWidth } from "../../components/FieldImage";
-import { MatchEventPosition } from "../MatchEventPosition";
+import { groundPieces, MatchEventPosition } from "../MatchEventPosition";
 import TitleMedium from "../../components/text/TitleMedium";
 import { PreMatchSelectPieceActions } from "./actions/PreMatchSelectPieceActions";
+import { ChargeStationAction } from "./actions/ChargingStationAction";
+import { ChargingResult } from "../ChargingResult";
 
 type MatchStateType = {
   field: React.ReactNode,
@@ -57,6 +60,7 @@ export function Game() {
     
     const setPhase = useSetAtom(gamePhaseAtom);
     const [overlay, setOverlay] = useState<[FieldOverlay, 1 | 2 | 3 | null]>([FieldOverlay.None, null]) 
+    const [groundPieces, setGroundPieces] = useAtom(groundPiecesAtom)
 
     useEffect(() => {
     if (!reportState) {
@@ -72,7 +76,7 @@ export function Game() {
                 <PreMatchSelectPieceActions />
             </>,
             gamePhaseMessage: "Pre-match", 
-            startEnabled: reportState?.startPosition !== undefined,
+            startEnabled: reportState?.startPosition !== undefined && !Object.values(groundPieces).some((item) => item === GamePiece.None),
             topLeftReplacement: <View
                 style={{
                     flexDirection: "row",
@@ -131,6 +135,7 @@ export function Game() {
         },
         AutoExitedPiece: {
             field: <>
+                <ChargeStationAction setOverlay={setOverlay} />
                 <FloatingActions />
                 <HasPieceActions auto={true} setOverlay={setOverlay} />
             </>, 
@@ -145,7 +150,10 @@ export function Game() {
             gamePhaseMessage: "Autonomous"
         },
         AutoExitedNoPiece: {
-            field: <AutoCollectPieceActions />, 
+            field: <>
+                <AutoCollectPieceActions />
+                <ChargeStationAction setOverlay={setOverlay} />
+            </>, 
             gamePhaseMessage: "Autonomous"
         },
         AutoNotExitedNoPiece: {
@@ -183,6 +191,7 @@ export function Game() {
                 setTimeout(() => {
                     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
                     setPhase(GamePhase.Teleop);
+                    setOverlay([ FieldOverlay.None, null ])
                 }, 18 * 1000),
             );
 
@@ -205,6 +214,13 @@ export function Game() {
         if (autoTimeout) clearTimeout(autoTimeout);
         if (amplificationTimeout) clearTimeout(amplificationTimeout);
         
+        setGroundPieces(
+            Object.values(groundPieces).reduce(
+                (acc, curr) => ({...acc, [curr]: GamePiece.None}), 
+                {} as Record<MatchEventPosition, GamePiece>
+            )
+        )
+
         router.replace("/game/post-match");
     };
     const gameViewParams: MatchStateType = useMemo(() => {
@@ -491,13 +507,117 @@ export function Game() {
                         }
                         {overlay[0] === FieldOverlay.Charge && 
                             <View
+                                key={"ChargeOverlay"}
                                 style={{
-                                    width: "100%",
-                                    height: "100%",
-                                    backgroundColor: colors.yellow.default + "87"
+                                    alignSelf: "center",
+                                    marginTop: "1%",
+                                    width: "65%",
+                                    height: "95%",
+                                    position: "absolute",
                                 }}
                             >
-                                {null}
+                                <View
+                                    style={{
+                                        marginHorizontal: "5%",
+                                        marginVertical: "2%",
+                                        padding: 10,
+                                        flexGrow: 1,
+                                        borderRadius: 7,
+                                        borderWidth: 2,
+                                        borderColor: colors.gray.default,
+                                        flexDirection: "column",
+                                        gap: 10,
+                                        overflow: "visible",
+                                    }}
+                                >
+                                    <TouchableOpacity
+                                        onPress={() => {
+                                            setReportState({
+                                                ...reportState!,
+                                                autoChargingResult: ChargingResult.Engaged,
+                                            }) 
+                                        }}
+                                        style={{
+                                            backgroundColor: reportState!.autoChargingResult === ChargingResult.Engaged
+                                            ? colors.gray.hover
+                                            : colors.secondaryContainer.default,
+                                            borderRadius: 7,
+                                            flexGrow: 1,
+                                            alignItems: "center",
+                                            justifyContent: "center"
+                                        }}
+                                    >
+                                        <TitleMedium>
+                                            Engaged
+                                        </TitleMedium>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity
+                                        onPress={() => {
+                                            setReportState({
+                                                ...reportState!,
+                                                autoChargingResult: ChargingResult.Tilted,
+                                            }) 
+                                        }}
+                                        style={{
+                                            backgroundColor: reportState!.autoChargingResult === ChargingResult.Tilted
+                                            ? colors.gray.hover
+                                            : colors.secondaryContainer.default,
+                                            borderRadius: 7,
+                                            flexGrow: 1,
+                                            alignItems: "center",
+                                            justifyContent: "center"
+                                        }}
+                                    >
+                                        <TitleMedium>
+                                            Tipped
+                                        </TitleMedium>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity
+                                        onPress={() => {
+                                            setReportState({
+                                                ...reportState!,
+                                                autoChargingResult: ChargingResult.Failed,
+                                            }) 
+                                        }}
+                                        style={{
+                                            backgroundColor: reportState!.autoChargingResult === ChargingResult.Failed
+                                            ? colors.gray.hover
+                                            : colors.secondaryContainer.default,borderRadius: 7,
+                                            flexGrow: 1,
+                                            alignItems: "center",
+                                            justifyContent: "center"
+                                        }}
+                                    >
+                                        <TitleMedium>
+                                            Failed
+                                        </TitleMedium>
+                                    </TouchableOpacity>
+                                    <View
+                                        style={{
+                                            position: "absolute",
+                                            right: 0,
+                                            top: 0,
+                                            marginTop: -10,
+                                            marginRight: -10,
+                                            paddingLeft: 2,
+                                            backgroundColor: colors.background.default,
+                                            borderRadius: 10
+                                        }}
+                                    >
+                                        <IconButton
+                                            icon="cancel"
+                                            label="Cancel"
+                                            size={20}
+                                            color={colors.danger.default}
+                                            onPress={() => {
+                                                setReportState({
+                                                    ...reportState!,
+                                                    autoChargingResult: ChargingResult.Nothing,
+                                                }) 
+                                            }}
+                                        />
+                                    </View>
+                                </View>
                             </View>
                         }
                     </View>
@@ -508,7 +628,6 @@ export function Game() {
 }
 
 const FloatingActions = () => {
-    // Fix this mess at some point
     const reportState = useAtomValue(reportStateAtom);
     const fieldOrientation = useAtomValue(fieldOrientationAtom);
 

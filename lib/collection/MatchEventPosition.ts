@@ -34,7 +34,7 @@ export type MatchEventPositionDetails = {
 }
 
 export const matchEventPositions: Record<MatchEventPosition, MatchEventPositionDetails> = Object.values(MatchEventPosition).reduce((prev, curr, currInd) => ({
-    ...prev, curr: {num: currInd}
+    ...prev, [curr]: {num: currInd}
 }), {} as Record<MatchEventPosition, MatchEventPositionDetails>);
 
 export type StartingPosition =

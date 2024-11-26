@@ -13,8 +13,6 @@ export type ScoutReport = {
     teamNumber: number;
     notes: string;
     robotRole: number;
-    stage: number;
-    // highNote: number;
     pickUp: number;
     driverAbility: number;
     scouterUuid: string;

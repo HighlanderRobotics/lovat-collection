@@ -10,6 +10,7 @@ export enum MatchEventType {
     ChargingEngaged,
     ChargingTipped,
     ChargingFailed,
+    ChargingNotAttempted,
     
     StartingPosition,
 }

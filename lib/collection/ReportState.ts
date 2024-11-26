@@ -2,7 +2,7 @@ import { ScoutReportMeta } from "../models/ScoutReportMeta";
 import { matchTypes } from "../models/match";
 import { DriverAbility, driverAbilityDescriptions } from "./DriverAbility";
 import { MatchEvent } from "./MatchEvent";
-import { StartingPosition, matchEventPositions } from "./MatchEventPosition";
+import { MatchEventPosition, StartingPosition, matchEventPositions } from "./MatchEventPosition";
 import { MatchEventType } from "./MatchEventType";
 import { PickUp, pickUpDescriptions } from "./PickUp";
 import { ScoutReport, ScoutReportEvent } from "./ScoutReport";
@@ -54,7 +54,6 @@ export function exportScoutReport(reportState: ReportState): ScoutReport {
         startTime: reportState.startTimestamp?.getTime() ?? 0,
         notes: reportState.notes,
         robotRole: reportState.robotRole,
-        stage: chargingResultDescriptions[reportState.endChargingResult].num,
         pickUp: pickUpDescriptions[reportState.pickUp].num,
         driverAbility: driverAbilityDescriptions[reportState.driverAbility].numericalRating,
         scouterUuid: reportState.meta.scouterUUID,
@@ -77,6 +76,26 @@ export function exportScoutReport(reportState: ReportState): ScoutReport {
                       ] as ScoutReportEvent,
                   ]
                 : []),
+            ...(reportState.autoChargingResult
+                ? [
+                    [
+                        18,
+                        Object.values(ChargingResult).indexOf(reportState.autoChargingResult),
+                        matchEventPositions[MatchEventPosition.None].num,
+                    ] as ScoutReportEvent
+                ]
+                : []
+            ),
+            ...(reportState.autoChargingResult
+                ? [
+                    [
+                        ((reportState.events[reportState.events.length-1].timestamp - reportState.startTimestamp!.getTime()) / 1000)+0.1,
+                        Object.values(ChargingResult).indexOf(reportState.autoChargingResult),
+                        matchEventPositions[MatchEventPosition.None].num,
+                    ] as ScoutReportEvent
+                ]
+                : []
+            ),
             ...(reportState.events.map((event) => [
                 (event.timestamp - reportState.startTimestamp!.getTime()) / 1000,
                 event.type,

@@ -1,8 +1,10 @@
+import { MatchEventType } from "./MatchEventType";
+
 export enum ChargingResult {
-    Nothing = "NOTHING",
-    Failed = "FAILED",
-    Tilted = "TILTED",
-    Engaged = "ENGAGED"
+    Nothing = MatchEventType.ChargingNotAttempted,
+    Failed = MatchEventType.ChargingFailed,
+    Tilted = MatchEventType.ChargingTipped,
+    Engaged = MatchEventType.ChargingEngaged
 }
 
 export type ChargingResultDescription = {
