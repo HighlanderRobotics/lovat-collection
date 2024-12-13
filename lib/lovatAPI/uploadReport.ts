@@ -1,7 +1,6 @@
 import { ScoutReport } from "../collection/ScoutReport";
 import { post } from "./lovatAPI";
 
-
 export const uploadReport = async (report: ScoutReport) => {
   console.log("Uploading report", report);
 

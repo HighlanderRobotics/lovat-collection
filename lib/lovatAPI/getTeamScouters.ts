@@ -17,7 +17,7 @@ export const getTeamScouters = async () => {
   cacheTeamScouters(json);
 
   return json as Scouter[];
-}
+};
 
 const cacheTeamScouters = async (scouters: Scouter[]) => {
   const cachedScouters: LocalCache<Scouter[]> = {
@@ -27,7 +27,7 @@ const cacheTeamScouters = async (scouters: Scouter[]) => {
   };
 
   await AsyncStorage.setItem("scouters-cache", JSON.stringify(cachedScouters));
-}
+};
 
 export const getLocalTeamScouters = async () => {
   const cachedScoutersString = await AsyncStorage.getItem("scouters-cache");
@@ -36,10 +36,12 @@ export const getLocalTeamScouters = async () => {
     return null;
   }
 
-  const cachedScouters = JSON.parse(cachedScoutersString) as LocalCache<Scouter[]>;
+  const cachedScouters = JSON.parse(cachedScoutersString) as LocalCache<
+    Scouter[]
+  >;
 
   return cachedScouters;
-}
+};
 
 export const getTeamScoutersCached = async () => {
   try {
@@ -57,4 +59,4 @@ export const getTeamScoutersCached = async () => {
 
     return cachedScouters;
   }
-}
+};

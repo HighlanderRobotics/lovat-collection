@@ -1,6 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-
 export async function getScouter() {
   const scouterString = await AsyncStorage.getItem("scouter");
 
