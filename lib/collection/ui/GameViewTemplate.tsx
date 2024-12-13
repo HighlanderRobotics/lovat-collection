@@ -17,7 +17,6 @@ import {
 import { IconButton } from "../../components/IconButton";
 import * as Haptics from "expo-haptics";
 import { GameTimer } from "./GameTimer";
-import { Link, router } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import * as DropdownMenu from "zeego/dropdown-menu";
 
@@ -27,7 +26,6 @@ export const GameViewTemplate = (props: {
   gamePhaseMessage: string;
   startEnabled?: boolean;
   onEnd: () => void;
-  onRestart: () => void;
 }) => {
   const [reportState, setReportState] = useAtom(reportStateAtom);
   const { gamePhaseMessage, field, startEnabled } = props;
@@ -136,9 +134,6 @@ export const GameViewTemplate = (props: {
               <DropdownMenu.Content>
                 <DropdownMenu.Item key="end" onSelect={props.onEnd}>
                   <DropdownMenu.ItemTitle>End match</DropdownMenu.ItemTitle>
-                </DropdownMenu.Item>
-                <DropdownMenu.Item key="restart" onSelect={props.onRestart}>
-                  <DropdownMenu.ItemTitle>Restart match</DropdownMenu.ItemTitle>
                 </DropdownMenu.Item>
               </DropdownMenu.Content>
             </DropdownMenu.Root>

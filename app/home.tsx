@@ -21,7 +21,6 @@ import {
   useCallback,
   useContext,
   useEffect,
-  useLayoutEffect,
   useMemo,
   useState,
 } from "react";
@@ -45,7 +44,7 @@ import {
 import { AllianceColor, allianceColors } from "../lib/models/AllianceColor";
 import { ScoutReportMeta } from "../lib/models/ScoutReportMeta";
 import { getScouter } from "../lib/storage/getScouter";
-import { atom, useAtom, useAtomValue } from "jotai";
+import { useAtom, useAtomValue } from "jotai";
 import { reportStateAtom } from "../lib/collection/reportStateAtom";
 import {
   GamePhase,
@@ -62,16 +61,13 @@ import { v4 } from "uuid";
 import { SafeAreaView } from "react-native-safe-area-context";
 import {
   ScouterScheduleMatch,
-  getCurrentScouterScheduleCached,
-  getScouterScheduleCached,
   getVerionsColor,
-  scouterScheduleAtom,
 } from "../lib/storage/scouterSchedules";
-import { unwrap } from "jotai/utils";
 import { Picker } from "react-native-wheel-pick";
-import { getTournamentsCached } from "../lib/lovatAPI/getTournaments";
 import { historyAtom } from "../lib/storage/historyAtom";
 import { startMatchEnabledAtom } from "./_layout";
+import { Tournament } from "../lib/models/tournament";
+import { Scouter } from "../lib/models/scouter";
 
 enum MatchSelectionMode {
   Automatic,
@@ -79,7 +75,7 @@ enum MatchSelectionMode {
 }
 
 export default function Home() {
-  const [tournament, setTournament] = useState<Tournament | null>(null);
+  const [, setTournament] = useState<Tournament | null>(null);
   const [matchSelectionMode, setMatchSelectionMode] = useState(
     MatchSelectionMode.Automatic,
   );
@@ -358,7 +354,9 @@ const AutomaticMatchSelection = ({
   }, [scouterScheduleForTournament, scouter, history]);
 
   const matchKeyOf = (match: MatchIdentity) =>
-    `${match.tournamentKey}_${matchTypes.find((t) => t.type === match.matchType)?.shortName.toLowerCase()}${match.matchNumber}`;
+    `${match.tournamentKey}_${matchTypes
+      .find((t) => t.type === match.matchType)
+      ?.shortName.toLowerCase()}${match.matchNumber}`;
 
   const [selectedMatch, setSelectedMatch] =
     useState<ScouterScheduleMatch | null>(null);
@@ -570,11 +568,6 @@ const ManualMatchSelection = (props: ManualMatchSelectionProps) => {
     </ScrollView>
   );
 };
-
-const unwrappedScouterScheduleAtom = unwrap(
-  scouterScheduleAtom,
-  (prev) => prev,
-);
 
 const ScheduleColorGradient = () => {
   const services = useContext(ServicesContext);

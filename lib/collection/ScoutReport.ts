@@ -1,22 +1,31 @@
+import { z } from "zod";
+
+export const scoutReportEventSchema = z.tuple([
+  z.number(),
+  z.number(),
+  z.number(),
+]);
+
 /**
  * [time (seconds), event/action enum, position enum]
  */
+export type ScoutReportEvent = z.infer<typeof scoutReportEventSchema>;
 
-export type ScoutReportEvent = [number, number, number];
+export const scoutReportSchema = z.object({
+  uuid: z.string(),
+  tournamentKey: z.string(),
+  matchType: z.number(),
+  matchNumber: z.number(),
+  startTime: z.number(),
+  teamNumber: z.number(),
+  notes: z.string(),
+  robotRole: z.number(),
+  stage: z.number(),
+  highNote: z.number(),
+  pickUp: z.number(),
+  driverAbility: z.number(),
+  scouterUuid: z.string(),
+  events: z.array(scoutReportEventSchema),
+});
 
-export type ScoutReport = {
-  uuid: string;
-  tournamentKey: string;
-  matchType: number;
-  matchNumber: number;
-  startTime: number;
-  teamNumber: number;
-  notes: string;
-  robotRole: number;
-  stage: number;
-  highNote: number;
-  pickUp: number;
-  driverAbility: number;
-  scouterUuid: string;
-  events: ScoutReportEvent[];
-};
+export type ScoutReport = z.infer<typeof scoutReportSchema>;

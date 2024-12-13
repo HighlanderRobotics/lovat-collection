@@ -15,11 +15,17 @@ import {
 } from "./storage/scouterSchedules";
 import { atom } from "jotai";
 import { getTournament } from "./storage/getTournament";
+import { Tournament } from "./models/tournament";
+import { Scouter } from "./models/scouter";
+
+export type BareServiceValues = {
+  tournaments: Tournament[];
+  teamScouters: Scouter[];
+  scouterSchedule: ScouterSchedule;
+};
 
 export type ServiceValues = {
-  tournaments: LocalCache<Tournament[]> | null;
-  teamScouters: LocalCache<Scouter[]> | null;
-  scouterSchedule: LocalCache<ScouterSchedule> | null;
+  [key in keyof BareServiceValues]: LocalCache<BareServiceValues[key]> | null;
 };
 
 export const ServicesContext = createContext<ServiceValues>({
@@ -34,14 +40,14 @@ export const LoadServicesContext = createContext<() => Promise<void>>(
 
 export const servicesLoadingAtom = atom(false);
 
-type Service<T> = {
-  id: keyof ServiceValues;
+type Service<S extends keyof ServiceValues> = {
+  id: S;
   localizedDescription: string;
-  get: () => Promise<LocalCache<T>>;
-  getLocal: () => Promise<LocalCache<T> | null>;
+  get: () => Promise<LocalCache<BareServiceValues[S]>>;
+  getLocal: () => Promise<ServiceValues[S]>;
 };
 
-export const services: Service<any>[] = [
+export const services = [
   {
     id: "tournaments",
     localizedDescription: "Tournaments",
@@ -65,4 +71,4 @@ export const services: Service<any>[] = [
       return getLocalScouterSchedule(tournamentKey);
     },
   },
-];
+] satisfies Service<keyof ServiceValues>[];

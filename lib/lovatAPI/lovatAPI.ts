@@ -13,7 +13,7 @@ export const get = async (url: string) => {
   });
 };
 
-export const post = async (url: string, body: any) => {
+export const post = async (url: string, body: unknown) => {
   const teamCode = await getTeamCode();
 
   return await fetch(urlPrefix + url, {
@@ -26,7 +26,7 @@ export const post = async (url: string, body: any) => {
   });
 };
 
-export const put = async (url: string, body: any) => {
+export const put = async (url: string, body: unknown) => {
   const teamCode = await getTeamCode();
 
   return await fetch(urlPrefix + url, {

@@ -29,7 +29,7 @@ export default function OnboardingWelcome() {
         }}
       >
         <TitleMedium>Welcome to Lovat&nbsp;Collection</TitleMedium>
-        <BodyMedium>Let's get you ready to scout.</BodyMedium>
+        <BodyMedium>Let&apos;s get you ready to scout.</BodyMedium>
         <View style={{ paddingTop: 50, alignItems: "flex-end" }}>
           <Button
             variant="primary"

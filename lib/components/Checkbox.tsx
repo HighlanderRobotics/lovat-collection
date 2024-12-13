@@ -6,7 +6,7 @@ import { Icon } from "./Icon";
 export const Checkbox = (props: {
   label: string;
   checked?: boolean;
-  onChange?: (checked: boolean) => any;
+  onChange?: (checked: boolean) => void;
 }) => {
   const { label, checked, onChange } = props;
 

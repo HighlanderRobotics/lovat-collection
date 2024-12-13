@@ -1,4 +1,4 @@
-import React from "react";
+import { ComponentProps } from "react";
 import ReactTimeAgo from "react-time-ago";
 
 import { Text } from "react-native";
@@ -10,10 +10,10 @@ type TimeProps = {
   children: string;
 };
 
-export default function TimeAgo(props: any) {
+export default function TimeAgo(props: ComponentProps<typeof ReactTimeAgo>) {
   return <ReactTimeAgo {...props} component={Time} />;
 }
 
-function Time({ date, verboseDate, tooltip, children }: TimeProps) {
+function Time({ children }: TimeProps) {
   return <Text>{children}</Text>;
 }

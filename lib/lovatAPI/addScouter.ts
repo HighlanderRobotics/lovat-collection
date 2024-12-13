@@ -1,3 +1,4 @@
+import { Scouter } from "../models/scouter";
 import { getTeamNumber } from "../storage/getTeamNumber";
 import { post } from "./lovatAPI";
 

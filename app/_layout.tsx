@@ -18,21 +18,17 @@ import {
   services,
   servicesLoadingAtom,
 } from "../lib/services";
-import { LocalCache } from "../lib/localCache";
 
 import TimeAgo from "javascript-time-ago";
 import en from "javascript-time-ago/locale/en.json";
 import { atom, useSetAtom } from "jotai";
-import {
-  ScouterSchedule,
-  scouterScheduleAtom,
-} from "../lib/storage/scouterSchedules";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { scouterScheduleAtom } from "../lib/storage/scouterSchedules";
 
 const { UIManager } = NativeModules;
 
-UIManager.setLayoutAnimationEnabledExperimental &&
+if (UIManager.setLayoutAnimationEnabledExperimental) {
   UIManager.setLayoutAnimationEnabledExperimental(true);
+}
 
 TimeAgo.addDefaultLocale(en);
 
@@ -102,10 +98,9 @@ export default function Layout() {
             [service.id]: value,
           }));
 
-          if (service.id === "scouterSchedule") {
-            setScouterSchedule(
-              async () => value as LocalCache<ScouterSchedule>,
-            );
+          if (service.id === "scouterSchedule" && value) {
+            const value = await service.get();
+            setScouterSchedule(async () => value);
             console.log(`Loaded scouter schedule ${value.data.hash}`);
           }
           console.log(`Loaded service ${service.id}`);

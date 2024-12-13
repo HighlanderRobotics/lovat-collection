@@ -2,6 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { raceTournamentsCached } from "../lovatAPI/getTournaments";
 import { useSetAtom } from "jotai";
 import { RESET, atomWithDefault } from "jotai/utils";
+import { Tournament } from "../models/tournament";
 
 export async function getTournament() {
   const tournaments = await raceTournamentsCached();
@@ -16,8 +17,6 @@ export async function getTournament() {
     }
   } else {
     // No tournament set, go by date
-    const now = new Date().getTime();
-
     tournaments.data.sort((a, b) => {
       // Parse the dates: YYYY-MM-DD
       const parseDate = (date: string) => {

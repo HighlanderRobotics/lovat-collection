@@ -18,10 +18,11 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { Icon } from "../../lib/components/Icon";
 import BodyMedium from "../../lib/components/text/BodyMedium";
+import { Tournament } from "../../lib/models/tournament";
 
 const tournamentsAtom = atom(raceTournamentsCached);
 
-export default function Tournament() {
+export default function TournamentPage() {
   const [filter, setFilter] = useState("");
 
   return (

@@ -13,10 +13,11 @@ import TextField from "../../lib/components/TextField";
 import { useEffect, useState } from "react";
 import { getTeamScouters } from "../../lib/lovatAPI/getTeamScouters";
 import { colors } from "../../lib/colors";
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { addScouter } from "../../lib/lovatAPI/addScouter";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { router, useNavigation } from "expo-router";
+import { router } from "expo-router";
+import { z } from "zod";
+import { Scouter } from "../../lib/models/scouter";
 
 export default function Name() {
   const [loading, setLoading] = useState(true);
@@ -25,15 +26,20 @@ export default function Name() {
 
   const [fieldText, setFieldText] = useState("");
 
-  const navigation = useNavigation();
-
   useEffect(() => {
     const fetchScouters = async () => {
       try {
         const scouters = await getTeamScouters();
         setScouters(scouters);
-      } catch (e: any) {
-        setError(e.message);
+      } catch (e) {
+        let message;
+        try {
+          message = z.object({ message: z.string() }).parse(e).message;
+        } catch {
+          message = "An unknown error occurred";
+        }
+
+        setError(message);
       } finally {
         setLoading(false);
       }
@@ -49,8 +55,15 @@ export default function Name() {
     try {
       await AsyncStorage.setItem("scouter", JSON.stringify(scouter));
       router.push("/onboarding/tournaments");
-    } catch (e: any) {
-      setError(e.message);
+    } catch (e) {
+      let message;
+      try {
+        message = z.object({ message: z.string() }).parse(e).message;
+      } catch {
+        message = "An unknown error occurred";
+      }
+
+      setError(message);
     } finally {
       setLoading(false);
     }
@@ -108,7 +121,7 @@ const NewScouterPrompt = ({
 }: {
   visible: boolean;
   name: string;
-  onSubmit: (scouter: Scouter) => any;
+  onSubmit: (scouter: Scouter) => void;
 }) => {
   if (!visible) return null;
 
@@ -125,8 +138,15 @@ const NewScouterPrompt = ({
       const scouter = await addScouter(name);
 
       onSubmit(scouter);
-    } catch (e: any) {
-      setError(e.message);
+    } catch (e) {
+      let message;
+      try {
+        message = z.object({ message: z.string() }).parse(e).message;
+      } catch {
+        message = "An unknown error occurred";
+      }
+
+      setError(message);
     } finally {
       setLoading(false);
     }
@@ -135,7 +155,7 @@ const NewScouterPrompt = ({
   return (
     <View style={{ alignItems: "center" }}>
       <View style={{ padding: 10 }}>
-        <BodyMedium>Scouter "{name}" not found.</BodyMedium>
+        <BodyMedium>Scouter &ldquo;{name}&rdquo; not found.</BodyMedium>
       </View>
       <Button variant="primary" onPress={onPress} disabled={loading}>
         Create new scouter
@@ -150,10 +170,9 @@ const NewScouterPrompt = ({
 const ScoutersView = ({
   scouters,
   onSubmit,
-  filterText,
 }: {
   scouters?: Scouter[];
-  onSubmit?: (scouter: Scouter) => any;
+  onSubmit?: (scouter: Scouter) => void;
   filterText?: string;
 }) => {
   if (!scouters || scouters.length === 0) return null;

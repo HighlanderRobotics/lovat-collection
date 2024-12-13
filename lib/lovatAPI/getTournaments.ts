@@ -1,7 +1,9 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { getScouter } from "../storage/getScouter";
 import { get } from "./lovatAPI";
-import { DataSource, LocalCache } from "../localCache";
+import { DataSource, LocalCache, localCacheSchema } from "../localCache";
+import { Tournament, tournamentSchema } from "../models/tournament";
+import z from "zod";
 
 export const getTournaments = async () => {
   const scouter = await getScouter();
@@ -15,7 +17,10 @@ export const getTournaments = async () => {
   }
 
   const json = await response.json();
-  const tournaments: Tournament[] = json["tournaments"];
+
+  const { tournaments } = z
+    .object({ tournaments: z.array(tournamentSchema) })
+    .parse(json);
 
   cacheTournaments(tournaments);
 
@@ -35,7 +40,9 @@ const cacheTournaments = async (tournaments: Tournament[]) => {
   );
 };
 
-export const getLocalTournaments = async () => {
+export const getLocalTournaments: () => Promise<LocalCache<
+  Tournament[]
+> | null> = async () => {
   const cachedTournamentsString =
     await AsyncStorage.getItem("tournaments-cache");
 
@@ -43,20 +50,22 @@ export const getLocalTournaments = async () => {
     return null;
   }
 
-  const cachedTournaments = JSON.parse(cachedTournamentsString) as LocalCache<
-    Tournament[]
-  >;
+  const cachedTournaments = localCacheSchema(z.array(tournamentSchema)).parse(
+    JSON.parse(cachedTournamentsString),
+  );
 
   return cachedTournaments;
 };
 
-export const getTournamentsCached = async () => {
+export const getTournamentsCached: () => Promise<
+  LocalCache<Tournament[]>
+> = async () => {
   try {
     return {
       data: await getTournaments(),
       sourcedAt: new Date().getTime(),
       source: DataSource.Server,
-    } as LocalCache<Tournament[]>;
+    };
   } catch (e) {
     const cachedTournaments = await getLocalTournaments();
 

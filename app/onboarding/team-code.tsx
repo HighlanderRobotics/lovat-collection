@@ -9,6 +9,7 @@ import { checkTeamCode } from "../../lib/lovatAPI/checkTeamCode";
 import { router } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { colors } from "../../lib/colors";
+import { z } from "zod";
 
 export default function TeamCode() {
   const [code, setCode] = useState("");
@@ -28,8 +29,15 @@ export default function TeamCode() {
       await AsyncStorage.setItem("team-code", code);
       await AsyncStorage.setItem("team-number", team.number.toString());
       router.push("onboarding/name");
-    } catch (e: any) {
-      setError(e.message);
+    } catch (e) {
+      let message;
+      try {
+        message = z.object({ message: z.string() }).parse(e).message;
+      } catch {
+        message = "An unknown error occurred";
+      }
+
+      setError(message);
     } finally {
       setLoading(false);
     }
@@ -48,7 +56,7 @@ export default function TeamCode() {
           maxWidth: 550,
         }}
       >
-        <TitleMedium>Enter your team's code</TitleMedium>
+        <TitleMedium>Enter your team&apos;s code</TitleMedium>
         <TextField
           placeholder="Code"
           autoFocus

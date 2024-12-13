@@ -57,7 +57,7 @@ export type GroundNotePositionDetails = {
   };
 };
 
-export let groundNotePositions: {
+export const groundNotePositions: {
   [key in MatchEventPosition]?: GroundNotePositionDetails;
 } = {
   [MatchEventPosition.GroundNoteAllianceNearAmp]: {

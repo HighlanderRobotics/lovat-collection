@@ -11,7 +11,8 @@ import { Suspense } from "react";
 import { ScoutReport } from "../../lib/collection/ScoutReport";
 import Slider from "@react-native-community/slider";
 import LabelSmall from "../../lib/components/text/LabelSmall";
-import { storage } from "../../lib/storage/jotaiStorage";
+import { createStorage } from "../../lib/storage/jotaiStorage";
+import { z } from "zod";
 
 const EXAMPLE_SCOUT_REPORT: ScoutReport = {
   uuid: "f23698c6-a084-4659-9644-fc91c9f88d14",
@@ -64,7 +65,11 @@ const EXAMPLE_SCOUT_REPORT: ScoutReport = {
   ],
 };
 
-export const qrCodeSizeAtom = atomWithStorage("qrCodeSize", 600, storage);
+export const qrCodeSizeAtom = atomWithStorage(
+  "qrCodeSize",
+  600,
+  createStorage(z.number()),
+);
 
 export default function QRCodeSizeEditor() {
   return (

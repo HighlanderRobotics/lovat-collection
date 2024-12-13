@@ -1,3 +1,5 @@
+import { z } from "zod";
+
 export enum MatchType {
   Qualifier = "QUALIFIER",
   Elimination = "PLAYOFF",
@@ -34,11 +36,13 @@ export const matchTypes: MatchTypeDescription[] = [
   },
 ];
 
-export type MatchIdentity = {
-  tournamentKey: string;
-  matchType: MatchType;
-  matchNumber: number;
-};
+export const matchIdentitySchema = z.object({
+  tournamentKey: z.string(),
+  matchType: z.nativeEnum(MatchType),
+  matchNumber: z.number(),
+});
+
+export type MatchIdentity = z.infer<typeof matchIdentitySchema>;
 
 export enum MatchIdentityLocalizationFormat {
   Short,

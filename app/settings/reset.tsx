@@ -1,7 +1,7 @@
 import { View } from "react-native";
 import { NavBar } from "../../lib/components/NavBar";
 import { IconButton } from "../../lib/components/IconButton";
-import { Stack, router, useNavigation } from "expo-router";
+import { router, useNavigation } from "expo-router";
 import { colors } from "../../lib/colors";
 import { SafeAreaView } from "react-native-safe-area-context";
 import TitleMedium from "../../lib/components/text/TitleMedium";
@@ -57,9 +57,9 @@ export default function Reset() {
         >
           <TitleMedium>Are you sure?</TitleMedium>
           <BodyMedium>
-            You're about to permanently delete all Lovat Collection data stored
-            on this device. This includes all settings, cached data, and match
-            history.
+            You&apos;re about to permanently delete all Lovat Collection data
+            stored on this device. This includes all settings, cached data, and
+            match history.
           </BodyMedium>
 
           <View

@@ -1,14 +1,8 @@
-import {
-  ActivityIndicator,
-  Alert,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { ActivityIndicator, Alert, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { NavBar } from "../../lib/components/NavBar";
 import { IconButton } from "../../lib/components/IconButton";
-import { Link, Stack, router } from "expo-router";
+import { Link, router } from "expo-router";
 import { colors } from "../../lib/colors";
 import { useAtomValue } from "jotai";
 import {
@@ -28,8 +22,8 @@ import BodyMedium from "../../lib/components/text/BodyMedium";
 import TextField from "../../lib/components/TextField";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import * as ContextMenu from "zeego/context-menu";
-import { ScoutReportCode } from "../../lib/collection/ui/ScoutReportCode";
 import { uploadReport } from "../../lib/lovatAPI/uploadReport";
+import { z } from "zod";
 
 export default function History() {
   const [filterText, setFilterText] = useState("");
@@ -222,9 +216,14 @@ const Match = ({ match }: { match: HistoryEntry }) => {
               } catch (e) {
                 let message;
 
-                if (typeof (e as any)["message"] == "string") {
-                  const error = e as { message: string };
-                  message = error.message;
+                try {
+                  message = z
+                    .object({
+                      message: z.string(),
+                    })
+                    .parse(e).message;
+                } catch {
+                  message = "An unknown error occurred";
                 }
 
                 Alert.alert("Failed to upload", message);
