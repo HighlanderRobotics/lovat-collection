@@ -17,7 +17,7 @@ import { HasNoteActions } from "./actions/HasNoteActions";
 import { ExitWingAction } from "./actions/ExitWingAction";
 import * as Haptics from "expo-haptics";
 import { AutoCollectPieceActions } from "./actions/AutoCollectPieceActions";
-import { TouchableOpacity, View } from "react-native";
+import { Alert, TouchableOpacity, View } from "react-native";
 import { colors } from "../../colors";
 import { Icon } from "../../components/Icon";
 import { AllianceColor } from "../../models/AllianceColor";
@@ -95,11 +95,39 @@ export function Game() {
     if (amplificationTimeout) clearTimeout(amplificationTimeout);
     router.replace("/game/post-match");
   };
+  const onRestart = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    if (autoTimeout) clearTimeout(autoTimeout);
+    if (amplificationTimeout) clearTimeout(amplificationTimeout);
+    console.log("restart ");
+    Alert.alert(
+      "Restart match?",
+      "You will lose all of the data that you recorded.",
+      [
+        {
+          text: "Cancel",
+        },
+        {
+          text: "Restart",
+          style: "destructive",
+          onPress: () => {
+            setReportState({
+              ...reportState!,
+              events: [],
+              gamePhase: GamePhase.Auto,
+              startTimestamp: undefined,
+            });
+          },
+        },
+      ],
+    );
+  };
 
   if (!reportState?.startTimestamp) {
     return (
       <GameViewTemplate
         onEnd={onEnd}
+        onRestart={onRestart}
         gamePhaseMessage="Pre-match"
         field={<PreMatchActions />}
         topLeftReplacement={
@@ -129,6 +157,7 @@ export function Game() {
         return (
           <GameViewTemplate
             onEnd={onEnd}
+            onRestart={onRestart}
             gamePhaseMessage="Autonomous"
             field={
               <>
@@ -141,6 +170,7 @@ export function Game() {
         return (
           <GameViewTemplate
             onEnd={onEnd}
+            onRestart={onRestart}
             gamePhaseMessage="Autonomous"
             field={
               <>
@@ -156,6 +186,7 @@ export function Game() {
         return (
           <GameViewTemplate
             onEnd={onEnd}
+            onRestart={onRestart}
             gamePhaseMessage="Autonomous"
             field={<AutoCollectPieceActions />}
           />
@@ -164,6 +195,7 @@ export function Game() {
         return (
           <GameViewTemplate
             onEnd={onEnd}
+            onRestart={onRestart}
             gamePhaseMessage="Autonomous"
             field={
               <>
@@ -179,6 +211,7 @@ export function Game() {
       return (
         <GameViewTemplate
           onEnd={onEnd}
+          onRestart={onRestart}
           gamePhaseMessage="Teleop"
           field={
             <>
@@ -192,6 +225,7 @@ export function Game() {
       return (
         <GameViewTemplate
           onEnd={onEnd}
+          onRestart={onRestart}
           gamePhaseMessage="Teleop"
           field={<FloatingActions pickupEnabled />}
         />
@@ -202,6 +236,7 @@ export function Game() {
   return (
     <GameViewTemplate
       onEnd={onEnd}
+      onRestart={onRestart}
       gamePhaseMessage="Unknown phase"
       field={<></>}
     />
