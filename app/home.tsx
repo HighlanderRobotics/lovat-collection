@@ -1,11 +1,4 @@
-import {
-  View,
-  LayoutAnimation,
-  ScrollView,
-  Pressable,
-  ActivityIndicator,
-  Platform,
-} from "react-native";
+import { View, ScrollView, ActivityIndicator, Platform } from "react-native";
 import TitleMedium from "../lib/components/text/TitleMedium";
 import TextField from "../lib/components/TextField";
 import LabelSmall from "../lib/components/text/LabelSmall";
@@ -19,19 +12,11 @@ import { IconButton } from "../lib/components/IconButton";
 import {
   Suspense,
   useCallback,
-  useContext,
   useEffect,
   useMemo,
   useState,
 } from "react";
-import {
-  LoadServicesContext,
-  ServicesContext,
-  servicesLoadingAtom,
-} from "../lib/services";
-import { DataSource } from "../lib/localCache";
-
-import TimeAgo from "../lib/components/TimeAgo";
+import { useLoadServices } from "../lib/services";
 import { useTournamentStore } from "../lib/storage/activeTournamentStore";
 import { ButtonGroup } from "../lib/components/ButtonGroup";
 import {
@@ -57,6 +42,8 @@ import { useStartMatchEnabledStore } from "./_layout";
 import { Scouter } from "../lib/models/scouter";
 import React from "react";
 import { useReportStateStore } from "../lib/collection/reportStateStore";
+import { useScouterScheduleStore } from "../lib/storage/scouterScheduleStore";
+import { useTournamentsStore } from "../lib/storage/tournamentsStore";
 
 enum MatchSelectionMode {
   Automatic,
@@ -75,8 +62,7 @@ export default function Home() {
   const reportState = useReportStateStore();
 
   const startMatchEnabled = useStartMatchEnabledStore((state) => state.value);
-
-  const loadServices = useContext(LoadServicesContext);
+  const loadServices = useLoadServices;
 
   useFocusEffect(
     useCallback(() => {
@@ -122,8 +108,6 @@ export default function Home() {
               color={colors.onBackground.default}
               onPress={() => router.push("/history")}
             />
-
-            <ServiceStatus />
 
             <IconButton
               label="settings"
@@ -190,25 +174,23 @@ const MatchSelection = ({
   matchSelectionMode,
   onMetaChanged,
 }: MatchSelectionProps) => {
-  const services = useContext(ServicesContext);
-  const { scouterSchedule } = services;
+  const scouterSchedule = useScouterScheduleStore((state) => state.schedule)
 
   const tournament = useTournamentStore((state) => state.value);
 
   const scouterScheduleForTournament =
-    (scouterSchedule?.data.data.length ?? 0) > 0 &&
-    scouterSchedule?.data.data[0].matchIdentity.tournamentKey ===
+    (scouterSchedule?.data.length ?? 0) > 0 &&
+    scouterSchedule?.data[0].matchIdentity.tournamentKey ===
       tournament?.key
       ? scouterSchedule
       : null;
-
   switch (matchSelectionMode) {
     case MatchSelectionMode.Automatic:
       return (
         <Suspense fallback={<ActivityIndicator style={{ flex: 1 }} />}>
           <AutomaticMatchSelection
             onChanged={onMetaChanged}
-            key={scouterScheduleForTournament?.data.hash}
+            key={scouterScheduleForTournament?.hash}
           />
         </Suspense>
       );
@@ -223,16 +205,16 @@ const AutomaticMatchSelection = ({
   onChanged: (meta: ScoutReportMeta | null) => void;
 }) => {
   const history = useHistoryStore((state) => state.history);
-
-  const services = useContext(ServicesContext);
-  const { scouterSchedule, tournaments } = services;
+  
+  const scouterSchedule = useScouterScheduleStore((state) => state.schedule)
+  const tournaments = useTournamentsStore((state) => state.tournaments)
 
   const [scouter, setScouter] = useState<Scouter | null>(null);
 
   const selectedTournament = useTournamentStore((state) => state.value);
   const scouterScheduleForTournament =
-    (scouterSchedule?.data.data.length ?? 0) > 0 &&
-    scouterSchedule?.data.data[0].matchIdentity.tournamentKey ===
+    (scouterSchedule?.data.length ?? 0) > 0 &&
+    scouterSchedule?.data[0].matchIdentity.tournamentKey ===
       selectedTournament?.key
       ? scouterSchedule
       : null;
@@ -249,7 +231,7 @@ const AutomaticMatchSelection = ({
   const matchesWithScouter = useMemo(() => {
     if (!scouterScheduleForTournament || !scouter) return [];
 
-    return scouterScheduleForTournament.data.data.filter(
+    return scouterScheduleForTournament.data.filter(
       (match) => scouter?.uuid in match.scouters,
     );
   }, [scouterScheduleForTournament, scouter]);
@@ -259,7 +241,7 @@ const AutomaticMatchSelection = ({
     if (!history || history.length === 0) return matchesWithScouter[0] ?? null;
     if (!scouterScheduleForTournament) return null;
 
-    const matches = scouterScheduleForTournament.data.data.filter(
+    const matches = scouterScheduleForTournament.data.filter(
       (match) => scouter && scouter?.uuid in match.scouters,
     );
     const matchesWithHistory = matches.filter((match) =>
@@ -343,7 +325,7 @@ const AutomaticMatchSelection = ({
   const tournament = useMemo(() => {
     if (!selectedMatch || !tournaments) return null;
 
-    return tournaments.data.find(
+    return tournaments.find(
       (t) => t.key === selectedMatch.matchIdentity.tournamentKey,
     );
   }, [selectedMatch, tournaments]);
@@ -540,14 +522,12 @@ const ManualMatchSelection = (props: ManualMatchSelectionProps) => {
 };
 
 const ScheduleColorGradient = () => {
-  const services = useContext(ServicesContext);
-  const { scouterSchedule } = services;
-
+  const scouterSchedule = useScouterScheduleStore((state) => state.schedule)
   const tournament = useTournamentStore((state) => state.value);
 
   const scouterScheduleForTournament =
-    (scouterSchedule?.data.data.length ?? 0) > 0 &&
-    scouterSchedule?.data.data[0].matchIdentity.tournamentKey ===
+    (scouterSchedule?.data.length ?? 0) > 0 &&
+    scouterSchedule?.data[0].matchIdentity.tournamentKey ===
       tournament?.key
       ? scouterSchedule
       : null;
@@ -555,9 +535,9 @@ const ScheduleColorGradient = () => {
   const [color, setColor] = useState("transparent");
 
   useEffect(() => {
-    if (scouterScheduleForTournament?.data.hash) {
+    if (scouterScheduleForTournament?.hash ) {
       setColor(
-        getVerionsColor(scouterScheduleForTournament?.data.hash, 30, 30),
+        getVerionsColor(scouterScheduleForTournament?.hash, 30, 30),
       );
     } else {
       setColor(colors.danger.default);
@@ -575,122 +555,5 @@ const ScheduleColorGradient = () => {
         height: 400,
       }}
     />
-  );
-};
-
-enum ServicesStatus {
-  Connected,
-  Cached,
-  Unavailable,
-}
-
-const ServiceStatus = () => {
-  const [servicesStatus, setServicesStatus] = useState(
-    ServicesStatus.Connected,
-  );
-
-  const servicesLoading = useAtomValue(servicesLoadingAtom);
-  const [effectiveServicesLoading, setEffectiveServicesLoading] =
-    useState(servicesLoading);
-
-  const serviceValues = useContext(ServicesContext);
-  const loadServices = useContext(LoadServicesContext);
-
-  let status = ServicesStatus.Connected;
-
-  if (
-    Object.values(serviceValues).some(
-      (service) => service?.source === DataSource.Cache,
-    )
-  ) {
-    status = ServicesStatus.Cached;
-  }
-
-  if (Object.values(serviceValues).some((service) => !service)) {
-    status = ServicesStatus.Unavailable;
-  }
-
-  if (
-    status !== servicesStatus ||
-    servicesLoading !== effectiveServicesLoading
-  ) {
-    LayoutAnimation.configureNext({
-      duration: 400,
-      create: {
-        type: LayoutAnimation.Types.linear,
-        property: LayoutAnimation.Properties.opacity,
-        duration: 200,
-      },
-      update: {
-        type: LayoutAnimation.Types.spring,
-        springDamping: 0.7,
-        initialVelocity: 1,
-        duration: 400,
-      },
-      delete: {
-        type: LayoutAnimation.Types.linear,
-        property: LayoutAnimation.Properties.opacity,
-        duration: 200,
-      },
-    });
-
-    setServicesStatus(status);
-    setEffectiveServicesLoading(servicesLoading);
-  }
-
-  return (
-    <Pressable
-      onPress={loadServices}
-      style={{
-        alignItems: "center",
-        flexDirection: "row",
-        backgroundColor: colors.secondaryContainer.default,
-        paddingRight: 14,
-        paddingLeft: effectiveServicesLoading ? 8 : 14,
-        paddingVertical: 6,
-        borderRadius: 50,
-        borderColor: colors.gray.default,
-        borderWidth: 2,
-        overflow: "hidden",
-      }}
-    >
-      {effectiveServicesLoading ? (
-        <ActivityIndicator />
-      ) : (
-        <View
-          style={{
-            width: 7,
-            height: 7,
-            borderRadius: 3.5,
-            backgroundColor: {
-              [ServicesStatus.Connected]: "#44ca6c",
-              [ServicesStatus.Cached]: "#f5c518",
-              [ServicesStatus.Unavailable]: colors.danger.default,
-            }[servicesStatus],
-          }}
-        />
-      )}
-      <View style={{ width: effectiveServicesLoading ? 2 : 9 }} />
-      {servicesStatus === ServicesStatus.Connected && (
-        <BodyMedium>Connected</BodyMedium>
-      )}
-
-      {servicesStatus === ServicesStatus.Cached && (
-        <BodyMedium>
-          Updated{" "}
-          <TimeAgo
-            date={
-              Object.values(serviceValues)
-                .filter((service) => service !== null)
-                .sort((a, b) => b!.sourcedAt - a!.sourcedAt)[0]!.sourcedAt
-            }
-          />
-        </BodyMedium>
-      )}
-
-      {servicesStatus === ServicesStatus.Unavailable && (
-        <BodyMedium color={colors.danger.default}>Unavailable</BodyMedium>
-      )}
-    </Pressable>
   );
 };

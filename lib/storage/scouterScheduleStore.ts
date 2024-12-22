@@ -15,14 +15,14 @@ import {
 
 type ScouterScheduleStore = {
   schedule: ScouterSchedule | null;
-  getSchedule: (key: string) => Promise<void>;
+  fetchScouterSchedule: (key: string) => Promise<void>;
 };
 
 export const useScouterScheduleStore = create(
   persist<ScouterScheduleStore>(
     (set, get) => ({
       schedule: null,
-      getSchedule: async (key) => {
+      fetchScouterSchedule: async (key) => {
         const schedule = await getScouterSchedule(key);
         set(() => ({ schedule: schedule }));
       },

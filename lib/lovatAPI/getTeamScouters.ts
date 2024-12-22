@@ -13,8 +13,6 @@ export const getTeamScouters = async () => {
 
   const json = z.array(scouterSchema).parse(await response.json());
 
-  cacheTeamScouters(json);
-
   return json;
 };
 
