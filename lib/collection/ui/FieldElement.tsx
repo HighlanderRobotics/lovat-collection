@@ -1,11 +1,10 @@
 import { useMemo } from "react";
-import { useAtom } from "jotai";
-import { reportStateAtom } from "../reportStateAtom";
+import { useReportStateStore } from "../reportStateStore";
 import { View } from "react-native";
 import { AllianceColor } from "../../models/AllianceColor";
 import {
   FieldOrientation,
-  fieldOrientationAtom,
+  useFieldOrientationStore,
 } from "../../models/FieldOrientation";
 
 export const FieldElement = (props: {
@@ -15,9 +14,9 @@ export const FieldElement = (props: {
 }) => {
   const { edgeInsets, respectAlliance = true } = props;
 
-  const [fieldOrientation] = useAtom(fieldOrientationAtom);
-  const [reportState] = useAtom(reportStateAtom);
-  const allianceColor = reportState?.meta.allianceColor;
+  const fieldOrientation = useFieldOrientationStore((state) => state.value);
+  const reportState = useReportStateStore();
+  const allianceColor = reportState.meta?.allianceColor;
 
   const [givenTop, givenRight, givenButtom, givenLeft] = edgeInsets;
 

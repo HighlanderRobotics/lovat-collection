@@ -10,11 +10,8 @@ import {
 import { LocalCache } from "./localCache";
 import {
   ScouterSchedule,
-  getCurrentScouterScheduleCached,
   getLocalScouterSchedule,
-} from "./storage/scouterSchedules";
-import { atom } from "jotai";
-import { getTournament } from "./storage/getTournament";
+} from "./storage/scouterScheduleStore";
 import { Tournament } from "./models/tournament";
 import { Scouter } from "./models/scouter";
 

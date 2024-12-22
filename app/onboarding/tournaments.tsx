@@ -5,7 +5,6 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { CommonActions } from "@react-navigation/native";
 import { atom, useAtomValue } from "jotai";
 import { raceTournamentsCached } from "../../lib/lovatAPI/getTournaments";
-import { useSetTournament } from "../../lib/storage/getTournament";
 import { Suspense, useMemo, useState } from "react";
 import { ActivityIndicator } from "react-native";
 import Heading1Small from "../../lib/components/text/Heading1Small";
@@ -18,6 +17,8 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import { TouchableOpacity } from "react-native-gesture-handler";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Tournament } from "../../lib/models/tournament";
+import { useTournamentStore } from "../../lib/storage/activeTournamentStore";
+import React from "react";
 
 export default function OnboardingTournaments() {
   const [filter, setFilter] = useState("");
@@ -101,7 +102,7 @@ const TournamentSelector = ({ filter }: { filter: string }) => {
 };
 
 const TournamentItem = ({ tournament }: { tournament: Tournament }) => {
-  const selectTournament = useSetTournament();
+  const selectTournament = useTournamentStore((state) => state.setValue);
   const navigation = useNavigation();
 
   return (

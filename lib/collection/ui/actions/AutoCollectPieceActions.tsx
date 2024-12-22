@@ -1,9 +1,5 @@
 import React from "react";
-import { useAtom } from "jotai";
-import {
-  remainingGroundNoteLocationsAtom,
-  useAddEvent,
-} from "../../reportStateAtom";
+import { useReportStateStore } from "../../reportStateStore";
 import { MatchEventType } from "../../MatchEventType";
 import {
   MatchEventPosition,
@@ -18,8 +14,10 @@ import { colors } from "../../../colors";
 export const AutoCollectPieceActions = () => {
   const radius = 35;
 
-  const addEvent = useAddEvent();
-  const [remainingNotes] = useAtom(remainingGroundNoteLocationsAtom);
+  const addEvent = useReportStateStore((state) => state.addEvent);
+  const remainingNotes = useReportStateStore((state) =>
+    state.getRemainingGroundNoteLocations(),
+  );
 
   return (
     <>

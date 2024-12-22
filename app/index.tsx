@@ -1,5 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Redirect, Stack } from "expo-router";
+import React from "react";
 import { useMemo, useState } from "react";
 import { Text } from "react-native";
 

@@ -4,13 +4,7 @@ import { NavBar } from "../../lib/components/NavBar";
 import { IconButton } from "../../lib/components/IconButton";
 import { Link, router } from "expo-router";
 import { colors } from "../../lib/colors";
-import { useAtomValue } from "jotai";
-import {
-  HistoryEntry,
-  historyAtom,
-  useDeleteMatchFromHistory,
-  useSetMatchUploaded,
-} from "../../lib/storage/historyAtom";
+import { HistoryEntry, useHistoryStore } from "../../lib/storage/historyStore";
 import { Suspense, useMemo, useState } from "react";
 import {
   MatchIdentityLocalizationFormat,
@@ -24,6 +18,7 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import * as ContextMenu from "zeego/context-menu";
 import { uploadReport } from "../../lib/lovatAPI/uploadReport";
 import { z } from "zod";
+import React from "react";
 
 export default function History() {
   const [filterText, setFilterText] = useState("");
@@ -77,7 +72,7 @@ export default function History() {
 }
 
 const Matches = ({ filter }: { filter: string }) => {
-  const history = useAtomValue(historyAtom);
+  const history = useHistoryStore((state) => state.history);
 
   const filteredMatches = useMemo(() => {
     if (!filter) return history;
@@ -148,8 +143,9 @@ const Match = ({ match }: { match: HistoryEntry }) => {
     }
   }
 
-  const setMatchUploaded = useSetMatchUploaded();
-  const deleteMatchFromHistory = useDeleteMatchFromHistory();
+  const [setMatchUploaded, deleteMatchFromHistory] = useHistoryStore(
+    (state) => [state.setMatchUploaded, state.deleteMatch],
+  );
 
   return (
     <ContextMenu.Root>

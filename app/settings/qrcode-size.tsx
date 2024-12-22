@@ -4,15 +4,16 @@ import { IconButton } from "../../lib/components/IconButton";
 import { router } from "expo-router";
 import { colors } from "../../lib/colors";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { atomWithStorage } from "jotai/utils";
-import { useAtom } from "jotai";
 import { ScoutReportCode } from "../../lib/collection/ui/ScoutReportCode";
 import { Suspense } from "react";
 import { ScoutReport } from "../../lib/collection/ScoutReport";
 import Slider from "@react-native-community/slider";
 import LabelSmall from "../../lib/components/text/LabelSmall";
-import { createStorage } from "../../lib/storage/jotaiStorage";
+import { storage } from "../../lib/storage/zustandStorage";
 import { z } from "zod";
+import React from "react";
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
 const EXAMPLE_SCOUT_REPORT: ScoutReport = {
   uuid: "f23698c6-a084-4659-9644-fc91c9f88d14",
@@ -65,10 +66,22 @@ const EXAMPLE_SCOUT_REPORT: ScoutReport = {
   ],
 };
 
-export const qrCodeSizeAtom = atomWithStorage(
-  "qrCodeSize",
-  600,
-  createStorage(z.number()),
+type QrCodeSizeStore = {
+  value: number;
+  setValue: (value: number) => void;
+};
+
+export const useQrCodeSizeStore = create(
+  persist<QrCodeSizeStore>(
+    (set, get) => ({
+      value: 600,
+      setValue: (value) => set((state) => ({ value: value })),
+    }),
+    {
+      name: "qrCodeSize",
+      storage: storage,
+    },
+  ),
 );
 
 export default function QRCodeSizeEditor() {
@@ -95,7 +108,10 @@ export default function QRCodeSizeEditor() {
 }
 
 const Body = () => {
-  const [qrCodeSize, setQRCodeSize] = useAtom(qrCodeSizeAtom);
+  const [qrCodeSize, setQRCodeSize] = useQrCodeSizeStore((state) => [
+    state.value,
+    state.setValue,
+  ]);
 
   console.log({ qrCodeSize });
 

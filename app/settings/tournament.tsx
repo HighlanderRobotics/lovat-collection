@@ -1,9 +1,6 @@
 import { atom, useAtomValue } from "jotai";
 import { raceTournamentsCached } from "../../lib/lovatAPI/getTournaments";
-import {
-  tournamentAtom,
-  useSetTournament,
-} from "../../lib/storage/getTournament";
+import { useTournamentStore } from "../../lib/storage/activeTournamentStore";
 import { Suspense, useMemo, useState } from "react";
 import { ActivityIndicator } from "react-native";
 import Heading1Small from "../../lib/components/text/Heading1Small";
@@ -19,6 +16,7 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import { Icon } from "../../lib/components/Icon";
 import BodyMedium from "../../lib/components/text/BodyMedium";
 import { Tournament } from "../../lib/models/tournament";
+import React from "react";
 
 const tournamentsAtom = atom(raceTournamentsCached);
 
@@ -112,7 +110,7 @@ const TournamentSelector = ({ filter }: { filter: string }) => {
 };
 
 const TournamentItem = ({ tournament }: { tournament: Tournament }) => {
-  const selectTournament = useSetTournament();
+  const selectTournament = useTournamentStore((state) => state.setValue);
 
   return (
     <TouchableOpacity
@@ -147,7 +145,7 @@ const TournamentItem = ({ tournament }: { tournament: Tournament }) => {
 };
 
 const SelectedIndicator = ({ tournament }: { tournament: Tournament }) => {
-  const selectedTournament = useAtomValue(tournamentAtom);
+  const selectedTournament = useTournamentStore((state) => state.value);
 
   if (selectedTournament?.key === tournament.key) {
     return <Icon name="check" color={colors.onBackground.default} />;

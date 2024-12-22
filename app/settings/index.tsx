@@ -9,10 +9,10 @@ import BodyMedium from "../../lib/components/text/BodyMedium";
 import Button from "../../lib/components/Button";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { IconButton } from "../../lib/components/IconButton";
-import { useAtom, useAtomValue } from "jotai";
+
 import {
   FieldOrientation,
-  fieldOrientationAtom,
+  useFieldOrientationStore,
 } from "../../lib/models/FieldOrientation";
 import { ButtonGroup } from "../../lib/components/ButtonGroup";
 import { colors } from "../../lib/colors";
@@ -24,19 +24,32 @@ import {
 import Heading1Small from "../../lib/components/text/Heading1Small";
 import { Suspense } from "react";
 import { NavBar } from "../../lib/components/NavBar";
-import { tournamentAtom } from "../../lib/storage/getTournament";
-import { atomWithStorage } from "jotai/utils";
-import { createStorage } from "../../lib/storage/jotaiStorage";
+import { useTournamentStore } from "../../lib/storage/activeTournamentStore";
+import { storage } from "../../lib/storage/zustandStorage";
 import { Switch } from "react-native-gesture-handler";
 import LabelSmall from "../../lib/components/text/LabelSmall";
-import { qrCodeSizeAtom } from "./qrcode-size";
+import { useQrCodeSizeStore } from "./qrcode-size";
 import { Icon } from "../../lib/components/Icon";
-import { z } from "zod";
+import { persist } from "zustand/middleware";
+import { create } from "zustand";
+import React from "react";
 
-export const trainingModeAtom = atomWithStorage<boolean>(
-  "trainingMode",
-  false,
-  createStorage(z.boolean()),
+type TraniningModeStore = {
+  value: boolean;
+  updateValue: (value: boolean) => void;
+};
+
+export const useTrainingModeStore = create(
+  persist<TraniningModeStore>(
+    (set, get) => ({
+      value: false,
+      updateValue: (value) => set(() => ({ value: value })),
+    }),
+    {
+      name: "trainingMode",
+      storage: storage,
+    },
+  ),
 );
 
 export default function Settings() {
@@ -103,18 +116,9 @@ export default function Settings() {
 }
 
 const TrainingModeSelector = () => {
-  const [trainingModeEnabled, setTrainingModeEnabled] =
-    useAtom(trainingModeAtom);
-
-  // <View
-  //             style={{
-  //                 marginTop: 7,
-  //                 padding: 7,
-  //                 borderRadius: 10,
-  //                 backgroundColor: colors.secondaryContainer.default,
-  //                 gap: 7,
-  //             }}
-  //         ></View>
+  const [trainingModeEnabled, setTrainingModeEnabled] = useTrainingModeStore(
+    (state) => [state.value, state.updateValue],
+  );
 
   return (
     <View style={{ gap: 7 }}>
@@ -149,7 +153,7 @@ const TrainingModeSelector = () => {
 };
 
 const QRCodeSizeLink = () => {
-  const qrCodeSize = useAtomValue(qrCodeSizeAtom);
+  const qrCodeSize = useQrCodeSizeStore((state) => state.value);
 
   return (
     <Link href="/settings/qrcode-size" asChild>
@@ -186,7 +190,9 @@ const QRCodeSizeLink = () => {
 };
 
 const FieldOrientationEditor = () => {
-  const [fieldOrientation, setFieldOrientation] = useAtom(fieldOrientationAtom);
+  const [fieldOrientation, setFieldOrientation] = useFieldOrientationStore(
+    (state) => [state.value, state.setValue],
+  );
 
   return (
     <View>
@@ -229,7 +235,7 @@ const FieldOrientationEditor = () => {
 };
 
 const TournamentSelector = () => {
-  const tournament = useAtomValue(tournamentAtom);
+  const tournament = useTournamentStore((state) => state.value);
 
   return (
     <View>

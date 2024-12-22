@@ -4,24 +4,23 @@ import { colors } from "../../lib/colors";
 import { SafeAreaView } from "react-native-safe-area-context";
 import BodyMedium from "../../lib/components/text/BodyMedium";
 import Button from "../../lib/components/Button";
-import { useAtomValue, useSetAtom } from "jotai";
-import { reportStateAtom } from "../../lib/collection/reportStateAtom";
+import { useReportStateStore } from "../../lib/collection/reportStateStore";
 import {
   MatchIdentityLocalizationFormat,
   localizeMatchIdentity,
 } from "../../lib/models/match";
 import { Suspense, useEffect, useState } from "react";
 import { ScoutReport } from "../../lib/collection/ScoutReport";
-import { exportScoutReport } from "../../lib/collection/ReportState";
 import { router } from "expo-router";
 import { uploadReport } from "../../lib/lovatAPI/uploadReport";
 import { Icon } from "../../lib/components/Icon";
-import { useUpsertMatchToHistory } from "../../lib/storage/historyAtom";
+import { useHistoryStore } from "../../lib/storage/historyStore";
 import { ScoutReportMeta } from "../../lib/models/ScoutReportMeta";
 import { ScoutReportCode } from "../../lib/collection/ui/ScoutReportCode";
+import React from "react";
 
 export default function Submit() {
-  const reportState = useAtomValue(reportStateAtom);
+  const reportState = useReportStateStore();
   const [scoutReport, setScoutReport] = useState<ScoutReport | null>(null);
 
   const [uploaded, setUploaded] = useState(false);
@@ -30,7 +29,7 @@ export default function Submit() {
 
   const [uploadState, setUploadState] = useState(UploadState.None);
 
-  const upsertMatchToHistory = useUpsertMatchToHistory();
+  const upsertMatchToHistory = useHistoryStore((state) => state.upsertMatch);
 
   useEffect(() => {
     if (uploading) {
@@ -54,27 +53,27 @@ export default function Submit() {
         .then(() => {
           setUploading(false);
           setUploaded(true);
-          upsertMatchToHistory(scoutReport, true, reportState!.meta);
+          upsertMatchToHistory(scoutReport, true, reportState.meta!);
         })
         .catch((e) => {
           console.error(e);
           setUploading(false);
           setUploadError(e);
-          upsertMatchToHistory(scoutReport, false, reportState!.meta);
+          upsertMatchToHistory(scoutReport, false, reportState.meta!);
         });
     }
   }, [scoutReport]);
 
   useEffect(() => {
     if (reportState) {
-      setScoutReport(exportScoutReport(reportState));
+      setScoutReport(reportState.exportScoutReport());
     }
   }, [reportState]);
 
   return (
     <>
       <NavBar
-        title={`${reportState!.meta.teamNumber} in ${localizeMatchIdentity(reportState!.meta.matchIdentity, MatchIdentityLocalizationFormat.Short)}`}
+        title={`${reportState.meta!.teamNumber} in ${localizeMatchIdentity(reportState.meta!.matchIdentity, MatchIdentityLocalizationFormat.Short)}`}
       />
       <SafeAreaView
         edges={["bottom", "left", "right"]}
@@ -107,7 +106,7 @@ export default function Submit() {
                   <DoneButton
                     scoutReport={scoutReport!}
                     uploadState={uploadState}
-                    meta={reportState!.meta}
+                    meta={reportState.meta!}
                   />
                 )}
               </Suspense>
@@ -128,8 +127,8 @@ const DoneButton = ({
   uploadState: UploadState;
   meta: ScoutReportMeta;
 }) => {
-  const setReportState = useSetAtom(reportStateAtom);
-  const upsertMatchToHistory = useUpsertMatchToHistory();
+  const resetReportState = useReportStateStore((state) => state.reset);
+  const upsertMatchToHistory = useHistoryStore((state) => state.upsertMatch);
 
   return (
     <Button
@@ -141,7 +140,7 @@ const DoneButton = ({
           meta,
         );
         router.replace("/");
-        setReportState(null);
+        resetReportState();
       }}
     >
       Done

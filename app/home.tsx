@@ -32,7 +32,7 @@ import {
 import { DataSource } from "../lib/localCache";
 
 import TimeAgo from "../lib/components/TimeAgo";
-import { getTournament, tournamentAtom } from "../lib/storage/getTournament";
+import { useTournamentStore } from "../lib/storage/activeTournamentStore";
 import { ButtonGroup } from "../lib/components/ButtonGroup";
 import {
   MatchIdentity,
@@ -44,30 +44,19 @@ import {
 import { AllianceColor, allianceColors } from "../lib/models/AllianceColor";
 import { ScoutReportMeta } from "../lib/models/ScoutReportMeta";
 import { getScouter } from "../lib/storage/getScouter";
-import { useAtom, useAtomValue } from "jotai";
-import { reportStateAtom } from "../lib/collection/reportStateAtom";
-import {
-  GamePhase,
-  ReportState,
-  RobotRole,
-} from "../lib/collection/ReportState";
-import { HighNote } from "../lib/collection/HighNote";
-import { StageResult } from "../lib/collection/StageResult";
 import { Stack, router, useFocusEffect } from "expo-router";
-import { DriverAbility } from "../lib/collection/DriverAbility";
-import { PickUp } from "../lib/collection/PickUp";
 import "react-native-get-random-values";
-import { v4 } from "uuid";
 import { SafeAreaView } from "react-native-safe-area-context";
 import {
   ScouterScheduleMatch,
   getVerionsColor,
-} from "../lib/storage/scouterSchedules";
+} from "../lib/lovatAPI/getScouterSchedule";
 import { Picker } from "react-native-wheel-pick";
-import { historyAtom } from "../lib/storage/historyAtom";
-import { startMatchEnabledAtom } from "./_layout";
-import { Tournament } from "../lib/models/tournament";
+import { useHistoryStore } from "../lib/storage/historyStore";
+import { useStartMatchEnabledStore } from "./_layout";
 import { Scouter } from "../lib/models/scouter";
+import React from "react";
+import { useReportStateStore } from "../lib/collection/reportStateStore";
 
 enum MatchSelectionMode {
   Automatic,
@@ -75,14 +64,17 @@ enum MatchSelectionMode {
 }
 
 export default function Home() {
-  const [, setTournament] = useState<Tournament | null>(null);
+  const [tournament, setTournament] = useTournamentStore((state) => [
+    state.value,
+    state.setValue,
+  ]);
   const [matchSelectionMode, setMatchSelectionMode] = useState(
     MatchSelectionMode.Automatic,
   );
   const [meta, setMeta] = useState<ScoutReportMeta | null>(null);
-  const [reportState, setReportState] = useAtom(reportStateAtom);
+  const reportState = useReportStateStore();
 
-  const startMatchEnabled = useAtomValue(startMatchEnabledAtom);
+  const startMatchEnabled = useStartMatchEnabledStore((state) => state.value);
 
   const loadServices = useContext(LoadServicesContext);
 
@@ -92,24 +84,6 @@ export default function Home() {
     }, []),
   );
 
-  const scoutMatch = () => {
-    const report: ReportState = {
-      meta: meta!,
-      events: [],
-      startPiece: true,
-      gamePhase: GamePhase.Auto,
-      robotRole: RobotRole.Offense,
-      driverAbility: DriverAbility.Average,
-      stageResult: StageResult.Nothing,
-      highNote: HighNote.None,
-      pickUp: PickUp.Ground,
-      notes: "",
-      uuid: v4(),
-    };
-
-    setReportState(report);
-  };
-
   useEffect(() => {
     if (!reportState) return;
 
@@ -118,7 +92,6 @@ export default function Home() {
 
   useEffect(() => {
     const fetchTournament = async () => {
-      const tournament = await getTournament();
       setTournament(tournament || null);
     };
 
@@ -176,7 +149,7 @@ export default function Home() {
                   disabled={!meta || !startMatchEnabled}
                   onPress={() => {
                     if (!meta) return;
-                    scoutMatch();
+                    reportState.scoutMatch(meta);
                   }}
                 >
                   Scout this match
@@ -220,7 +193,7 @@ const MatchSelection = ({
   const services = useContext(ServicesContext);
   const { scouterSchedule } = services;
 
-  const tournament = useAtomValue(tournamentAtom);
+  const tournament = useTournamentStore((state) => state.value);
 
   const scouterScheduleForTournament =
     (scouterSchedule?.data.data.length ?? 0) > 0 &&
@@ -249,14 +222,14 @@ const AutomaticMatchSelection = ({
 }: {
   onChanged: (meta: ScoutReportMeta | null) => void;
 }) => {
-  const history = useAtomValue(historyAtom);
+  const history = useHistoryStore((state) => state.history);
 
   const services = useContext(ServicesContext);
   const { scouterSchedule, tournaments } = services;
 
   const [scouter, setScouter] = useState<Scouter | null>(null);
 
-  const selectedTournament = useAtomValue(tournamentAtom);
+  const selectedTournament = useTournamentStore((state) => state.value);
   const scouterScheduleForTournament =
     (scouterSchedule?.data.data.length ?? 0) > 0 &&
     scouterSchedule?.data.data[0].matchIdentity.tournamentKey ===
@@ -466,14 +439,11 @@ const ManualMatchSelection = (props: ManualMatchSelectionProps) => {
   const [matchNumber, setMatchNumber] = useState("");
   const [teamNumber, setTeamNumber] = useState("");
   const [allianceColor, setAllianceColor] = useState(AllianceColor.Red);
-  const [tournament, setTournament] = useState<Tournament | null>(null);
+  const tournament = useTournamentStore((state) => state.value);
   const [scouter, setScouter] = useState<Scouter | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
-      const tournament = await getTournament();
-      setTournament(tournament ?? null);
-
       const scouter = await getScouter();
       setScouter(scouter ?? null);
     };
@@ -573,7 +543,7 @@ const ScheduleColorGradient = () => {
   const services = useContext(ServicesContext);
   const { scouterSchedule } = services;
 
-  const tournament = useAtomValue(tournamentAtom);
+  const tournament = useTournamentStore((state) => state.value);
 
   const scouterScheduleForTournament =
     (scouterSchedule?.data.data.length ?? 0) > 0 &&

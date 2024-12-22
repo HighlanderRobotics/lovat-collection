@@ -1,5 +1,5 @@
 import React from "react";
-import { reportStateAtom, useAddEvent } from "../../reportStateAtom";
+import { useReportStateStore } from "../../reportStateStore";
 import { MatchEventType } from "../../MatchEventType";
 import { FieldElement } from "../FieldElement";
 import { colors } from "../../../colors";
@@ -8,16 +8,15 @@ import { GameAction } from "../GameAction";
 import Svg, { Path, SvgProps } from "react-native-svg";
 import { View } from "react-native";
 import { Icon } from "../../../components/Icon";
-import { useAtomValue } from "jotai";
 import { AllianceColor } from "../../../models/AllianceColor";
 import {
   FieldOrientation,
-  fieldOrientationAtom,
+  useFieldOrientationStore,
 } from "../../../models/FieldOrientation";
 import AmpIcon from "../Amp";
 
 export const HasNoteActions = ({ trap = false }: { trap?: boolean }) => {
-  const addEvent = useAddEvent();
+  const addEvent = useReportStateStore((state) => state.addEvent);
 
   return (
     <>
@@ -91,8 +90,8 @@ export const HasNoteActions = ({ trap = false }: { trap?: boolean }) => {
 };
 
 function StageActionSVG(props: SvgProps) {
-  const reportState = useAtomValue(reportStateAtom);
-  const fieldOrientation = useAtomValue(fieldOrientationAtom);
+  const reportState = useReportStateStore();
+  const fieldOrientation = useFieldOrientationStore((state) => state.value);
 
   const width = 122;
   const height = 140;
@@ -113,7 +112,7 @@ function StageActionSVG(props: SvgProps) {
           transform: [
             {
               scaleX:
-                reportState?.meta.allianceColor === AllianceColor.Red ? -1 : 1,
+                reportState.meta!.allianceColor === AllianceColor.Red ? -1 : 1,
             },
             {
               rotate:

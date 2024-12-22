@@ -1,16 +1,15 @@
-import { useAtom } from "jotai";
 import React from "react";
 import Svg, { SvgProps, Path, Circle, Rect } from "react-native-svg";
 import {
   FieldOrientation,
-  fieldOrientationAtom,
+  useFieldOrientationStore,
 } from "../models/FieldOrientation";
 
 export const fieldWidth = 957;
 export const fieldHeight = 489;
 
 export const FieldImage = (props: SvgProps) => {
-  const [fieldOrientation] = useAtom(fieldOrientationAtom);
+  const fieldOrientation = useFieldOrientationStore((state) => state.value);
 
   return (
     <Svg

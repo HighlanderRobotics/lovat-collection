@@ -1,5 +1,3 @@
-import { useAtom } from "jotai";
-import { reportStateAtom, useUndoEvent } from "../reportStateAtom";
 import { View } from "react-native";
 import { colors } from "../../colors";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -19,6 +17,8 @@ import * as Haptics from "expo-haptics";
 import { GameTimer } from "./GameTimer";
 import { StatusBar } from "expo-status-bar";
 import * as DropdownMenu from "zeego/dropdown-menu";
+import { useReportStateStore } from "../reportStateStore";
+import React from "react";
 
 export const GameViewTemplate = (props: {
   field: React.ReactNode;
@@ -27,10 +27,10 @@ export const GameViewTemplate = (props: {
   startEnabled?: boolean;
   onEnd: () => void;
 }) => {
-  const [reportState, setReportState] = useAtom(reportStateAtom);
+  const reportState = useReportStateStore();
   const { gamePhaseMessage, field, startEnabled } = props;
 
-  const undoEvent = useUndoEvent();
+  if (!reportState.meta) return null;
 
   return (
     <>
@@ -65,7 +65,7 @@ export const GameViewTemplate = (props: {
                 disabled={reportState?.events.length === 0}
                 onPress={() => {
                   Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                  undoEvent();
+                  reportState.undoEvent();
                 }}
               />
             </View>
@@ -112,10 +112,7 @@ export const GameViewTemplate = (props: {
               onPress={() => {
                 Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
 
-                setReportState({
-                  ...reportState!,
-                  startTimestamp: new Date(),
-                });
+                reportState.initializeMatchTimestamp();
               }}
             />
           )}

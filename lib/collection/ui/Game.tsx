@@ -1,12 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useAtom, useAtomValue, useSetAtom } from "jotai";
-import {
-  gamePhaseAtom,
-  hasNote,
-  isAmplifiedAtom,
-  reportStateAtom,
-  useAddEvent,
-} from "../reportStateAtom";
+import { useReportStateStore } from "../reportStateStore";
 import { router } from "expo-router";
 import { PreMatchActions } from "./actions/PreMatchActions";
 import { GameViewTemplate } from "./GameViewTemplate";
@@ -24,20 +17,20 @@ import { AllianceColor } from "../../models/AllianceColor";
 import { GameAction } from "./GameAction";
 import {
   FieldOrientation,
-  fieldOrientationAtom,
+  useFieldOrientationStore,
 } from "../../models/FieldOrientation";
 
 export function Game() {
-  const [reportState, setReportState] = useAtom(reportStateAtom);
-  const isAmplified = useAtomValue(isAmplifiedAtom);
+  const reportState = useReportStateStore();
+  const isAmplified = reportState.getIsAmplified();
 
-  const addEvent = useAddEvent();
+  const addEvent = reportState.addEvent;
 
   const [autoTimeout, setAutoTimeout] = useState<NodeJS.Timeout | null>(null);
   const [amplificationTimeout, setAmplificationTimeout] =
     useState<NodeJS.Timeout | null>(null);
 
-  const setPhase = useSetAtom(gamePhaseAtom);
+  const setPhase = reportState.setGamePhase;
 
   useEffect(() => {
     if (!reportState) {
@@ -106,12 +99,7 @@ export function Game() {
           <Checkbox
             label="Loaded with a note"
             checked={reportState?.startPiece}
-            onChange={(checked) => {
-              setReportState({
-                ...reportState!,
-                startPiece: checked,
-              });
-            }}
+            onChange={reportState.setStartPiece}
           />
         }
         startEnabled={reportState?.startPosition !== undefined}
@@ -124,7 +112,7 @@ export function Game() {
       (event) => event.type === MatchEventType.LeaveWing,
     );
 
-    if (hasNote(reportState)) {
+    if (reportState.getHasNote()) {
       if (hasExited) {
         return (
           <GameViewTemplate
@@ -175,7 +163,7 @@ export function Game() {
       }
     }
   } else if (reportState.gamePhase === GamePhase.Teleop) {
-    if (hasNote(reportState)) {
+    if (reportState.getHasNote()) {
       return (
         <GameViewTemplate
           onEnd={onEnd}
@@ -215,13 +203,13 @@ const FloatingActions = ({
   feedEnabled?: boolean;
   pickupEnabled?: boolean;
 }) => {
-  const reportState = useAtomValue(reportStateAtom);
-  const isAmplified = useAtomValue(isAmplifiedAtom);
-  const fieldOrientation = useAtomValue(fieldOrientationAtom);
+  const reportState = useReportStateStore();
+  const isAmplified = reportState.getIsAmplified();
+  const fieldOrientation = useFieldOrientationStore((state) => state.value);
 
   const [defenseHighlighted, setDefenseHighlighted] = useState(false);
 
-  const addEvent = useAddEvent();
+  const addEvent = reportState.addEvent;
 
   return (
     <View
@@ -233,10 +221,10 @@ const FloatingActions = ({
         left: 0,
         flexDirection:
           fieldOrientation === FieldOrientation.Auspicious
-            ? reportState?.meta.allianceColor === AllianceColor.Blue
+            ? reportState.meta?.allianceColor === AllianceColor.Blue
               ? "row"
               : "row-reverse"
-            : reportState?.meta.allianceColor === AllianceColor.Blue
+            : reportState.meta?.allianceColor === AllianceColor.Blue
               ? "row-reverse"
               : "row",
         padding: 4,

@@ -22,7 +22,9 @@ import {
 import TimeAgo from "javascript-time-ago";
 import en from "javascript-time-ago/locale/en.json";
 import { atom, useSetAtom } from "jotai";
-import { scouterScheduleAtom } from "../lib/storage/scouterSchedules";
+import { useScouterScheduleStore } from "../lib/storage/scouterScheduleStore";
+import { useTournamentStore } from "../lib/storage/activeTournamentStore";
+import { create } from "zustand";
 
 const { UIManager } = NativeModules;
 
@@ -34,12 +36,20 @@ TimeAgo.addDefaultLocale(en);
 
 SplashScreen.preventAutoHideAsync();
 
-export const startMatchEnabledAtom = atom(false);
+export const useStartMatchEnabledStore = create<{
+  value: boolean;
+  setValue: (value: boolean) => void;
+}>((set, get) => ({
+  value: false,
+  setValue: (value) => set(() => ({ value: value })),
+}));
 
 export default function Layout() {
   const setServicesLoading = useSetAtom(servicesLoadingAtom);
 
-  const setStartMatchEnabled = useSetAtom(startMatchEnabledAtom);
+  const setStartMatchEnabled = useStartMatchEnabledStore(
+    (state) => state.setValue,
+  );
 
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -61,7 +71,10 @@ export default function Layout() {
     MaterialSymbols_500Rounded48px: require("../assets/fonts/Material-Symbols-Rounded-48px.ttf"),
   });
 
-  const setScouterSchedule = useSetAtom(scouterScheduleAtom);
+  const fetchScouterSchedule = useScouterScheduleStore(
+    (state) => state.getSchedule,
+  );
+  const tournament = useTournamentStore((state) => state.value);
 
   const onLayoutRootView = useCallback(async () => {
     if (fontsLoaded || fontError) {
@@ -99,8 +112,7 @@ export default function Layout() {
           }));
 
           if (service.id === "scouterSchedule" && value) {
-            const value = await service.get();
-            setScouterSchedule(async () => value);
+            fetchScouterSchedule(tournament!.key);
             console.log(`Loaded scouter schedule ${value.data.hash}`);
           }
           console.log(`Loaded service ${service.id}`);

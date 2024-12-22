@@ -9,16 +9,16 @@ import BodyMedium from "../../lib/components/text/BodyMedium";
 import Button from "../../lib/components/Button";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { CommonActions } from "@react-navigation/native";
-import { useSetTournament } from "../../lib/storage/getTournament";
+import { useTournamentStore } from "../../lib/storage/activeTournamentStore";
+import React from "react";
 
 export default function Reset() {
   const navigation = useNavigation();
 
-  const setTournament = useSetTournament();
+  const setTournament = useTournamentStore((state) => state.setValue);
 
   const reset = async () => {
     console.log("resetting");
-    await setTournament(null);
     await AsyncStorage.clear();
 
     navigation.dispatch(
