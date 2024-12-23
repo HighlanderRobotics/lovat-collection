@@ -4,7 +4,7 @@ import { Text } from "react-native";
 import { useOnboardingCompleteStore } from "../lib/storage/userStores";
 
 export default function Index() {
-  const onboardingComplete = useOnboardingCompleteStore((state) => state.value)
+  const onboardingComplete = useOnboardingCompleteStore((state) => state.value);
   // Based on "onboardingCompleteStore" key in AsyncStorage accesed by zustand, redirect to onboarding or home page
 
   return (

@@ -16,7 +16,15 @@ import { useLoadServices } from "../lib/services";
 import TimeAgo from "javascript-time-ago";
 import en from "javascript-time-ago/locale/en.json";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useFieldOrientationStore, useOnboardingCompleteStore, useQrCodeSizeStore, useScouterStore, useStartMatchEnabledStore, useTeamStore, useTrainingModeStore } from "../lib/storage/userStores";
+import {
+  useFieldOrientationStore,
+  useOnboardingCompleteStore,
+  useQrCodeSizeStore,
+  useScouterStore,
+  useStartMatchEnabledStore,
+  useTeamStore,
+  useTrainingModeStore,
+} from "../lib/storage/userStores";
 import { HistoryEntry, useHistoryStore } from "../lib/storage/historyStore";
 
 const { UIManager } = NativeModules;
@@ -30,47 +38,49 @@ TimeAgo.addDefaultLocale(en);
 SplashScreen.preventAutoHideAsync();
 
 function storageMigrator() {
-  const setOnboardingComplete = useOnboardingCompleteStore.getState().setValue
-  const setTeamNumber = useTeamStore.getState().setNumber
-  const setTeamCode = useTeamStore.getState().setCode
-  const setScouter = useScouterStore.getState().setValue
-  const setTrainingModeEnabled = useTrainingModeStore.getState().setValue
-  const setQrCodeSize = useQrCodeSizeStore.getState().setValue
-  const setFieldOrientation = useFieldOrientationStore.getState().setValue
-  const upsertMatchToHistory = useHistoryStore.getState().upsertMatch
+  const setOnboardingComplete = useOnboardingCompleteStore.getState().setValue;
+  const setTeamNumber = useTeamStore.getState().setNumber;
+  const setTeamCode = useTeamStore.getState().setCode;
+  const setScouter = useScouterStore.getState().setValue;
+  const setTrainingModeEnabled = useTrainingModeStore.getState().setValue;
+  const setQrCodeSize = useQrCodeSizeStore.getState().setValue;
+  const setFieldOrientation = useFieldOrientationStore.getState().setValue;
+  const upsertMatchToHistory = useHistoryStore.getState().upsertMatch;
   const keys: Record<string, (value: any) => void> = {
     "onboarding-complete": setOnboardingComplete,
     "team-number": setTeamNumber,
     "team-code": setTeamCode,
-    "scouter": setScouter,
-    "trainingMode": setTrainingModeEnabled,
-    "qrCodeSize": setQrCodeSize,
-    "fieldOrientation": setFieldOrientation,
-    "history": (data: HistoryEntry[]) => data.forEach((item) => {
-      upsertMatchToHistory(item.scoutReport, item.uploaded, item.meta)
-    })
-  }
+    scouter: setScouter,
+    trainingMode: setTrainingModeEnabled,
+    qrCodeSize: setQrCodeSize,
+    fieldOrientation: setFieldOrientation,
+    history: (data: HistoryEntry[]) =>
+      data.forEach((item) => {
+        upsertMatchToHistory(item.scoutReport, item.uploaded, item.meta);
+      }),
+  };
 
   return (key: string) => {
     if (Object.keys(keys).includes(key)) {
-      return keys[key]
+      return keys[key];
     }
-    return (key: string) => null; 
-  }
+    return (key: string) => null;
+  };
 }
 
-export default function Layout() {4
-  const migrateStorage = storageMigrator()
+export default function Layout() {
+  4;
+  const migrateStorage = storageMigrator();
   AsyncStorage.getAllKeys((e, result) => {
     result?.forEach(async (key) => {
       if (!key.includes("Store")) {
-        const data = JSON.parse(await AsyncStorage.getItem(key) ?? "")
-        const migrationFunction = migrateStorage(key)
-        migrationFunction(data)
-        AsyncStorage.removeItem(key)
+        const data = JSON.parse((await AsyncStorage.getItem(key)) ?? "");
+        const migrationFunction = migrateStorage(key);
+        migrationFunction(data);
+        AsyncStorage.removeItem(key);
       }
-    })
-  })
+    });
+  });
   const loadServices = useLoadServices();
 
   const setStartMatchEnabled = useStartMatchEnabledStore(

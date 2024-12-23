@@ -19,7 +19,6 @@ import React from "react";
 import { useTournamentsStore } from "../../lib/storage/tournamentsStore";
 import { useScouterScheduleStore } from "../../lib/storage/scouterScheduleStore";
 
-
 export default function TournamentPage() {
   const [filter, setFilter] = useState("");
 
@@ -79,8 +78,10 @@ export default function TournamentPage() {
 }
 
 const TournamentSelector = ({ filter }: { filter: string }) => {
-  const tournaments = useTournamentsStore((state) => state.tournaments)
-  const fetchScouterSchedule = useScouterScheduleStore((state) => state.fetchScouterSchedule)
+  const tournaments = useTournamentsStore((state) => state.tournaments);
+  const fetchScouterSchedule = useScouterScheduleStore(
+    (state) => state.fetchScouterSchedule,
+  );
 
   const filteredTournaments = useMemo(() => {
     if (!filter) return tournaments;
@@ -100,13 +101,23 @@ const TournamentSelector = ({ filter }: { filter: string }) => {
       }}
     >
       {filteredTournaments.map((tournament) => (
-        <TournamentItem key={tournament.key} tournament={tournament} fetchScouterSchedule={fetchScouterSchedule} />
+        <TournamentItem
+          key={tournament.key}
+          tournament={tournament}
+          fetchScouterSchedule={fetchScouterSchedule}
+        />
       ))}
     </View>
   );
 };
 
-const TournamentItem = ({ tournament, fetchScouterSchedule }: { tournament: Tournament, fetchScouterSchedule: () => Promise<void> }) => {
+const TournamentItem = ({
+  tournament,
+  fetchScouterSchedule,
+}: {
+  tournament: Tournament;
+  fetchScouterSchedule: () => Promise<void>;
+}) => {
   const selectTournament = useTournamentStore((state) => state.setValue);
 
   return (
@@ -114,7 +125,7 @@ const TournamentItem = ({ tournament, fetchScouterSchedule }: { tournament: Tour
       key={tournament.key}
       onPress={() => {
         selectTournament(tournament);
-        fetchScouterSchedule()
+        fetchScouterSchedule();
       }}
       style={{
         flexDirection: "row",

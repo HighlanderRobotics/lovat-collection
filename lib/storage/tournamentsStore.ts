@@ -14,7 +14,8 @@ export const useTournamentsStore = create(
   persist<TournamentsStore>(
     (set, get) => ({
       tournaments: [],
-      fetchTournaments: async () => set({ tournaments: await getTournaments() }),
+      fetchTournaments: async () =>
+        set({ tournaments: await getTournaments() }),
     }),
     {
       storage: storage,

@@ -22,5 +22,5 @@ export function useLoadServices() {
     } finally {
       console.log("Fetch successful");
     }
-  }
+  };
 }

@@ -24,27 +24,27 @@ import { useScouterStore, useTeamStore } from "../../lib/storage/userStores";
 export default function Name() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const scouters = useTeamScoutersStore((state) => state.scouters)
-  const fetchScouters = useTeamScoutersStore((state) => state.fetchScouters)
-  const setScouter = useScouterStore((state) => state.setValue)
+  const scouters = useTeamScoutersStore((state) => state.scouters);
+  const fetchScouters = useTeamScoutersStore((state) => state.fetchScouters);
+  const setScouter = useScouterStore((state) => state.setValue);
   const [fieldText, setFieldText] = useState("");
 
   useEffect(() => {
-    fetchScouters()
-  }, [])
+    fetchScouters();
+  }, []);
 
   useEffect(() => {
     if (scouters) {
-      setLoading(false)
+      setLoading(false);
     }
-  }, [scouters])
+  }, [scouters]);
 
   const submitScouter = (scouter: Scouter) => {
     setLoading(true);
     setError(null);
 
     try {
-      setScouter(scouter)
+      setScouter(scouter);
       router.push("/onboarding/tournaments");
     } catch (e) {
       let message;
@@ -59,11 +59,11 @@ export default function Name() {
       setLoading(false);
     }
   };
-  
+
   const filteredScouters = scouters?.filter((scouter) =>
     scouter.name.toLowerCase().includes(fieldText.toLowerCase()),
   );
-  
+
   return (
     <SafeAreaView
       style={{ flex: 1, flexDirection: "row", justifyContent: "center" }}
@@ -118,7 +118,7 @@ const NewScouterPrompt = ({
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const teamNumber = useTeamStore((state) => state.number)
+  const teamNumber = useTeamStore((state) => state.number);
 
   const onPress = async () => {
     if (loading) return;

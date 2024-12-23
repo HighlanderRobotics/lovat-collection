@@ -39,7 +39,7 @@ type ScouterScheduleScouterEntry = {
 };
 
 export async function getScouterSchedule(): Promise<ScouterSchedule> {
-  const tournamentKey = useTournamentStore.getState().value!.key
+  const tournamentKey = useTournamentStore.getState().value!.key;
   const response = await get("/v1/manager/scouterschedules/" + tournamentKey);
 
   if (!response.ok) {

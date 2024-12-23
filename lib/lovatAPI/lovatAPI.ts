@@ -3,7 +3,7 @@ import { useTeamStore } from "../storage/userStores";
 const urlPrefix = process.env.EXPO_PUBLIC_API_URL;
 
 export const get = async (url: string) => {
-  const teamCode = useTeamStore.getState().code
+  const teamCode = useTeamStore.getState().code;
 
   return await fetch(urlPrefix + url, {
     headers: {
@@ -14,7 +14,7 @@ export const get = async (url: string) => {
 };
 
 export const post = async (url: string, body: unknown) => {
-  const teamCode = useTeamStore.getState().code
+  const teamCode = useTeamStore.getState().code;
 
   return await fetch(urlPrefix + url, {
     method: "POST",
@@ -27,7 +27,7 @@ export const post = async (url: string, body: unknown) => {
 };
 
 export const put = async (url: string, body: unknown) => {
-  const teamCode = useTeamStore.getState().code
+  const teamCode = useTeamStore.getState().code;
 
   return await fetch(urlPrefix + url, {
     method: "PUT",
@@ -40,7 +40,7 @@ export const put = async (url: string, body: unknown) => {
 };
 
 export const del = async (url: string) => {
-  const teamCode = useTeamStore.getState().code
+  const teamCode = useTeamStore.getState().code;
 
   return await fetch(urlPrefix + url, {
     method: "DELETE",

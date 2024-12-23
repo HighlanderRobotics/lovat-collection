@@ -98,7 +98,9 @@ export default function Settings() {
 
 const TrainingModeSelector = () => {
   const trainingModeEnabled = useTrainingModeStore((state) => state.value);
-  const setTrainingModeEnabled = useTrainingModeStore((state) => state.setValue);
+  const setTrainingModeEnabled = useTrainingModeStore(
+    (state) => state.setValue,
+  );
   return (
     <View style={{ gap: 7 }}>
       <View
@@ -170,7 +172,9 @@ const QRCodeSizeLink = () => {
 
 const FieldOrientationEditor = () => {
   const fieldOrientation = useFieldOrientationStore((state) => state.value);
-  const setFieldOrientation = useFieldOrientationStore((state) => state.setValue)
+  const setFieldOrientation = useFieldOrientationStore(
+    (state) => state.setValue,
+  );
 
   return (
     <View>

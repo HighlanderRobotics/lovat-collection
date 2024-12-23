@@ -13,7 +13,7 @@ export const tournamentSchema = z.object({
 export type Tournament = z.infer<typeof tournamentSchema>;
 
 export const getTournaments = async () => {
-  const scouter = useScouterStore.getState().value
+  const scouter = useScouterStore.getState().value;
   const response = await get(
     `/v1/manager/scouters/${scouter!.uuid}/tournaments`,
   );

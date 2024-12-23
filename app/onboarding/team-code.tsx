@@ -13,8 +13,8 @@ import { useTeamStore } from "../../lib/storage/userStores";
 
 export default function TeamCode() {
   const [code, setCode] = useState("");
-  const setTeamNumber = useTeamStore((state) => state.setNumber)
-  const setTeamCode = useTeamStore((state) => state.setCode)
+  const setTeamNumber = useTeamStore((state) => state.setNumber);
+  const setTeamCode = useTeamStore((state) => state.setCode);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -27,8 +27,7 @@ export default function TeamCode() {
     try {
       const team = await checkTeamCode(code);
 
-      setTeamCode(code),
-      setTeamNumber(team.number)
+      setTeamCode(code), setTeamNumber(team.number);
       router.push("onboarding/name");
     } catch (e) {
       let message;

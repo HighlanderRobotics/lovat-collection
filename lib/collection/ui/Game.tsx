@@ -18,7 +18,7 @@ import { GameAction } from "./GameAction";
 import {
   FieldOrientation,
   useFieldOrientationStore,
-} from "../../storage/userStores"
+} from "../../storage/userStores";
 
 export function Game() {
   const reportState = useReportStateStore();
@@ -89,24 +89,24 @@ export function Game() {
     router.replace("/game/post-match");
   };
   const onRestart = () => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     Alert.alert(
       "Restart match?",
       "You will lose all of the data you recorded.",
       [
-        {text: "Cancel"},
+        { text: "Cancel" },
         {
           text: "Restart",
           style: "destructive",
           onPress: () => {
-            reportState.reset()
+            reportState.reset();
             if (autoTimeout) clearTimeout(autoTimeout);
             if (amplificationTimeout) clearTimeout(amplificationTimeout);
-          }
-        }
-      ]
-    )
-  }
+          },
+        },
+      ],
+    );
+  };
 
   if (!reportState?.startTimestamp) {
     return (

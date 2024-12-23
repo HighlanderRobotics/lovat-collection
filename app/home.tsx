@@ -53,10 +53,9 @@ export default function Home() {
   const startMatchEnabled = useStartMatchEnabledStore((state) => state.value);
   const loadServices = useLoadServices();
 
-
   useEffect(() => {
-    setInterval(() => loadServices(), 60 * 1000)
-  }, [])
+    setInterval(() => loadServices(), 60 * 1000);
+  }, []);
 
   useEffect(() => {
     if (!reportState.meta) return;
@@ -188,7 +187,7 @@ const AutomaticMatchSelection = ({
   const scouterSchedule = useScouterScheduleStore((state) => state.schedule);
   const tournaments = useTournamentsStore((state) => state.tournaments);
 
-  const scouter = useScouterStore((state) => state.value)
+  const scouter = useScouterStore((state) => state.value);
 
   const selectedTournament = useTournamentStore((state) => state.value);
   const scouterScheduleForTournament =
@@ -392,8 +391,8 @@ const ManualMatchSelection = (props: ManualMatchSelectionProps) => {
   const [teamNumber, setTeamNumber] = useState("");
   const [allianceColor, setAllianceColor] = useState(AllianceColor.Red);
   const tournament = useTournamentStore((state) => state.value);
-  const scouter = useScouterStore((state) => state.value)
-  
+  const scouter = useScouterStore((state) => state.value);
+
   useEffect(() => {
     const parsedTeamNumber = parseInt(teamNumber);
     const parsedMatchNumber = parseInt(matchNumber);

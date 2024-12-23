@@ -15,16 +15,21 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import { TouchableOpacity } from "react-native-gesture-handler";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Tournament } from "../../lib/lovatAPI/getTournaments";
-import { useOnboardingCompleteStore, useTournamentStore } from "../../lib/storage/userStores";
+import {
+  useOnboardingCompleteStore,
+  useTournamentStore,
+} from "../../lib/storage/userStores";
 import React from "react";
 import { useTournamentsStore } from "../../lib/storage/tournamentsStore";
 
 export default function OnboardingTournaments() {
   const [filter, setFilter] = useState("");
-  const fetchTournaments = useTournamentsStore((state) => state.fetchTournaments)
+  const fetchTournaments = useTournamentsStore(
+    (state) => state.fetchTournaments,
+  );
   useMemo(() => {
-    fetchTournaments()
-  }, [])
+    fetchTournaments();
+  }, []);
   return (
     <>
       <NavBar
@@ -71,7 +76,7 @@ export default function OnboardingTournaments() {
 }
 
 const TournamentSelector = ({ filter }: { filter: string }) => {
-  const tournaments = useTournamentsStore((state) => state.tournaments)
+  const tournaments = useTournamentsStore((state) => state.tournaments);
 
   const filteredTournaments = useMemo(() => {
     if (!filter) return tournaments;
@@ -99,7 +104,9 @@ const TournamentSelector = ({ filter }: { filter: string }) => {
 
 const TournamentItem = ({ tournament }: { tournament: Tournament }) => {
   const selectTournament = useTournamentStore((state) => state.setValue);
-  const setOnboardingComplete = useOnboardingCompleteStore((state) => state.setValue)
+  const setOnboardingComplete = useOnboardingCompleteStore(
+    (state) => state.setValue,
+  );
   const navigation = useNavigation();
 
   return (
@@ -107,7 +114,7 @@ const TournamentItem = ({ tournament }: { tournament: Tournament }) => {
       key={tournament.key}
       onPress={async () => {
         selectTournament(tournament);
-        setOnboardingComplete(true)
+        setOnboardingComplete(true);
         navigation.dispatch(
           CommonActions.reset({
             routes: [{ key: "index", name: "index" }],

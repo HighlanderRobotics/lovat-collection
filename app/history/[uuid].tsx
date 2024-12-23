@@ -34,7 +34,7 @@ export default function HistoryDetails() {
 const Details = () => {
   const params = useLocalSearchParams();
   const history = useHistoryStore((state) => state.history);
-  const setMatchUploaded = useHistoryStore((state) => state.setMatchUploaded)
+  const setMatchUploaded = useHistoryStore((state) => state.setMatchUploaded);
 
   const match = useMemo(() => {
     return history.find((match) => match.scoutReport.uuid === params.uuid);

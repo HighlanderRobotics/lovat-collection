@@ -10,7 +10,15 @@ import Button from "../../lib/components/Button";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { CommonActions } from "@react-navigation/native";
 import React from "react";
-import { useFieldOrientationStore, useOnboardingCompleteStore, useQrCodeSizeStore, useScouterStore, useTeamStore, useTournamentStore, useTrainingModeStore } from "../../lib/storage/userStores";
+import {
+  useFieldOrientationStore,
+  useOnboardingCompleteStore,
+  useQrCodeSizeStore,
+  useScouterStore,
+  useTeamStore,
+  useTournamentStore,
+  useTrainingModeStore,
+} from "../../lib/storage/userStores";
 import { useHistoryStore } from "../../lib/storage/historyStore";
 import { useTeamScoutersStore } from "../../lib/storage/teamScoutersStore";
 import { useTournamentsStore } from "../../lib/storage/tournamentsStore";
@@ -30,12 +38,12 @@ export default function Reset() {
     useTeamScoutersStore,
     useTournamentsStore,
     useScouterScheduleStore,
-  ]
+  ];
 
   const reset = async () => {
     console.log("resetting");
     await AsyncStorage.clear();
-    storesToReset.forEach((item) => item.setState(item.getInitialState()))
+    storesToReset.forEach((item) => item.setState(item.getInitialState()));
     navigation.dispatch(
       CommonActions.reset({
         routes: [{ key: "index", name: "index" }],
