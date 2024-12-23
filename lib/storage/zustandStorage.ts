@@ -12,7 +12,7 @@ export type GenericStore<T> = {
 export function createGenericPersistantStore<T>(name: string, defaultValue: T) {
     return create(
         persist<GenericStore<T>>(
-            (set, get) => ({
+            (set) => ({
                 value: defaultValue,
                 setValue: (value) => set({value: value}) 
             }),

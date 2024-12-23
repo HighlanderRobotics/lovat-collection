@@ -2,6 +2,7 @@ import { z } from "zod";
 import { MatchIdentity, matchTypes } from "../models/match";
 import { AllianceColor } from "../models/AllianceColor";
 import { get } from "./lovatAPI";
+import { useTournamentStore } from "../storage/userStores";
 
 const scouterScheduleResponseSchema = z.object({
   hash: z.string(),
@@ -37,9 +38,8 @@ type ScouterScheduleScouterEntry = {
   allianceColor: AllianceColor;
 };
 
-export async function getScouterSchedule(
-  tournamentKey: string,
-): Promise<ScouterSchedule> {
+export async function getScouterSchedule(): Promise<ScouterSchedule> {
+  const tournamentKey = useTournamentStore.getState().value!.key
   const response = await get("/v1/manager/scouterschedules/" + tournamentKey);
 
   if (!response.ok) {

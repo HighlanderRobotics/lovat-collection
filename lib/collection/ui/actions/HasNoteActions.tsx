@@ -12,7 +12,7 @@ import { AllianceColor } from "../../../models/AllianceColor";
 import {
   FieldOrientation,
   useFieldOrientationStore,
-} from "../../../models/FieldOrientation";
+} from "../../../storage/userStores";
 import AmpIcon from "../Amp";
 
 export const HasNoteActions = ({ trap = false }: { trap?: boolean }) => {

@@ -87,11 +87,8 @@ export default function QRCodeSizeEditor() {
 }
 
 const Body = () => {
-  const [qrCodeSize, setQRCodeSize] = useQrCodeSizeStore((state) => [
-    state.value,
-    state.setValue,
-  ]);
-
+  const qrCodeSize = useQrCodeSizeStore((state) => state.value);
+  const setQRCodeSize = useQrCodeSizeStore((state) => state.setValue)
   console.log({ qrCodeSize });
 
   return (

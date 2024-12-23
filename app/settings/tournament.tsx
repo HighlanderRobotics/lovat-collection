@@ -1,6 +1,5 @@
 import { atom, useAtomValue } from "jotai";
-import { raceTournamentsCached } from "../../lib/lovatAPI/getTournaments";
-import { useTournamentStore } from "../../lib/storage/activeTournamentStore";
+import { useTournamentStore } from "../../lib/storage/userStores";
 import { Suspense, useMemo, useState } from "react";
 import { ActivityIndicator } from "react-native";
 import Heading1Small from "../../lib/components/text/Heading1Small";
@@ -15,10 +14,10 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { Icon } from "../../lib/components/Icon";
 import BodyMedium from "../../lib/components/text/BodyMedium";
-import { Tournament } from "../../lib/models/tournament";
+import { Tournament } from "../../lib/lovatAPI/getTournaments";
 import React from "react";
+import { useTournamentsStore } from "../../lib/storage/tournamentsStore";
 
-const tournamentsAtom = atom(raceTournamentsCached);
 
 export default function TournamentPage() {
   const [filter, setFilter] = useState("");
@@ -79,11 +78,7 @@ export default function TournamentPage() {
 }
 
 const TournamentSelector = ({ filter }: { filter: string }) => {
-  const tournamentsCache = useAtomValue(tournamentsAtom);
-
-  const tournaments = useMemo(() => {
-    return tournamentsCache?.data ?? [];
-  }, [tournamentsCache]);
+  const tournaments = useTournamentsStore((state) => state.tournaments)
 
   const filteredTournaments = useMemo(() => {
     if (!filter) return tournaments;

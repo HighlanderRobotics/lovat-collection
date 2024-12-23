@@ -97,10 +97,8 @@ export default function Settings() {
 }
 
 const TrainingModeSelector = () => {
-  const [trainingModeEnabled, setTrainingModeEnabled] = useTrainingModeStore(
-    (state) => [state.value, state.setValue],
-  );
-
+  const trainingModeEnabled = useTrainingModeStore((state) => state.value);
+  const setTrainingModeEnabled = useTrainingModeStore((state) => state.setValue);
   return (
     <View style={{ gap: 7 }}>
       <View
@@ -171,9 +169,8 @@ const QRCodeSizeLink = () => {
 };
 
 const FieldOrientationEditor = () => {
-  const [fieldOrientation, setFieldOrientation] = useFieldOrientationStore(
-    (state) => [state.value, state.setValue],
-  );
+  const fieldOrientation = useFieldOrientationStore((state) => state.value);
+  const setFieldOrientation = useFieldOrientationStore((state) => state.setValue)
 
   return (
     <View>
@@ -206,9 +203,7 @@ const FieldOrientationEditor = () => {
             },
           ]}
           selected={fieldOrientation}
-          onChange={(value) => {
-            setFieldOrientation(value);
-          }}
+          onChange={setFieldOrientation}
         />
       </View>
     </View>

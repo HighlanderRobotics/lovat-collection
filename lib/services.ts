@@ -1,10 +1,8 @@
 import { useScouterScheduleStore } from "./storage/scouterScheduleStore";
 import { useTeamScoutersStore } from "./storage/teamScoutersStore";
-import { useTournamentStore } from "./storage/userStores";
 import { useTournamentsStore } from "./storage/tournamentsStore";
 
 export function useLoadServices() {
-  const tournament = useTournamentStore((state) => state.value);
   const fetchScouterSchedule = useScouterScheduleStore(
     (state) => state.fetchScouterSchedule,
   );
@@ -14,11 +12,11 @@ export function useLoadServices() {
   const fetchTournaments = useTournamentsStore(
     (state) => state.fetchTournaments,
   );
-  return () => {
+  return async () => {
     try {
-      fetchTournaments();
-      fetchTeamScouters();
-      fetchScouterSchedule(tournament!.key);
+      await fetchTournaments();
+      await fetchTeamScouters();
+      await fetchScouterSchedule();
     } catch (e: any) {
       console.error(e);
     } finally {

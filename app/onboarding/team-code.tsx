@@ -7,13 +7,14 @@ import TextField from "../../lib/components/TextField";
 import BodyMedium from "../../lib/components/text/BodyMedium";
 import { checkTeamCode } from "../../lib/lovatAPI/checkTeamCode";
 import { router } from "expo-router";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { colors } from "../../lib/colors";
 import { z } from "zod";
+import { useTeamStore } from "../../lib/storage/userStores";
 
 export default function TeamCode() {
   const [code, setCode] = useState("");
-
+  const setTeamNumber = useTeamStore((state) => state.setNumber)
+  const setTeamCode = useTeamStore((state) => state.setCode)
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -26,8 +27,8 @@ export default function TeamCode() {
     try {
       const team = await checkTeamCode(code);
 
-      await AsyncStorage.setItem("team-code", code);
-      await AsyncStorage.setItem("team-number", team.number.toString());
+      setTeamCode(code),
+      setTeamNumber(team.number)
       router.push("onboarding/name");
     } catch (e) {
       let message;

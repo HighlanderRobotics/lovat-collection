@@ -25,7 +25,7 @@ import TextField from "../../lib/components/TextField";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { CommonActions } from "@react-navigation/native";
 import BodyMedium from "../../lib/components/text/BodyMedium";
-import { useTrainingModeStore } from "../settings";
+import { useTrainingModeStore } from "../../lib/storage/userStores";
 import React from "react";
 
 export default function PostMatch() {

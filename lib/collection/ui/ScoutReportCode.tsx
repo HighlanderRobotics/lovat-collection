@@ -5,7 +5,7 @@ import { ScoutReport } from "../ScoutReport";
 import QRCode from "qrcode";
 import { SvgXml } from "react-native-svg";
 import SwiperFlatList from "react-native-swiper-flatlist";
-import { useQrCodeSizeStore } from "../../../app/settings/qrcode-size";
+import { useQrCodeSizeStore } from "../../storage/userStores";
 import React from "react";
 
 type ReportChunk = {

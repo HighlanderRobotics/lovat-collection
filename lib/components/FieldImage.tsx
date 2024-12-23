@@ -3,7 +3,7 @@ import Svg, { SvgProps, Path, Circle, Rect } from "react-native-svg";
 import {
   FieldOrientation,
   useFieldOrientationStore,
-} from "../models/FieldOrientation";
+} from "../storage/userStores"
 
 export const fieldWidth = 957;
 export const fieldHeight = 489;

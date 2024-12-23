@@ -3,7 +3,7 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { storage } from "./zustandStorage";
 import { Scouter } from "../models/scouter";
-import { Tournament } from "../models/tournament";
+import { Tournament } from "../lovatAPI/getTournaments";
 
 type TeamStore = {
     code: string,
@@ -27,7 +27,7 @@ export const useTeamStore = create(
     )
 )
 
-export const useStartMatchEnabledStore = create<GenericStore<boolean>>((set, get) => ({
+export const useStartMatchEnabledStore = create<GenericStore<boolean>>((set) => ({
   value: false,
   setValue: (value) => set(() => ({ value: value })),
 }));
@@ -37,7 +37,7 @@ export enum FieldOrientation {
   Sinister, // Red on the left, blue on the right
 }
 
-export const onboardingCompleteStore = createGenericPersistantStore<boolean>("onboardingCompleteStore", false)
+export const useOnboardingCompleteStore = createGenericPersistantStore<boolean>("onboardingCompleteStore", false)
 export const useScouterStore = createGenericPersistantStore<Scouter | null>("scouterStore", null)
 export const useTournamentStore = createGenericPersistantStore<Tournament | null>("activeTournamentStore", null)
 export const useTrainingModeStore = createGenericPersistantStore<boolean>("trainingModeStore", false)

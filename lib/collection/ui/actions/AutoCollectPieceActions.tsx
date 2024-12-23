@@ -15,9 +15,8 @@ export const AutoCollectPieceActions = () => {
   const radius = 35;
 
   const addEvent = useReportStateStore((state) => state.addEvent);
-  const remainingNotes = useReportStateStore((state) =>
-    state.getRemainingGroundNoteLocations(),
-  );
+  const getRemainingNotes = useReportStateStore((state) => state.getRemainingGroundNoteLocations);
+  const remainingNotes = getRemainingNotes()
 
   return (
     <>

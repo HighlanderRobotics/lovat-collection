@@ -10,7 +10,7 @@ import Button from "../../lib/components/Button";
 import { SafeAreaView } from "react-native-safe-area-context";
 import TitleMedium from "../../lib/components/text/TitleMedium";
 import TextField from "../../lib/components/TextField";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { getTeamScouters } from "../../lib/lovatAPI/getTeamScouters";
 import { colors } from "../../lib/colors";
 import { addScouter } from "../../lib/lovatAPI/addScouter";
@@ -18,42 +18,33 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
 import { z } from "zod";
 import { Scouter } from "../../lib/models/scouter";
+import { useTeamScoutersStore } from "../../lib/storage/teamScoutersStore";
+import { useScouterStore, useTeamStore } from "../../lib/storage/userStores";
 
 export default function Name() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [scouters, setScouters] = useState<Scouter[] | null>(null);
-
+  const scouters = useTeamScoutersStore((state) => state.scouters)
+  const fetchScouters = useTeamScoutersStore((state) => state.fetchScouters)
+  const setScouter = useScouterStore((state) => state.setValue)
   const [fieldText, setFieldText] = useState("");
 
   useEffect(() => {
-    const fetchScouters = async () => {
-      try {
-        const scouters = await getTeamScouters();
-        setScouters(scouters);
-      } catch (e) {
-        let message;
-        try {
-          message = z.object({ message: z.string() }).parse(e).message;
-        } catch {
-          message = "An unknown error occurred";
-        }
+    fetchScouters()
+  }, [])
 
-        setError(message);
-      } finally {
-        setLoading(false);
-      }
-    };
+  useEffect(() => {
+    if (scouters) {
+      setLoading(false)
+    }
+  }, [scouters])
 
-    fetchScouters();
-  }, []);
-
-  const submitScouter = async (scouter: Scouter) => {
+  const submitScouter = (scouter: Scouter) => {
     setLoading(true);
     setError(null);
 
     try {
-      await AsyncStorage.setItem("scouter", JSON.stringify(scouter));
+      setScouter(scouter)
       router.push("/onboarding/tournaments");
     } catch (e) {
       let message;
@@ -68,11 +59,11 @@ export default function Name() {
       setLoading(false);
     }
   };
-
+  
   const filteredScouters = scouters?.filter((scouter) =>
     scouter.name.toLowerCase().includes(fieldText.toLowerCase()),
   );
-
+  
   return (
     <SafeAreaView
       style={{ flex: 1, flexDirection: "row", justifyContent: "center" }}
@@ -127,6 +118,7 @@ const NewScouterPrompt = ({
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const teamNumber = useTeamStore((state) => state.number)
 
   const onPress = async () => {
     if (loading) return;
@@ -135,7 +127,7 @@ const NewScouterPrompt = ({
     setError(null);
 
     try {
-      const scouter = await addScouter(name);
+      const scouter = await addScouter(name, teamNumber!);
 
       onSubmit(scouter);
     } catch (e) {

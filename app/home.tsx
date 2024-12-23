@@ -11,7 +11,7 @@ import BodyMedium from "../lib/components/text/BodyMedium";
 import { IconButton } from "../lib/components/IconButton";
 import { Suspense, useCallback, useEffect, useMemo, useState } from "react";
 import { useLoadServices } from "../lib/services";
-import { useTournamentStore } from "../lib/storage/userStores";
+import { useScouterStore, useTournamentStore } from "../lib/storage/userStores";
 import { ButtonGroup } from "../lib/components/ButtonGroup";
 import {
   MatchIdentity,
@@ -22,8 +22,7 @@ import {
 } from "../lib/models/match";
 import { AllianceColor, allianceColors } from "../lib/models/AllianceColor";
 import { ScoutReportMeta } from "../lib/models/ScoutReportMeta";
-import { getScouter } from "../lib/storage/getScouter";
-import { Stack, router, useFocusEffect } from "expo-router";
+import { Stack, router } from "expo-router";
 import "react-native-get-random-values";
 import { SafeAreaView } from "react-native-safe-area-context";
 import {
@@ -45,10 +44,6 @@ enum MatchSelectionMode {
 }
 
 export default function Home() {
-  const [tournament, setTournament] = useTournamentStore((state) => [
-    state.value,
-    state.setValue,
-  ]);
   const [matchSelectionMode, setMatchSelectionMode] = useState(
     MatchSelectionMode.Automatic,
   );
@@ -58,13 +53,10 @@ export default function Home() {
   const startMatchEnabled = useStartMatchEnabledStore((state) => state.value);
   const loadServices = useLoadServices();
 
-  // useFocusEffect(
-  //   useCallback(() => {
-  //     loadServices();
-  //   }, []),
-  // );
 
-  useEffect(() => loadServices(), [])
+  useEffect(() => {
+    setInterval(() => loadServices(), 60 * 1000)
+  }, [])
 
   useEffect(() => {
     if (!reportState.meta) return;
@@ -196,7 +188,7 @@ const AutomaticMatchSelection = ({
   const scouterSchedule = useScouterScheduleStore((state) => state.schedule);
   const tournaments = useTournamentsStore((state) => state.tournaments);
 
-  const [scouter, setScouter] = useState<Scouter | null>(null);
+  const scouter = useScouterStore((state) => state.value)
 
   const selectedTournament = useTournamentStore((state) => state.value);
   const scouterScheduleForTournament =
@@ -205,15 +197,6 @@ const AutomaticMatchSelection = ({
       selectedTournament?.key
       ? scouterSchedule
       : null;
-
-  useEffect(() => {
-    const fetchScouter = async () => {
-      const scouter = await getScouter();
-      setScouter(scouter ?? null);
-    };
-
-    fetchScouter();
-  }, []);
 
   const matchesWithScouter = useMemo(() => {
     if (!scouterScheduleForTournament || !scouter) return [];
@@ -409,17 +392,8 @@ const ManualMatchSelection = (props: ManualMatchSelectionProps) => {
   const [teamNumber, setTeamNumber] = useState("");
   const [allianceColor, setAllianceColor] = useState(AllianceColor.Red);
   const tournament = useTournamentStore((state) => state.value);
-  const [scouter, setScouter] = useState<Scouter | null>(null);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const scouter = await getScouter();
-      setScouter(scouter ?? null);
-    };
-
-    fetchData();
-  }, []);
-
+  const scouter = useScouterStore((state) => state.value)
+  
   useEffect(() => {
     const parsedTeamNumber = parseInt(teamNumber);
     const parsedMatchNumber = parseInt(matchNumber);
