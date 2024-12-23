@@ -13,7 +13,7 @@ import { IconButton } from "../../lib/components/IconButton";
 import {
   FieldOrientation,
   useFieldOrientationStore,
-} from "../../lib/models/FieldOrientation";
+} from "../../lib/storage/userStores";
 import { ButtonGroup } from "../../lib/components/ButtonGroup";
 import { colors } from "../../lib/colors";
 import {
@@ -24,33 +24,14 @@ import {
 import Heading1Small from "../../lib/components/text/Heading1Small";
 import { Suspense } from "react";
 import { NavBar } from "../../lib/components/NavBar";
-import { useTournamentStore } from "../../lib/storage/activeTournamentStore";
+import { useTournamentStore } from "../../lib/storage/userStores";
 import { storage } from "../../lib/storage/zustandStorage";
 import { Switch } from "react-native-gesture-handler";
 import LabelSmall from "../../lib/components/text/LabelSmall";
-import { useQrCodeSizeStore } from "./qrcode-size";
+import { useQrCodeSizeStore } from "../../lib/storage/userStores";
 import { Icon } from "../../lib/components/Icon";
-import { persist } from "zustand/middleware";
-import { create } from "zustand";
+import { useTrainingModeStore } from "../../lib/storage/userStores";
 import React from "react";
-
-type TraniningModeStore = {
-  value: boolean;
-  updateValue: (value: boolean) => void;
-};
-
-export const useTrainingModeStore = create(
-  persist<TraniningModeStore>(
-    (set, get) => ({
-      value: false,
-      updateValue: (value) => set(() => ({ value: value })),
-    }),
-    {
-      name: "trainingMode",
-      storage: storage,
-    },
-  ),
-);
 
 export default function Settings() {
   return (
@@ -117,7 +98,7 @@ export default function Settings() {
 
 const TrainingModeSelector = () => {
   const [trainingModeEnabled, setTrainingModeEnabled] = useTrainingModeStore(
-    (state) => [state.value, state.updateValue],
+    (state) => [state.value, state.setValue],
   );
 
   return (

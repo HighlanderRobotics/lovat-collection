@@ -5,7 +5,7 @@ import { AllianceColor } from "../../models/AllianceColor";
 import {
   FieldOrientation,
   useFieldOrientationStore,
-} from "../../models/FieldOrientation";
+} from "../../storage/userStores";
 
 export const FieldElement = (props: {
   children: React.ReactNode;

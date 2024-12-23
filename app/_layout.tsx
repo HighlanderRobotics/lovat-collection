@@ -10,15 +10,13 @@ import {
   Heebo_700Bold,
 } from "@expo-google-fonts/heebo";
 
-import { useCallback, useEffect, useState } from "react";
-import { useLoadServices} from "../lib/services";
+import { useCallback, useEffect } from "react";
+import { useLoadServices } from "../lib/services";
 
 import TimeAgo from "javascript-time-ago";
 import en from "javascript-time-ago/locale/en.json";
-import { atom, useSetAtom } from "jotai";
-import { useScouterScheduleStore } from "../lib/storage/scouterScheduleStore";
-import { useTournamentStore } from "../lib/storage/activeTournamentStore";
-import { create } from "zustand";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useStartMatchEnabledStore } from "../lib/storage/userStores";
 
 const { UIManager } = NativeModules;
 
@@ -30,16 +28,16 @@ TimeAgo.addDefaultLocale(en);
 
 SplashScreen.preventAutoHideAsync();
 
-export const useStartMatchEnabledStore = create<{
-  value: boolean;
-  setValue: (value: boolean) => void;
-}>((set, get) => ({
-  value: false,
-  setValue: (value) => set(() => ({ value: value })),
-}));
-
 export default function Layout() {
-  const loadServices = useLoadServices;
+  AsyncStorage.getAllKeys((e, result) => {
+    result?.forEach((item) => {
+      if (!item.includes("Store")) {
+        AsyncStorage.clear()
+        return
+      }
+    })
+  })
+  const loadServices = useLoadServices();
 
   const setStartMatchEnabled = useStartMatchEnabledStore(
     (state) => state.setValue,
@@ -70,7 +68,6 @@ export default function Layout() {
       await SplashScreen.hideAsync();
     }
   }, [fontsLoaded, fontError]);
-
 
   useEffect(() => {
     loadServices();

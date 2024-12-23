@@ -7,13 +7,10 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { ScoutReportCode } from "../../lib/collection/ui/ScoutReportCode";
 import { Suspense } from "react";
 import { ScoutReport } from "../../lib/collection/ScoutReport";
+import { useQrCodeSizeStore } from "../../lib/storage/userStores";
 import Slider from "@react-native-community/slider";
 import LabelSmall from "../../lib/components/text/LabelSmall";
-import { storage } from "../../lib/storage/zustandStorage";
-import { z } from "zod";
 import React from "react";
-import { create } from "zustand";
-import { persist } from "zustand/middleware";
 
 const EXAMPLE_SCOUT_REPORT: ScoutReport = {
   uuid: "f23698c6-a084-4659-9644-fc91c9f88d14",
@@ -65,24 +62,6 @@ const EXAMPLE_SCOUT_REPORT: ScoutReport = {
     [147.056, 1, 0],
   ],
 };
-
-type QrCodeSizeStore = {
-  value: number;
-  setValue: (value: number) => void;
-};
-
-export const useQrCodeSizeStore = create(
-  persist<QrCodeSizeStore>(
-    (set, get) => ({
-      value: 600,
-      setValue: (value) => set((state) => ({ value: value })),
-    }),
-    {
-      name: "qrCodeSize",
-      storage: storage,
-    },
-  ),
-);
 
 export default function QRCodeSizeEditor() {
   return (

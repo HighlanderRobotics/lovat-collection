@@ -9,15 +9,9 @@ import { LinearGradient } from "expo-linear-gradient";
 import { colors } from "../lib/colors";
 import BodyMedium from "../lib/components/text/BodyMedium";
 import { IconButton } from "../lib/components/IconButton";
-import {
-  Suspense,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import { Suspense, useCallback, useEffect, useMemo, useState } from "react";
 import { useLoadServices } from "../lib/services";
-import { useTournamentStore } from "../lib/storage/activeTournamentStore";
+import { useTournamentStore } from "../lib/storage/userStores";
 import { ButtonGroup } from "../lib/components/ButtonGroup";
 import {
   MatchIdentity,
@@ -38,7 +32,7 @@ import {
 } from "../lib/lovatAPI/getScouterSchedule";
 import { Picker } from "react-native-wheel-pick";
 import { useHistoryStore } from "../lib/storage/historyStore";
-import { useStartMatchEnabledStore } from "./_layout";
+import { useStartMatchEnabledStore } from "../lib/storage/userStores";
 import { Scouter } from "../lib/models/scouter";
 import React from "react";
 import { useReportStateStore } from "../lib/collection/reportStateStore";
@@ -62,27 +56,21 @@ export default function Home() {
   const reportState = useReportStateStore();
 
   const startMatchEnabled = useStartMatchEnabledStore((state) => state.value);
-  const loadServices = useLoadServices;
+  const loadServices = useLoadServices();
 
-  useFocusEffect(
-    useCallback(() => {
-      loadServices();
-    }, []),
-  );
+  // useFocusEffect(
+  //   useCallback(() => {
+  //     loadServices();
+  //   }, []),
+  // );
+
+  useEffect(() => loadServices(), [])
 
   useEffect(() => {
-    if (!reportState) return;
+    if (!reportState.meta) return;
 
     router.replace("/game");
-  }, [reportState]);
-
-  useEffect(() => {
-    const fetchTournament = async () => {
-      setTournament(tournament || null);
-    };
-
-    fetchTournament();
-  }, []);
+  }, [reportState.meta]);
 
   return (
     <>
@@ -174,14 +162,13 @@ const MatchSelection = ({
   matchSelectionMode,
   onMetaChanged,
 }: MatchSelectionProps) => {
-  const scouterSchedule = useScouterScheduleStore((state) => state.schedule)
+  const scouterSchedule = useScouterScheduleStore((state) => state.schedule);
 
   const tournament = useTournamentStore((state) => state.value);
 
   const scouterScheduleForTournament =
     (scouterSchedule?.data.length ?? 0) > 0 &&
-    scouterSchedule?.data[0].matchIdentity.tournamentKey ===
-      tournament?.key
+    scouterSchedule?.data[0].matchIdentity.tournamentKey === tournament?.key
       ? scouterSchedule
       : null;
   switch (matchSelectionMode) {
@@ -205,9 +192,9 @@ const AutomaticMatchSelection = ({
   onChanged: (meta: ScoutReportMeta | null) => void;
 }) => {
   const history = useHistoryStore((state) => state.history);
-  
-  const scouterSchedule = useScouterScheduleStore((state) => state.schedule)
-  const tournaments = useTournamentsStore((state) => state.tournaments)
+
+  const scouterSchedule = useScouterScheduleStore((state) => state.schedule);
+  const tournaments = useTournamentsStore((state) => state.tournaments);
 
   const [scouter, setScouter] = useState<Scouter | null>(null);
 
@@ -522,23 +509,20 @@ const ManualMatchSelection = (props: ManualMatchSelectionProps) => {
 };
 
 const ScheduleColorGradient = () => {
-  const scouterSchedule = useScouterScheduleStore((state) => state.schedule)
+  const scouterSchedule = useScouterScheduleStore((state) => state.schedule);
   const tournament = useTournamentStore((state) => state.value);
 
   const scouterScheduleForTournament =
     (scouterSchedule?.data.length ?? 0) > 0 &&
-    scouterSchedule?.data[0].matchIdentity.tournamentKey ===
-      tournament?.key
+    scouterSchedule?.data[0].matchIdentity.tournamentKey === tournament?.key
       ? scouterSchedule
       : null;
 
   const [color, setColor] = useState("transparent");
 
   useEffect(() => {
-    if (scouterScheduleForTournament?.hash ) {
-      setColor(
-        getVerionsColor(scouterScheduleForTournament?.hash, 30, 30),
-      );
+    if (scouterScheduleForTournament?.hash) {
+      setColor(getVerionsColor(scouterScheduleForTournament?.hash, 30, 30));
     } else {
       setColor(colors.danger.default);
     }

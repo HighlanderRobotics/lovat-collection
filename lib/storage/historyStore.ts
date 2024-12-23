@@ -71,7 +71,7 @@ export const useHistoryStore = create(
         })),
     }),
     {
-      name: "history",
+      name: "historyStore",
       storage: storage,
     },
   ),

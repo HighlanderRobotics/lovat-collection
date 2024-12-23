@@ -2,7 +2,7 @@ import React from "react";
 import {
   FieldOrientation,
   useFieldOrientationStore,
-} from "../models/FieldOrientation";
+} from "../storage/userStores";
 import { AllianceColor } from "../models/AllianceColor";
 import { useReportStateStore } from "./reportStateStore";
 
