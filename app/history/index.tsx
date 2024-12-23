@@ -143,9 +143,8 @@ const Match = ({ match }: { match: HistoryEntry }) => {
     }
   }
 
-  const [setMatchUploaded, deleteMatchFromHistory] = useHistoryStore(
-    (state) => [state.setMatchUploaded, state.deleteMatch],
-  );
+  const setMatchUploaded = useHistoryStore((state) => state.setMatchUploaded);
+  const deleteMatchFromHistory = useHistoryStore((state) => state.deleteMatch)
 
   return (
     <ContextMenu.Root>
