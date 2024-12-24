@@ -29,17 +29,21 @@ export default function Reset() {
 
   const reset = async () => {
     console.log("resetting");
-    useTeamStore.setState(useTeamStore.getInitialState())
-    useOnboardingCompleteStore.setState(useOnboardingCompleteStore.getInitialState())
-    useScouterStore.setState(useScouterStore.getInitialState())
-    useTournamentStore.setState(useTournamentStore.getInitialState())
-    useTrainingModeStore.setState(useTrainingModeStore.getInitialState())
-    useQrCodeSizeStore.setState(useQrCodeSizeStore.getInitialState())
-    useFieldOrientationStore.setState(useFieldOrientationStore.getInitialState())
-    useHistoryStore.setState(useHistoryStore.getInitialState())
-    useTeamScoutersStore.setState(useTeamScoutersStore.getInitialState())
-    useTournamentsStore.setState(useTournamentsStore.getInitialState())
-    useScouterScheduleStore.setState(useScouterScheduleStore.getInitialState())
+    useTeamStore.setState(useTeamStore.getInitialState());
+    useOnboardingCompleteStore.setState(
+      useOnboardingCompleteStore.getInitialState(),
+    );
+    useScouterStore.setState(useScouterStore.getInitialState());
+    useTournamentStore.setState(useTournamentStore.getInitialState());
+    useTrainingModeStore.setState(useTrainingModeStore.getInitialState());
+    useQrCodeSizeStore.setState(useQrCodeSizeStore.getInitialState());
+    useFieldOrientationStore.setState(
+      useFieldOrientationStore.getInitialState(),
+    );
+    useHistoryStore.setState(useHistoryStore.getInitialState());
+    useTeamScoutersStore.setState(useTeamScoutersStore.getInitialState());
+    useTournamentsStore.setState(useTournamentsStore.getInitialState());
+    useScouterScheduleStore.setState(useScouterScheduleStore.getInitialState());
     await AsyncStorage.clear();
     navigation.dispatch(
       CommonActions.reset({
