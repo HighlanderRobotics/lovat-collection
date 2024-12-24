@@ -1,6 +1,5 @@
 import { get } from "./lovatAPI";
 import z from "zod";
-import { Scouter } from "../models/scouter";
 import { useScouterStore } from "../storage/userStores";
 
 export const tournamentSchema = z.object({

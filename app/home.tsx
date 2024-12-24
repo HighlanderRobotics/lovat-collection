@@ -9,7 +9,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { colors } from "../lib/colors";
 import BodyMedium from "../lib/components/text/BodyMedium";
 import { IconButton } from "../lib/components/IconButton";
-import { Suspense, useCallback, useEffect, useMemo, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import { useLoadServices } from "../lib/services";
 import { useScouterStore, useTournamentStore } from "../lib/storage/userStores";
 import { ButtonGroup } from "../lib/components/ButtonGroup";
@@ -32,7 +32,6 @@ import {
 import { Picker } from "react-native-wheel-pick";
 import { useHistoryStore } from "../lib/storage/historyStore";
 import { useStartMatchEnabledStore } from "../lib/storage/userStores";
-import { Scouter } from "../lib/models/scouter";
 import React from "react";
 import { useReportStateStore } from "../lib/collection/reportStateStore";
 import { useScouterScheduleStore } from "../lib/storage/scouterScheduleStore";

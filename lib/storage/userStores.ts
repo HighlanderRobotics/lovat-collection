@@ -14,7 +14,7 @@ type TeamStore = {
 
 export const useTeamStore = create(
   persist<TeamStore>(
-    (set, get) => ({
+    (set) => ({
       code: "",
       number: null,
       setCode: (value) => set({ code: value }),

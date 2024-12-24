@@ -27,7 +27,8 @@ export default function TeamCode() {
     try {
       const team = await checkTeamCode(code);
 
-      setTeamCode(code), setTeamNumber(team.number);
+      setTeamCode(code);
+      setTeamNumber(team.number);
       router.push("onboarding/name");
     } catch (e) {
       let message;

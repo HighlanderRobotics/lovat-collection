@@ -46,6 +46,7 @@ function storageMigrator() {
   const setQrCodeSize = useQrCodeSizeStore.getState().setValue;
   const setFieldOrientation = useFieldOrientationStore.getState().setValue;
   const upsertMatchToHistory = useHistoryStore.getState().upsertMatch;
+  /* eslint-disable-next-line */
   const keys: Record<string, (value: any) => void> = {
     "onboarding-complete": setOnboardingComplete,
     "team-number": setTeamNumber,
@@ -69,13 +70,15 @@ function storageMigrator() {
 }
 
 export default function Layout() {
-  4;
   const migrateStorage = storageMigrator();
   AsyncStorage.getAllKeys((e, result) => {
     result?.forEach(async (key) => {
       if (!key.includes("Store")) {
         const data = JSON.parse((await AsyncStorage.getItem(key)) ?? "");
         const migrationFunction = migrateStorage(key);
+        type MigrationFunctionParameter = Parameters<
+          typeof migrationFunction
+        >[0];
         migrationFunction(data);
         AsyncStorage.removeItem(key);
       }

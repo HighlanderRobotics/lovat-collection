@@ -41,15 +41,11 @@ export const useHistoryStore = create(
           const newHistory = history.filter(
             (entry) => entry.scoutReport.uuid !== scoutReport.uuid,
           );
-          set((state) => ({
-            history: [{ scoutReport, uploaded, meta }, ...newHistory],
-          }));
+          set({ history: [{ scoutReport, uploaded, meta }, ...newHistory] });
           return;
         }
 
-        set((state) => ({
-          history: [{ scoutReport, uploaded, meta }, ...history],
-        }));
+        set({ history: [{ scoutReport, uploaded, meta }, ...history] });
       },
 
       setMatchUploaded: (uuid) => {

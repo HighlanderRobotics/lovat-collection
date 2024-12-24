@@ -25,7 +25,6 @@ import Heading1Small from "../../lib/components/text/Heading1Small";
 import { Suspense } from "react";
 import { NavBar } from "../../lib/components/NavBar";
 import { useTournamentStore } from "../../lib/storage/userStores";
-import { storage } from "../../lib/storage/zustandStorage";
 import { Switch } from "react-native-gesture-handler";
 import LabelSmall from "../../lib/components/text/LabelSmall";
 import { useQrCodeSizeStore } from "../../lib/storage/userStores";

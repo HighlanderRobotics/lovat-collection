@@ -17,7 +17,7 @@ export function useLoadServices() {
       await fetchTournaments();
       await fetchTeamScouters();
       await fetchScouterSchedule();
-    } catch (e: any) {
+    } catch (e) {
       console.error(e);
     } finally {
       console.log("Fetch successful");

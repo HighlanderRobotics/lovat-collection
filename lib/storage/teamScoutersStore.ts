@@ -11,7 +11,7 @@ type TeamScoutersStore = {
 
 export const useTeamScoutersStore = create(
   persist<TeamScoutersStore>(
-    (set, get) => ({
+    (set) => ({
       scouters: [],
       fetchScouters: async () => set({ scouters: await getTeamScouters() }),
     }),

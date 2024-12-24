@@ -1,4 +1,3 @@
-import { atom, useAtomValue } from "jotai";
 import { useTournamentStore } from "../../lib/storage/userStores";
 import { Suspense, useMemo, useState } from "react";
 import { ActivityIndicator } from "react-native";

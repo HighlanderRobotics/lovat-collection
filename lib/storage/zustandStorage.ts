@@ -2,6 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 
+/* eslint-disable-next-line */
 export const storage = createJSONStorage<any>(() => AsyncStorage);
 
 export type GenericStore<T> = {

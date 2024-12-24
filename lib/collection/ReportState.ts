@@ -1,18 +1,16 @@
 import { ScoutReportMeta } from "../models/ScoutReportMeta";
-import { matchTypes } from "../models/match";
-import { DriverAbility, driverAbilityDescriptions } from "./DriverAbility";
-import { HighNote, highNoteDescriptions } from "./HighNote";
+import { DriverAbility } from "./DriverAbility";
+import { HighNote } from "./HighNote";
 import { MatchEvent } from "./MatchEvent";
 import {
   GroundNotePosition,
   MatchEventPosition,
   StartingPosition,
-  matchEventPositions,
 } from "./MatchEventPosition";
 import { MatchEventType } from "./MatchEventType";
-import { PickUp, pickUpDescriptions } from "./PickUp";
-import { ScoutReport, ScoutReportEvent } from "./ScoutReport";
-import { StageResult, stageResultDescriptions } from "./StageResult";
+import { PickUp } from "./PickUp";
+import { ScoutReport } from "./ScoutReport";
+import { StageResult } from "./StageResult";
 
 export enum GamePhase {
   Auto,
