@@ -26,24 +26,21 @@ import { useScouterScheduleStore } from "../../lib/storage/scouterScheduleStore"
 
 export default function Reset() {
   const navigation = useNavigation();
-  const storesToReset = [
-    useTeamStore,
-    useOnboardingCompleteStore,
-    useScouterStore,
-    useTournamentStore,
-    useTrainingModeStore,
-    useQrCodeSizeStore,
-    useFieldOrientationStore,
-    useHistoryStore,
-    useTeamScoutersStore,
-    useTournamentsStore,
-    useScouterScheduleStore,
-  ];
 
   const reset = async () => {
     console.log("resetting");
+    useTeamStore.setState(useTeamStore.getInitialState())
+    useOnboardingCompleteStore.setState(useOnboardingCompleteStore.getInitialState())
+    useScouterStore.setState(useScouterStore.getInitialState())
+    useTournamentStore.setState(useTournamentStore.getInitialState())
+    useTrainingModeStore.setState(useTrainingModeStore.getInitialState())
+    useQrCodeSizeStore.setState(useQrCodeSizeStore.getInitialState())
+    useFieldOrientationStore.setState(useFieldOrientationStore.getInitialState())
+    useHistoryStore.setState(useHistoryStore.getInitialState())
+    useTeamScoutersStore.setState(useTeamScoutersStore.getInitialState())
+    useTournamentsStore.setState(useTournamentsStore.getInitialState())
+    useScouterScheduleStore.setState(useScouterScheduleStore.getInitialState())
     await AsyncStorage.clear();
-    storesToReset.forEach((item) => item.setState(item.getInitialState()));
     navigation.dispatch(
       CommonActions.reset({
         routes: [{ key: "index", name: "index" }],
