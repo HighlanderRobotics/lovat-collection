@@ -65,7 +65,7 @@ function storageMigrator() {
     if (Object.keys(keys).includes(key)) {
       return keys[key];
     }
-    return (key: string) => null;
+    return (key: string) => key;
   };
 }
 
@@ -76,9 +76,6 @@ export default function Layout() {
       if (!key.includes("Store")) {
         const data = JSON.parse((await AsyncStorage.getItem(key)) ?? "");
         const migrationFunction = migrateStorage(key);
-        type MigrationFunctionParameter = Parameters<
-          typeof migrationFunction
-        >[0];
         migrationFunction(data);
         AsyncStorage.removeItem(key);
       }
