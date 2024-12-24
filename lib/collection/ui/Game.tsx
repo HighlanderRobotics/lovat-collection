@@ -107,118 +107,52 @@ export function Game() {
       ],
     );
   };
-
-  if (!reportState?.startTimestamp) {
-    return (
-      <GameViewTemplate
-        onEnd={onEnd}
-        onRestart={onRestart}
-        gamePhaseMessage="Pre-match"
-        field={<PreMatchActions />}
-        topLeftReplacement={
-          <Checkbox
-            label="Loaded with a note"
-            checked={reportState?.startPiece}
-            onChange={reportState.setStartPiece}
-          />
-        }
-        startEnabled={reportState?.startPosition !== undefined}
+  const gamePhaseMessage = reportState.startTimestamp
+    ? reportState.gamePhase === GamePhase.Auto
+      ? "Autonomous"
+      : "Teleop"
+    : "Pre-match";
+  const hasExited = reportState.events.some(
+    (event) => event.type === MatchEventType.LeaveWing,
+  );
+  const gameField = (
+    <>
+      {!reportState.startTimestamp && <PreMatchActions />}
+      {reportState.getHasNote() && (
+        <HasNoteActions trap={reportState.gamePhase === GamePhase.Teleop} />
+      )}
+      {!reportState.getHasNote() &&
+        reportState.gamePhase === GamePhase.Auto &&
+        hasExited && <AutoCollectPieceActions />}
+      {reportState.gamePhase === GamePhase.Auto && !hasExited && (
+        <ExitWingAction />
+      )}
+      {reportState.gamePhase === GamePhase.Teleop && (
+        <FloatingActions
+          feedEnabled={reportState.getHasNote()}
+          pickupEnabled={!reportState.getHasNote()}
+        />
+      )}
+    </>
+  );
+  const preMatchProps = {
+    topLeftReplacement: (
+      <Checkbox
+        label="Loaded with a note"
+        checked={reportState?.startPiece}
+        onChange={reportState.setStartPiece}
       />
-    );
-  }
-
-  if (reportState.gamePhase === GamePhase.Auto) {
-    const hasExited = reportState.events.some(
-      (event) => event.type === MatchEventType.LeaveWing,
-    );
-
-    if (reportState.getHasNote()) {
-      if (hasExited) {
-        return (
-          <GameViewTemplate
-            onEnd={onEnd}
-            onRestart={onRestart}
-            gamePhaseMessage="Autonomous"
-            field={
-              <>
-                <HasNoteActions />
-              </>
-            }
-          />
-        );
-      } else {
-        return (
-          <GameViewTemplate
-            onEnd={onEnd}
-            onRestart={onRestart}
-            gamePhaseMessage="Autonomous"
-            field={
-              <>
-                <HasNoteActions />
-                <ExitWingAction />
-              </>
-            }
-          />
-        );
-      }
-    } else {
-      if (hasExited) {
-        return (
-          <GameViewTemplate
-            onEnd={onEnd}
-            onRestart={onRestart}
-            gamePhaseMessage="Autonomous"
-            field={<AutoCollectPieceActions />}
-          />
-        );
-      } else {
-        return (
-          <GameViewTemplate
-            onEnd={onEnd}
-            onRestart={onRestart}
-            gamePhaseMessage="Autonomous"
-            field={
-              <>
-                <ExitWingAction />
-              </>
-            }
-          />
-        );
-      }
-    }
-  } else if (reportState.gamePhase === GamePhase.Teleop) {
-    if (reportState.getHasNote()) {
-      return (
-        <GameViewTemplate
-          onEnd={onEnd}
-          onRestart={onRestart}
-          gamePhaseMessage="Teleop"
-          field={
-            <>
-              <FloatingActions feedEnabled />
-              <HasNoteActions trap />
-            </>
-          }
-        />
-      );
-    } else {
-      return (
-        <GameViewTemplate
-          onEnd={onEnd}
-          onRestart={onRestart}
-          gamePhaseMessage="Teleop"
-          field={<FloatingActions pickupEnabled />}
-        />
-      );
-    }
-  }
+    ),
+    startEnabled: reportState.startPosition !== undefined,
+  };
 
   return (
     <GameViewTemplate
       onEnd={onEnd}
       onRestart={onRestart}
-      gamePhaseMessage="Unknown phase"
-      field={<></>}
+      gamePhaseMessage={gamePhaseMessage}
+      field={gameField}
+      {...(!reportState.startTimestamp ? preMatchProps : {})}
     />
   );
 }
