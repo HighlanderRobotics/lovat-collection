@@ -85,6 +85,29 @@ export const useReportStateStore = create<ReportState>((set, get) => ({
     }
     return remainingGroundPieceLocations;
   },
+  getIsAmplified: () => {
+    const reportState = get();
+
+    if (!reportState || !reportState.events) {
+      return false;
+    }
+
+    let isAmplified = false;
+
+    for (let i = 0; i < reportState.events.length; i++) {
+      const event = reportState.events[i];
+
+      if (event.type === MatchEventType.StartAmplfying) {
+        isAmplified = true;
+      }
+
+      if (event.type === MatchEventType.StopAmplifying) {
+        isAmplified = false;
+      }
+    }
+
+    return isAmplified;
+  },
   getHasNote: () => {
     const reportState = get();
     let hasNote = false;
@@ -111,29 +134,13 @@ export const useReportStateStore = create<ReportState>((set, get) => ({
 
     return hasNote;
   },
-  getIsAmplified: () => {
-    const reportState = get();
-
-    if (!reportState || !reportState.events) {
-      return false;
-    }
-
-    let isAmplified = false;
-
-    for (let i = 0; i < reportState.events.length; i++) {
-      const event = reportState.events[i];
-
-      if (event.type === MatchEventType.StartAmplfying) {
-        isAmplified = true;
-      }
-
-      if (event.type === MatchEventType.StopAmplifying) {
-        isAmplified = false;
-      }
-    }
-
-    return isAmplified;
+  getHasExited: () => {
+    const reportState = get()
+    return reportState.events.some(
+      (event) => event.type === MatchEventType.LeaveWing
+    )
   },
+
   addEvent: (event) => {
     const reportState = get();
     if (reportState.events) {

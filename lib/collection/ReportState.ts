@@ -54,6 +54,7 @@ export type ReportState = {
   getRemainingGroundNoteLocations: () => GroundNotePosition[] | null;
   getIsAmplified: () => boolean;
   getHasNote: () => boolean;
+  getHasExited: () => boolean;
 
   addEvent: (event: {
     type: MatchEventType;
