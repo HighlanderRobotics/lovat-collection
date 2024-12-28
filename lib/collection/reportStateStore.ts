@@ -135,10 +135,10 @@ export const useReportStateStore = create<ReportState>((set, get) => ({
     return hasNote;
   },
   getHasExited: () => {
-    const reportState = get()
+    const reportState = get();
     return reportState.events.some(
-      (event) => event.type === MatchEventType.LeaveWing
-    )
+      (event) => event.type === MatchEventType.LeaveWing,
+    );
   },
 
   addEvent: (event) => {
