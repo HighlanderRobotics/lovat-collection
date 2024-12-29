@@ -18,6 +18,7 @@ import {
   useTeamStore,
   useTournamentStore,
   useTrainingModeStore,
+  useImpersonatedScouterStore,
 } from "../../lib/storage/userStores";
 import { useHistoryStore } from "../../lib/storage/historyStore";
 import { useTeamScoutersStore } from "../../lib/storage/teamScoutersStore";
@@ -34,6 +35,7 @@ export default function Reset() {
       useOnboardingCompleteStore.getInitialState(),
     );
     useScouterStore.setState(useScouterStore.getInitialState());
+    useImpersonatedScouterStore.setState(useImpersonatedScouterStore.getInitialState());
     useTournamentStore.setState(useTournamentStore.getInitialState());
     useTrainingModeStore.setState(useTrainingModeStore.getInitialState());
     useQrCodeSizeStore.setState(useQrCodeSizeStore.getInitialState());
