@@ -198,6 +198,7 @@ const AutomaticMatchSelection = ({
 
   const scouter = useScouterStore((state) => state.value);
   const impersonated = useImpersonatedScouterStore((state) => state.value);
+
   const scouterForSchedule = impersonated?.uuid ?? scouter?.uuid;
 
   const selectedTournament = useTournamentStore((state) => state.value);
@@ -330,16 +331,18 @@ const AutomaticMatchSelection = ({
     }
   }, [matchesWithScouter]);
 
+
   if (!scouterForSchedule || !tournaments) return null;
+
   return (
     <View style={{ alignItems: "center", justifyContent: "center", flex: 1 }}>
-      {tournament && (
+      {(matchesWithScouter.length >= 1 && tournament) && (
         <Heading1Small color={colors.body.default}>
           {tournament.date.split("-")[0]} {tournament.name}
         </Heading1Small>
       )}
 
-      {selectedMatch && (
+      {(matchesWithScouter.length >= 1 && selectedMatch) && (
         <TitleMedium>
           Scouting {selectedMatch.scouters[scouterForSchedule!]?.teamNumber}
         </TitleMedium>
@@ -353,7 +356,7 @@ const AutomaticMatchSelection = ({
           alignItems: "center",
         }}
       >
-        {matchesWithScouter.length >= 1 && selectedMatch != null ? (
+        {matchesWithScouter.length >= 1 && selectedMatch ? (
           <Picker
             style={{
               width: "100%",
