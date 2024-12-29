@@ -1,20 +1,20 @@
-import { getTeamCode } from "../storage/getTeamCode";
+import { useTeamStore } from "../storage/userStores";
 
 const urlPrefix = process.env.EXPO_PUBLIC_API_URL;
 
 export const get = async (url: string) => {
-  const teamCode = await getTeamCode();
+  const teamCode = useTeamStore.getState().code;
 
   return await fetch(urlPrefix + url, {
     headers: {
-      "method": "GET",
+      method: "GET",
       "X-Team-Code": teamCode ?? "",
-    }
+    },
   });
 };
 
-export const post = async (url: string, body: any) => {
-  const teamCode = await getTeamCode();
+export const post = async (url: string, body: unknown) => {
+  const teamCode = useTeamStore.getState().code;
 
   return await fetch(urlPrefix + url, {
     method: "POST",
@@ -22,12 +22,12 @@ export const post = async (url: string, body: any) => {
     headers: {
       "Content-Type": "application/json",
       "X-Team-Code": teamCode ?? "",
-    }
+    },
   });
 };
 
-export const put = async (url: string, body: any) => {
-  const teamCode = await getTeamCode();
+export const put = async (url: string, body: unknown) => {
+  const teamCode = useTeamStore.getState().code;
 
   return await fetch(urlPrefix + url, {
     method: "PUT",
@@ -35,18 +35,17 @@ export const put = async (url: string, body: any) => {
     headers: {
       "Content-Type": "application/json",
       "X-Team-Code": teamCode ?? "",
-    }
+    },
   });
 };
 
 export const del = async (url: string) => {
-  const teamCode = await getTeamCode();
+  const teamCode = useTeamStore.getState().code;
 
   return await fetch(urlPrefix + url, {
     method: "DELETE",
     headers: {
       "X-Team-Code": teamCode ?? "",
-    }
+    },
   });
 };
-

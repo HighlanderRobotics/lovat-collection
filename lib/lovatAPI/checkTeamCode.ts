@@ -1,26 +1,32 @@
+import { z } from "zod";
 import { get } from "./lovatAPI";
 
-
-
 export const checkTeamCode = async (code: string) => {
-  const response = await get(`/v1/manager/scouter/checkcode?code=${encodeURIComponent(code)}`);
+  const response = await get(
+    `/v1/manager/scouter/checkcode?code=${encodeURIComponent(code)}`,
+  );
 
   if (!response.ok) {
     throw new Error(response.statusText);
   }
 
-  const json = await response.json();
+  const responseSchema = z.union([
+    z.literal(false), // Code not recognized
+    z.object({
+      number: z.number(),
+      code: z.string(),
+      email: z.string(),
+      emailVerified: z.boolean(),
+      teamApproved: z.boolean(),
+      website: z.string().or(z.literal(null)),
+    }),
+  ]);
 
-  if (json === false) { // I know this seems a bit silly, but json isn't always a boolean. It has more data on the team when the code is valid.
+  const json = responseSchema.parse(await response.json());
+
+  if (json === false) {
     throw new Error("Code not recognized");
-  } else {
-    return json as {
-      number: number;
-      code: string;
-      email: string;
-      emailVerified: boolean;
-      teamApproved: boolean;
-      website?: string;
-    };
   }
+
+  return json;
 };
