@@ -11,7 +11,11 @@ import BodyMedium from "../lib/components/text/BodyMedium";
 import { IconButton } from "../lib/components/IconButton";
 import { Suspense, useEffect, useMemo, useState } from "react";
 import { useLoadServices } from "../lib/services";
-import { useScouterStore, useTournamentStore } from "../lib/storage/userStores";
+import {
+  useImpersonatedScouterStore,
+  useScouterStore,
+  useTournamentStore,
+} from "../lib/storage/userStores";
 import { ButtonGroup } from "../lib/components/ButtonGroup";
 import {
   MatchIdentity,
@@ -51,6 +55,12 @@ export default function Home() {
 
   const startMatchEnabled = useStartMatchEnabledStore((state) => state.value);
   const loadServices = useLoadServices();
+
+  const impersonatedScouter = useImpersonatedScouterStore(
+    (state) => state.value,
+  );
+
+  useEffect(() => {}, [impersonatedScouter]);
 
   useEffect(() => {
     setInterval(() => loadServices(), 60 * 1000);
@@ -187,6 +197,8 @@ const AutomaticMatchSelection = ({
   const tournaments = useTournamentsStore((state) => state.tournaments);
 
   const scouter = useScouterStore((state) => state.value);
+  const impersonated = useImpersonatedScouterStore((state) => state.value);
+  const scouterForSchedule = impersonated?.uuid ?? scouter?.uuid;
 
   const selectedTournament = useTournamentStore((state) => state.value);
   const scouterScheduleForTournament =
@@ -197,12 +209,12 @@ const AutomaticMatchSelection = ({
       : null;
 
   const matchesWithScouter = useMemo(() => {
-    if (!scouterScheduleForTournament || !scouter) return [];
+    if (!scouterScheduleForTournament || !scouterForSchedule) return [];
 
     return scouterScheduleForTournament.data.filter(
-      (match) => scouter?.uuid in match.scouters,
+      (match) => scouterForSchedule in match.scouters,
     );
-  }, [scouterScheduleForTournament, scouter]);
+  }, [scouterScheduleForTournament, scouterForSchedule, impersonated]);
 
   const nextMatch = useMemo(() => {
     console.log({ history });
@@ -306,8 +318,8 @@ const AutomaticMatchSelection = ({
 
     onChanged({
       scouterUUID: scouter!.uuid,
-      allianceColor: selectedMatch.scouters[scouter!.uuid].allianceColor,
-      teamNumber: selectedMatch.scouters[scouter!.uuid].teamNumber,
+      allianceColor: selectedMatch.scouters[scouterForSchedule!]!.allianceColor,
+      teamNumber: selectedMatch.scouters[scouterForSchedule!]!.teamNumber,
       matchIdentity: selectedMatch.matchIdentity,
     });
   }, [selectedMatch]);
@@ -318,8 +330,7 @@ const AutomaticMatchSelection = ({
     }
   }, [matchesWithScouter]);
 
-  if (!scouter || !tournaments) return null;
-
+  if (!scouterForSchedule || !tournaments) return null;
   return (
     <View style={{ alignItems: "center", justifyContent: "center", flex: 1 }}>
       {tournament && (
@@ -330,7 +341,7 @@ const AutomaticMatchSelection = ({
 
       {selectedMatch && (
         <TitleMedium>
-          Scouting {selectedMatch.scouters[scouter.uuid].teamNumber}
+          Scouting {selectedMatch.scouters[scouterForSchedule!]?.teamNumber}
         </TitleMedium>
       )}
 

@@ -13,6 +13,8 @@ import { IconButton } from "../../lib/components/IconButton";
 import {
   FieldOrientation,
   useFieldOrientationStore,
+  useImpersonatedScouterStore,
+  useScouterStore,
 } from "../../lib/storage/userStores";
 import { ButtonGroup } from "../../lib/components/ButtonGroup";
 import { colors } from "../../lib/colors";
@@ -72,6 +74,7 @@ export default function Settings() {
               <TournamentSelector />
               <TrainingModeSelector />
               <QRCodeSizeLink />
+              <ImpersonateScouterLink />
               <View
                 style={{
                   marginTop: 50,
@@ -257,5 +260,39 @@ const TournamentSelector = () => {
         </View>
       </View>
     </View>
+  );
+};
+
+const ImpersonateScouterLink = () => {
+  const impersonatedScouter = useImpersonatedScouterStore(
+    (state) => state.value,
+  );
+  const scouter = useScouterStore((state) => state.value);
+
+  return (
+    <Link href="/settings/impersonation" asChild>
+      <TouchableOpacity
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
+          marginTop: 7,
+          padding: 14,
+          borderRadius: 10,
+          backgroundColor: colors.secondaryContainer.default,
+          gap: 7,
+        }}
+      >
+        <LabelSmall>Scouter impersonation</LabelSmall>
+        <View style={{ flexDirection: "row", alignItems: "center", gap: 4 }}>
+          <BodyMedium>{impersonatedScouter?.name ?? "None"}</BodyMedium>
+          <Icon
+            name="arrow_forward_ios"
+            size={18}
+            color={colors.body.default}
+          />
+        </View>
+      </TouchableOpacity>
+    </Link>
   );
 };

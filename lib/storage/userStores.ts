@@ -47,6 +47,17 @@ export const useScouterStore = createGenericPersistantStore<Scouter | null>(
   "scouterStore",
   null,
 );
+
+export type ImpersonatedScouter = {
+  name: string;
+  uuid: string;
+};
+
+export const useImpersonatedScouterStore =
+  createGenericPersistantStore<ImpersonatedScouter | null>(
+    "impersonatedStore",
+    null,
+  );
 export const useTournamentStore =
   createGenericPersistantStore<Tournament | null>(
     "activeTournamentStore",
