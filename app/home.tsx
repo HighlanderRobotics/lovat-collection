@@ -107,7 +107,8 @@ export default function Home() {
               </View>
               <View style={{ gap: 10 }}>
                 <Button
-                  variant="primary"
+                  color={colors.victoryPurple.default}
+                  textColor={colors.background.default}
                   disabled={!meta || !startMatchEnabled}
                   onPress={() => {
                     if (!meta) return;
@@ -117,7 +118,8 @@ export default function Home() {
                   Scout this match
                 </Button>
                 <Button
-                  variant="primary"
+                  color={colors.victoryPurple.default}
+                  textColor={colors.background.default}
                   filled={false}
                   onPress={toggleMatchSelectionMode}
                 >
@@ -450,6 +452,7 @@ const ManualMatchSelection = (props: ManualMatchSelectionProps) => {
       <View style={{ height: 14 }} />
 
       <ButtonGroup
+        color={colors.secondaryContainer.default}
         buttons={matchTypes.map((type) => ({
           label: type.localizedDescription,
           value: type.type,
@@ -469,6 +472,7 @@ const ManualMatchSelection = (props: ManualMatchSelectionProps) => {
       />
       <View style={{ height: 14 }} />
       <ButtonGroup
+        color={colors.secondaryContainer.default}
         buttons={allianceColors.map((color) => ({
           label: color.localizedDescription,
           value: color.color,

@@ -79,7 +79,12 @@ export default function TeamCode() {
         </BodyMedium>
 
         <View style={{ paddingTop: 50, alignItems: "flex-end" }}>
-          <Button variant="primary" disabled={loading} onPress={onSubmit}>
+          <Button
+            color={colors.victoryPurple.default}
+            textColor={colors.background.default}
+            disabled={loading}
+            onPress={onSubmit}
+          >
             Next
           </Button>
         </View>

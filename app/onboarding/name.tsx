@@ -147,7 +147,12 @@ const NewScouterPrompt = ({
       <View style={{ padding: 10 }}>
         <BodyMedium>Scouter &ldquo;{name}&rdquo; not found.</BodyMedium>
       </View>
-      <Button variant="primary" onPress={onPress} disabled={loading}>
+      <Button
+        color={colors.victoryPurple.default}
+        textColor={colors.background.default}
+        onPress={onPress}
+        disabled={loading}
+      >
         Create new scouter
       </Button>
 

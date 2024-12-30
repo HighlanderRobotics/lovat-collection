@@ -97,7 +97,11 @@ export default function Submit() {
             >
               <Suspense
                 fallback={
-                  <Button variant="primary" disabled>
+                  <Button
+                    color={colors.victoryPurple.default}
+                    textColor={colors.background.default}
+                    disabled
+                  >
                     Done
                   </Button>
                 }
@@ -132,7 +136,8 @@ const DoneButton = ({
 
   return (
     <Button
-      variant="primary"
+      color={colors.victoryPurple.default}
+      textColor={colors.background.default}
       onPress={() => {
         upsertMatchToHistory(
           scoutReport,

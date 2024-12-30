@@ -4,6 +4,7 @@ import BodyMedium from "../../lib/components/text/BodyMedium";
 import Button from "../../lib/components/Button";
 import { SafeAreaView } from "react-native-safe-area-context";
 import TitleMedium from "../../lib/components/text/TitleMedium";
+import { colors } from "../../lib/colors";
 
 export default function OnboardingWelcome() {
   return (
@@ -32,7 +33,8 @@ export default function OnboardingWelcome() {
         <BodyMedium>Let&apos;s get you ready to scout.</BodyMedium>
         <View style={{ paddingTop: 50, alignItems: "flex-end" }}>
           <Button
-            variant="primary"
+            color={colors.victoryPurple.default}
+            textColor={colors.background.default}
             onPress={() => {
               router.push("/onboarding/team-code");
             }}

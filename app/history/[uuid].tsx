@@ -75,6 +75,8 @@ const Details = () => {
           >
             {!match!.uploaded && (
               <Button
+                color={colors.gray.default}
+                textColor={colors.onBackground.default}
                 onPress={async () => {
                   await uploadReport(match!.scoutReport);
                   setMatchUploaded(match!.scoutReport.uuid);

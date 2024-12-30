@@ -79,7 +79,8 @@ export default function Settings() {
                 }}
               >
                 <Button
-                  variant="secondary"
+                  color={colors.gray.default}
+                  textColor={colors.onBackground.default}
                   onPress={() => {
                     router.push("/settings/reset");
                   }}
@@ -207,6 +208,7 @@ const FieldOrientationEditor = () => {
           ]}
           selected={fieldOrientation}
           onChange={setFieldOrientation}
+          color={colors.gray.default}
         />
       </View>
     </View>
@@ -248,6 +250,8 @@ const TournamentSelector = () => {
             </BodyMedium>
           </View>
           <Button
+            color={colors.gray.default}
+            textColor={colors.onBackground.default}
             onPress={() => {
               router.push("/settings/tournament");
             }}

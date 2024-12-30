@@ -27,6 +27,7 @@ import { CommonActions } from "@react-navigation/native";
 import BodyMedium from "../../lib/components/text/BodyMedium";
 import { useTrainingModeStore } from "../../lib/storage/userStores";
 import React from "react";
+import { colors } from "../../lib/colors";
 
 export default function PostMatch() {
   const reportState = useReportStateStore();
@@ -135,7 +136,8 @@ export default function PostMatch() {
           <View style={{ gap: 10 }}>
             <Button
               disabled={trainingModeEnabled}
-              variant="primary"
+              color={colors.victoryPurple.default}
+              textColor={colors.background.default}
               onPress={() => {
                 router.push("/game/submit");
               }}
@@ -143,7 +145,8 @@ export default function PostMatch() {
               Submit
             </Button>
             <Button
-              variant="secondary"
+              color={colors.gray.default}
+              textColor={colors.onBackground.default}
               onPress={() => {
                 Alert.alert(
                   "Discard match?",
@@ -201,6 +204,7 @@ function PostMatchSelector<T>(props: {
     <View style={{ gap: 7 }}>
       <LabelSmall>{title}</LabelSmall>
       <ButtonGroup
+        color={colors.secondaryContainer.default}
         direction={direction}
         buttons={items}
         selected={selected}

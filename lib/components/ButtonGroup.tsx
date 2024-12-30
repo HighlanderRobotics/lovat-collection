@@ -1,4 +1,4 @@
-import { View } from "react-native";
+import { ColorValue, View } from "react-native";
 import { colors } from "../colors";
 import { Key } from "react";
 import Button from "./Button";
@@ -19,6 +19,7 @@ export type ButtonGroupButton<T> =
 type ButtonGroupProps<T> = {
   buttons: ButtonGroupButton<T>[];
   selected: T;
+  color: ColorValue;
   direction?: ButtonGroupDirection;
   onChange: (value: T) => void;
 };
@@ -32,6 +33,7 @@ export function ButtonGroup<T = string>(props: ButtonGroupProps<T>) {
   const {
     buttons,
     selected,
+    color,
     onChange,
     direction = ButtonGroupDirection.Horizontal,
   } = props;
@@ -55,7 +57,12 @@ export function ButtonGroup<T = string>(props: ButtonGroupProps<T>) {
             key={button.key ?? button.value}
             flex={1}
             borderRadius={0}
-            variant={isSelected ? "primary" : "secondary"}
+            color={isSelected ? colors.victoryPurple.default : color}
+            textColor={
+              isSelected
+                ? colors.background.default
+                : colors.onBackground.default
+            }
             onPress={() => {
               Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
               onChange(button.value);

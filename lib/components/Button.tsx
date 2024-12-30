@@ -1,16 +1,17 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect } from "react";
 import {
-  TouchableOpacity,
   Text,
-  Animated,
   ActivityIndicator,
   View,
+  TouchableHighlight,
+  ColorValue,
 } from "react-native";
 import { colors } from "../colors";
 import BodyMedium from "./text/BodyMedium";
 
 type ButtonProps = {
-  variant?: "primary" | "secondary" | "danger";
+  color: ColorValue;
+  textColor: ColorValue;
   filled?: boolean;
   disabled?: boolean;
   density?: "comfortable" | "compact";
@@ -21,12 +22,9 @@ type ButtonProps = {
   borderRadius?: number;
 };
 
-const AnimatedTouchableOpacity =
-  Animated.createAnimatedComponent(TouchableOpacity);
-const AnimatedText = Animated.createAnimatedComponent(Text);
-
 const Button: React.FC<ButtonProps> = ({
-  variant = "secondary",
+  color = colors.gray.default,
+  textColor = colors.onBackground.default,
   filled = true,
   disabled = false,
   density = "comfortable",
@@ -36,11 +34,8 @@ const Button: React.FC<ButtonProps> = ({
   borderRadius,
   loadingChildren,
 }) => {
-  let textColor: string = "";
   let padding: number[] = [];
   let radius: number = 0;
-
-  const [pressed, setPressed] = React.useState(false);
 
   const [promise, setPromise] = React.useState<Promise<void> | null>(null);
 
@@ -65,29 +60,6 @@ const Button: React.FC<ButtonProps> = ({
 
   const effectivelyDisabled = disabled || loading;
 
-  textColor =
-    variant === "primary"
-      ? colors.background.default
-      : colors.onBackground.default;
-
-  const backgroundColors = {
-    primary: colors.victoryPurple,
-    secondary: filled
-      ? colors.gray
-      : {
-          ...colors.onBackground,
-          faded: colors.gray.default,
-          hover: colors.gray.hover,
-        },
-    danger: colors.danger,
-  }[variant];
-
-  const disabledTextColor = {
-    primary: colors.background.default,
-    secondary: "#5f5f5f",
-    danger: "#746767",
-  }[variant];
-
   if (density === "comfortable") {
     padding = [10, 20];
     radius = 7;
@@ -96,42 +68,8 @@ const Button: React.FC<ButtonProps> = ({
     radius = 5;
   }
 
-  const colorAnimation = useRef(new Animated.Value(0)).current;
-
-  useEffect(() => {
-    Animated.timing(colorAnimation, {
-      toValue: pressed ? 1 : 0,
-      duration: 100,
-      useNativeDriver: false,
-    }).start();
-  }, [pressed]);
-
-  useEffect(() => {
-    Animated.timing(colorAnimation, {
-      toValue: effectivelyDisabled ? 1 : 0,
-      duration: 100,
-      useNativeDriver: false,
-    }).start();
-  }, [effectivelyDisabled]);
-
-  const backgroundColorInterpolation = colorAnimation.interpolate({
-    inputRange: [0, 1],
-    outputRange: [
-      backgroundColors.default,
-      effectivelyDisabled ? backgroundColors.faded : backgroundColors.hover,
-    ],
-  });
-
-  const textColorInterpolation = colorAnimation.interpolate({
-    inputRange: [0, 1],
-    outputRange: [
-      textColor,
-      effectivelyDisabled ? disabledTextColor : textColor,
-    ],
-  });
-
   const buttonStyle = {
-    backgroundColor: filled ? backgroundColorInterpolation : "transparent",
+    backgroundColor: filled ? color : "transparent",
     paddingVertical: padding[0],
     paddingHorizontal: padding[1],
     flex,
@@ -139,7 +77,7 @@ const Button: React.FC<ButtonProps> = ({
   };
 
   const textStyle = {
-    color: filled ? textColorInterpolation : backgroundColorInterpolation,
+    color: filled ? textColor : color,
     fontFamily: "Heebo_500Medium",
     fontSize: density === "comfortable" ? 16 : 14,
     fontWeight: "500",
@@ -160,10 +98,11 @@ const Button: React.FC<ButtonProps> = ({
           <BodyMedium color={colors.danger.default}>{error}</BodyMedium>
         </View>
       )}
-      <AnimatedTouchableOpacity
+      <TouchableHighlight
         style={[
           buttonStyle,
           {
+            opacity: disabled ? 0.35 : 1,
             flexDirection: "row",
             justifyContent: "center",
             alignItems: "center",
@@ -181,19 +120,20 @@ const Button: React.FC<ButtonProps> = ({
             }
           }
         }}
-        activeOpacity={1}
-        onPressIn={() => setPressed(true)}
-        onPressOut={() => setPressed(false)}
+        activeOpacity={0.8}
+        {...(!filled
+          ? {
+              underlayColor: textColor,
+            }
+          : {})}
       >
-        {loading && (
-          <ActivityIndicator
-            color={filled ? textColor : backgroundColors.default}
-          />
-        )}
-        <AnimatedText style={textStyle}>
-          {loading ? (loadingChildren ?? children) : children}
-        </AnimatedText>
-      </AnimatedTouchableOpacity>
+        <>
+          {loading && <ActivityIndicator color={filled ? textColor : color} />}
+          <Text style={textStyle}>
+            {loading ? (loadingChildren ?? children) : children}
+          </Text>
+        </>
+      </TouchableHighlight>
     </>
   );
 };

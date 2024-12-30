@@ -94,7 +94,8 @@ export default function Reset() {
             }}
           >
             <Button
-              variant="danger"
+              color={colors.danger.default}
+              textColor={colors.onBackground.default}
               onPress={() => {
                 reset();
               }}
@@ -102,7 +103,8 @@ export default function Reset() {
               Reset
             </Button>
             <Button
-              variant="secondary"
+              color={colors.gray.default}
+              textColor={colors.onBackground.default}
               onPress={() => {
                 router.back();
               }}
