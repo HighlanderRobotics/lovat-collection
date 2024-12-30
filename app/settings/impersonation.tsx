@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import { ActivityIndicator } from "react-native";
 import { View } from "react-native";
-import TextField from "../../lib/components/TextField";
+import { FlashList } from "@shopify/flash-list";
 import { router } from "expo-router";
 import { colors } from "../../lib/colors";
 import { IconButton } from "../../lib/components/IconButton";
@@ -69,11 +69,10 @@ const ScouterSelector = () => {
           maxWidth: 800,
         }}
       >
-        {scouters
-          .filter((item) => item.uuid !== scouter?.uuid)
-          .map((item) => {
-            return <ScouterItem scouter={item} />;
-          })}
+        <FlashList
+          data={scouters.filter((item) => item.uuid !== scouter?.uuid)}
+          renderItem={(item) => <ScouterItem scouter={item.item} />}
+        />
       </View>
     );
   }

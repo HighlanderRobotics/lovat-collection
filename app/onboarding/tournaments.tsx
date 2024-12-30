@@ -20,6 +20,7 @@ import {
 } from "../../lib/storage/userStores";
 import React from "react";
 import { useTournamentsStore } from "../../lib/storage/tournamentsStore";
+import { FlashList } from "@shopify/flash-list";
 
 export default function OnboardingTournaments() {
   const [filter, setFilter] = useState("");
@@ -94,9 +95,10 @@ const TournamentSelector = ({ filter }: { filter: string }) => {
         maxWidth: 800,
       }}
     >
-      {filteredTournaments.map((tournament) => (
-        <TournamentItem key={tournament.key} tournament={tournament} />
-      ))}
+      <FlashList
+        data={filteredTournaments}
+        renderItem={(item) => <TournamentItem tournament={item.item} />}
+      />
     </View>
   );
 };

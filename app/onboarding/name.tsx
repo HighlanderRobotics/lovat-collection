@@ -18,6 +18,7 @@ import { z } from "zod";
 import { Scouter } from "../../lib/models/scouter";
 import { useTeamScoutersStore } from "../../lib/storage/teamScoutersStore";
 import { useScouterStore, useTeamStore } from "../../lib/storage/userStores";
+import { FlashList } from "@shopify/flash-list";
 
 export default function Name() {
   const [loading, setLoading] = useState(true);
@@ -170,21 +171,24 @@ const ScoutersView = ({
   return (
     <ScrollView style={{ flex: 1, paddingVertical: 10 }}>
       <View style={{ paddingBottom: 80 }}>
-        {scouters.map((scouter) => (
-          <TouchableOpacity
-            key={scouter.uuid}
-            style={{
-              paddingVertical: 10,
-              paddingHorizontal: 10,
-              borderRadius: 7,
-              backgroundColor: colors.secondaryContainer.default,
-              marginBottom: 10,
-            }}
-            onPress={() => onSubmit && onSubmit(scouter)}
-          >
-            <BodyMedium>{scouter.name}</BodyMedium>
-          </TouchableOpacity>
-        ))}
+        <FlashList
+          data={scouters}
+          renderItem={(item) => (
+            <TouchableOpacity
+              key={item.item.uuid}
+              style={{
+                paddingVertical: 10,
+                paddingHorizontal: 10,
+                borderRadius: 7,
+                backgroundColor: colors.secondaryContainer.default,
+                marginBottom: 10,
+              }}
+              onPress={() => onSubmit && onSubmit(item.item)}
+            >
+              <BodyMedium>{item.item.name}</BodyMedium>
+            </TouchableOpacity>
+          )}
+        />
       </View>
     </ScrollView>
   );

@@ -35,7 +35,9 @@ export default function Reset() {
       useOnboardingCompleteStore.getInitialState(),
     );
     useScouterStore.setState(useScouterStore.getInitialState());
-    useImpersonatedScouterStore.setState(useImpersonatedScouterStore.getInitialState());
+    useImpersonatedScouterStore.setState(
+      useImpersonatedScouterStore.getInitialState(),
+    );
     useTournamentStore.setState(useTournamentStore.getInitialState());
     useTrainingModeStore.setState(useTrainingModeStore.getInitialState());
     useQrCodeSizeStore.setState(useQrCodeSizeStore.getInitialState());

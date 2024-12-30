@@ -331,18 +331,17 @@ const AutomaticMatchSelection = ({
     }
   }, [matchesWithScouter]);
 
-
   if (!scouterForSchedule || !tournaments) return null;
 
   return (
     <View style={{ alignItems: "center", justifyContent: "center", flex: 1 }}>
-      {(matchesWithScouter.length >= 1 && tournament) && (
+      {matchesWithScouter.length >= 1 && tournament && (
         <Heading1Small color={colors.body.default}>
           {tournament.date.split("-")[0]} {tournament.name}
         </Heading1Small>
       )}
 
-      {(matchesWithScouter.length >= 1 && selectedMatch) && (
+      {matchesWithScouter.length >= 1 && selectedMatch && (
         <TitleMedium>
           Scouting {selectedMatch.scouters[scouterForSchedule!]?.teamNumber}
         </TitleMedium>

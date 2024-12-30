@@ -19,6 +19,7 @@ import * as ContextMenu from "zeego/context-menu";
 import { uploadReport } from "../../lib/lovatAPI/uploadReport";
 import { z } from "zod";
 import React from "react";
+import { FlashList } from "@shopify/flash-list";
 
 export default function History() {
   const [filterText, setFilterText] = useState("");
@@ -104,9 +105,10 @@ const Matches = ({ filter }: { filter: string }) => {
           maxWidth: 800,
         }}
       >
-        {filteredMatches.map((match) => (
-          <Match match={match} key={match.scoutReport.uuid} />
-        ))}
+        <FlashList
+          data={filteredMatches}
+          renderItem={(item) => <Match match={item.item} />}
+        />
       </SafeAreaView>
     </KeyboardAwareScrollView>
   );

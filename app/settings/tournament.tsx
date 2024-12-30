@@ -17,6 +17,7 @@ import { Tournament } from "../../lib/lovatAPI/getTournaments";
 import React from "react";
 import { useTournamentsStore } from "../../lib/storage/tournamentsStore";
 import { useScouterScheduleStore } from "../../lib/storage/scouterScheduleStore";
+import { FlashList } from "@shopify/flash-list";
 
 export default function TournamentPage() {
   const [filter, setFilter] = useState("");
@@ -99,13 +100,15 @@ const TournamentSelector = ({ filter }: { filter: string }) => {
         maxWidth: 800,
       }}
     >
-      {filteredTournaments.map((tournament) => (
-        <TournamentItem
-          key={tournament.key}
-          tournament={tournament}
-          fetchScouterSchedule={fetchScouterSchedule}
-        />
-      ))}
+      <FlashList
+        data={filteredTournaments}
+        renderItem={(item) => (
+          <TournamentItem
+            tournament={item.item}
+            fetchScouterSchedule={fetchScouterSchedule}
+          />
+        )}
+      />
     </View>
   );
 };
