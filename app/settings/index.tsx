@@ -14,7 +14,6 @@ import {
   FieldOrientation,
   useFieldOrientationStore,
   useImpersonatedScouterStore,
-  useScouterStore,
 } from "../../lib/storage/userStores";
 import { ButtonGroup } from "../../lib/components/ButtonGroup";
 import { colors } from "../../lib/colors";
@@ -267,7 +266,6 @@ const ImpersonateScouterLink = () => {
   const impersonatedScouter = useImpersonatedScouterStore(
     (state) => state.value,
   );
-  const scouter = useScouterStore((state) => state.value);
 
   return (
     <Link href="/settings/impersonation" asChild>
