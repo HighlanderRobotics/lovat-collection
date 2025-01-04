@@ -37,50 +37,35 @@ TimeAgo.addDefaultLocale(en);
 
 SplashScreen.preventAutoHideAsync();
 
-function storageMigrator() {
-  const setOnboardingComplete = useOnboardingCompleteStore.getState().setValue;
-  const setTeamNumber = useTeamStore.getState().setNumber;
-  const setTeamCode = useTeamStore.getState().setCode;
-  const setScouter = useScouterStore.getState().setValue;
-  const setTrainingModeEnabled = useTrainingModeStore.getState().setValue;
-  const setQrCodeSize = useQrCodeSizeStore.getState().setValue;
-  const setFieldOrientation = useFieldOrientationStore.getState().setValue;
-  const upsertMatchToHistory = useHistoryStore.getState().upsertMatch;
-  /* eslint-disable-next-line */
-  const keys: Record<string, (value: any) => void> = {
-    "onboarding-complete": setOnboardingComplete,
-    "team-number": setTeamNumber,
-    "team-code": setTeamCode,
-    scouter: setScouter,
-    trainingMode: setTrainingModeEnabled,
-    qrCodeSize: setQrCodeSize,
-    fieldOrientation: setFieldOrientation,
-    history: (data: HistoryEntry[]) =>
-      data.forEach((item) => {
-        upsertMatchToHistory(item.scoutReport, item.uploaded, item.meta);
-      }),
-  };
-
-  return (key: string) => {
-    if (Object.keys(keys).includes(key)) {
-      return keys[key];
-    }
-    return (key: string) => key;
-  };
-}
+// This record does not actually have a type of any, it is using any because when it uses any other type, typescript complains because it treats the functions to have an argument of never
+/* eslint-disable-next-line */
+const storageMigratorsByLegacyKey: Record<string, (value: any) => void> = {
+  "onboarding-complete": useOnboardingCompleteStore.getState().setValue,
+  "team-number": useTeamStore.getState().setNumber,
+  "team-code": useTeamStore.getState().setCode,
+  "scouter": useScouterStore.getState().setValue,
+  "trainingMode": useTrainingModeStore.getState().setValue,
+  "qrCodeSize": useQrCodeSizeStore.getState().setValue,
+  "fieldOrientation": useFieldOrientationStore.getState().setValue,
+  "history": (data: HistoryEntry[]) =>
+    data.forEach((item) => {
+      useHistoryStore
+        .getState()
+        .upsertMatch(item.scoutReport, item.uploaded, item.meta);
+    }),
+} as const;
 
 export default function Layout() {
-  const migrateStorage = storageMigrator();
-  AsyncStorage.getAllKeys((e, result) => {
-    result?.forEach(async (key) => {
-      if (!key.includes("Store")) {
-        const data = JSON.parse((await AsyncStorage.getItem(key)) ?? "");
-        const migrationFunction = migrateStorage(key);
-        migrationFunction(data);
-        AsyncStorage.removeItem(key);
-      }
-    });
-  });
+  Object.keys(storageMigratorsByLegacyKey).forEach(async (key) => {
+    const result = await AsyncStorage.getItem(key)
+    console.log({key}, {result})
+    if (result !== null) {
+      const data = JSON.parse(result)
+      const migrationFunction = storageMigratorsByLegacyKey[key]
+      migrationFunction(data)
+      AsyncStorage.removeItem(key)
+    }
+  })
   const loadServices = getServiceLoader();
 
   const setStartMatchEnabled = useStartMatchEnabledStore(
