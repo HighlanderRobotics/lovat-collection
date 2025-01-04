@@ -15,8 +15,7 @@ import { Icon } from "../../lib/components/Icon";
 import BodyMedium from "../../lib/components/text/BodyMedium";
 import { Tournament } from "../../lib/lovatAPI/getTournaments";
 import React from "react";
-import { useTournamentsStore } from "../../lib/storage/tournamentsStore";
-import { useScouterScheduleStore } from "../../lib/storage/scouterScheduleStore";
+import { useTournamentsStore, useScouterScheduleStore } from "../../lib/services";
 
 export default function TournamentPage() {
   const [filter, setFilter] = useState("");
@@ -77,12 +76,13 @@ export default function TournamentPage() {
 }
 
 const TournamentSelector = ({ filter }: { filter: string }) => {
-  const tournaments = useTournamentsStore((state) => state.tournaments);
+  const tournaments = useTournamentsStore((state) => state.data);
   const fetchScouterSchedule = useScouterScheduleStore(
-    (state) => state.fetchScouterSchedule,
+    (state) => state.fetchData,
   );
 
   const filteredTournaments = useMemo(() => {
+    if (!tournaments) return [];
     if (!filter) return tournaments;
     return tournaments.filter((tournament) => {
       return `${tournament.date.split("-")[0]} ${tournament.name}`

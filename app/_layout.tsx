@@ -11,7 +11,7 @@ import {
 } from "@expo-google-fonts/heebo";
 
 import { useCallback, useEffect } from "react";
-import { useLoadServices } from "../lib/services";
+import { getServiceLoader } from "../lib/services";
 
 import TimeAgo from "javascript-time-ago";
 import en from "javascript-time-ago/locale/en.json";
@@ -81,7 +81,7 @@ export default function Layout() {
       }
     });
   });
-  const loadServices = useLoadServices();
+  const loadServices = getServiceLoader();
 
   const setStartMatchEnabled = useStartMatchEnabledStore(
     (state) => state.setValue,

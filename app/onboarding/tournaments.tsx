@@ -19,12 +19,12 @@ import {
   useTournamentStore,
 } from "../../lib/storage/userStores";
 import React from "react";
-import { useTournamentsStore } from "../../lib/storage/tournamentsStore";
+import { useTournamentsStore } from "../../lib/services";
 
 export default function OnboardingTournaments() {
   const [filter, setFilter] = useState("");
   const fetchTournaments = useTournamentsStore(
-    (state) => state.fetchTournaments,
+    (state) => state.fetchData,
   );
   useMemo(() => {
     fetchTournaments();
@@ -75,9 +75,10 @@ export default function OnboardingTournaments() {
 }
 
 const TournamentSelector = ({ filter }: { filter: string }) => {
-  const tournaments = useTournamentsStore((state) => state.tournaments);
+  const tournaments = useTournamentsStore((state) => state.data);
 
   const filteredTournaments = useMemo(() => {
+    if (!tournaments) return [];
     if (!filter) return tournaments;
     return tournaments.filter((tournament) => {
       return `${tournament.date.split("-")[0]} ${tournament.name}`

@@ -10,7 +10,7 @@ import { colors } from "../lib/colors";
 import BodyMedium from "../lib/components/text/BodyMedium";
 import { IconButton } from "../lib/components/IconButton";
 import { Suspense, useEffect, useMemo, useState } from "react";
-import { useLoadServices } from "../lib/services";
+import { getServiceLoader } from "../lib/services";
 import { useScouterStore, useTournamentStore } from "../lib/storage/userStores";
 import { ButtonGroup } from "../lib/components/ButtonGroup";
 import {
@@ -34,8 +34,7 @@ import { useHistoryStore } from "../lib/storage/historyStore";
 import { useStartMatchEnabledStore } from "../lib/storage/userStores";
 import React from "react";
 import { useReportStateStore } from "../lib/collection/reportStateStore";
-import { useScouterScheduleStore } from "../lib/storage/scouterScheduleStore";
-import { useTournamentsStore } from "../lib/storage/tournamentsStore";
+import { useScouterScheduleStore, useTournamentsStore } from "../lib/services";
 
 enum MatchSelectionMode {
   Automatic,
@@ -50,7 +49,7 @@ export default function Home() {
   const reportState = useReportStateStore();
 
   const startMatchEnabled = useStartMatchEnabledStore((state) => state.value);
-  const loadServices = useLoadServices();
+  const loadServices = getServiceLoader();
 
   useEffect(() => {
     setInterval(() => loadServices(), 60 * 1000);
@@ -152,7 +151,7 @@ const MatchSelection = ({
   matchSelectionMode,
   onMetaChanged,
 }: MatchSelectionProps) => {
-  const scouterSchedule = useScouterScheduleStore((state) => state.schedule);
+  const scouterSchedule = useScouterScheduleStore((state) => state.data);
 
   const tournament = useTournamentStore((state) => state.value);
 
@@ -183,8 +182,8 @@ const AutomaticMatchSelection = ({
 }) => {
   const history = useHistoryStore((state) => state.history);
 
-  const scouterSchedule = useScouterScheduleStore((state) => state.schedule);
-  const tournaments = useTournamentsStore((state) => state.tournaments);
+  const scouterSchedule = useScouterScheduleStore((state) => state.data);
+  const tournaments = useTournamentsStore((state) => state.data);
 
   const scouter = useScouterStore((state) => state.value);
 
@@ -481,7 +480,7 @@ const ManualMatchSelection = (props: ManualMatchSelectionProps) => {
 };
 
 const ScheduleColorGradient = () => {
-  const scouterSchedule = useScouterScheduleStore((state) => state.schedule);
+  const scouterSchedule = useScouterScheduleStore((state) => state.data);
   const tournament = useTournamentStore((state) => state.value);
 
   const scouterScheduleForTournament =
