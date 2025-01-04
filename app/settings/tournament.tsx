@@ -15,7 +15,10 @@ import { Icon } from "../../lib/components/Icon";
 import BodyMedium from "../../lib/components/text/BodyMedium";
 import { Tournament } from "../../lib/lovatAPI/getTournaments";
 import React from "react";
-import { useTournamentsStore, useScouterScheduleStore } from "../../lib/services";
+import {
+  useTournamentsStore,
+  useScouterScheduleStore,
+} from "../../lib/services";
 
 export default function TournamentPage() {
   const [filter, setFilter] = useState("");

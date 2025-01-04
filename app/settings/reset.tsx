@@ -20,8 +20,11 @@ import {
   useTrainingModeStore,
 } from "../../lib/storage/userStores";
 import { useHistoryStore } from "../../lib/storage/historyStore";
-import { useTeamScoutersStore, useTournamentsStore, useScouterScheduleStore } from "../../lib/services";
-
+import {
+  useTeamScoutersStore,
+  useTournamentsStore,
+  useScouterScheduleStore,
+} from "../../lib/services";
 
 export default function Reset() {
   const navigation = useNavigation();

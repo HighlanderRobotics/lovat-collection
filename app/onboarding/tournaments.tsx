@@ -23,9 +23,7 @@ import { useTournamentsStore } from "../../lib/services";
 
 export default function OnboardingTournaments() {
   const [filter, setFilter] = useState("");
-  const fetchTournaments = useTournamentsStore(
-    (state) => state.fetchData,
-  );
+  const fetchTournaments = useTournamentsStore((state) => state.fetchData);
   useMemo(() => {
     fetchTournaments();
   }, []);
