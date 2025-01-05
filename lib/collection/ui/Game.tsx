@@ -108,117 +108,101 @@ export function Game() {
     );
   };
 
-  if (!reportState?.startTimestamp) {
-    return (
-      <GameViewTemplate
-        onEnd={onEnd}
-        onRestart={onRestart}
-        gamePhaseMessage="Pre-match"
-        field={<PreMatchActions />}
-        topLeftReplacement={
-          <Checkbox
-            label="Loaded with a note"
-            checked={reportState?.startPiece}
-            onChange={reportState.setStartPiece}
-          />
-        }
-        startEnabled={reportState?.startPosition !== undefined}
-      />
-    );
-  }
+  type GameState = {
+    gamePhaseMessage: string;
+    field: React.ReactNode;
+    topLeftReplacement?: React.ReactNode;
+    startEnabled?: boolean;
+  };
 
-  if (reportState.gamePhase === GamePhase.Auto) {
-    const hasExited = reportState.events.some(
-      (event) => event.type === MatchEventType.LeaveWing,
-    );
+  const gameStates: { [key: string]: GameState } = {
+    preMatch: {
+      gamePhaseMessage: "Pre-Match",
+      field: <PreMatchActions />,
+      topLeftReplacement: (
+        <Checkbox
+          label="Loaded with a note"
+          checked={reportState?.startPiece}
+          onChange={reportState.setStartPiece}
+        />
+      ),
+      startEnabled: reportState.startPosition !== undefined,
+    },
+    autoExitedNote: {
+      gamePhaseMessage: "Autonomous",
+      field: <HasNoteActions />,
+    },
+    autoExitedNoNote: {
+      gamePhaseMessage: "Autonomous",
+      field: <AutoCollectPieceActions />,
+    },
+    autoNotExitedNote: {
+      gamePhaseMessage: "Autonomous",
+      field: (
+        <>
+          <HasNoteActions />,
+          <ExitWingAction />
+        </>
+      ),
+    },
+    autoNotExitedNoNote: {
+      gamePhaseMessage: "Autonomous",
+      field: <ExitWingAction />,
+    },
+    teleopNote: {
+      gamePhaseMessage: "Teleop",
+      field: (
+        <>
+          <FloatingActions feedEnabled />
+          <HasNoteActions trap />
+        </>
+      ),
+    },
+    teleopNoNote: {
+      gamePhaseMessage: "Teleop",
+      field: <FloatingActions pickupEnabled />,
+    },
+    unknown: {
+      gamePhaseMessage: "Problem finding phase",
+      field: <></>,
+    },
+  };
 
-    if (reportState.getHasNote()) {
-      if (hasExited) {
-        return (
-          <GameViewTemplate
-            onEnd={onEnd}
-            onRestart={onRestart}
-            gamePhaseMessage="Autonomous"
-            field={
-              <>
-                <HasNoteActions />
-              </>
-            }
-          />
+  const [gameState, setGameState] = useState<GameState>(gameStates.preMatch);
+
+  if (!reportState.startTimestamp) {
+    setGameState(gameStates.preMatch);
+  } else {
+    if (reportState.gamePhase === GamePhase.Auto) {
+      if (reportState.getHasExited()) {
+        setGameState(
+          reportState.getHasNote()
+            ? gameStates.autoExitedNote
+            : gameStates.autoExitedNoNote,
         );
       } else {
-        return (
-          <GameViewTemplate
-            onEnd={onEnd}
-            onRestart={onRestart}
-            gamePhaseMessage="Autonomous"
-            field={
-              <>
-                <HasNoteActions />
-                <ExitWingAction />
-              </>
-            }
-          />
+        setGameState(
+          reportState.getHasNote()
+            ? gameStates.autoNotExitedNote
+            : gameStates.autoNotExitedNoNote,
         );
       }
     } else {
-      if (hasExited) {
-        return (
-          <GameViewTemplate
-            onEnd={onEnd}
-            onRestart={onRestart}
-            gamePhaseMessage="Autonomous"
-            field={<AutoCollectPieceActions />}
-          />
-        );
-      } else {
-        return (
-          <GameViewTemplate
-            onEnd={onEnd}
-            onRestart={onRestart}
-            gamePhaseMessage="Autonomous"
-            field={
-              <>
-                <ExitWingAction />
-              </>
-            }
-          />
-        );
-      }
-    }
-  } else if (reportState.gamePhase === GamePhase.Teleop) {
-    if (reportState.getHasNote()) {
-      return (
-        <GameViewTemplate
-          onEnd={onEnd}
-          onRestart={onRestart}
-          gamePhaseMessage="Teleop"
-          field={
-            <>
-              <FloatingActions feedEnabled />
-              <HasNoteActions trap />
-            </>
-          }
-        />
-      );
-    } else {
-      return (
-        <GameViewTemplate
-          onEnd={onEnd}
-          onRestart={onRestart}
-          gamePhaseMessage="Teleop"
-          field={<FloatingActions pickupEnabled />}
-        />
+      setGameState(
+        reportState.getHasNote()
+          ? gameStates.teleopNote
+          : gameStates.teleopNoNote,
       );
     }
   }
 
   return (
     <GameViewTemplate
-      onEnd={onEnd}
-      onRestart={onRestart}
-      gamePhaseMessage="Unknown phase"
-      field={<></>}
+      {...{
+        onEnd: onEnd,
+        onRestart: onRestart,
+        ...gameState,
+      }}
     />
   );
 }
