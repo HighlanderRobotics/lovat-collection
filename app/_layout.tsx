@@ -23,6 +23,7 @@ import {
   useScouterStore,
   useStartMatchEnabledStore,
   useTeamStore,
+  useTournamentStore,
   useTrainingModeStore,
 } from "../lib/storage/userStores";
 import { HistoryEntry, useHistoryStore } from "../lib/storage/historyStore";
@@ -43,11 +44,12 @@ const storageMigratorsByLegacyKey: Record<string, (value: any) => void> = {
   "onboarding-complete": useOnboardingCompleteStore.getState().setValue,
   "team-number": useTeamStore.getState().setNumber,
   "team-code": useTeamStore.getState().setCode,
-  "scouter": useScouterStore.getState().setValue,
-  "trainingMode": useTrainingModeStore.getState().setValue,
-  "qrCodeSize": useQrCodeSizeStore.getState().setValue,
-  "fieldOrientation": useFieldOrientationStore.getState().setValue,
-  "history": (data: HistoryEntry[]) =>
+  scouter: useScouterStore.getState().setValue,
+  tournament: useTournamentStore.getState().setValue,
+  trainingMode: useTrainingModeStore.getState().setValue,
+  qrCodeSize: useQrCodeSizeStore.getState().setValue,
+  fieldOrientation: useFieldOrientationStore.getState().setValue,
+  history: (data: HistoryEntry[]) =>
     data.forEach((item) => {
       useHistoryStore
         .getState()
@@ -57,20 +59,20 @@ const storageMigratorsByLegacyKey: Record<string, (value: any) => void> = {
 
 export default function Layout() {
   Object.keys(storageMigratorsByLegacyKey).forEach(async (key) => {
-    const result = await AsyncStorage.getItem(key)
-    console.log({key}, {result})
+    const result = await AsyncStorage.getItem(key);
+    console.log({ key }, { result });
     if (result !== null) {
-      let data
+      let data;
       if (key === "team-code") {
-        data = result
+        data = result;
       } else {
-        data = JSON.parse(result)
+        data = JSON.parse(result);
       }
-      const migrationFunction = storageMigratorsByLegacyKey[key]
-      migrationFunction(data)
-      AsyncStorage.removeItem(key)
+      const migrationFunction = storageMigratorsByLegacyKey[key];
+      migrationFunction(data);
+      AsyncStorage.removeItem(key);
     }
-  })
+  });
   const loadServices = getServiceLoader();
 
   const setStartMatchEnabled = useStartMatchEnabledStore(
