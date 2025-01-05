@@ -15,7 +15,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { colors } from "../lib/colors";
 import BodyMedium from "../lib/components/text/BodyMedium";
 import { IconButton } from "../lib/components/IconButton";
-import { Suspense, useEffect, useMemo, useState } from "react";
+import { Suspense, useCallback, useEffect, useMemo, useState } from "react";
 import {
   getServiceLoader,
   useServiceErrorStore,
@@ -33,7 +33,7 @@ import {
 } from "../lib/models/match";
 import { AllianceColor, allianceColors } from "../lib/models/AllianceColor";
 import { ScoutReportMeta } from "../lib/models/ScoutReportMeta";
-import { Stack, router } from "expo-router";
+import { Stack, router, useFocusEffect } from "expo-router";
 import "react-native-get-random-values";
 import { SafeAreaView } from "react-native-safe-area-context";
 import {
@@ -63,10 +63,12 @@ export default function Home() {
   const startMatchEnabled = useStartMatchEnabledStore((state) => state.value);
   const loadServices = getServiceLoader();
 
-  useEffect(() => {
-    setInterval(() => loadServices(), 60 * 1000);
-  }, []);
-
+  useFocusEffect(
+    useCallback(() => {
+      loadServices();
+    }, []),
+  );
+  
   useEffect(() => {
     if (!reportState.meta) return;
 

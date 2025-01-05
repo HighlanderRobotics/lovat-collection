@@ -18,6 +18,7 @@ import React from "react";
 import {
   useTournamentsStore,
   useScouterScheduleStore,
+  getServiceLoader,
 } from "../../lib/services";
 
 export default function TournamentPage() {
@@ -106,7 +107,6 @@ const TournamentSelector = ({ filter }: { filter: string }) => {
         <TournamentItem
           key={tournament.key}
           tournament={tournament}
-          fetchScouterSchedule={fetchScouterSchedule}
         />
       ))}
     </View>
@@ -115,19 +115,18 @@ const TournamentSelector = ({ filter }: { filter: string }) => {
 
 const TournamentItem = ({
   tournament,
-  fetchScouterSchedule,
 }: {
   tournament: Tournament;
-  fetchScouterSchedule: () => Promise<void>;
 }) => {
   const selectTournament = useTournamentStore((state) => state.setValue);
+  const loadServices = getServiceLoader()
 
   return (
     <TouchableOpacity
       key={tournament.key}
       onPress={() => {
         selectTournament(tournament);
-        fetchScouterSchedule();
+        loadServices();
       }}
       style={{
         flexDirection: "row",
