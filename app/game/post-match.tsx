@@ -190,18 +190,13 @@ function PostMatchSelector<T>(props: {
   selected: T;
   direction?: ButtonGroupDirection;
 }) {
-  const [title, updateStore, items, selected, direction] = [
-    props.title,
-    props.updateStore,
-    props.items,
-    props.selected,
-    props.direction ?? ButtonGroupDirection.Vertical,
-  ];
+  const { title, updateStore, items, selected, direction } = props;
+
   return (
     <View style={{ gap: 7 }}>
       <LabelSmall>{title}</LabelSmall>
       <ButtonGroup
-        direction={direction}
+        direction={direction ?? ButtonGroupDirection.Vertical}
         buttons={items}
         selected={selected}
         onChange={(value) => updateStore(value)}

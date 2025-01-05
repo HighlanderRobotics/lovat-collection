@@ -15,8 +15,7 @@ import { Icon } from "../../lib/components/Icon";
 import BodyMedium from "../../lib/components/text/BodyMedium";
 import { Tournament } from "../../lib/lovatAPI/getTournaments";
 import React from "react";
-import { useTournamentsStore } from "../../lib/storage/tournamentsStore";
-import { useScouterScheduleStore } from "../../lib/storage/scouterScheduleStore";
+import { useTournamentsStore, getServiceLoader } from "../../lib/services";
 
 export default function TournamentPage() {
   const [filter, setFilter] = useState("");
@@ -77,12 +76,10 @@ export default function TournamentPage() {
 }
 
 const TournamentSelector = ({ filter }: { filter: string }) => {
-  const tournaments = useTournamentsStore((state) => state.tournaments);
-  const fetchScouterSchedule = useScouterScheduleStore(
-    (state) => state.fetchScouterSchedule,
-  );
+  const tournaments = useTournamentsStore((state) => state.data);
 
   const filteredTournaments = useMemo(() => {
+    if (!tournaments) return [];
     if (!filter) return tournaments;
     return tournaments.filter((tournament) => {
       return `${tournament.date.split("-")[0]} ${tournament.name}`
@@ -100,31 +97,22 @@ const TournamentSelector = ({ filter }: { filter: string }) => {
       }}
     >
       {filteredTournaments.map((tournament) => (
-        <TournamentItem
-          key={tournament.key}
-          tournament={tournament}
-          fetchScouterSchedule={fetchScouterSchedule}
-        />
+        <TournamentItem key={tournament.key} tournament={tournament} />
       ))}
     </View>
   );
 };
 
-const TournamentItem = ({
-  tournament,
-  fetchScouterSchedule,
-}: {
-  tournament: Tournament;
-  fetchScouterSchedule: () => Promise<void>;
-}) => {
+const TournamentItem = ({ tournament }: { tournament: Tournament }) => {
   const selectTournament = useTournamentStore((state) => state.setValue);
+  const loadServices = getServiceLoader();
 
   return (
     <TouchableOpacity
       key={tournament.key}
       onPress={() => {
         selectTournament(tournament);
-        fetchScouterSchedule();
+        loadServices();
       }}
       style={{
         flexDirection: "row",

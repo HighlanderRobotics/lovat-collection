@@ -16,14 +16,14 @@ import { addScouter } from "../../lib/lovatAPI/addScouter";
 import { router } from "expo-router";
 import { z } from "zod";
 import { Scouter } from "../../lib/models/scouter";
-import { useTeamScoutersStore } from "../../lib/storage/teamScoutersStore";
+import { useTeamScoutersStore } from "../../lib/services";
 import { useScouterStore, useTeamStore } from "../../lib/storage/userStores";
 
 export default function Name() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const scouters = useTeamScoutersStore((state) => state.scouters);
-  const fetchScouters = useTeamScoutersStore((state) => state.fetchScouters);
+  const scouters = useTeamScoutersStore((state) => state.data);
+  const fetchScouters = useTeamScoutersStore((state) => state.fetchData);
   const setScouter = useScouterStore((state) => state.setValue);
   const [fieldText, setFieldText] = useState("");
 

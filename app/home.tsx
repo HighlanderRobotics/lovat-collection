@@ -1,4 +1,10 @@
-import { View, ScrollView, ActivityIndicator, Platform } from "react-native";
+import {
+  View,
+  ScrollView,
+  ActivityIndicator,
+  Platform,
+  Pressable,
+} from "react-native";
 import TitleMedium from "../lib/components/text/TitleMedium";
 import TextField from "../lib/components/TextField";
 import LabelSmall from "../lib/components/text/LabelSmall";
@@ -9,8 +15,13 @@ import { LinearGradient } from "expo-linear-gradient";
 import { colors } from "../lib/colors";
 import BodyMedium from "../lib/components/text/BodyMedium";
 import { IconButton } from "../lib/components/IconButton";
-import { Suspense, useEffect, useMemo, useState } from "react";
-import { useLoadServices } from "../lib/services";
+import { Suspense, useCallback, useEffect, useMemo, useState } from "react";
+import {
+  getServiceLoader,
+  useServiceErrorStore,
+  useServicesLoadingStore,
+  useTeamScoutersStore,
+} from "../lib/services";
 import { useScouterStore, useTournamentStore } from "../lib/storage/userStores";
 import { ButtonGroup } from "../lib/components/ButtonGroup";
 import {
@@ -22,7 +33,7 @@ import {
 } from "../lib/models/match";
 import { AllianceColor, allianceColors } from "../lib/models/AllianceColor";
 import { ScoutReportMeta } from "../lib/models/ScoutReportMeta";
-import { Stack, router } from "expo-router";
+import { Stack, router, useFocusEffect } from "expo-router";
 import "react-native-get-random-values";
 import { SafeAreaView } from "react-native-safe-area-context";
 import {
@@ -34,8 +45,8 @@ import { useHistoryStore } from "../lib/storage/historyStore";
 import { useStartMatchEnabledStore } from "../lib/storage/userStores";
 import React from "react";
 import { useReportStateStore } from "../lib/collection/reportStateStore";
-import { useScouterScheduleStore } from "../lib/storage/scouterScheduleStore";
-import { useTournamentsStore } from "../lib/storage/tournamentsStore";
+import { useScouterScheduleStore, useTournamentsStore } from "../lib/services";
+import TimeAgo from "../lib/components/TimeAgo";
 
 enum MatchSelectionMode {
   Automatic,
@@ -50,11 +61,13 @@ export default function Home() {
   const reportState = useReportStateStore();
 
   const startMatchEnabled = useStartMatchEnabledStore((state) => state.value);
-  const loadServices = useLoadServices();
+  const loadServices = getServiceLoader();
 
-  useEffect(() => {
-    setInterval(() => loadServices(), 60 * 1000);
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      loadServices();
+    }, []),
+  );
 
   useEffect(() => {
     if (!reportState.meta) return;
@@ -86,6 +99,8 @@ export default function Home() {
               color={colors.onBackground.default}
               onPress={() => router.push("/history")}
             />
+
+            <ServiceStatus />
 
             <IconButton
               label="settings"
@@ -152,7 +167,7 @@ const MatchSelection = ({
   matchSelectionMode,
   onMetaChanged,
 }: MatchSelectionProps) => {
-  const scouterSchedule = useScouterScheduleStore((state) => state.schedule);
+  const scouterSchedule = useScouterScheduleStore((state) => state.data);
 
   const tournament = useTournamentStore((state) => state.value);
 
@@ -183,8 +198,8 @@ const AutomaticMatchSelection = ({
 }) => {
   const history = useHistoryStore((state) => state.history);
 
-  const scouterSchedule = useScouterScheduleStore((state) => state.schedule);
-  const tournaments = useTournamentsStore((state) => state.tournaments);
+  const scouterSchedule = useScouterScheduleStore((state) => state.data);
+  const tournaments = useTournamentsStore((state) => state.data);
 
   const scouter = useScouterStore((state) => state.value);
 
@@ -481,7 +496,7 @@ const ManualMatchSelection = (props: ManualMatchSelectionProps) => {
 };
 
 const ScheduleColorGradient = () => {
-  const scouterSchedule = useScouterScheduleStore((state) => state.schedule);
+  const scouterSchedule = useScouterScheduleStore((state) => state.data);
   const tournament = useTournamentStore((state) => state.value);
 
   const scouterScheduleForTournament =
@@ -511,5 +526,97 @@ const ScheduleColorGradient = () => {
         height: 400,
       }}
     />
+  );
+};
+
+enum ServicesStatus {
+  Connected,
+  Cached,
+  Unavailable,
+}
+
+const ServiceStatus = () => {
+  const servicesLoading = useServicesLoadingStore((state) => state.value);
+
+  const loadServices = getServiceLoader();
+
+  const servicesCached = [
+    useTeamScoutersStore.getState(),
+    useScouterScheduleStore.getState(),
+    useTournamentsStore.getState(),
+  ];
+
+  const serviceCacheTimes = servicesCached.map((item) => item.timeStamp);
+
+  const serviceError = useServiceErrorStore((state) => state.value);
+
+  let status = ServicesStatus.Connected;
+
+  if (serviceError) {
+    status = ServicesStatus.Cached;
+  }
+
+  if (!servicesCached.some((item) => item !== null)) {
+    status = ServicesStatus.Unavailable;
+  }
+
+  return (
+    <Pressable
+      onPress={loadServices}
+      style={{
+        alignItems: "center",
+        flexDirection: "row",
+        backgroundColor: colors.secondaryContainer.default,
+        paddingRight: 14,
+        paddingLeft: servicesLoading ? 8 : 14,
+        paddingVertical: 6,
+        borderRadius: 50,
+        borderColor: colors.gray.default,
+        borderWidth: 2,
+        overflow: "hidden",
+      }}
+    >
+      {servicesLoading ? (
+        <ActivityIndicator />
+      ) : (
+        <View
+          style={{
+            width: 7,
+            height: 7,
+            borderRadius: 3.5,
+            backgroundColor: {
+              [ServicesStatus.Connected]: "#44ca6c",
+              [ServicesStatus.Cached]: "#f5c518",
+              [ServicesStatus.Unavailable]: colors.danger.default,
+            }[status],
+          }}
+        />
+      )}
+      <View style={{ width: servicesLoading ? 2 : 9 }} />
+      {status === ServicesStatus.Connected && (
+        <BodyMedium>Connected</BodyMedium>
+      )}
+
+      {status === ServicesStatus.Cached && (
+        <BodyMedium>
+          Updated{" "}
+          <TimeAgo
+            date={
+              serviceCacheTimes.reduce((acc, curr) => {
+                if (curr && curr.getTime() < acc!.getTime()) {
+                  return curr;
+                } else {
+                  return acc;
+                }
+              }, new Date()) ?? 0
+            }
+          />
+        </BodyMedium>
+      )}
+
+      {status === ServicesStatus.Unavailable && (
+        <BodyMedium color={colors.danger.default}>Unavailable</BodyMedium>
+      )}
+    </Pressable>
   );
 };
