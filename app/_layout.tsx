@@ -63,7 +63,7 @@ export default function Layout() {
     console.log({ key }, { result });
     if (result !== null) {
       let data;
-      if (key === "team-code") {
+      if (key === "team-code" || key === "tournament") {
         data = result;
       } else {
         data = JSON.parse(result);
