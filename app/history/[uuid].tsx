@@ -4,11 +4,6 @@ import { IconButton } from "../../lib/components/IconButton";
 import { NavBar } from "../../lib/components/NavBar";
 import { Suspense, useMemo } from "react";
 import { ActivityIndicator, View } from "react-native";
-import { useAtomValue } from "jotai";
-import {
-  historyAtom,
-  useSetMatchUploaded,
-} from "../../lib/storage/historyAtom";
 import {
   MatchIdentityLocalizationFormat,
   localizeMatchIdentity,
@@ -17,6 +12,8 @@ import { ScoutReportCode } from "../../lib/collection/ui/ScoutReportCode";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Button from "../../lib/components/Button";
 import { uploadReport } from "../../lib/lovatAPI/uploadReport";
+import { useHistoryStore } from "../../lib/storage/historyStore";
+import React from "react";
 
 export default function HistoryDetails() {
   return (
@@ -36,13 +33,12 @@ export default function HistoryDetails() {
 
 const Details = () => {
   const params = useLocalSearchParams();
-  const history = useAtomValue(historyAtom);
+  const history = useHistoryStore((state) => state.history);
+  const setMatchUploaded = useHistoryStore((state) => state.setMatchUploaded);
 
   const match = useMemo(() => {
     return history.find((match) => match.scoutReport.uuid === params.uuid);
   }, [history, params.uuid]);
-
-  const setMatchUploaded = useSetMatchUploaded();
 
   return (
     <>

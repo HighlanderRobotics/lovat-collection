@@ -1,37 +1,11 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Redirect, Stack } from "expo-router";
-import { useMemo, useState } from "react";
+import React from "react";
 import { Text } from "react-native";
+import { useOnboardingCompleteStore } from "../lib/storage/userStores";
 
 export default function Index() {
-  // Based on "onboarding-complete" key in AsyncStorage, redirect to onboarding or home page
-  const [onboardingComplete, setOnboardingComplete] = useState<boolean | null>(
-    null,
-  );
-
-  useMemo(async () => {
-    const onboardingComplete = await AsyncStorage.getItem(
-      "onboarding-complete",
-    );
-    setOnboardingComplete(onboardingComplete === "true");
-  }, []);
-
-  // if (onboardingComplete === null) {
-  //     return <>
-  //         <Stack.Screen
-  //             options={{
-  //                 animation: "fade",
-  //             }}
-  //         />
-  //         <Text>
-  //             Loading...
-  //         </Text>;
-  //     </>
-
-  //     // return <Text>Loading...</Text>;
-  // }
-
-  // return <Redirect href={onboardingComplete ? '/home' : '/onboarding'} />;
+  const onboardingComplete = useOnboardingCompleteStore((state) => state.value);
+  // Based on "onboardingCompleteStore" key in AsyncStorage accesed by zustand, redirect to onboarding or home page
 
   return (
     <>

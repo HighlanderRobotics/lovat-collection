@@ -1,74 +1,96 @@
-import { createContext } from "react";
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
+import { GenericStore, storage } from "./storage/zustandStorage";
 import {
-  getLocalTournaments,
-  getTournamentsCached,
-} from "./lovatAPI/getTournaments";
-import {
-  getLocalTeamScouters,
-  getTeamScoutersCached,
-} from "./lovatAPI/getTeamScouters";
-import { LocalCache } from "./localCache";
-import {
+  getScouterSchedule,
   ScouterSchedule,
-  getCurrentScouterScheduleCached,
-  getLocalScouterSchedule,
-} from "./storage/scouterSchedules";
-import { atom } from "jotai";
-import { getTournament } from "./storage/getTournament";
-import { Tournament } from "./models/tournament";
+} from "./lovatAPI/getScouterSchedule";
 import { Scouter } from "./models/scouter";
+import { getTeamScouters } from "./lovatAPI/getTeamScouters";
+import { getTournaments, Tournament } from "./lovatAPI/getTournaments";
 
-export type BareServiceValues = {
-  tournaments: Tournament[];
-  teamScouters: Scouter[];
-  scouterSchedule: ScouterSchedule;
-};
+export function getServiceLoader() {
+  const fetchScouterSchedule =
+    useScouterScheduleStore.getInitialState().fetchData;
+  const fetchTeamScouters = useTeamScoutersStore.getInitialState().fetchData;
+  const fetchTournaments = useTournamentsStore.getInitialState().fetchData;
+  const setServicesLoading = useServicesLoadingStore.getInitialState().setValue;
+  const setServiceError = useServiceErrorStore.getInitialState().setValue;
 
-export type ServiceValues = {
-  [key in keyof BareServiceValues]: LocalCache<BareServiceValues[key]> | null;
-};
+  return async () => {
+    let error: string | null = null;
+    try {
+      setServicesLoading(true);
+      await fetchTournaments();
+      await fetchTeamScouters();
+      await fetchScouterSchedule();
+    } catch (e) {
+      console.error(e);
+      error = JSON.stringify(e);
+    } finally {
+      console.log("Fetch successful");
+      setServicesLoading(false);
+    }
+    setServiceError(error);
+  };
+}
 
-export const ServicesContext = createContext<ServiceValues>({
-  tournaments: null,
-  teamScouters: null,
-  scouterSchedule: null,
-});
+export const useServicesLoadingStore = create<GenericStore<boolean>>((set) => ({
+  value: false,
+  setValue: (value) => set({ value: value }),
+}));
 
-export const LoadServicesContext = createContext<() => Promise<void>>(
-  async () => {},
+export const useServiceErrorStore = create<GenericStore<string | null>>(
+  (set) => ({
+    value: null,
+    setValue: (value) => set({ value }),
+  }),
 );
 
-export const servicesLoadingAtom = atom(false);
-
-type Service<S extends keyof ServiceValues> = {
-  id: S;
-  localizedDescription: string;
-  get: () => Promise<LocalCache<BareServiceValues[S]>>;
-  getLocal: () => Promise<ServiceValues[S]>;
+type ServiceStore<T> = {
+  data: T;
+  timeStamp: Date | null;
+  fetchData: () => Promise<void>;
 };
 
-export const services = [
-  {
-    id: "tournaments",
-    localizedDescription: "Tournaments",
-    get: getTournamentsCached,
-    getLocal: getLocalTournaments,
-  },
-  {
-    id: "teamScouters",
-    localizedDescription: "Scouters",
-    get: getTeamScoutersCached,
-    getLocal: getLocalTeamScouters,
-  },
-  {
-    id: "scouterSchedule",
-    localizedDescription: "Scouter Schedule",
-    get: getCurrentScouterScheduleCached,
-    getLocal: async () => {
-      const tournamentKey = (await getTournament())?.key;
-      if (!tournamentKey) return null;
+export function createGenericServiceStore<T>(
+  fetchFn: () => Promise<T>,
+  name: string,
+) {
+  return create(
+    persist<ServiceStore<T | null>>(
+      (set) => ({
+        data: null,
+        timeStamp: null,
+        fetchData: async () => {
+          const data = await fetchFn();
+          const timeStamp = new Date();
+          set({
+            data: data,
+            timeStamp: timeStamp,
+          });
+        },
+      }),
+      {
+        name: name,
+        storage: storage,
+      },
+    ),
+  );
+}
 
-      return getLocalScouterSchedule(tournamentKey);
-    },
-  },
-] satisfies Service<keyof ServiceValues>[];
+export const useScouterScheduleStore =
+  createGenericServiceStore<ScouterSchedule>(
+    getScouterSchedule,
+    "scouterScheduleStore",
+  );
+
+export const useTeamScoutersStore = createGenericServiceStore<Scouter[]>(
+  getTeamScouters,
+  "teamScoutersStore",
+);
+
+export const useTournamentsStore = createGenericServiceStore<Tournament[]>(
+  getTournaments,
+  "tournamentsListStore",
+);

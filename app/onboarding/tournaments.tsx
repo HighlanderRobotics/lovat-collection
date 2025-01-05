@@ -3,9 +3,6 @@ import { View } from "react-native";
 import BodyMedium from "../../lib/components/text/BodyMedium";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { CommonActions } from "@react-navigation/native";
-import { atom, useAtomValue } from "jotai";
-import { raceTournamentsCached } from "../../lib/lovatAPI/getTournaments";
-import { useSetTournament } from "../../lib/storage/getTournament";
 import { Suspense, useMemo, useState } from "react";
 import { ActivityIndicator } from "react-native";
 import Heading1Small from "../../lib/components/text/Heading1Small";
@@ -16,12 +13,20 @@ import { colors } from "../../lib/colors";
 import { NavBar } from "../../lib/components/NavBar";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Tournament } from "../../lib/models/tournament";
+import { Tournament } from "../../lib/lovatAPI/getTournaments";
+import {
+  useOnboardingCompleteStore,
+  useTournamentStore,
+} from "../../lib/storage/userStores";
+import React from "react";
+import { useTournamentsStore } from "../../lib/services";
 
 export default function OnboardingTournaments() {
   const [filter, setFilter] = useState("");
-
+  const fetchTournaments = useTournamentsStore((state) => state.fetchData);
+  useMemo(() => {
+    fetchTournaments();
+  }, []);
   return (
     <>
       <NavBar
@@ -67,16 +72,11 @@ export default function OnboardingTournaments() {
   );
 }
 
-const tournamentsAtom = atom(raceTournamentsCached);
-
 const TournamentSelector = ({ filter }: { filter: string }) => {
-  const tournamentsCache = useAtomValue(tournamentsAtom);
-
-  const tournaments = useMemo(() => {
-    return tournamentsCache?.data ?? [];
-  }, [tournamentsCache]);
+  const tournaments = useTournamentsStore((state) => state.data);
 
   const filteredTournaments = useMemo(() => {
+    if (!tournaments) return [];
     if (!filter) return tournaments;
     return tournaments.filter((tournament) => {
       return `${tournament.date.split("-")[0]} ${tournament.name}`
@@ -101,7 +101,10 @@ const TournamentSelector = ({ filter }: { filter: string }) => {
 };
 
 const TournamentItem = ({ tournament }: { tournament: Tournament }) => {
-  const selectTournament = useSetTournament();
+  const selectTournament = useTournamentStore((state) => state.setValue);
+  const setOnboardingComplete = useOnboardingCompleteStore(
+    (state) => state.setValue,
+  );
   const navigation = useNavigation();
 
   return (
@@ -109,7 +112,7 @@ const TournamentItem = ({ tournament }: { tournament: Tournament }) => {
       key={tournament.key}
       onPress={async () => {
         selectTournament(tournament);
-        await AsyncStorage.setItem("onboarding-complete", "true");
+        setOnboardingComplete(true);
         navigation.dispatch(
           CommonActions.reset({
             routes: [{ key: "index", name: "index" }],

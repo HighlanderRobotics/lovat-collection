@@ -9,18 +9,44 @@ import BodyMedium from "../../lib/components/text/BodyMedium";
 import Button from "../../lib/components/Button";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { CommonActions } from "@react-navigation/native";
-import { useSetTournament } from "../../lib/storage/getTournament";
+import React from "react";
+import {
+  useFieldOrientationStore,
+  useOnboardingCompleteStore,
+  useQrCodeSizeStore,
+  useScouterStore,
+  useTeamStore,
+  useTournamentStore,
+  useTrainingModeStore,
+} from "../../lib/storage/userStores";
+import { useHistoryStore } from "../../lib/storage/historyStore";
+import {
+  useTeamScoutersStore,
+  useTournamentsStore,
+  useScouterScheduleStore,
+} from "../../lib/services";
 
 export default function Reset() {
   const navigation = useNavigation();
 
-  const setTournament = useSetTournament();
-
   const reset = async () => {
     console.log("resetting");
-    await setTournament(null);
+    useTeamStore.setState(useTeamStore.getInitialState());
+    useOnboardingCompleteStore.setState(
+      useOnboardingCompleteStore.getInitialState(),
+    );
+    useScouterStore.setState(useScouterStore.getInitialState());
+    useTournamentStore.setState(useTournamentStore.getInitialState());
+    useTrainingModeStore.setState(useTrainingModeStore.getInitialState());
+    useQrCodeSizeStore.setState(useQrCodeSizeStore.getInitialState());
+    useFieldOrientationStore.setState(
+      useFieldOrientationStore.getInitialState(),
+    );
+    useHistoryStore.setState(useHistoryStore.getInitialState());
+    useTeamScoutersStore.setState(useTeamScoutersStore.getInitialState());
+    useTournamentsStore.setState(useTournamentsStore.getInitialState());
+    useScouterScheduleStore.setState(useScouterScheduleStore.getInitialState());
     await AsyncStorage.clear();
-
     navigation.dispatch(
       CommonActions.reset({
         routes: [{ key: "index", name: "index" }],

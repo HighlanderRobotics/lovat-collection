@@ -1,13 +1,16 @@
 import { ScoutReportMeta } from "../models/ScoutReportMeta";
-import { matchTypes } from "../models/match";
-import { DriverAbility, driverAbilityDescriptions } from "./DriverAbility";
-import { HighNote, highNoteDescriptions } from "./HighNote";
+import { DriverAbility } from "./DriverAbility";
+import { HighNote } from "./HighNote";
 import { MatchEvent } from "./MatchEvent";
-import { StartingPosition, matchEventPositions } from "./MatchEventPosition";
+import {
+  GroundNotePosition,
+  MatchEventPosition,
+  StartingPosition,
+} from "./MatchEventPosition";
 import { MatchEventType } from "./MatchEventType";
-import { PickUp, pickUpDescriptions } from "./PickUp";
-import { ScoutReport, ScoutReportEvent } from "./ScoutReport";
-import { StageResult, stageResultDescriptions } from "./StageResult";
+import { PickUp } from "./PickUp";
+import { ScoutReport } from "./ScoutReport";
+import { StageResult } from "./StageResult";
 
 export enum GamePhase {
   Auto,
@@ -22,8 +25,8 @@ export enum RobotRole {
 }
 
 export type ReportState = {
-  uuid: string;
-  meta: ScoutReportMeta;
+  uuid?: string;
+  meta?: ScoutReportMeta;
   events: MatchEvent[];
   startTimestamp?: Date;
   startPosition?: StartingPosition;
@@ -35,54 +38,29 @@ export type ReportState = {
   highNote: HighNote;
   pickUp: PickUp;
   notes: string;
-};
+  scoutMatch: (meta: ScoutReportMeta) => void;
+  initializeMatchTimestamp: () => void;
 
-export function exportScoutReport(reportState: ReportState): ScoutReport {
-  return {
-    uuid: reportState.uuid,
-    tournamentKey: reportState.meta.matchIdentity.tournamentKey,
-    matchType: matchTypes.find(
-      (matchType) =>
-        matchType.type === reportState.meta.matchIdentity.matchType,
-    )!.num,
-    matchNumber: reportState.meta.matchIdentity.matchNumber,
-    startTime: reportState.startTimestamp?.getTime() ?? 0,
-    notes: reportState.notes,
-    robotRole: reportState.robotRole,
-    stage: stageResultDescriptions[reportState.stageResult].num,
-    highNote: highNoteDescriptions[reportState.highNote].num,
-    pickUp: pickUpDescriptions[reportState.pickUp].num,
-    driverAbility:
-      driverAbilityDescriptions[reportState.driverAbility].numericalRating,
-    scouterUuid: reportState.meta.scouterUUID,
-    teamNumber: reportState.meta.teamNumber,
-    events: [
-      ...(reportState.startPiece
-        ? [
-            [
-              0,
-              MatchEventType.PickupNote,
-              matchEventPositions[reportState.startPosition!].num,
-            ] as ScoutReportEvent,
-          ]
-        : []),
-      ...(reportState.startPosition
-        ? [
-            [
-              0,
-              MatchEventType.StartingPosition,
-              matchEventPositions[reportState.startPosition].num,
-            ] as ScoutReportEvent,
-          ]
-        : []),
-      ...reportState.events.map(
-        (event) =>
-          [
-            (event.timestamp - reportState.startTimestamp!.getTime()) / 1000,
-            event.type,
-            matchEventPositions[event.position].num,
-          ] as ScoutReportEvent,
-      ),
-    ],
-  };
-}
+  setStartPosition: (value: StartingPosition) => void;
+  setStartPiece: (value: boolean) => void;
+  setGamePhase: (value: GamePhase) => void;
+  setRobotRole: (value: RobotRole) => void;
+  setDriverAbility: (value: DriverAbility) => void;
+  setStageResult: (value: StageResult) => void;
+  setHighNote: (value: HighNote) => void;
+  setPickUp: (value: PickUp) => void;
+  setNotes: (value: string) => void;
+
+  getRemainingGroundNoteLocations: () => GroundNotePosition[] | null;
+  getIsAmplified: () => boolean;
+  getHasNote: () => boolean;
+
+  addEvent: (event: {
+    type: MatchEventType;
+    position?: MatchEventPosition;
+  }) => void;
+  undoEvent: () => void;
+
+  exportScoutReport: () => ScoutReport | null;
+  reset: () => void;
+};

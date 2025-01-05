@@ -5,8 +5,8 @@ import { ScoutReport } from "../ScoutReport";
 import QRCode from "qrcode";
 import { SvgXml } from "react-native-svg";
 import SwiperFlatList from "react-native-swiper-flatlist";
-import { useAtomValue } from "jotai";
-import { qrCodeSizeAtom } from "../../../app/settings/qrcode-size";
+import { useQrCodeSizeStore } from "../../storage/userStores";
+import React from "react";
 
 type ReportChunk = {
   index: number;
@@ -66,7 +66,7 @@ export const ScoutReportCode = ({
 }: {
   scoutReport: ScoutReport;
 }) => {
-  const maxCodeLength = useAtomValue(qrCodeSizeAtom);
+  const maxCodeLength = useQrCodeSizeStore((state) => state.value);
 
   const chunks = splitScoutReportIntoCodes(scoutReport, maxCodeLength);
   const showPagination = chunks.length > 1;

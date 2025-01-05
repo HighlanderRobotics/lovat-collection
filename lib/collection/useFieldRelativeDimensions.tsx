@@ -1,15 +1,17 @@
 import React from "react";
-import { reportStateAtom } from "./reportStateAtom";
-import { useAtomValue } from "jotai";
 import {
   FieldOrientation,
-  fieldOrientationAtom,
-} from "../models/FieldOrientation";
+  useFieldOrientationStore,
+} from "../storage/userStores";
 import { AllianceColor } from "../models/AllianceColor";
+import { useReportStateStore } from "./reportStateStore";
 
 export function useFieldRelativeDimensions<T>(dimensions: [T, T, T, T]) {
-  const reportState = useAtomValue(reportStateAtom);
-  const fieldOrientation = useAtomValue(fieldOrientationAtom);
+  const reportState = useReportStateStore((state) => state);
+  const fieldOrientation = useFieldOrientationStore((state) => state.value);
+
+  if (!reportState.meta) return [null, null, null, null];
+
   const allianceColor = reportState?.meta.allianceColor;
 
   const [top, right, bottom, left] = dimensions;

@@ -12,7 +12,7 @@ type UnkeyedButtonGroupButton<T> = {
 
 type KeyedButtonGroupButton<T> = UnkeyedButtonGroupButton<T> & { key: Key };
 
-type ButtonGroupButton<T> =
+export type ButtonGroupButton<T> =
   | (T extends Key ? UnkeyedButtonGroupButton<T> : KeyedButtonGroupButton<T>)
   | KeyedButtonGroupButton<T>;
 

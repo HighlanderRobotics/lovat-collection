@@ -1,9 +1,4 @@
-import { atom, useAtomValue } from "jotai";
-import { raceTournamentsCached } from "../../lib/lovatAPI/getTournaments";
-import {
-  tournamentAtom,
-  useSetTournament,
-} from "../../lib/storage/getTournament";
+import { useTournamentStore } from "../../lib/storage/userStores";
 import { Suspense, useMemo, useState } from "react";
 import { ActivityIndicator } from "react-native";
 import Heading1Small from "../../lib/components/text/Heading1Small";
@@ -18,9 +13,9 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { Icon } from "../../lib/components/Icon";
 import BodyMedium from "../../lib/components/text/BodyMedium";
-import { Tournament } from "../../lib/models/tournament";
-
-const tournamentsAtom = atom(raceTournamentsCached);
+import { Tournament } from "../../lib/lovatAPI/getTournaments";
+import React from "react";
+import { useTournamentsStore, getServiceLoader } from "../../lib/services";
 
 export default function TournamentPage() {
   const [filter, setFilter] = useState("");
@@ -81,13 +76,10 @@ export default function TournamentPage() {
 }
 
 const TournamentSelector = ({ filter }: { filter: string }) => {
-  const tournamentsCache = useAtomValue(tournamentsAtom);
-
-  const tournaments = useMemo(() => {
-    return tournamentsCache?.data ?? [];
-  }, [tournamentsCache]);
+  const tournaments = useTournamentsStore((state) => state.data);
 
   const filteredTournaments = useMemo(() => {
+    if (!tournaments) return [];
     if (!filter) return tournaments;
     return tournaments.filter((tournament) => {
       return `${tournament.date.split("-")[0]} ${tournament.name}`
@@ -112,13 +104,15 @@ const TournamentSelector = ({ filter }: { filter: string }) => {
 };
 
 const TournamentItem = ({ tournament }: { tournament: Tournament }) => {
-  const selectTournament = useSetTournament();
+  const selectTournament = useTournamentStore((state) => state.setValue);
+  const loadServices = getServiceLoader();
 
   return (
     <TouchableOpacity
       key={tournament.key}
       onPress={() => {
         selectTournament(tournament);
+        loadServices();
       }}
       style={{
         flexDirection: "row",
@@ -147,7 +141,7 @@ const TournamentItem = ({ tournament }: { tournament: Tournament }) => {
 };
 
 const SelectedIndicator = ({ tournament }: { tournament: Tournament }) => {
-  const selectedTournament = useAtomValue(tournamentAtom);
+  const selectedTournament = useTournamentStore((state) => state.value);
 
   if (selectedTournament?.key === tournament.key) {
     return <Icon name="check" color={colors.onBackground.default} />;

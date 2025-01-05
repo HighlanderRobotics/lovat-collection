@@ -1,11 +1,11 @@
-import { useAtom } from "jotai";
-import { reportStateAtom } from "../../reportStateAtom";
+import { useReportStateStore } from "../../reportStateStore";
 import { TouchableOpacity } from "react-native";
 import { MatchEventPosition } from "../../MatchEventPosition";
 import { FieldElement } from "../FieldElement";
+import React from "react";
 
 export const PreMatchActions = () => {
-  const [reportState, setReportState] = useAtom(reportStateAtom);
+  const reportState = useReportStateStore();
 
   return (
     <>
@@ -16,17 +16,14 @@ export const PreMatchActions = () => {
             width: "100%",
             backgroundColor: "#e0e0e0",
             opacity:
-              reportState?.startPosition === MatchEventPosition.WingNearAmp
+              reportState.startPosition === MatchEventPosition.WingNearAmp
                 ? 0.8
                 : 0.3,
             borderRadius: 7,
           }}
           activeOpacity={0.2}
           onPress={() => {
-            setReportState({
-              ...reportState!,
-              startPosition: MatchEventPosition.WingNearAmp,
-            });
+            reportState.setStartPosition(MatchEventPosition.WingNearAmp);
           }}
         />
       </FieldElement>
@@ -46,10 +43,7 @@ export const PreMatchActions = () => {
           }}
           activeOpacity={0.2}
           onPress={() => {
-            setReportState({
-              ...reportState!,
-              startPosition: MatchEventPosition.WingFrontOfSpeaker,
-            });
+            reportState.setStartPosition(MatchEventPosition.WingFrontOfSpeaker);
           }}
         />
       </FieldElement>
@@ -68,10 +62,7 @@ export const PreMatchActions = () => {
           }}
           activeOpacity={0.2}
           onPress={() => {
-            setReportState({
-              ...reportState!,
-              startPosition: MatchEventPosition.WingCenter,
-            });
+            reportState.setStartPosition(MatchEventPosition.WingCenter);
           }}
         />
       </FieldElement>
@@ -90,10 +81,7 @@ export const PreMatchActions = () => {
           }}
           activeOpacity={0.2}
           onPress={() => {
-            setReportState({
-              ...reportState!,
-              startPosition: MatchEventPosition.WingNearSource,
-            });
+            reportState.setStartPosition(MatchEventPosition.WingNearSource);
           }}
         />
       </FieldElement>

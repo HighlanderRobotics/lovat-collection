@@ -11,49 +11,38 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import TitleMedium from "../../lib/components/text/TitleMedium";
 import TextField from "../../lib/components/TextField";
 import { useEffect, useState } from "react";
-import { getTeamScouters } from "../../lib/lovatAPI/getTeamScouters";
 import { colors } from "../../lib/colors";
 import { addScouter } from "../../lib/lovatAPI/addScouter";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
 import { z } from "zod";
 import { Scouter } from "../../lib/models/scouter";
+import { useTeamScoutersStore } from "../../lib/services";
+import { useScouterStore, useTeamStore } from "../../lib/storage/userStores";
 
 export default function Name() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [scouters, setScouters] = useState<Scouter[] | null>(null);
-
+  const scouters = useTeamScoutersStore((state) => state.data);
+  const fetchScouters = useTeamScoutersStore((state) => state.fetchData);
+  const setScouter = useScouterStore((state) => state.setValue);
   const [fieldText, setFieldText] = useState("");
 
   useEffect(() => {
-    const fetchScouters = async () => {
-      try {
-        const scouters = await getTeamScouters();
-        setScouters(scouters);
-      } catch (e) {
-        let message;
-        try {
-          message = z.object({ message: z.string() }).parse(e).message;
-        } catch {
-          message = "An unknown error occurred";
-        }
-
-        setError(message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchScouters();
   }, []);
 
-  const submitScouter = async (scouter: Scouter) => {
+  useEffect(() => {
+    if (scouters) {
+      setLoading(false);
+    }
+  }, [scouters]);
+
+  const submitScouter = (scouter: Scouter) => {
     setLoading(true);
     setError(null);
 
     try {
-      await AsyncStorage.setItem("scouter", JSON.stringify(scouter));
+      setScouter(scouter);
       router.push("/onboarding/tournaments");
     } catch (e) {
       let message;
@@ -127,6 +116,7 @@ const NewScouterPrompt = ({
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const teamNumber = useTeamStore((state) => state.number);
 
   const onPress = async () => {
     if (loading) return;
@@ -135,7 +125,7 @@ const NewScouterPrompt = ({
     setError(null);
 
     try {
-      const scouter = await addScouter(name);
+      const scouter = await addScouter(name, teamNumber!);
 
       onSubmit(scouter);
     } catch (e) {
