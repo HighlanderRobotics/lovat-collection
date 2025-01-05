@@ -81,9 +81,6 @@ export default function TournamentPage() {
 
 const TournamentSelector = ({ filter }: { filter: string }) => {
   const tournaments = useTournamentsStore((state) => state.data);
-  const fetchScouterSchedule = useScouterScheduleStore(
-    (state) => state.fetchData,
-  );
 
   const filteredTournaments = useMemo(() => {
     if (!tournaments) return [];
@@ -104,22 +101,15 @@ const TournamentSelector = ({ filter }: { filter: string }) => {
       }}
     >
       {filteredTournaments.map((tournament) => (
-        <TournamentItem
-          key={tournament.key}
-          tournament={tournament}
-        />
+        <TournamentItem key={tournament.key} tournament={tournament} />
       ))}
     </View>
   );
 };
 
-const TournamentItem = ({
-  tournament,
-}: {
-  tournament: Tournament;
-}) => {
+const TournamentItem = ({ tournament }: { tournament: Tournament }) => {
   const selectTournament = useTournamentStore((state) => state.setValue);
-  const loadServices = getServiceLoader()
+  const loadServices = getServiceLoader();
 
   return (
     <TouchableOpacity

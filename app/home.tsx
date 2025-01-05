@@ -68,7 +68,7 @@ export default function Home() {
       loadServices();
     }, []),
   );
-  
+
   useEffect(() => {
     if (!reportState.meta) return;
 
