@@ -60,7 +60,12 @@ export default function Layout() {
     const result = await AsyncStorage.getItem(key)
     console.log({key}, {result})
     if (result !== null) {
-      const data = JSON.parse(result)
+      let data
+      if (key === "team-code") {
+        data = result
+      } else {
+        data = JSON.parse(result)
+      }
       const migrationFunction = storageMigratorsByLegacyKey[key]
       migrationFunction(data)
       AsyncStorage.removeItem(key)
