@@ -73,7 +73,7 @@ const storageMigratorsByLegacyKey: Record<string, (value: any) => void> = {
 export default function Layout() {
   Object.keys(storageMigratorsByLegacyKey).forEach(async (key) => {
     const result = await AsyncStorage.getItem(key);
-    console.log({ key }, { result });
+
     if (result !== null) {
       let data;
       if (key === "team-code" || key === "tournament") {
