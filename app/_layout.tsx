@@ -48,16 +48,16 @@ const storageMigratorsByLegacyKey: Record<string, (value: any) => void> = {
   tournament: (value: string) => {
     (async () => {
       const setTournament = useTournamentStore.getState().setValue;
-      await useTournamentsStore.getState().fetchData()
-      const tournaments = useTournamentsStore.getState().data
+      await useTournamentsStore.getState().fetchData();
+      const tournaments = useTournamentsStore.getState().data;
       if (!tournaments) {
-        return
+        return;
       }
-      const tournament = tournaments.find((item) => item.key === value)
+      const tournament = tournaments.find((item) => item.key === value);
       if (tournament) {
-        setTournament(tournament)
+        setTournament(tournament);
       }
-    })
+    })();
   },
   trainingMode: useTrainingModeStore.getState().setValue,
   qrCodeSize: useQrCodeSizeStore.getState().setValue,
