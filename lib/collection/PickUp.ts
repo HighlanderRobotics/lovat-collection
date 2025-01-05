@@ -1,7 +1,7 @@
 export enum PickUp {
-  Ground = "GROUND",
-  Chute = "CHUTE",
-  Both = "BOTH",
+  Ground,
+  Chute,
+  Both,
 }
 
 export type PickUpDescription = {

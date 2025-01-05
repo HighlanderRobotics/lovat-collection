@@ -13,8 +13,7 @@ import {
 import { create } from "zustand";
 import { v4 } from "uuid";
 import { PickUp, pickUpDescriptions } from "./PickUp";
-import { HighNote, highNoteDescriptions } from "./HighNote";
-import { StageResult, stageResultDescriptions } from "./StageResult";
+import { CageResult, cageResultDescriptions } from "./CageResult";
 import { DriverAbility, driverAbilityDescriptions } from "./DriverAbility";
 import { MatchEvent } from "./MatchEvent";
 import { matchTypes } from "../models/match";
@@ -26,8 +25,7 @@ export const useReportStateStore = create<ReportState>((set, get) => ({
   gamePhase: GamePhase.Auto,
   robotRole: RobotRole.Offense,
   driverAbility: DriverAbility.Average,
-  stageResult: StageResult.Nothing,
-  highNote: HighNote.None,
+  cageResult: CageResult.NotAttempted,
   pickUp: PickUp.Ground,
   notes: "",
 
@@ -39,8 +37,7 @@ export const useReportStateStore = create<ReportState>((set, get) => ({
       gamePhase: GamePhase.Auto,
       robotRole: RobotRole.Offense,
       driverAbility: DriverAbility.Average,
-      stageResult: StageResult.Nothing,
-      highNote: HighNote.None,
+      cageResult: CageResult.NotAttempted,
       pickUp: PickUp.Ground,
       notes: "",
       uuid: v4(),
@@ -54,8 +51,7 @@ export const useReportStateStore = create<ReportState>((set, get) => ({
   setGamePhase: (value) => set({ gamePhase: value }),
   setRobotRole: (value) => set({ robotRole: value }),
   setDriverAbility: (value) => set({ driverAbility: value }),
-  setStageResult: (value) => set({ stageResult: value }),
-  setHighNote: (value) => set({ highNote: value }),
+  setCageResult: (value) => set({ cageResult: value }),
   setPickUp: (value) => set({ pickUp: value }),
   setNotes: (value) => set({ notes: value }),
 
@@ -179,8 +175,7 @@ export const useReportStateStore = create<ReportState>((set, get) => ({
         startTime: reportState.startTimestamp?.getTime() ?? 0,
         notes: reportState.notes,
         robotRole: reportState.robotRole,
-        stage: stageResultDescriptions[reportState.stageResult].num,
-        highNote: highNoteDescriptions[reportState.highNote].num,
+        cage: cageResultDescriptions[reportState.cageResult].num,
         pickUp: pickUpDescriptions[reportState.pickUp].num,
         driverAbility:
           driverAbilityDescriptions[reportState.driverAbility].numericalRating,
@@ -230,8 +225,7 @@ export const useReportStateStore = create<ReportState>((set, get) => ({
       gamePhase: GamePhase.Auto,
       robotRole: RobotRole.Offense,
       driverAbility: DriverAbility.Average,
-      stageResult: StageResult.Nothing,
-      highNote: HighNote.None,
+      cageResult: CageResult.NotAttempted,
       pickUp: PickUp.Ground,
       notes: "",
     }),

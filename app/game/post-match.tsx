@@ -16,9 +16,9 @@ import {
   driverAbilityDescriptions,
 } from "../../lib/collection/DriverAbility";
 import {
-  StageResult,
-  stageResultDescriptions,
-} from "../../lib/collection/StageResult";
+  CageResult,
+  cageResultDescriptions,
+} from "../../lib/collection/CageResult";
 import { HighNote, highNoteDescriptions } from "../../lib/collection/HighNote";
 import { PickUp, pickUpDescriptions } from "../../lib/collection/PickUp";
 import TextField from "../../lib/components/TextField";
@@ -92,14 +92,14 @@ export default function PostMatch() {
 
           <PostMatchSelector
             title="Stage result"
-            updateStore={reportState.setStageResult}
-            items={Object.entries(stageResultDescriptions).map(
+            updateStore={reportState.setCageResult}
+            items={Object.entries(cageResultDescriptions).map(
               ([key, value]) => ({
                 label: value.localizedDescription,
-                value: key as StageResult,
+                value: key as CageResult,
               }),
             )}
-            selected={reportState.stageResult}
+            selected={reportState.cageResult}
           />
 
           <PostMatchSelector

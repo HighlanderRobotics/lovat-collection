@@ -20,7 +20,7 @@ const EXAMPLE_SCOUT_REPORT: ScoutReport = {
   startTime: 1711817590420,
   notes: "",
   robotRole: 0,
-  stage: 1,
+  cage: 1,
   highNote: 0,
   pickUp: 2,
   driverAbility: 4,

@@ -1,6 +1,5 @@
 import { ScoutReportMeta } from "../models/ScoutReportMeta";
 import { DriverAbility } from "./DriverAbility";
-import { HighNote } from "./HighNote";
 import { MatchEvent } from "./MatchEvent";
 import {
   GroundNotePosition,
@@ -10,7 +9,7 @@ import {
 import { MatchEventType } from "./MatchEventType";
 import { PickUp } from "./PickUp";
 import { ScoutReport } from "./ScoutReport";
-import { StageResult } from "./StageResult";
+import { CageResult } from "./CageResult";
 
 export enum GamePhase {
   Auto,
@@ -34,8 +33,7 @@ export type ReportState = {
   gamePhase: GamePhase;
   robotRole: RobotRole;
   driverAbility: DriverAbility;
-  stageResult: StageResult;
-  highNote: HighNote;
+  cageResult: CageResult;
   pickUp: PickUp;
   notes: string;
   scoutMatch: (meta: ScoutReportMeta) => void;
@@ -46,8 +44,7 @@ export type ReportState = {
   setGamePhase: (value: GamePhase) => void;
   setRobotRole: (value: RobotRole) => void;
   setDriverAbility: (value: DriverAbility) => void;
-  setStageResult: (value: StageResult) => void;
-  setHighNote: (value: HighNote) => void;
+  setCageResult: (value: CageResult) => void;
   setPickUp: (value: PickUp) => void;
   setNotes: (value: string) => void;
 
