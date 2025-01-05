@@ -11,7 +11,7 @@ import {
 } from "@expo-google-fonts/heebo";
 
 import { useCallback, useEffect } from "react";
-import { getServiceLoader } from "../lib/services";
+import { getServiceLoader, useTournamentsStore } from "../lib/services";
 
 import TimeAgo from "javascript-time-ago";
 import en from "javascript-time-ago/locale/en.json";
@@ -45,7 +45,20 @@ const storageMigratorsByLegacyKey: Record<string, (value: any) => void> = {
   "team-number": useTeamStore.getState().setNumber,
   "team-code": useTeamStore.getState().setCode,
   scouter: useScouterStore.getState().setValue,
-  tournament: useTournamentStore.getState().setValue,
+  tournament: (value: string) => {
+    (async () => {
+      const setTournament = useTournamentStore.getState().setValue;
+      await useTournamentsStore.getState().fetchData()
+      const tournaments = useTournamentsStore.getState().data
+      if (!tournaments) {
+        return
+      }
+      const tournament = tournaments.find((item) => item.key === value)
+      if (tournament) {
+        setTournament(tournament)
+      }
+    })
+  },
   trainingMode: useTrainingModeStore.getState().setValue,
   qrCodeSize: useQrCodeSizeStore.getState().setValue,
   fieldOrientation: useFieldOrientationStore.getState().setValue,
