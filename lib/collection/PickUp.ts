@@ -1,7 +1,15 @@
-export enum PickUp {
-  Ground = "GROUND",
-  Chute = "CHUTE",
-  Both = "BOTH",
+export enum CoralPickUp {
+  None,
+  Ground,
+  Station,
+  Both,
+}
+
+export enum AlgaePickUp {
+  None,
+  Ground,
+  Reef,
+  Both,
 }
 
 export type PickUpDescription = {
@@ -10,21 +18,50 @@ export type PickUpDescription = {
   num: number;
 };
 
-export const pickUpDescriptions: Record<PickUp, PickUpDescription> = {
-  [PickUp.Ground]: {
-    localizedDescription: "Ground",
-    localizedLongDescription: "The robot collects notes from the ground.",
+export const coralPickUpDescriptions: Record<CoralPickUp, PickUpDescription> = {
+  [CoralPickUp.None]: {
+    localizedDescription: "None",
+    localizedLongDescription: "The robot does not collect coral.",
     num: 0,
   },
-  [PickUp.Chute]: {
-    localizedDescription: "Chute",
-    localizedLongDescription: "The robot collects notes from the chute.",
+  [CoralPickUp.Ground]: {
+    localizedDescription: "Ground",
+    localizedLongDescription: "The robot collects coral from the ground.",
     num: 1,
   },
-  [PickUp.Both]: {
+  [CoralPickUp.Station]: {
+    localizedDescription: "Station",
+    localizedLongDescription: "The robot collects coral from the station.",
+    num: 2,
+  },
+  [CoralPickUp.Both]: {
     localizedDescription: "Both",
     localizedLongDescription:
-      "The robot collects notes from both the ground and the chute.",
+      "The robot collects coral from both the ground and the station.",
+    num: 3,
+  },
+};
+
+export const algaePickUpDescriptions: Record<AlgaePickUp, PickUpDescription> = {
+  [AlgaePickUp.None]: {
+    localizedDescription: "None",
+    localizedLongDescription: "The robot does not collect algae.",
+    num: 0,
+  },
+  [AlgaePickUp.Ground]: {
+    localizedDescription: "Ground",
+    localizedLongDescription: "The robot collects algae from the ground.",
+    num: 1,
+  },
+  [AlgaePickUp.Reef]: {
+    localizedDescription: "Reef",
+    localizedLongDescription: "The robot collects algae from the reef.",
     num: 2,
+  },
+  [AlgaePickUp.Both]: {
+    localizedDescription: "Both",
+    localizedLongDescription:
+      "The robot collects algae from both the ground and the reef.",
+    num: 3,
   },
 };

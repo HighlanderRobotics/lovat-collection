@@ -5,30 +5,27 @@ import { PreMatchActions } from "./actions/PreMatchActions";
 import { GameViewTemplate } from "./GameViewTemplate";
 import { GamePhase } from "../ReportState";
 import { Checkbox } from "../../components/Checkbox";
-import { MatchEventType } from "../MatchEventType";
+// import { MatchEventType } from "../MatchEventType";
 import { HasNoteActions } from "./actions/HasNoteActions";
 import { ExitWingAction } from "./actions/ExitWingAction";
 import * as Haptics from "expo-haptics";
 import { AutoCollectPieceActions } from "./actions/AutoCollectPieceActions";
-import { Alert, TouchableOpacity, View } from "react-native";
-import { colors } from "../../colors";
-import { Icon } from "../../components/Icon";
-import { AllianceColor } from "../../models/AllianceColor";
-import { GameAction } from "./GameAction";
-import {
-  FieldOrientation,
-  useFieldOrientationStore,
-} from "../../storage/userStores";
+import { Alert } from "react-native";
+// import { colors } from "../../colors";
+// import { Icon } from "../../components/Icon";
+// import { AllianceColor } from "../../models/AllianceColor";
+// import { GameAction } from "./GameAction";
+// import {
+//   FieldOrientation,
+//   useFieldOrientationStore,
+// } from "../../storage/userStores";
 
 export function Game() {
   const reportState = useReportStateStore();
-  const isAmplified = reportState.getIsAmplified();
 
-  const addEvent = reportState.addEvent;
+  // const addEvent = reportState.addEvent;
 
   const [autoTimeout, setAutoTimeout] = useState<NodeJS.Timeout | null>(null);
-  const [amplificationTimeout, setAmplificationTimeout] =
-    useState<NodeJS.Timeout | null>(null);
 
   const setPhase = reportState.setGamePhase;
 
@@ -37,24 +34,6 @@ export function Game() {
       router.replace("/home");
     }
   }, [reportState]);
-
-  useEffect(() => {
-    if (isAmplified) {
-      setAmplificationTimeout(
-        setTimeout(() => {
-          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-          addEvent({
-            type: MatchEventType.StopAmplifying,
-          });
-        }, 10 * 1000),
-      );
-    } else {
-      if (amplificationTimeout) {
-        clearTimeout(amplificationTimeout);
-      }
-      setAmplificationTimeout(null);
-    }
-  }, [isAmplified]);
 
   useEffect(() => {
     if (
@@ -85,7 +64,6 @@ export function Game() {
   const onEnd = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     if (autoTimeout) clearTimeout(autoTimeout);
-    if (amplificationTimeout) clearTimeout(amplificationTimeout);
     router.replace("/game/post-match");
   };
   const onRestart = () => {
@@ -101,7 +79,6 @@ export function Game() {
           onPress: () => {
             reportState.reset();
             if (autoTimeout) clearTimeout(autoTimeout);
-            if (amplificationTimeout) clearTimeout(amplificationTimeout);
           },
         },
       ],
@@ -153,14 +130,14 @@ export function Game() {
       gamePhaseMessage: "Teleop",
       field: (
         <>
-          <FloatingActions feedEnabled />
-          <HasNoteActions trap />
+          {/* <FloatingActions feedEnabled /> */}
+          {/* <HasNoteActions trap /> */}
         </>
       ),
     },
     teleopNoNote: {
       gamePhaseMessage: "Teleop",
-      field: <FloatingActions pickupEnabled />,
+      field: <>{/* <FloatingActions pickupEnabled /> */}</>,
     },
     unknown: {
       gamePhaseMessage: "Problem finding phase",
@@ -168,33 +145,36 @@ export function Game() {
     },
   };
 
-  const [gameState, setGameState] = useState<GameState>(gameStates.preMatch);
+  const [
+    gameState,
+    // setGameState
+  ] = useState<GameState>(gameStates.preMatch);
 
-  if (!reportState.startTimestamp) {
-    setGameState(gameStates.preMatch);
-  } else {
-    if (reportState.gamePhase === GamePhase.Auto) {
-      if (reportState.getHasExited()) {
-        setGameState(
-          reportState.getHasNote()
-            ? gameStates.autoExitedNote
-            : gameStates.autoExitedNoNote,
-        );
-      } else {
-        setGameState(
-          reportState.getHasNote()
-            ? gameStates.autoNotExitedNote
-            : gameStates.autoNotExitedNoNote,
-        );
-      }
-    } else {
-      setGameState(
-        reportState.getHasNote()
-          ? gameStates.teleopNote
-          : gameStates.teleopNoNote,
-      );
-    }
-  }
+  // if (!reportState.startTimestamp) {
+  //   setGameState(gameStates.preMatch);
+  // } else {
+  //   if (reportState.gamePhase === GamePhase.Auto) {
+  //     if (reportState.getHasExited()) {
+  //       setGameState(
+  //         reportState.getHasNote()
+  //           ? gameStates.autoExitedNote
+  //           : gameStates.autoExitedNoNote,
+  //       );
+  //     } else {
+  //       setGameState(
+  //         reportState.getHasNote()
+  //           ? gameStates.autoNotExitedNote
+  //           : gameStates.autoNotExitedNoNote,
+  //       );
+  //     }
+  //   } else {
+  //     setGameState(
+  //       reportState.getHasNote()
+  //         ? gameStates.teleopNote
+  //         : gameStates.teleopNoNote,
+  //     );
+  //   }
+  // }
 
   return (
     <GameViewTemplate
@@ -207,150 +187,151 @@ export function Game() {
   );
 }
 
-const FloatingActions = ({
-  feedEnabled = false,
-  pickupEnabled = false,
-}: {
-  feedEnabled?: boolean;
-  pickupEnabled?: boolean;
-}) => {
-  const reportState = useReportStateStore();
-  const isAmplified = reportState.getIsAmplified();
-  const fieldOrientation = useFieldOrientationStore((state) => state.value);
+// const FloatingActions = () =>
+// {
+//   feedEnabled = false,
+//   pickupEnabled = false,
+// }: {
+//   feedEnabled?: boolean;
+//   pickupEnabled?: boolean;
+// },
+// {
+// const reportState = useReportStateStore();
+// const fieldOrientation = useFieldOrientationStore((state) => state.value);
 
-  const [defenseHighlighted, setDefenseHighlighted] = useState(false);
+// const [defenseHighlighted, setDefenseHighlighted] = useState(false);
 
-  const addEvent = reportState.addEvent;
+// const addEvent = reportState.addEvent;
 
-  return (
-    <View
-      style={{
-        position: "absolute",
-        top: 0,
-        right: 0,
-        bottom: 0,
-        left: 0,
-        flexDirection:
-          fieldOrientation === FieldOrientation.Auspicious
-            ? reportState.meta?.allianceColor === AllianceColor.Blue
-              ? "row"
-              : "row-reverse"
-            : reportState.meta?.allianceColor === AllianceColor.Blue
-              ? "row-reverse"
-              : "row",
-        padding: 4,
-        gap: 4,
-      }}
-    >
-      <View style={{ flex: 1.8 }}>
-        {pickupEnabled && (
-          <GameAction
-            color="#C1C337"
-            icon="upload"
-            iconSize={48}
-            onPress={() => {
-              addEvent({
-                type: MatchEventType.PickupNote,
-              });
-            }}
-          />
-        )}
-      </View>
+// return (
+//   <View
+//     style={{
+//       position: "absolute",
+//       top: 0,
+//       right: 0,
+//       bottom: 0,
+//       left: 0,
+//       flexDirection:
+//         fieldOrientation === FieldOrientation.Auspicious
+//           ? reportState.meta?.allianceColor === AllianceColor.Blue
+//             ? "row"
+//             : "row-reverse"
+//           : reportState.meta?.allianceColor === AllianceColor.Blue
+//             ? "row-reverse"
+//             : "row",
+//       padding: 4,
+//       gap: 4,
+//     }}
+//   >
+//     <View style={{ flex: 1.8 }}>
+//       {pickupEnabled && (
+//         <GameAction
+//           color="#C1C337"
+//           icon="upload"
+//           iconSize={48}
+//           onPress={() => {
+//             addEvent({
+//               type: MatchEventType.PickupNote
+//             });
+//           }}
+//         />
+//       )}
+//     </View>
 
-      <View style={{ flex: 1, gap: 4 }}>
-        <TouchableOpacity
-          accessibilityLabel="Amplify"
-          style={{
-            flex: 1,
-            backgroundColor: isAmplified
-              ? colors.victoryPurple.default
-              : colors.secondaryContainer.default,
-            borderRadius: 7,
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-          activeOpacity={0.9}
-          onPress={() => {
-            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-            if (isAmplified) {
-              addEvent({
-                type: MatchEventType.StopAmplifying,
-              });
-            } else {
-              addEvent({
-                type: MatchEventType.StartAmplfying,
-              });
-            }
-          }}
-        >
-          <Icon
-            name="campaign"
-            color={
-              isAmplified
-                ? colors.background.default
-                : colors.onBackground.default
-            }
-            size={40}
-          />
-        </TouchableOpacity>
+//     <View style={{ flex: 1, gap: 4 }}>
+//       <TouchableOpacity
+//         accessibilityLabel="Amplify"
+//         style={{
+//           flex: 1,
+//           backgroundColor: isAmplified
+//             ? colors.victoryPurple.default
+//             : colors.secondaryContainer.default,
+//           borderRadius: 7,
+//           alignItems: "center",
+//           justifyContent: "center",
+//         }}
+//         activeOpacity={0.9}
+//         onPress={() => {
+//           Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+//           if (isAmplified) {
+//             addEvent({
+//               type: MatchEventType.StopAmplifying,
+//             });
+//           } else {
+//             addEvent({
+//               type: MatchEventType.StartAmplfying,
+//             });
+//           }
+//         }}
+//       >
+//         <Icon
+//           name="campaign"
+//           color={
+//             isAmplified
+//               ? colors.background.default
+//               : colors.onBackground.default
+//           }
+//           size={40}
+//         />
+//       </TouchableOpacity>
 
-        <TouchableOpacity
-          accessibilityLabel="Defend"
-          style={{
-            flex: 1,
-            backgroundColor: defenseHighlighted
-              ? colors.danger.default
-              : colors.secondaryContainer.default,
-            borderRadius: 7,
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-          activeOpacity={0.9}
-          onPress={() => {
-            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-            addEvent({
-              type: MatchEventType.Defend,
-            });
+//       <TouchableOpacity
+//         accessibilityLabel="Defend"
+//         style={{
+//           flex: 1,
+//           backgroundColor: defenseHighlighted
+//             ? colors.danger.default
+//             : colors.secondaryContainer.default,
+//           borderRadius: 7,
+//           alignItems: "center",
+//           justifyContent: "center",
+//         }}
+//         activeOpacity={0.9}
+//         onPress={() => {
+//           Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+//           addEvent({
+//             type: MatchEventType.Defend,
+//           });
 
-            setDefenseHighlighted(true);
-            setTimeout(() => setDefenseHighlighted(false), 200);
-          }}
-        >
-          <Icon name="shield" color={colors.onBackground.default} size={40} />
-        </TouchableOpacity>
+//           setDefenseHighlighted(true);
+//           setTimeout(() => setDefenseHighlighted(false), 200);
+//         }}
+//       >
+//         <Icon name="shield" color={colors.onBackground.default} size={40} />
+//       </TouchableOpacity>
 
-        <View
-          style={{
-            flex: 1,
-          }}
-        >
-          {feedEnabled && (
-            <TouchableOpacity
-              accessibilityLabel="Feed note"
-              style={{
-                flex: 1,
-                backgroundColor: colors.secondaryContainer.default,
-                borderRadius: 7,
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-              activeOpacity={0.9}
-              onPress={() => {
-                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                addEvent({
-                  type: MatchEventType.FeedNote,
-                });
-              }}
-            >
-              <Icon
-                name="conveyor_belt"
-                color={colors.onBackground.default}
-                size={40}
-              />
-            </TouchableOpacity>
-          )}
-        </View>
-      </View>
-    </View>
-  );
-};
+//       <View
+//         style={{
+//           flex: 1,
+//         }}
+//       >
+//         {feedEnabled && (
+//           <TouchableOpacity
+//             accessibilityLabel="Feed note"
+//             style={{
+//               flex: 1,
+//               backgroundColor: colors.secondaryContainer.default,
+//               borderRadius: 7,
+//               alignItems: "center",
+//               justifyContent: "center",
+//             }}
+//             activeOpacity={0.9}
+//             onPress={() => {
+//               Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+//               addEvent({
+//                 type: MatchEventType.FeedNote,
+//               });
+//             }}
+//           >
+//             <Icon
+//               name="conveyor_belt"
+//               color={colors.onBackground.default}
+//               size={40}
+//             />
+//           </TouchableOpacity>
+//         )}
+//       </View>
+//     </View>
+//   </View>
+// );
+// };

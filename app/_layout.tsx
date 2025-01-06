@@ -26,7 +26,7 @@ import {
   useTournamentStore,
   useTrainingModeStore,
 } from "../lib/storage/userStores";
-import { HistoryEntry, useHistoryStore } from "../lib/storage/historyStore";
+import { HistoryEntry } from "../lib/storage/historyStore";
 
 const { UIManager } = NativeModules;
 
@@ -62,12 +62,7 @@ const storageMigratorsByLegacyKey: Record<string, (value: any) => void> = {
   trainingMode: useTrainingModeStore.getState().setValue,
   qrCodeSize: useQrCodeSizeStore.getState().setValue,
   fieldOrientation: useFieldOrientationStore.getState().setValue,
-  history: (data: HistoryEntry[]) =>
-    data.forEach((item) => {
-      useHistoryStore
-        .getState()
-        .upsertMatch(item.scoutReport, item.uploaded, item.meta);
-    }),
+  history: (data: HistoryEntry[]) => data,
 } as const;
 
 export default function Layout() {

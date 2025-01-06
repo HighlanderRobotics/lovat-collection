@@ -1,20 +1,14 @@
 import { GamePhase, ReportState, RobotRole } from "./ReportState";
+import { MatchEventType } from "./MatchEventType";
 import {
-  MatchEventType,
-  gainNoteEvents,
-  loseNoteEvents,
-} from "./MatchEventType";
-import {
-  GroundNotePosition,
+  PieceContainerContents,
   MatchEventPosition,
-  groundNotePositions,
-  matchEventPositions,
+  GroundPiecePosition,
 } from "./MatchEventPosition";
 import { create } from "zustand";
 import { v4 } from "uuid";
-import { PickUp, pickUpDescriptions } from "./PickUp";
-import { HighNote, highNoteDescriptions } from "./HighNote";
-import { StageResult, stageResultDescriptions } from "./StageResult";
+import { AlgaePickUp, CoralPickUp, coralPickUpDescriptions } from "./PickUp";
+import { BargeResult, bargeResultDescriptions } from "./BargeResult";
 import { DriverAbility, driverAbilityDescriptions } from "./DriverAbility";
 import { MatchEvent } from "./MatchEvent";
 import { matchTypes } from "../models/match";
@@ -23,12 +17,28 @@ import { ScoutReportEvent } from "./ScoutReport";
 export const useReportStateStore = create<ReportState>((set, get) => ({
   events: [],
   startPiece: false,
+  groundPieces: Object.values(GroundPiecePosition).reduce(
+    (acc, curr) => ({
+      ...acc,
+      [curr]: {
+        coral: true,
+        algae: true,
+      },
+    }),
+    {} as Record<GroundPiecePosition, PieceContainerContents>,
+  ),
+  robotPieces: {
+    coral: false,
+    algae: false,
+  },
   gamePhase: GamePhase.Auto,
   robotRole: RobotRole.Offense,
   driverAbility: DriverAbility.Average,
-  stageResult: StageResult.Nothing,
-  highNote: HighNote.None,
-  pickUp: PickUp.Ground,
+  bargeResult: BargeResult.NotAttempted,
+  coralPickUp: CoralPickUp.None,
+  algaePickUp: AlgaePickUp.None,
+  knocksAlgae: false,
+  traversesUnderCage: false,
   notes: "",
 
   scoutMatch: (meta) =>
@@ -36,12 +46,21 @@ export const useReportStateStore = create<ReportState>((set, get) => ({
       meta: meta!,
       events: [],
       startPiece: false,
+      groundPieces: Object.values(GroundPiecePosition).reduce(
+        (acc, curr) => ({
+          ...acc,
+          [curr]: {
+            coral: true,
+            algae: true,
+          },
+        }),
+        {} as Record<GroundPiecePosition, PieceContainerContents>,
+      ),
       gamePhase: GamePhase.Auto,
       robotRole: RobotRole.Offense,
       driverAbility: DriverAbility.Average,
-      stageResult: StageResult.Nothing,
-      highNote: HighNote.None,
-      pickUp: PickUp.Ground,
+      bargeResult: BargeResult.NotAttempted,
+      coralPickUp: CoralPickUp.Ground,
       notes: "",
       uuid: v4(),
     })),
@@ -52,92 +71,27 @@ export const useReportStateStore = create<ReportState>((set, get) => ({
   setStartPosition: (value) => set({ startPosition: value }),
   setStartPiece: (value) => set({ startPiece: value }),
   setGamePhase: (value) => set({ gamePhase: value }),
+  setGroundPiece: (value, pos) =>
+    set((state) => ({
+      groundPieces: {
+        ...state.groundPieces,
+        [pos]: value,
+      },
+    })),
+  setRobotPiece: (value) => set({ robotPieces: value }),
   setRobotRole: (value) => set({ robotRole: value }),
   setDriverAbility: (value) => set({ driverAbility: value }),
-  setStageResult: (value) => set({ stageResult: value }),
-  setHighNote: (value) => set({ highNote: value }),
-  setPickUp: (value) => set({ pickUp: value }),
+  setBargeResult: (value) => set({ bargeResult: value }),
+  setCoralPickUp: (value) => set({ coralPickUp: value }),
+  setAlgaePickUp: (value) => set({ algaePickUp: value }),
+  setKnocksAlgae: (value) => set({ knocksAlgae: value }),
+  setTraversesUnderCage: (value) => set({ traversesUnderCage: value }),
   setNotes: (value) => set({ notes: value }),
 
-  getRemainingGroundNoteLocations: () => {
-    const reportState = get();
-
-    if (!reportState || !reportState.events) {
-      return null;
-    }
-
-    const remainingGroundPieceLocations: GroundNotePosition[] = Object.keys(
-      groundNotePositions,
-    ) as GroundNotePosition[];
-
-    for (let i = 0; i < reportState.events.length; i++) {
-      const event = reportState.events[i];
-
-      if (
-        event.position &&
-        remainingGroundPieceLocations.includes(event.position)
-      ) {
-        remainingGroundPieceLocations.splice(
-          remainingGroundPieceLocations.indexOf(event.position),
-          1,
-        );
-      }
-    }
-    return remainingGroundPieceLocations;
-  },
-  getIsAmplified: () => {
-    const reportState = get();
-
-    if (!reportState || !reportState.events) {
-      return false;
-    }
-
-    let isAmplified = false;
-
-    for (let i = 0; i < reportState.events.length; i++) {
-      const event = reportState.events[i];
-
-      if (event.type === MatchEventType.StartAmplfying) {
-        isAmplified = true;
-      }
-
-      if (event.type === MatchEventType.StopAmplifying) {
-        isAmplified = false;
-      }
-    }
-
-    return isAmplified;
-  },
-  getHasNote: () => {
-    const reportState = get();
-    let hasNote = false;
-
-    if (!reportState || !reportState.events) {
-      return false;
-    }
-
-    if (reportState.startPiece) {
-      hasNote = true;
-    }
-
-    for (let i = 0; i < reportState.events.length; i++) {
-      const event = reportState.events[i];
-
-      if (loseNoteEvents.includes(event.type)) {
-        hasNote = false;
-      }
-
-      if (gainNoteEvents.includes(event.type)) {
-        hasNote = true;
-      }
-    }
-
-    return hasNote;
-  },
   getHasExited: () => {
     const reportState = get();
     return reportState.events.some(
-      (event) => event.type === MatchEventType.LeaveWing,
+      (event) => event.type === MatchEventType.AutoLeave,
     );
   },
 
@@ -179,9 +133,8 @@ export const useReportStateStore = create<ReportState>((set, get) => ({
         startTime: reportState.startTimestamp?.getTime() ?? 0,
         notes: reportState.notes,
         robotRole: reportState.robotRole,
-        stage: stageResultDescriptions[reportState.stageResult].num,
-        highNote: highNoteDescriptions[reportState.highNote].num,
-        pickUp: pickUpDescriptions[reportState.pickUp].num,
+        barge: bargeResultDescriptions[reportState.bargeResult].num,
+        pickUp: coralPickUpDescriptions[reportState.coralPickUp].num,
         driverAbility:
           driverAbilityDescriptions[reportState.driverAbility].numericalRating,
         scouterUuid: reportState.meta.scouterUUID,
@@ -191,8 +144,8 @@ export const useReportStateStore = create<ReportState>((set, get) => ({
             ? [
                 [
                   0,
-                  MatchEventType.PickupNote,
-                  matchEventPositions[reportState.startPosition!].num,
+                  MatchEventType.PickupCoral,
+                  reportState.startPosition,
                 ] as ScoutReportEvent,
               ]
             : []),
@@ -200,8 +153,8 @@ export const useReportStateStore = create<ReportState>((set, get) => ({
             ? [
                 [
                   0,
-                  MatchEventType.StartingPosition,
-                  matchEventPositions[reportState.startPosition].num,
+                  MatchEventType.StartPosition,
+                  reportState.startPosition,
                 ] as ScoutReportEvent,
               ]
             : []),
@@ -211,7 +164,7 @@ export const useReportStateStore = create<ReportState>((set, get) => ({
                 (event.timestamp - reportState.startTimestamp!.getTime()) /
                   1000,
                 event.type,
-                matchEventPositions[event.position].num,
+                event.position,
               ] as ScoutReportEvent,
           ),
         ],
@@ -227,12 +180,21 @@ export const useReportStateStore = create<ReportState>((set, get) => ({
       startPiece: false,
       startTimestamp: undefined,
       startPosition: undefined,
+      groundPieces: Object.values(GroundPiecePosition).reduce(
+        (acc, curr) => ({
+          ...acc,
+          [curr]: {
+            coral: true,
+            algae: true,
+          },
+        }),
+        {} as Record<GroundPiecePosition, PieceContainerContents>,
+      ),
       gamePhase: GamePhase.Auto,
       robotRole: RobotRole.Offense,
       driverAbility: DriverAbility.Average,
-      stageResult: StageResult.Nothing,
-      highNote: HighNote.None,
-      pickUp: PickUp.Ground,
+      bargeResult: BargeResult.NotAttempted,
+      coralPickUp: CoralPickUp.Ground,
       notes: "",
     }),
 }));

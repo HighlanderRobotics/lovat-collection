@@ -16,11 +16,13 @@ import {
   driverAbilityDescriptions,
 } from "../../lib/collection/DriverAbility";
 import {
-  StageResult,
-  stageResultDescriptions,
-} from "../../lib/collection/StageResult";
-import { HighNote, highNoteDescriptions } from "../../lib/collection/HighNote";
-import { PickUp, pickUpDescriptions } from "../../lib/collection/PickUp";
+  BargeResult,
+  bargeResultDescriptions,
+} from "../../lib/collection/BargeResult";
+import {
+  algaePickUpDescriptions,
+  coralPickUpDescriptions,
+} from "../../lib/collection/PickUp";
 import TextField from "../../lib/components/TextField";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { CommonActions } from "@react-navigation/native";
@@ -66,7 +68,7 @@ export default function PostMatch() {
           style={{ flex: 1, gap: 7, paddingBottom: 200, maxWidth: 550 }}
         >
           <PostMatchSelector
-            title="Robot role"
+            title="Robot Role"
             updateStore={reportState.setRobotRole}
             items={[
               { label: "Offense", value: RobotRole.Offense },
@@ -91,35 +93,63 @@ export default function PostMatch() {
           />
 
           <PostMatchSelector
-            title="Stage result"
-            updateStore={reportState.setStageResult}
-            items={Object.entries(stageResultDescriptions).map(
+            title="Endgame Barge Result"
+            updateStore={reportState.setBargeResult}
+            items={Object.entries(bargeResultDescriptions).map(
               ([key, value]) => ({
                 label: value.localizedDescription,
-                value: key as StageResult,
+                value: key as BargeResult,
               }),
             )}
-            selected={reportState.stageResult}
+            selected={reportState.bargeResult}
           />
 
           <PostMatchSelector
-            title="High Note"
-            updateStore={reportState.setHighNote}
-            items={Object.entries(highNoteDescriptions).map(([key, value]) => ({
-              label: value.localizedDescription,
-              value: key as HighNote,
-            }))}
-            selected={reportState.highNote}
+            title="Coral Pick Up"
+            updateStore={reportState.setCoralPickUp}
+            items={Object.entries(coralPickUpDescriptions).map(
+              ([key, value]) => ({
+                label: value.localizedDescription,
+                value: Number(key),
+              }),
+            )}
+            selected={reportState.coralPickUp}
           />
 
           <PostMatchSelector
-            title="Pick up"
-            updateStore={reportState.setPickUp}
-            items={Object.entries(pickUpDescriptions).map(([key, value]) => ({
-              label: value.localizedDescription,
-              value: key as PickUp,
-            }))}
-            selected={reportState.pickUp}
+            title="Algae Pick Up"
+            updateStore={reportState.setAlgaePickUp}
+            items={Object.entries(algaePickUpDescriptions).map(
+              ([key, value]) => ({
+                label: value.localizedDescription,
+                value: Number(key),
+              }),
+            )}
+            selected={reportState.algaePickUp}
+          />
+
+          <PostMatchSelector
+            title="Clears Algae from Reef"
+            updateStore={(value) => reportState.setKnocksAlgae(Boolean(value))}
+            items={[
+              { label: "Yes", value: 1 },
+              { label: "No", value: 0 },
+            ]}
+            direction={ButtonGroupDirection.Horizontal}
+            selected={reportState.knocksAlgae ? 1 : 0}
+          />
+          <PostMatchSelector
+            title="Traverses Under Shallow Cage"
+            // Probably rename this
+            updateStore={(value) =>
+              reportState.setTraversesUnderCage(Boolean(value))
+            }
+            items={[
+              { label: "Yes", value: 1 },
+              { label: "No", value: 0 },
+            ]}
+            direction={ButtonGroupDirection.Horizontal}
+            selected={reportState.traversesUnderCage ? 1 : 0}
           />
 
           <View style={{ gap: 7, marginBottom: 18 }}>

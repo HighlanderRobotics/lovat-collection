@@ -1,16 +1,16 @@
 import { ScoutReportMeta } from "../models/ScoutReportMeta";
 import { DriverAbility } from "./DriverAbility";
-import { HighNote } from "./HighNote";
 import { MatchEvent } from "./MatchEvent";
 import {
-  GroundNotePosition,
+  PieceContainerContents,
   MatchEventPosition,
   StartingPosition,
+  GroundPiecePosition,
 } from "./MatchEventPosition";
 import { MatchEventType } from "./MatchEventType";
-import { PickUp } from "./PickUp";
+import { AlgaePickUp, CoralPickUp } from "./PickUp";
 import { ScoutReport } from "./ScoutReport";
-import { StageResult } from "./StageResult";
+import { BargeResult } from "./BargeResult";
 
 export enum GamePhase {
   Auto,
@@ -31,29 +31,38 @@ export type ReportState = {
   startTimestamp?: Date;
   startPosition?: StartingPosition;
   startPiece: boolean;
+  groundPieces: Record<GroundPiecePosition, PieceContainerContents>;
+  robotPieces: PieceContainerContents;
   gamePhase: GamePhase;
   robotRole: RobotRole;
   driverAbility: DriverAbility;
-  stageResult: StageResult;
-  highNote: HighNote;
-  pickUp: PickUp;
+  bargeResult: BargeResult;
+  coralPickUp: CoralPickUp;
+  algaePickUp: AlgaePickUp;
+  knocksAlgae: boolean;
+  traversesUnderCage: boolean;
   notes: string;
+
   scoutMatch: (meta: ScoutReportMeta) => void;
   initializeMatchTimestamp: () => void;
 
   setStartPosition: (value: StartingPosition) => void;
   setStartPiece: (value: boolean) => void;
   setGamePhase: (value: GamePhase) => void;
+  setGroundPiece: (
+    value: PieceContainerContents,
+    position: GroundPiecePosition,
+  ) => void;
+  setRobotPiece: (value: PieceContainerContents) => void;
   setRobotRole: (value: RobotRole) => void;
   setDriverAbility: (value: DriverAbility) => void;
-  setStageResult: (value: StageResult) => void;
-  setHighNote: (value: HighNote) => void;
-  setPickUp: (value: PickUp) => void;
+  setBargeResult: (value: BargeResult) => void;
+  setCoralPickUp: (value: CoralPickUp) => void;
+  setAlgaePickUp: (value: AlgaePickUp) => void;
+  setKnocksAlgae: (value: boolean) => void;
+  setTraversesUnderCage: (value: boolean) => void;
   setNotes: (value: string) => void;
 
-  getRemainingGroundNoteLocations: () => GroundNotePosition[] | null;
-  getIsAmplified: () => boolean;
-  getHasNote: () => boolean;
   getHasExited: () => boolean;
 
   addEvent: (event: {
