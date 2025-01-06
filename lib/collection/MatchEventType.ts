@@ -1,13 +1,16 @@
 export enum MatchEventType {
-  LeaveWing,
-  PickupNote,
-  DropNote,
-  ScoreNote,
-  Defend,
-  FeedNote,
-  StartAmplfying,
-  StopAmplifying,
-  StartingPosition,
+  PickupCoral, 
+  PickupAlgae,
+  FeedAlgae, 
+  AutoLeave, 
+  Defend, 
+  ScoreNet,
+  FailNet, 
+  ScoreProcessor,
+  ScoreCoral, 
+  DropAlgae, 
+  DropCoral,
+  StartPosition,
 }
 
 export type MatchEventTypeDescription = {
@@ -19,48 +22,53 @@ export const matchEventTypeDescriptions: Record<
   MatchEventType,
   MatchEventTypeDescription
 > = {
-  [MatchEventType.LeaveWing]: {
-    name: "Leave Wing",
-    icon: "exit_to_app",
+  [MatchEventType.PickupCoral]: {
+    name: "Pickup Coral",
+    icon: "frc_coral",
   },
-  [MatchEventType.PickupNote]: {
-    name: "Pick Up Note",
-    icon: "upload",
+  [MatchEventType.PickupAlgae]: {
+    name: "Pickup Algae",
+    icon: "frc_algae",
   },
-  [MatchEventType.DropNote]: {
-    name: "Drop Note",
-    icon: "output_circle",
+  [MatchEventType.FeedAlgae]: {
+    name: "Feed",
+    icon: "feeder",
   },
-  [MatchEventType.ScoreNote]: {
-    name: "Score Note",
-    icon: "sports_score",
+  [MatchEventType.AutoLeave]: {
+    name: "Leave",
+    icon: "exit_to_app"
   },
   [MatchEventType.Defend]: {
     name: "Defend",
     icon: "shield",
   },
-  [MatchEventType.FeedNote]: {
-    name: "Feed Note",
-    icon: "conveyor_belt",
+  [MatchEventType.ScoreNet]: {
+    name: "Score Net",
+    icon: "hub",
   },
-  [MatchEventType.StartAmplfying]: {
-    name: "Start Amplifying",
-    icon: "campaign",
+  [MatchEventType.FailNet]: {
+    name: "Miss Net",
+    icon: "signal_wifi_bad",
   },
-  [MatchEventType.StopAmplifying]: {
-    name: "Stop Amplifying",
-    icon: "volume_off",
+  [MatchEventType.ScoreProcessor]: {
+    name: "Score Processor",
+    icon: "account_tree",
   },
-  [MatchEventType.StartingPosition]: {
-    name: "Starting Position",
-    icon: "play_arrow",
+  [MatchEventType.ScoreCoral]: {
+    name: "Score Coral",
+    icon: "token",
+  },
+  [MatchEventType.DropAlgae]: {
+    name: "Drop Algae",
+    icon: "arrow_drop_down_circle",
+  },
+  [MatchEventType.DropCoral]: {
+    name: "Drop Coral",
+    icon: "output_circle",
+  },
+  [MatchEventType.StartPosition]: {
+    name: "Start Position",
+    icon: "text_select_start",
   },
 };
 
-export const gainNoteEvents: MatchEventType[] = [MatchEventType.PickupNote];
-
-export const loseNoteEvents: MatchEventType[] = [
-  MatchEventType.ScoreNote,
-  MatchEventType.DropNote,
-  MatchEventType.FeedNote,
-];
