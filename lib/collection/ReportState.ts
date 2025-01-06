@@ -4,7 +4,6 @@ import { MatchEvent } from "./MatchEvent";
 import {
   PieceContainerContents,
   MatchEventPosition,
-  StartingPosition,
   GroundPiecePosition,
 } from "./MatchEventPosition";
 import { MatchEventType } from "./MatchEventType";

@@ -1,6 +1,6 @@
 import { useReportStateStore } from "../../reportStateStore";
 import { TouchableOpacity } from "react-native";
-import { MatchEventPosition, StartingPosition } from "../../MatchEventPosition";
+import { MatchEventPosition } from "../../MatchEventPosition";
 import { FieldElement } from "../FieldElement";
 import React from "react";
 

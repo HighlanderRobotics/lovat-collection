@@ -16,7 +16,7 @@ import {
   useFieldOrientationStore,
 } from "../../storage/userStores";
 import { AllianceColor } from "../../models/AllianceColor";
-import { GameAction } from "./GameAction";
+// import { GameAction } from "./GameAction";
 import { colors } from "../../colors";
 import { MatchEventType } from "../MatchEventType";
 import { Icon } from "../../components/Icon";
@@ -158,7 +158,8 @@ export function Game() {
       field: (
         <>
           <FloatingActions hasCoral hasAlgae gamePhase={GamePhase.Auto} />
-          <PreMatchActions />
+          {/* <PreMatchActions /> */}
+          <ExitWingAction />
         </>
       ),
     },

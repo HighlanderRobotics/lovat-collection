@@ -1,5 +1,5 @@
 import React from "react";
-import Svg, { SvgProps, Path, Circle, Rect } from "react-native-svg";
+import Svg, { SvgProps, Path, Circle } from "react-native-svg";
 import {
   FieldOrientation,
   useFieldOrientationStore,
