@@ -93,7 +93,7 @@ export default function PostMatch() {
           />
 
           <PostMatchSelector
-            title="Endgame Climbing Result"
+            title="Endgame Barge Result"
             updateStore={reportState.setCageResult}
             items={Object.entries(cageResultDescriptions).map(
               ([key, value]) => ({
