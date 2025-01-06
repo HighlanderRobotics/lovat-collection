@@ -29,7 +29,7 @@ export type ReportState = {
   meta?: ScoutReportMeta;
   events: MatchEvent[];
   startTimestamp?: Date;
-  startPosition?: StartingPosition;
+  startPosition?: MatchEventPosition;
   startPiece: boolean;
   groundPieces: Record<GroundPiecePosition, PieceContainerContents>;
   robotPieces: PieceContainerContents;
@@ -46,7 +46,7 @@ export type ReportState = {
   scoutMatch: (meta: ScoutReportMeta) => void;
   initializeMatchTimestamp: () => void;
 
-  setStartPosition: (value: StartingPosition) => void;
+  setStartPosition: (value: MatchEventPosition) => void;
   setStartPiece: (value: boolean) => void;
   setGamePhase: (value: GamePhase) => void;
   setGroundPiece: (

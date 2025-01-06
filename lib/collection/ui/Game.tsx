@@ -157,7 +157,8 @@ export function Game() {
       gamePhaseMessage: "Testing",
       field: (
         <>
-          <FloatingActions hasAlgae hasCoral gamePhase={GamePhase.Auto} />
+          <FloatingActions hasCoral hasAlgae gamePhase={GamePhase.Auto} />
+          <PreMatchActions />
         </>
       ),
     },
@@ -204,16 +205,6 @@ export function Game() {
     />
   );
 }
-
-/* List of floating actions 
-  - Pickup Coral (Teleop)
-  - Pickup Algae (Teleop)
-  - Drop Coral
-  - Drop Algae
-  - Defend
-  - Feed Algae
-  - Undo
-*/
 
 const FloatingActions = ({
   hasCoral = false,
@@ -289,7 +280,7 @@ const FloatingActions = ({
               opacity: !(gamePhase === GamePhase.Auto && !hasCoral) ? 1 : 0,
               borderRadius: 7,
               borderColor: "#ffffff",
-              borderWidth: 2,
+              borderWidth: !hasCoral ? 2 : 0,
               gap: 2,
               alignItems: "center",
               justifyContent: "center",
@@ -297,7 +288,7 @@ const FloatingActions = ({
             activeOpacity={0.9}
             onPress={() => {
               Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-              if (hasCoral) {
+              if (!hasCoral) {
                 addEvent({
                   type: MatchEventType.PickupCoral,
                 });
@@ -309,11 +300,13 @@ const FloatingActions = ({
             }}
           >
             <Icon
-              name={hasCoral ? "frc_coral" : "output_circle"}
+              name={!hasCoral ? "frc_coral" : "output_circle"}
               color={"#ffffff"}
               size={40}
             />
-            <LabelSmall color="#ffffff">Intake Coral</LabelSmall>
+            <LabelSmall color="#ffffff">
+              {!hasCoral ? "Intake Coral" : "Drop Coral"}
+            </LabelSmall>
           </TouchableOpacity>
           {/* Algae */}
           <TouchableOpacity
@@ -333,7 +326,7 @@ const FloatingActions = ({
               opacity: !(gamePhase === GamePhase.Auto && !hasAlgae) ? 1 : 0,
               borderRadius: 7,
               borderColor: "#14ceac",
-              borderWidth: 2,
+              borderWidth: !hasAlgae ? 2 : 0,
               gap: 2,
               alignItems: "center",
               justifyContent: "center",
@@ -341,7 +334,7 @@ const FloatingActions = ({
             activeOpacity={0.9}
             onPress={() => {
               Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-              if (hasAlgae) {
+              if (!hasAlgae) {
                 addEvent({
                   type: MatchEventType.PickupAlgae,
                 });
@@ -353,11 +346,13 @@ const FloatingActions = ({
             }}
           >
             <Icon
-              name={hasAlgae ? "frc_algae" : "output_circle"}
+              name={!hasAlgae ? "frc_algae" : "output_circle"}
               color={"#14ceac"}
               size={40}
             />
-            <LabelSmall color="#14ceac">Intake Algae</LabelSmall>
+            <LabelSmall color="#14ceac">
+              {!hasAlgae ? "Intake Algae" : "Drop Algae"}
+            </LabelSmall>
           </TouchableOpacity>
         </View>
         <TouchableOpacity
