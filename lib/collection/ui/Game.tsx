@@ -10,7 +10,17 @@ import { HasNoteActions } from "./actions/HasNoteActions";
 import { ExitWingAction } from "./actions/ExitWingAction";
 import * as Haptics from "expo-haptics";
 import { AutoCollectPieceActions } from "./actions/AutoCollectPieceActions";
-import { Alert } from "react-native";
+import { Alert, TouchableOpacity, View } from "react-native";
+import {
+  FieldOrientation,
+  useFieldOrientationStore,
+} from "../../storage/userStores";
+import { AllianceColor } from "../../models/AllianceColor";
+import { GameAction } from "./GameAction";
+import { colors } from "../../colors";
+import { MatchEventType } from "../MatchEventType";
+import { Icon } from "../../components/Icon";
+import LabelSmall from "../../components/text/LabelSmall";
 // import { colors } from "../../colors";
 // import { Icon } from "../../components/Icon";
 // import { AllianceColor } from "../../models/AllianceColor";
@@ -143,12 +153,20 @@ export function Game() {
       gamePhaseMessage: "Problem finding phase",
       field: <></>,
     },
+    testing: {
+      gamePhaseMessage: "Testing",
+      field: (
+        <>
+          <FloatingActions hasAlgae hasCoral gamePhase={GamePhase.Auto} />
+        </>
+      ),
+    },
   };
 
   const [
     gameState,
     // setGameState
-  ] = useState<GameState>(gameStates.preMatch);
+  ] = useState<GameState>(gameStates.testing);
 
   // if (!reportState.startTimestamp) {
   //   setGameState(gameStates.preMatch);
@@ -187,151 +205,236 @@ export function Game() {
   );
 }
 
-// const FloatingActions = () =>
-// {
-//   feedEnabled = false,
-//   pickupEnabled = false,
-// }: {
-//   feedEnabled?: boolean;
-//   pickupEnabled?: boolean;
-// },
-// {
-// const reportState = useReportStateStore();
-// const fieldOrientation = useFieldOrientationStore((state) => state.value);
+/* List of floating actions 
+  - Pickup Coral (Teleop)
+  - Pickup Algae (Teleop)
+  - Drop Coral
+  - Drop Algae
+  - Defend
+  - Feed Algae
+  - Undo
+*/
 
-// const [defenseHighlighted, setDefenseHighlighted] = useState(false);
+const FloatingActions = ({
+  hasCoral = false,
+  hasAlgae = false,
+  gamePhase = GamePhase.Auto,
+}: {
+  hasCoral?: boolean;
+  hasAlgae?: boolean;
+  gamePhase?: GamePhase;
+}) => {
+  const reportState = useReportStateStore();
+  const fieldOrientation = useFieldOrientationStore((state) => state.value);
 
-// const addEvent = reportState.addEvent;
+  const [defenseHighlighted, setDefenseHighlighted] = useState(false);
 
-// return (
-//   <View
-//     style={{
-//       position: "absolute",
-//       top: 0,
-//       right: 0,
-//       bottom: 0,
-//       left: 0,
-//       flexDirection:
-//         fieldOrientation === FieldOrientation.Auspicious
-//           ? reportState.meta?.allianceColor === AllianceColor.Blue
-//             ? "row"
-//             : "row-reverse"
-//           : reportState.meta?.allianceColor === AllianceColor.Blue
-//             ? "row-reverse"
-//             : "row",
-//       padding: 4,
-//       gap: 4,
-//     }}
-//   >
-//     <View style={{ flex: 1.8 }}>
-//       {pickupEnabled && (
-//         <GameAction
-//           color="#C1C337"
-//           icon="upload"
-//           iconSize={48}
-//           onPress={() => {
-//             addEvent({
-//               type: MatchEventType.PickupNote
-//             });
-//           }}
-//         />
-//       )}
-//     </View>
+  const addEvent = reportState.addEvent;
 
-//     <View style={{ flex: 1, gap: 4 }}>
-//       <TouchableOpacity
-//         accessibilityLabel="Amplify"
-//         style={{
-//           flex: 1,
-//           backgroundColor: isAmplified
-//             ? colors.victoryPurple.default
-//             : colors.secondaryContainer.default,
-//           borderRadius: 7,
-//           alignItems: "center",
-//           justifyContent: "center",
-//         }}
-//         activeOpacity={0.9}
-//         onPress={() => {
-//           Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-//           if (isAmplified) {
-//             addEvent({
-//               type: MatchEventType.StopAmplifying,
-//             });
-//           } else {
-//             addEvent({
-//               type: MatchEventType.StartAmplfying,
-//             });
-//           }
-//         }}
-//       >
-//         <Icon
-//           name="campaign"
-//           color={
-//             isAmplified
-//               ? colors.background.default
-//               : colors.onBackground.default
-//           }
-//           size={40}
-//         />
-//       </TouchableOpacity>
+  return (
+    <View
+      style={{
+        position: "absolute",
+        top: 0,
+        right: 0,
+        bottom: 0,
+        left: 0,
+        flexDirection:
+          fieldOrientation === FieldOrientation.Auspicious
+            ? reportState.meta?.allianceColor === AllianceColor.Blue
+              ? "row"
+              : "row-reverse"
+            : reportState.meta?.allianceColor === AllianceColor.Blue
+              ? "row-reverse"
+              : "row",
+        padding: 4,
+        gap: 4,
+      }}
+    >
+      <View
+        key={"This view is for spacing purposes"}
+        style={{
+          flex: 1.8,
+        }}
+      />
+      <View
+        style={{
+          flexDirection: "column",
+          gap: 4,
+          flex: 1,
+        }}
+      >
+        <View
+          style={{
+            flexDirection: "row",
+            flex: 1,
+            gap: 4,
+          }}
+        >
+          {/* Coral */}
+          <TouchableOpacity
+            disabled={gamePhase === GamePhase.Auto && !hasCoral}
+            accessibilityLabel={
+              gamePhase === GamePhase.Teleop
+                ? hasCoral
+                  ? "Intake Coral"
+                  : "Drop Coral"
+                : hasCoral
+                  ? ""
+                  : "Drop Coral"
+            }
+            style={{
+              flex: 1,
+              backgroundColor: "#ffffff4d",
+              opacity: !(gamePhase === GamePhase.Auto && !hasCoral) ? 1 : 0,
+              borderRadius: 7,
+              borderColor: "#ffffff",
+              borderWidth: 2,
+              gap: 2,
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+            activeOpacity={0.9}
+            onPress={() => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+              if (hasCoral) {
+                addEvent({
+                  type: MatchEventType.PickupCoral,
+                });
+              } else {
+                addEvent({
+                  type: MatchEventType.DropCoral,
+                });
+              }
+            }}
+          >
+            <Icon
+              name={hasCoral ? "frc_coral" : "output_circle"}
+              color={"#ffffff"}
+              size={40}
+            />
+            <LabelSmall color="#ffffff">Intake Coral</LabelSmall>
+          </TouchableOpacity>
+          {/* Algae */}
+          <TouchableOpacity
+            disabled={gamePhase === GamePhase.Auto && !hasAlgae}
+            accessibilityLabel={
+              gamePhase === GamePhase.Teleop
+                ? hasAlgae
+                  ? "Intake Algae"
+                  : "Drop Algae"
+                : hasAlgae
+                  ? ""
+                  : "Drop Algae"
+            }
+            style={{
+              flex: 1,
+              backgroundColor: "#14ceac4d",
+              opacity: !(gamePhase === GamePhase.Auto && !hasAlgae) ? 1 : 0,
+              borderRadius: 7,
+              borderColor: "#14ceac",
+              borderWidth: 2,
+              gap: 2,
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+            activeOpacity={0.9}
+            onPress={() => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+              if (hasAlgae) {
+                addEvent({
+                  type: MatchEventType.PickupAlgae,
+                });
+              } else {
+                addEvent({
+                  type: MatchEventType.DropAlgae,
+                });
+              }
+            }}
+          >
+            <Icon
+              name={hasAlgae ? "frc_algae" : "output_circle"}
+              color={"#14ceac"}
+              size={40}
+            />
+            <LabelSmall color="#14ceac">Intake Algae</LabelSmall>
+          </TouchableOpacity>
+        </View>
+        <TouchableOpacity
+          disabled={gamePhase === GamePhase.Auto}
+          accessibilityLabel="Defend"
+          style={{
+            flex: 1,
+            backgroundColor: defenseHighlighted
+              ? colors.danger.default
+              : colors.secondaryContainer.default,
+            opacity: gamePhase === GamePhase.Teleop ? 1 : 0,
+            borderRadius: 7,
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+          activeOpacity={0.9}
+          onPress={() => {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+            addEvent({
+              type: MatchEventType.Defend,
+            });
 
-//       <TouchableOpacity
-//         accessibilityLabel="Defend"
-//         style={{
-//           flex: 1,
-//           backgroundColor: defenseHighlighted
-//             ? colors.danger.default
-//             : colors.secondaryContainer.default,
-//           borderRadius: 7,
-//           alignItems: "center",
-//           justifyContent: "center",
-//         }}
-//         activeOpacity={0.9}
-//         onPress={() => {
-//           Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-//           addEvent({
-//             type: MatchEventType.Defend,
-//           });
-
-//           setDefenseHighlighted(true);
-//           setTimeout(() => setDefenseHighlighted(false), 200);
-//         }}
-//       >
-//         <Icon name="shield" color={colors.onBackground.default} size={40} />
-//       </TouchableOpacity>
-
-//       <View
-//         style={{
-//           flex: 1,
-//         }}
-//       >
-//         {feedEnabled && (
-//           <TouchableOpacity
-//             accessibilityLabel="Feed note"
-//             style={{
-//               flex: 1,
-//               backgroundColor: colors.secondaryContainer.default,
-//               borderRadius: 7,
-//               alignItems: "center",
-//               justifyContent: "center",
-//             }}
-//             activeOpacity={0.9}
-//             onPress={() => {
-//               Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-//               addEvent({
-//                 type: MatchEventType.FeedNote,
-//               });
-//             }}
-//           >
-//             <Icon
-//               name="conveyor_belt"
-//               color={colors.onBackground.default}
-//               size={40}
-//             />
-//           </TouchableOpacity>
-//         )}
-//       </View>
-//     </View>
-//   </View>
-// );
-// };
+            setDefenseHighlighted(true);
+            setTimeout(() => setDefenseHighlighted(false), 200);
+          }}
+        >
+          <Icon name="shield" color={colors.onBackground.default} size={40} />
+        </TouchableOpacity>
+        <View
+          style={{
+            flexDirection: "row",
+            flex: 1,
+            gap: 4,
+          }}
+        >
+          <TouchableOpacity
+            disabled={reportState?.events.length === 0}
+            accessibilityLabel="Undo"
+            style={{
+              flex: 1,
+              backgroundColor: colors.secondaryContainer.default,
+              opacity: reportState.events.length > 0 ? 1 : 0,
+              borderRadius: 7,
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+            activeOpacity={0.9}
+            onPress={() => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+              reportState.undoEvent();
+            }}
+          >
+            <Icon name="undo" color={colors.onBackground.default} size={40} />
+          </TouchableOpacity>
+          <TouchableOpacity
+            disabled={!(hasAlgae && gamePhase === GamePhase.Teleop)}
+            accessibilityLabel="Feed algae"
+            style={{
+              flex: 1,
+              backgroundColor: colors.secondaryContainer.default,
+              opacity: hasAlgae && gamePhase === GamePhase.Teleop ? 1 : 0,
+              borderRadius: 7,
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+            activeOpacity={0.9}
+            onPress={() => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+              addEvent({
+                type: MatchEventType.FeedAlgae,
+              });
+            }}
+          >
+            <Icon name="feeder" color={colors.onBackground.default} size={40} />
+          </TouchableOpacity>
+        </View>
+      </View>
+    </View>
+  );
+};
