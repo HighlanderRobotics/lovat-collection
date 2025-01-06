@@ -4,7 +4,7 @@ import { MatchEvent } from "./MatchEvent";
 import {
   PieceContainerContents,
   MatchEventPosition,
-  GroundPiecePosition,
+  groundPiecePositions,
 } from "./MatchEventPosition";
 import { MatchEventType } from "./MatchEventType";
 import { AlgaePickUp, CoralPickUp } from "./PickUp";
@@ -30,7 +30,7 @@ export type ReportState = {
   startTimestamp?: Date;
   startPosition?: MatchEventPosition;
   startPiece: boolean;
-  groundPieces: Record<GroundPiecePosition, PieceContainerContents>;
+  groundPieces: Record<MatchEventPosition, PieceContainerContents>;
   robotPieces: PieceContainerContents;
   gamePhase: GamePhase;
   robotRole: RobotRole;
@@ -50,7 +50,7 @@ export type ReportState = {
   setGamePhase: (value: GamePhase) => void;
   setGroundPiece: (
     value: PieceContainerContents,
-    position: GroundPiecePosition,
+    position: MatchEventPosition,
   ) => void;
   setRobotPiece: (value: PieceContainerContents) => void;
   setRobotRole: (value: RobotRole) => void;

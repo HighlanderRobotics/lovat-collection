@@ -3,7 +3,7 @@ import { MatchEventType } from "./MatchEventType";
 import {
   PieceContainerContents,
   MatchEventPosition,
-  GroundPiecePosition,
+  groundPiecePositions,
 } from "./MatchEventPosition";
 import { create } from "zustand";
 import { v4 } from "uuid";
@@ -17,7 +17,7 @@ import { ScoutReportEvent } from "./ScoutReport";
 export const useReportStateStore = create<ReportState>((set, get) => ({
   events: [],
   startPiece: false,
-  groundPieces: Object.values(GroundPiecePosition).reduce(
+  groundPieces: Object.values(groundPiecePositions).reduce(
     (acc, curr) => ({
       ...acc,
       [curr]: {
@@ -25,7 +25,7 @@ export const useReportStateStore = create<ReportState>((set, get) => ({
         algae: true,
       },
     }),
-    {} as Record<GroundPiecePosition, PieceContainerContents>,
+    {} as Record<MatchEventPosition, PieceContainerContents>,
   ),
   robotPieces: {
     coral: false,
@@ -46,7 +46,7 @@ export const useReportStateStore = create<ReportState>((set, get) => ({
       meta: meta!,
       events: [],
       startPiece: false,
-      groundPieces: Object.values(GroundPiecePosition).reduce(
+      groundPieces: Object.values(groundPiecePositions).reduce(
         (acc, curr) => ({
           ...acc,
           [curr]: {
@@ -54,7 +54,7 @@ export const useReportStateStore = create<ReportState>((set, get) => ({
             algae: true,
           },
         }),
-        {} as Record<GroundPiecePosition, PieceContainerContents>,
+        {} as Record<MatchEventPosition, PieceContainerContents>,
       ),
       gamePhase: GamePhase.Auto,
       robotRole: RobotRole.Offense,
@@ -180,7 +180,7 @@ export const useReportStateStore = create<ReportState>((set, get) => ({
       startPiece: false,
       startTimestamp: undefined,
       startPosition: undefined,
-      groundPieces: Object.values(GroundPiecePosition).reduce(
+      groundPieces: Object.values(groundPiecePositions).reduce(
         (acc, curr) => ({
           ...acc,
           [curr]: {
@@ -188,7 +188,7 @@ export const useReportStateStore = create<ReportState>((set, get) => ({
             algae: true,
           },
         }),
-        {} as Record<GroundPiecePosition, PieceContainerContents>,
+        {} as Record<MatchEventPosition, PieceContainerContents>,
       ),
       gamePhase: GamePhase.Auto,
       robotRole: RobotRole.Offense,

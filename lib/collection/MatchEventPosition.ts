@@ -28,17 +28,18 @@ export enum MatchEventPosition {
   CoralStationB,
 }
 
-export const StartingPosition: Record<string, MatchEventPosition> = {
+export const startingPositions: Record<string, MatchEventPosition> = {
   StartRedProcessor: MatchEventPosition.StartRedProcessor,
   StartRedNet: MatchEventPosition.StartRedNet,
   StartBlueNet: MatchEventPosition.StartBlueNet,
   StartBlueProcessor: MatchEventPosition.StartBlueProcessor,
 } as const;
-export enum GroundPiecePosition {
-  GroundPieceA = Number(MatchEventPosition.GroundPieceA),
-  GroundPieceB = Number(MatchEventPosition.GroundPieceB),
-  GroundPieceC = Number(MatchEventPosition.GroundPieceC),
-}
+
+export const groundPiecePositions: Record<string, MatchEventPosition> = {
+  GroundPieceA: MatchEventPosition.GroundPieceA,
+  GroundPieceB: MatchEventPosition.GroundPieceB,
+  GroundPieceC: MatchEventPosition.GroundPieceC,
+};
 
 // Can be used for the robot and/or ground pieces
 export type PieceContainerContents = {

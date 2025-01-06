@@ -6,10 +6,13 @@ import { GameViewTemplate } from "./GameViewTemplate";
 import { GamePhase } from "../ReportState";
 import { Checkbox } from "../../components/Checkbox";
 // import { MatchEventType } from "../MatchEventType";
-import { HasNoteActions } from "./actions/HasNoteActions";
+import { HasNoteActions } from "./actions/HasAlgaeActions";
 import { ExitWingAction } from "./actions/ExitWingAction";
 import * as Haptics from "expo-haptics";
-import { AutoCollectPieceActions } from "./actions/AutoCollectPieceActions";
+import {
+  AutoCollectGroundPieceActions,
+  AutoCoralStationActions,
+} from "./actions/AutoCollectPieceActions";
 import { Alert, TouchableOpacity, View } from "react-native";
 import {
   FieldOrientation,
@@ -121,7 +124,7 @@ export function Game() {
     },
     autoExitedNoNote: {
       gamePhaseMessage: "Autonomous",
-      field: <AutoCollectPieceActions />,
+      field: <AutoCollectGroundPieceActions />,
     },
     autoNotExitedNote: {
       gamePhaseMessage: "Autonomous",
@@ -159,7 +162,8 @@ export function Game() {
         <>
           <FloatingActions hasCoral hasAlgae gamePhase={GamePhase.Auto} />
           {/* <PreMatchActions /> */}
-          <ExitWingAction />
+          {/* <ExitWingAction /> */}
+          <AutoCoralStationActions />
         </>
       ),
     },
