@@ -20,7 +20,7 @@ import {
   cageResultDescriptions,
 } from "../../lib/collection/CageResult";
 import { HighNote, highNoteDescriptions } from "../../lib/collection/HighNote";
-import { PickUp, pickUpDescriptions } from "../../lib/collection/PickUp";
+import { CoralPickUp, coralPickUpDescriptions } from "../../lib/collection/PickUp";
 import TextField from "../../lib/components/TextField";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { CommonActions } from "@react-navigation/native";
@@ -115,9 +115,9 @@ export default function PostMatch() {
           <PostMatchSelector
             title="Pick up"
             updateStore={reportState.setPickUp}
-            items={Object.entries(pickUpDescriptions).map(([key, value]) => ({
+            items={Object.entries(coralPickUpDescriptions).map(([key, value]) => ({
               label: value.localizedDescription,
-              value: key as PickUp,
+              value: key as CoralPickUp,
             }))}
             selected={reportState.pickUp}
           />

@@ -7,7 +7,7 @@ import {
   StartingPosition,
 } from "./MatchEventPosition";
 import { MatchEventType } from "./MatchEventType";
-import { PickUp } from "./PickUp";
+import { CoralPickUp } from "./PickUp";
 import { ScoutReport } from "./ScoutReport";
 import { CageResult } from "./CageResult";
 
@@ -34,7 +34,7 @@ export type ReportState = {
   robotRole: RobotRole;
   driverAbility: DriverAbility;
   cageResult: CageResult;
-  pickUp: PickUp;
+  pickUp: CoralPickUp;
   notes: string;
   scoutMatch: (meta: ScoutReportMeta) => void;
   initializeMatchTimestamp: () => void;
@@ -45,7 +45,7 @@ export type ReportState = {
   setRobotRole: (value: RobotRole) => void;
   setDriverAbility: (value: DriverAbility) => void;
   setCageResult: (value: CageResult) => void;
-  setPickUp: (value: PickUp) => void;
+  setPickUp: (value: CoralPickUp) => void;
   setNotes: (value: string) => void;
 
   getRemainingGroundNoteLocations: () => GroundNotePosition[] | null;

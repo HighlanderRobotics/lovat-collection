@@ -12,7 +12,7 @@ import {
 } from "./MatchEventPosition";
 import { create } from "zustand";
 import { v4 } from "uuid";
-import { PickUp, pickUpDescriptions } from "./PickUp";
+import { CoralPickUp, coralPickUpDescriptions } from "./PickUp";
 import { CageResult, cageResultDescriptions } from "./CageResult";
 import { DriverAbility, driverAbilityDescriptions } from "./DriverAbility";
 import { MatchEvent } from "./MatchEvent";
@@ -26,7 +26,7 @@ export const useReportStateStore = create<ReportState>((set, get) => ({
   robotRole: RobotRole.Offense,
   driverAbility: DriverAbility.Average,
   cageResult: CageResult.NotAttempted,
-  pickUp: PickUp.Ground,
+  pickUp: CoralPickUp.Ground,
   notes: "",
 
   scoutMatch: (meta) =>
@@ -38,7 +38,7 @@ export const useReportStateStore = create<ReportState>((set, get) => ({
       robotRole: RobotRole.Offense,
       driverAbility: DriverAbility.Average,
       cageResult: CageResult.NotAttempted,
-      pickUp: PickUp.Ground,
+      pickUp: CoralPickUp.Ground,
       notes: "",
       uuid: v4(),
     })),
@@ -176,7 +176,7 @@ export const useReportStateStore = create<ReportState>((set, get) => ({
         notes: reportState.notes,
         robotRole: reportState.robotRole,
         cage: cageResultDescriptions[reportState.cageResult].num,
-        pickUp: pickUpDescriptions[reportState.pickUp].num,
+        pickUp: coralPickUpDescriptions[reportState.pickUp].num,
         driverAbility:
           driverAbilityDescriptions[reportState.driverAbility].numericalRating,
         scouterUuid: reportState.meta.scouterUUID,
@@ -226,7 +226,7 @@ export const useReportStateStore = create<ReportState>((set, get) => ({
       robotRole: RobotRole.Offense,
       driverAbility: DriverAbility.Average,
       cageResult: CageResult.NotAttempted,
-      pickUp: PickUp.Ground,
+      pickUp: CoralPickUp.Ground,
       notes: "",
     }),
 }));
