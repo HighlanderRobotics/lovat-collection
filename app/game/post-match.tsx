@@ -129,7 +129,7 @@ export default function PostMatch() {
           />
 
           <PostMatchSelector
-            title="Knocks Algae"
+            title="Clears Algae from Reef"
             updateStore={(value) => reportState.setKnocksAlgae(Boolean(value))}
             items={[
               { label: "Yes", value: 1 },
