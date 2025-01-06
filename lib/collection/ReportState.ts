@@ -1,7 +1,12 @@
 import { ScoutReportMeta } from "../models/ScoutReportMeta";
 import { DriverAbility } from "./DriverAbility";
 import { MatchEvent } from "./MatchEvent";
-import { GroundPieceContents, MatchEventPosition, StartingPosition } from "./MatchEventPosition";
+import {
+  PieceContainerContents,
+  MatchEventPosition,
+  StartingPosition,
+  GroundPiecePosition,
+} from "./MatchEventPosition";
 import { MatchEventType } from "./MatchEventType";
 import { AlgaePickUp, CoralPickUp } from "./PickUp";
 import { ScoutReport } from "./ScoutReport";
@@ -26,7 +31,8 @@ export type ReportState = {
   startTimestamp?: Date;
   startPosition?: StartingPosition;
   startPiece: boolean;
-  groundNotes: [GroundPieceContents, GroundPieceContents, GroundPieceContents]
+  groundPieces: Record<GroundPiecePosition, PieceContainerContents>;
+  robotPieces: PieceContainerContents;
   gamePhase: GamePhase;
   robotRole: RobotRole;
   driverAbility: DriverAbility;
@@ -41,6 +47,11 @@ export type ReportState = {
   setStartPosition: (value: StartingPosition) => void;
   setStartPiece: (value: boolean) => void;
   setGamePhase: (value: GamePhase) => void;
+  setGroundPiece: (
+    value: PieceContainerContents,
+    position: GroundPiecePosition,
+  ) => void;
+  setRobotPiece: (value: PieceContainerContents) => void;
   setRobotRole: (value: RobotRole) => void;
   setDriverAbility: (value: DriverAbility) => void;
   setCageResult: (value: CageResult) => void;
@@ -48,7 +59,6 @@ export type ReportState = {
   setAlgaePickUp: (value: AlgaePickUp) => void;
   setNotes: (value: string) => void;
 
-  getHasNote: () => boolean;
   getHasExited: () => boolean;
 
   addEvent: (event: {

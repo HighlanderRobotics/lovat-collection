@@ -1,10 +1,9 @@
 import { GamePhase, ReportState, RobotRole } from "./ReportState";
+import { MatchEventType } from "./MatchEventType";
 import {
-  MatchEventType,
-} from "./MatchEventType";
-import {
-  GroundPieceContents,
+  PieceContainerContents,
   MatchEventPosition,
+  GroundPiecePosition,
 } from "./MatchEventPosition";
 import { create } from "zustand";
 import { v4 } from "uuid";
@@ -18,7 +17,20 @@ import { ScoutReportEvent } from "./ScoutReport";
 export const useReportStateStore = create<ReportState>((set, get) => ({
   events: [],
   startPiece: false,
-  groundNotes: [GroundPieceContents.Both, GroundPieceContents.Both, GroundPieceContents.Both],
+  groundPieces: Object.values(GroundPiecePosition).reduce(
+    (acc, curr) => ({
+      ...acc,
+      [curr]: {
+        coral: true,
+        algae: true,
+      },
+    }),
+    {} as Record<GroundPiecePosition, PieceContainerContents>,
+  ),
+  robotPieces: {
+    coral: false,
+    algae: false,
+  },
   gamePhase: GamePhase.Auto,
   robotRole: RobotRole.Offense,
   driverAbility: DriverAbility.Average,
@@ -32,7 +44,16 @@ export const useReportStateStore = create<ReportState>((set, get) => ({
       meta: meta!,
       events: [],
       startPiece: false,
-      groundNotes: [GroundPieceContents.Both, GroundPieceContents.Both, GroundPieceContents.Both],
+      groundPieces: Object.values(GroundPiecePosition).reduce(
+        (acc, curr) => ({
+          ...acc,
+          [curr]: {
+            coral: true,
+            algae: true,
+          },
+        }),
+        {} as Record<GroundPiecePosition, PieceContainerContents>,
+      ),
       gamePhase: GamePhase.Auto,
       robotRole: RobotRole.Offense,
       driverAbility: DriverAbility.Average,
@@ -48,6 +69,14 @@ export const useReportStateStore = create<ReportState>((set, get) => ({
   setStartPosition: (value) => set({ startPosition: value }),
   setStartPiece: (value) => set({ startPiece: value }),
   setGamePhase: (value) => set({ gamePhase: value }),
+  setGroundPiece: (value, pos) =>
+    set((state) => ({
+      groundPieces: {
+        ...state.groundPieces,
+        [pos]: value,
+      },
+    })),
+  setRobotPiece: (value) => set({ robotPieces: value }),
   setRobotRole: (value) => set({ robotRole: value }),
   setDriverAbility: (value) => set({ driverAbility: value }),
   setCageResult: (value) => set({ cageResult: value }),
@@ -55,32 +84,6 @@ export const useReportStateStore = create<ReportState>((set, get) => ({
   setAlgaePickUp: (value) => set({ algaePickUp: value }),
   setNotes: (value) => set({ notes: value }),
 
-  getHasNote: () => {
-    const reportState = get();
-    let hasNote = false;
-
-    if (!reportState || !reportState.events) {
-      return false;
-    }
-
-    if (reportState.startPiece) {
-      hasNote = true;
-    }
-
-    for (let i = 0; i < reportState.events.length; i++) {
-      const event = reportState.events[i];
-
-      if (loseNoteEvents.includes(event.type)) {
-        hasNote = false;
-      }
-
-      if (gainNoteEvents.includes(event.type)) {
-        hasNote = true;
-      }
-    }
-
-    return hasNote;
-  },
   getHasExited: () => {
     const reportState = get();
     return reportState.events.some(
@@ -173,7 +176,16 @@ export const useReportStateStore = create<ReportState>((set, get) => ({
       startPiece: false,
       startTimestamp: undefined,
       startPosition: undefined,
-      groundNotes: [GroundPieceContents.Both, GroundPieceContents.Both, GroundPieceContents.Both],
+      groundPieces: Object.values(GroundPiecePosition).reduce(
+        (acc, curr) => ({
+          ...acc,
+          [curr]: {
+            coral: true,
+            algae: true,
+          },
+        }),
+        {} as Record<GroundPiecePosition, PieceContainerContents>,
+      ),
       gamePhase: GamePhase.Auto,
       robotRole: RobotRole.Offense,
       driverAbility: DriverAbility.Average,

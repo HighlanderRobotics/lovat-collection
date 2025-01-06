@@ -28,10 +28,14 @@ export type StartingPosition =
   | MatchEventPosition.StartTwo
   | MatchEventPosition.StartThree;
 
-
-export enum GroundPieceContents {
-  None,
-  Coral,
-  Algae,
-  Both,
+export enum GroundPiecePosition {
+  GroundPieceA,
+  GroundPieceB,
+  GroundPieceC,
 }
+
+// Can be used for the robot and/or ground pieces
+export type PieceContainerContents = {
+  algae: boolean;
+  coral: boolean;
+};
