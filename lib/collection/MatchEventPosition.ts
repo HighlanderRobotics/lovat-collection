@@ -20,7 +20,11 @@ export enum MatchEventPosition {
   LevelFourA,
   LevelFourB,
   LevelFourC,
-  // Ground Piece Positions?
+  GroundPieceA,
+  GroundPieceB,
+  GroundPieceC,
+  CoralStationA,
+  CoralStationB,
 }
 
 export type StartingPosition =
@@ -29,9 +33,9 @@ export type StartingPosition =
   | MatchEventPosition.StartThree;
 
 export enum GroundPiecePosition {
-  GroundPieceA,
-  GroundPieceB,
-  GroundPieceC,
+  GroundPieceA = MatchEventPosition.GroundPieceA,
+  GroundPieceB = MatchEventPosition.GroundPieceB,
+  GroundPieceC = MatchEventPosition.GroundPieceC,
 }
 
 // Can be used for the robot and/or ground pieces
