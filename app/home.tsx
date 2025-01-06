@@ -173,7 +173,7 @@ const MatchSelection = ({
 
   const scouterScheduleForTournament =
     (scouterSchedule?.data.length ?? 0) > 0 &&
-    scouterSchedule?.data[0].matchIdentity.tournamentKey === tournament?.key
+      scouterSchedule?.data[0].matchIdentity.tournamentKey === tournament?.key
       ? scouterSchedule
       : null;
   switch (matchSelectionMode) {
@@ -206,7 +206,7 @@ const AutomaticMatchSelection = ({
   const selectedTournament = useTournamentStore((state) => state.value);
   const scouterScheduleForTournament =
     (scouterSchedule?.data.length ?? 0) > 0 &&
-    scouterSchedule?.data[0].matchIdentity.tournamentKey ===
+      scouterSchedule?.data[0].matchIdentity.tournamentKey ===
       selectedTournament?.key
       ? scouterSchedule
       : null;
@@ -231,11 +231,11 @@ const AutomaticMatchSelection = ({
       history.some(
         (report) =>
           report.meta.matchIdentity.matchNumber ===
-            match.matchIdentity.matchNumber &&
+          match.matchIdentity.matchNumber &&
           report.meta.matchIdentity.matchType ===
-            match.matchIdentity.matchType &&
+          match.matchIdentity.matchType &&
           report.meta.matchIdentity.tournamentKey ===
-            match.matchIdentity.tournamentKey,
+          match.matchIdentity.tournamentKey,
       ),
     );
     matchesWithHistory.sort((a, b) => {
@@ -501,7 +501,7 @@ const ScheduleColorGradient = () => {
 
   const scouterScheduleForTournament =
     (scouterSchedule?.data.length ?? 0) > 0 &&
-    scouterSchedule?.data[0].matchIdentity.tournamentKey === tournament?.key
+      scouterSchedule?.data[0].matchIdentity.tournamentKey === tournament?.key
       ? scouterSchedule
       : null;
 
@@ -546,7 +546,7 @@ const ServiceStatus = () => {
     useTournamentsStore.getState(),
   ];
 
-  const serviceCacheTimes = servicesCached.map((item) => item.timeStamp);
+  const serviceCacheTimes = servicesCached.map((item) => item.timestamp);
 
   const serviceError = useServiceErrorStore((state) => state.value);
 
@@ -603,12 +603,12 @@ const ServiceStatus = () => {
           <TimeAgo
             date={
               serviceCacheTimes.reduce((acc, curr) => {
-                if (curr && curr.getTime() < acc!.getTime()) {
+                if (curr && curr < acc!) {
                   return curr;
                 } else {
                   return acc;
                 }
-              }, new Date()) ?? 0
+              }, Date.now()) ?? 0
             }
           />
         </BodyMedium>
