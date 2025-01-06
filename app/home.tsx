@@ -546,7 +546,7 @@ const ServiceStatus = () => {
     useTournamentsStore.getState(),
   ];
 
-  const serviceCacheTimes = servicesCached.map((item) => item.timeStamp);
+  const serviceCacheTimes = servicesCached.map((item) => item.timestamp);
 
   const serviceError = useServiceErrorStore((state) => state.value);
 
@@ -603,12 +603,12 @@ const ServiceStatus = () => {
           <TimeAgo
             date={
               serviceCacheTimes.reduce((acc, curr) => {
-                if (curr && curr.getTime() < acc!.getTime()) {
+                if (curr && curr < acc!) {
                   return curr;
                 } else {
                   return acc;
                 }
-              }, new Date()) ?? 0
+              }, Date.now()) ?? 0
             }
           />
         </BodyMedium>
