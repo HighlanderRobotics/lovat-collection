@@ -19,9 +19,8 @@ import {
   CageResult,
   cageResultDescriptions,
 } from "../../lib/collection/CageResult";
-import { HighNote, highNoteDescriptions } from "../../lib/collection/HighNote";
 import {
-  CoralPickUp,
+  algaePickUpDescriptions,
   coralPickUpDescriptions,
 } from "../../lib/collection/PickUp";
 import TextField from "../../lib/components/TextField";
@@ -69,7 +68,7 @@ export default function PostMatch() {
           style={{ flex: 1, gap: 7, paddingBottom: 200, maxWidth: 550 }}
         >
           <PostMatchSelector
-            title="Robot role"
+            title="Robot Role"
             updateStore={reportState.setRobotRole}
             items={[
               { label: "Offense", value: RobotRole.Offense },
@@ -94,7 +93,7 @@ export default function PostMatch() {
           />
 
           <PostMatchSelector
-            title="Stage result"
+            title="Endgame Climbing Result"
             updateStore={reportState.setCageResult}
             items={Object.entries(cageResultDescriptions).map(
               ([key, value]) => ({
@@ -106,25 +105,49 @@ export default function PostMatch() {
           />
 
           <PostMatchSelector
-            title="High Note"
-            updateStore={reportState.setHighNote}
-            items={Object.entries(highNoteDescriptions).map(([key, value]) => ({
-              label: value.localizedDescription,
-              value: key as HighNote,
-            }))}
-            selected={reportState.highNote}
-          />
-
-          <PostMatchSelector
-            title="Pick up"
+            title="Coral Pick Up"
             updateStore={reportState.setCoralPickUp}
             items={Object.entries(coralPickUpDescriptions).map(
               ([key, value]) => ({
                 label: value.localizedDescription,
-                value: key as CoralPickUp,
+                value: Number(key),
               }),
             )}
             selected={reportState.coralPickUp}
+          />
+
+          <PostMatchSelector
+            title="Algae Pick Up"
+            updateStore={reportState.setAlgaePickUp}
+            items={Object.entries(algaePickUpDescriptions).map(
+              ([key, value]) => ({
+                label: value.localizedDescription,
+                value: Number(key),
+              }),
+            )}
+            selected={reportState.algaePickUp}
+          />
+
+          <PostMatchSelector
+            title="Knocks Algae"
+            updateStore={ (value) => reportState.setKnocksAlgae(Boolean(value)) }
+            items={[
+              { label: "Yes", value: 1, },
+              { label: "No", value: 0, },
+            ]}
+            direction={ButtonGroupDirection.Horizontal}
+            selected={reportState.knocksAlgae ? 1 : 0}
+          /> 
+          <PostMatchSelector
+            title="Traverses Under Shallow Cage"
+            // Probably rename this
+            updateStore={ (value) => reportState.setTraversesUnderCage(Boolean(value)) }
+            items={[
+              { label: "Yes", value: 1, },
+              { label: "No", value: 0, }
+            ]}
+            direction={ButtonGroupDirection.Horizontal}
+            selected={reportState.traversesUnderCage ? 1 : 0}
           />
 
           <View style={{ gap: 7, marginBottom: 18 }}>

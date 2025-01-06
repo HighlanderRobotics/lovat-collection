@@ -37,6 +37,8 @@ export const useReportStateStore = create<ReportState>((set, get) => ({
   cageResult: CageResult.NotAttempted,
   coralPickUp: CoralPickUp.None,
   algaePickUp: AlgaePickUp.None,
+  knocksAlgae: false,
+  traversesUnderCage: false,
   notes: "",
 
   scoutMatch: (meta) =>
@@ -82,6 +84,8 @@ export const useReportStateStore = create<ReportState>((set, get) => ({
   setCageResult: (value) => set({ cageResult: value }),
   setCoralPickUp: (value) => set({ coralPickUp: value }),
   setAlgaePickUp: (value) => set({ algaePickUp: value }),
+  setKnocksAlgae: (value) => set({ knocksAlgae: value }),
+  setTraversesUnderCage: (value) => set({ traversesUnderCage: value }),
   setNotes: (value) => set({ notes: value }),
 
   getHasExited: () => {

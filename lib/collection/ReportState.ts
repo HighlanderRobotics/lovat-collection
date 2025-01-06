@@ -39,6 +39,8 @@ export type ReportState = {
   cageResult: CageResult;
   coralPickUp: CoralPickUp;
   algaePickUp: AlgaePickUp;
+  knocksAlgae: boolean;
+  traversesUnderCage: boolean;
   notes: string;
 
   scoutMatch: (meta: ScoutReportMeta) => void;
@@ -57,6 +59,8 @@ export type ReportState = {
   setCageResult: (value: CageResult) => void;
   setCoralPickUp: (value: CoralPickUp) => void;
   setAlgaePickUp: (value: AlgaePickUp) => void;
+  setKnocksAlgae: (value: boolean) => void;
+  setTraversesUnderCage: (value: boolean) => void;
   setNotes: (value: string) => void;
 
   getHasExited: () => boolean;
