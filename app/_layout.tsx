@@ -62,12 +62,7 @@ const storageMigratorsByLegacyKey: Record<string, (value: any) => void> = {
   trainingMode: useTrainingModeStore.getState().setValue,
   qrCodeSize: useQrCodeSizeStore.getState().setValue,
   fieldOrientation: useFieldOrientationStore.getState().setValue,
-  history: (data: HistoryEntry[]) =>
-    data.forEach((item) => {
-      useHistoryStore
-        .getState()
-        .upsertMatch(item.scoutReport, item.uploaded, item.meta);
-    }),
+  history: (data: HistoryEntry[]) => null
 } as const;
 
 export default function Layout() {
