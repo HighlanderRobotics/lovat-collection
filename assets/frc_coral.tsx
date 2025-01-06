@@ -1,13 +1,7 @@
-import * as React from "react"
-import Svg, { SvgProps, Mask, Rect, G, Path } from "react-native-svg"
+import * as React from "react";
+import Svg, { SvgProps, Mask, Rect, G, Path } from "react-native-svg";
 const FrcCoral = (props: SvgProps) => (
-  <Svg
-    width={40}
-    height={40}
-    viewBox="0 0 40 40"
-    fill="none"
-    {...props}
-  >
+  <Svg width={40} height={40} viewBox="0 0 40 40" fill="none" {...props}>
     <Mask
       id="mask0_4017_453"
       maskUnits="userSpaceOnUse"
@@ -27,5 +21,5 @@ const FrcCoral = (props: SvgProps) => (
       />
     </G>
   </Svg>
-)
-export default FrcCoral
+);
+export default FrcCoral;

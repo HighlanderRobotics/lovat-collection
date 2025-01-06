@@ -1,13 +1,7 @@
-import * as React from "react"
-import Svg, { SvgProps, Mask, Rect, G, Path } from "react-native-svg"
+import * as React from "react";
+import Svg, { SvgProps, Mask, Rect, G, Path } from "react-native-svg";
 const FeedAlgae = (props: SvgProps) => (
-  <Svg
-    width={40}
-    height={40}
-    viewBox="0 0 40 40"
-    fill="none"
-    {...props}
-  >
+  <Svg width={40} height={40} viewBox="0 0 40 40" fill="none" {...props}>
     <Mask
       id="mask0_4092_124"
       maskUnits="userSpaceOnUse"
@@ -31,5 +25,5 @@ const FeedAlgae = (props: SvgProps) => (
       />
     </G>
   </Svg>
-)
-export default FeedAlgae
+);
+export default FeedAlgae;

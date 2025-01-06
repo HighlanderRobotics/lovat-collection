@@ -1,18 +1,14 @@
 import { GamePhase, ReportState, RobotRole } from "./ReportState";
 import {
   MatchEventType,
-  gainNoteEvents,
-  loseNoteEvents,
 } from "./MatchEventType";
 import {
-  GroundNotePosition,
+  GroundPieceContents,
   MatchEventPosition,
-  groundNotePositions,
-  matchEventPositions,
 } from "./MatchEventPosition";
 import { create } from "zustand";
 import { v4 } from "uuid";
-import { CoralPickUp, coralPickUpDescriptions } from "./PickUp";
+import { AlgaePickUp, CoralPickUp, coralPickUpDescriptions } from "./PickUp";
 import { CageResult, cageResultDescriptions } from "./CageResult";
 import { DriverAbility, driverAbilityDescriptions } from "./DriverAbility";
 import { MatchEvent } from "./MatchEvent";
@@ -22,11 +18,13 @@ import { ScoutReportEvent } from "./ScoutReport";
 export const useReportStateStore = create<ReportState>((set, get) => ({
   events: [],
   startPiece: false,
+  groundNotes: [GroundPieceContents.Both, GroundPieceContents.Both, GroundPieceContents.Both],
   gamePhase: GamePhase.Auto,
   robotRole: RobotRole.Offense,
   driverAbility: DriverAbility.Average,
   cageResult: CageResult.NotAttempted,
-  pickUp: CoralPickUp.Ground,
+  coralPickUp: CoralPickUp.None,
+  algaePickUp: AlgaePickUp.None,
   notes: "",
 
   scoutMatch: (meta) =>
@@ -34,11 +32,12 @@ export const useReportStateStore = create<ReportState>((set, get) => ({
       meta: meta!,
       events: [],
       startPiece: false,
+      groundNotes: [GroundPieceContents.Both, GroundPieceContents.Both, GroundPieceContents.Both],
       gamePhase: GamePhase.Auto,
       robotRole: RobotRole.Offense,
       driverAbility: DriverAbility.Average,
       cageResult: CageResult.NotAttempted,
-      pickUp: CoralPickUp.Ground,
+      coralPickUp: CoralPickUp.Ground,
       notes: "",
       uuid: v4(),
     })),
@@ -52,58 +51,10 @@ export const useReportStateStore = create<ReportState>((set, get) => ({
   setRobotRole: (value) => set({ robotRole: value }),
   setDriverAbility: (value) => set({ driverAbility: value }),
   setCageResult: (value) => set({ cageResult: value }),
-  setPickUp: (value) => set({ pickUp: value }),
+  setCoralPickUp: (value) => set({ coralPickUp: value }),
+  setAlgaePickUp: (value) => set({ algaePickUp: value }),
   setNotes: (value) => set({ notes: value }),
 
-  getRemainingGroundNoteLocations: () => {
-    const reportState = get();
-
-    if (!reportState || !reportState.events) {
-      return null;
-    }
-
-    const remainingGroundPieceLocations: GroundNotePosition[] = Object.keys(
-      groundNotePositions,
-    ) as GroundNotePosition[];
-
-    for (let i = 0; i < reportState.events.length; i++) {
-      const event = reportState.events[i];
-
-      if (
-        event.position &&
-        remainingGroundPieceLocations.includes(event.position)
-      ) {
-        remainingGroundPieceLocations.splice(
-          remainingGroundPieceLocations.indexOf(event.position),
-          1,
-        );
-      }
-    }
-    return remainingGroundPieceLocations;
-  },
-  getIsAmplified: () => {
-    const reportState = get();
-
-    if (!reportState || !reportState.events) {
-      return false;
-    }
-
-    let isAmplified = false;
-
-    for (let i = 0; i < reportState.events.length; i++) {
-      const event = reportState.events[i];
-
-      if (event.type === MatchEventType.StartAmplfying) {
-        isAmplified = true;
-      }
-
-      if (event.type === MatchEventType.StopAmplifying) {
-        isAmplified = false;
-      }
-    }
-
-    return isAmplified;
-  },
   getHasNote: () => {
     const reportState = get();
     let hasNote = false;
@@ -133,7 +84,7 @@ export const useReportStateStore = create<ReportState>((set, get) => ({
   getHasExited: () => {
     const reportState = get();
     return reportState.events.some(
-      (event) => event.type === MatchEventType.LeaveWing,
+      (event) => event.type === MatchEventType.AutoLeave,
     );
   },
 
@@ -176,7 +127,7 @@ export const useReportStateStore = create<ReportState>((set, get) => ({
         notes: reportState.notes,
         robotRole: reportState.robotRole,
         cage: cageResultDescriptions[reportState.cageResult].num,
-        pickUp: coralPickUpDescriptions[reportState.pickUp].num,
+        pickUp: coralPickUpDescriptions[reportState.coralPickUp].num,
         driverAbility:
           driverAbilityDescriptions[reportState.driverAbility].numericalRating,
         scouterUuid: reportState.meta.scouterUUID,
@@ -186,8 +137,8 @@ export const useReportStateStore = create<ReportState>((set, get) => ({
             ? [
                 [
                   0,
-                  MatchEventType.PickupNote,
-                  matchEventPositions[reportState.startPosition!].num,
+                  MatchEventType.PickupCoral,
+                  reportState.startPosition,
                 ] as ScoutReportEvent,
               ]
             : []),
@@ -195,8 +146,8 @@ export const useReportStateStore = create<ReportState>((set, get) => ({
             ? [
                 [
                   0,
-                  MatchEventType.StartingPosition,
-                  matchEventPositions[reportState.startPosition].num,
+                  MatchEventType.StartPosition,
+                  reportState.startPosition,
                 ] as ScoutReportEvent,
               ]
             : []),
@@ -206,7 +157,7 @@ export const useReportStateStore = create<ReportState>((set, get) => ({
                 (event.timestamp - reportState.startTimestamp!.getTime()) /
                   1000,
                 event.type,
-                matchEventPositions[event.position].num,
+                event.position,
               ] as ScoutReportEvent,
           ),
         ],
@@ -222,11 +173,12 @@ export const useReportStateStore = create<ReportState>((set, get) => ({
       startPiece: false,
       startTimestamp: undefined,
       startPosition: undefined,
+      groundNotes: [GroundPieceContents.Both, GroundPieceContents.Both, GroundPieceContents.Both],
       gamePhase: GamePhase.Auto,
       robotRole: RobotRole.Offense,
       driverAbility: DriverAbility.Average,
       cageResult: CageResult.NotAttempted,
-      pickUp: CoralPickUp.Ground,
+      coralPickUp: CoralPickUp.Ground,
       notes: "",
     }),
 }));

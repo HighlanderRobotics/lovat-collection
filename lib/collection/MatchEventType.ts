@@ -1,14 +1,14 @@
 export enum MatchEventType {
-  PickupCoral, 
+  PickupCoral,
   PickupAlgae,
-  FeedAlgae, 
-  AutoLeave, 
-  Defend, 
+  FeedAlgae,
+  AutoLeave,
+  Defend,
   ScoreNet,
-  FailNet, 
+  FailNet,
   ScoreProcessor,
-  ScoreCoral, 
-  DropAlgae, 
+  ScoreCoral,
+  DropAlgae,
   DropCoral,
   StartPosition,
 }
@@ -36,7 +36,7 @@ export const matchEventTypeDescriptions: Record<
   },
   [MatchEventType.AutoLeave]: {
     name: "Leave",
-    icon: "exit_to_app"
+    icon: "exit_to_app",
   },
   [MatchEventType.Defend]: {
     name: "Defend",
@@ -71,4 +71,3 @@ export const matchEventTypeDescriptions: Record<
     icon: "text_select_start",
   },
 };
-

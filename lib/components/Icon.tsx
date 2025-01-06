@@ -12,33 +12,15 @@ type IconProps = {
 
 export const Icon: React.FC<IconProps> = ({ name, color, size = 24 }) => {
   if (name === "frc_coral") {
-    return (
-      <FrcCoral
-        color={color}
-        width={size}
-        height={size}
-      />
-    )
+    return <FrcCoral color={color} width={size} height={size} />;
   }
 
   if (name === "frc_algae") {
-    return (
-      <FrcAlgae
-        color={color}
-        width={size}
-        height={size}
-      />
-    )
+    return <FrcAlgae color={color} width={size} height={size} />;
   }
 
   if (name === "feeder") {
-    return (
-      <FeedAlgae 
-        color={color}
-        width={size}
-        height={size}
-      />
-    )
+    return <FeedAlgae color={color} width={size} height={size} />;
   }
 
   return (

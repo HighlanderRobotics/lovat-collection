@@ -22,3 +22,16 @@ export enum MatchEventPosition {
   LevelFourC,
   // Ground Piece Positions?
 }
+
+export type StartingPosition =
+  | MatchEventPosition.StartOne
+  | MatchEventPosition.StartTwo
+  | MatchEventPosition.StartThree;
+
+
+export enum GroundPieceContents {
+  None,
+  Coral,
+  Algae,
+  Both,
+}
