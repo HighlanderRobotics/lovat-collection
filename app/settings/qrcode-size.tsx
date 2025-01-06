@@ -21,7 +21,6 @@ const EXAMPLE_SCOUT_REPORT: ScoutReport = {
   notes: "",
   robotRole: 0,
   cage: 1,
-  highNote: 0,
   pickUp: 2,
   driverAbility: 4,
   scouterUuid: "034d8eda-d579-4e83-9ccf-53bebab38724",
