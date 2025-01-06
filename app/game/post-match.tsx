@@ -16,9 +16,9 @@ import {
   driverAbilityDescriptions,
 } from "../../lib/collection/DriverAbility";
 import {
-  CageResult,
-  cageResultDescriptions,
-} from "../../lib/collection/CageResult";
+  BargeResult,
+  bargeResultDescriptions,
+} from "../../lib/collection/BargeResult";
 import {
   algaePickUpDescriptions,
   coralPickUpDescriptions,
@@ -94,14 +94,14 @@ export default function PostMatch() {
 
           <PostMatchSelector
             title="Endgame Barge Result"
-            updateStore={reportState.setCageResult}
-            items={Object.entries(cageResultDescriptions).map(
+            updateStore={reportState.setBargeResult}
+            items={Object.entries(bargeResultDescriptions).map(
               ([key, value]) => ({
                 label: value.localizedDescription,
-                value: key as CageResult,
+                value: key as BargeResult,
               }),
             )}
-            selected={reportState.cageResult}
+            selected={reportState.bargeResult}
           />
 
           <PostMatchSelector

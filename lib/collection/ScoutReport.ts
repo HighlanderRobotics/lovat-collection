@@ -20,7 +20,7 @@ export const scoutReportSchema = z.object({
   teamNumber: z.number(),
   notes: z.string(),
   robotRole: z.number(),
-  cage: z.number(),
+  barge: z.number(),
   pickUp: z.number(),
   driverAbility: z.number(),
   scouterUuid: z.string(),

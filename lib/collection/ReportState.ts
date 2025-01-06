@@ -10,7 +10,7 @@ import {
 import { MatchEventType } from "./MatchEventType";
 import { AlgaePickUp, CoralPickUp } from "./PickUp";
 import { ScoutReport } from "./ScoutReport";
-import { CageResult } from "./CageResult";
+import { BargeResult } from "./BargeResult";
 
 export enum GamePhase {
   Auto,
@@ -36,7 +36,7 @@ export type ReportState = {
   gamePhase: GamePhase;
   robotRole: RobotRole;
   driverAbility: DriverAbility;
-  cageResult: CageResult;
+  bargeResult: BargeResult;
   coralPickUp: CoralPickUp;
   algaePickUp: AlgaePickUp;
   knocksAlgae: boolean;
@@ -56,7 +56,7 @@ export type ReportState = {
   setRobotPiece: (value: PieceContainerContents) => void;
   setRobotRole: (value: RobotRole) => void;
   setDriverAbility: (value: DriverAbility) => void;
-  setCageResult: (value: CageResult) => void;
+  setBargeResult: (value: BargeResult) => void;
   setCoralPickUp: (value: CoralPickUp) => void;
   setAlgaePickUp: (value: AlgaePickUp) => void;
   setKnocksAlgae: (value: boolean) => void;

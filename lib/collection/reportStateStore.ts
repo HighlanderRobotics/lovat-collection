@@ -8,7 +8,7 @@ import {
 import { create } from "zustand";
 import { v4 } from "uuid";
 import { AlgaePickUp, CoralPickUp, coralPickUpDescriptions } from "./PickUp";
-import { CageResult, cageResultDescriptions } from "./CageResult";
+import { BargeResult, bargeResultDescriptions } from "./BargeResult";
 import { DriverAbility, driverAbilityDescriptions } from "./DriverAbility";
 import { MatchEvent } from "./MatchEvent";
 import { matchTypes } from "../models/match";
@@ -34,7 +34,7 @@ export const useReportStateStore = create<ReportState>((set, get) => ({
   gamePhase: GamePhase.Auto,
   robotRole: RobotRole.Offense,
   driverAbility: DriverAbility.Average,
-  cageResult: CageResult.NotAttempted,
+  bargeResult: BargeResult.NotAttempted,
   coralPickUp: CoralPickUp.None,
   algaePickUp: AlgaePickUp.None,
   knocksAlgae: false,
@@ -59,7 +59,7 @@ export const useReportStateStore = create<ReportState>((set, get) => ({
       gamePhase: GamePhase.Auto,
       robotRole: RobotRole.Offense,
       driverAbility: DriverAbility.Average,
-      cageResult: CageResult.NotAttempted,
+      bargeResult: BargeResult.NotAttempted,
       coralPickUp: CoralPickUp.Ground,
       notes: "",
       uuid: v4(),
@@ -81,7 +81,7 @@ export const useReportStateStore = create<ReportState>((set, get) => ({
   setRobotPiece: (value) => set({ robotPieces: value }),
   setRobotRole: (value) => set({ robotRole: value }),
   setDriverAbility: (value) => set({ driverAbility: value }),
-  setCageResult: (value) => set({ cageResult: value }),
+  setBargeResult: (value) => set({ bargeResult: value }),
   setCoralPickUp: (value) => set({ coralPickUp: value }),
   setAlgaePickUp: (value) => set({ algaePickUp: value }),
   setKnocksAlgae: (value) => set({ knocksAlgae: value }),
@@ -133,7 +133,7 @@ export const useReportStateStore = create<ReportState>((set, get) => ({
         startTime: reportState.startTimestamp?.getTime() ?? 0,
         notes: reportState.notes,
         robotRole: reportState.robotRole,
-        cage: cageResultDescriptions[reportState.cageResult].num,
+        barge: bargeResultDescriptions[reportState.bargeResult].num,
         pickUp: coralPickUpDescriptions[reportState.coralPickUp].num,
         driverAbility:
           driverAbilityDescriptions[reportState.driverAbility].numericalRating,
@@ -193,7 +193,7 @@ export const useReportStateStore = create<ReportState>((set, get) => ({
       gamePhase: GamePhase.Auto,
       robotRole: RobotRole.Offense,
       driverAbility: DriverAbility.Average,
-      cageResult: CageResult.NotAttempted,
+      bargeResult: BargeResult.NotAttempted,
       coralPickUp: CoralPickUp.Ground,
       notes: "",
     }),
