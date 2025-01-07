@@ -30,8 +30,6 @@ export type ReportState = {
   startTimestamp?: Date;
   startPosition?: MatchEventPosition;
   startPiece: boolean;
-  groundPieces: Record<MatchEventPosition, PieceContainerContents>;
-  robotPieces: PieceContainerContents;
   gamePhase: GamePhase;
   robotRole: RobotRole;
   driverAbility: DriverAbility;
@@ -48,11 +46,6 @@ export type ReportState = {
   setStartPosition: (value: MatchEventPosition) => void;
   setStartPiece: (value: boolean) => void;
   setGamePhase: (value: GamePhase) => void;
-  setGroundPiece: (
-    value: PieceContainerContents,
-    position: MatchEventPosition,
-  ) => void;
-  setRobotPiece: (value: PieceContainerContents) => void;
   setRobotRole: (value: RobotRole) => void;
   setDriverAbility: (value: DriverAbility) => void;
   setBargeResult: (value: BargeResult) => void;
@@ -63,6 +56,12 @@ export type ReportState = {
   setNotes: (value: string) => void;
 
   getHasExited: () => boolean;
+  getHasCoral: () => boolean;
+  getHasAlgae: () => boolean;
+  getRemainingGroundNotes: () => Record<
+    MatchEventPosition,
+    PieceContainerContents
+  >;
 
   addEvent: (event: {
     type: MatchEventType;

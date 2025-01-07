@@ -45,6 +45,10 @@ export const GameViewTemplate = (props: {
   const reportState = useReportStateStore();
   const { gamePhaseMessage, field, startEnabled } = props;
 
+  const [hasCoral, hasAlgae] = [
+    reportState.getHasCoral(),
+    reportState.getHasAlgae(),
+  ];
   if (!reportState.meta) return null;
 
   return (
@@ -223,6 +227,7 @@ export const GameViewTemplate = (props: {
                 </TouchableOpacity>
               </View>
               <TouchableOpacity
+                disabled={hasAlgae}
                 style={{
                   backgroundColor: "#14ceac4d",
                   borderRadius: 7,
@@ -231,6 +236,7 @@ export const GameViewTemplate = (props: {
                   flexGrow: 1,
                   alignItems: "center",
                   justifyContent: "center",
+                  opacity: !hasAlgae ? 1 : 0.25,
                 }}
                 onPress={() => {
                   reportState.addEvent({

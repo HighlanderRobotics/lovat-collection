@@ -17,20 +17,6 @@ import { ScoutReportEvent } from "./ScoutReport";
 export const useReportStateStore = create<ReportState>((set, get) => ({
   events: [],
   startPiece: false,
-  groundPieces: Object.values(groundPiecePositions).reduce(
-    (acc, curr) => ({
-      ...acc,
-      [curr]: {
-        coral: true,
-        algae: true,
-      },
-    }),
-    {} as Record<MatchEventPosition, PieceContainerContents>,
-  ),
-  robotPieces: {
-    coral: false,
-    algae: false,
-  },
   gamePhase: GamePhase.Auto,
   robotRole: RobotRole.Offense,
   driverAbility: DriverAbility.Average,
@@ -46,16 +32,6 @@ export const useReportStateStore = create<ReportState>((set, get) => ({
       meta: meta!,
       events: [],
       startPiece: false,
-      groundPieces: Object.values(groundPiecePositions).reduce(
-        (acc, curr) => ({
-          ...acc,
-          [curr]: {
-            coral: true,
-            algae: true,
-          },
-        }),
-        {} as Record<MatchEventPosition, PieceContainerContents>,
-      ),
       gamePhase: GamePhase.Auto,
       robotRole: RobotRole.Offense,
       driverAbility: DriverAbility.Average,
@@ -71,14 +47,6 @@ export const useReportStateStore = create<ReportState>((set, get) => ({
   setStartPosition: (value) => set({ startPosition: value }),
   setStartPiece: (value) => set({ startPiece: value }),
   setGamePhase: (value) => set({ gamePhase: value }),
-  setGroundPiece: (value, pos) =>
-    set((state) => ({
-      groundPieces: {
-        ...state.groundPieces,
-        [pos]: value,
-      },
-    })),
-  setRobotPiece: (value) => set({ robotPieces: value }),
   setRobotRole: (value) => set({ robotRole: value }),
   setDriverAbility: (value) => set({ driverAbility: value }),
   setBargeResult: (value) => set({ bargeResult: value }),
@@ -93,6 +61,75 @@ export const useReportStateStore = create<ReportState>((set, get) => ({
     return reportState.events.some(
       (event) => event.type === MatchEventType.AutoLeave,
     );
+  },
+  getHasCoral: () => {
+    const reportState = get();
+    let flag = reportState.startPiece;
+    reportState.events.forEach((item) => {
+      if (item.type === MatchEventType.PickupCoral) {
+        flag = true;
+      } else if (
+        item.type === MatchEventType.DropCoral ||
+        item.type === MatchEventType.ScoreCoral
+      ) {
+        flag = false;
+      }
+    });
+    return flag;
+  },
+  getHasAlgae: () => {
+    const reportState = get();
+    let flag = false;
+    reportState.events.forEach((item) => {
+      if (item.type === MatchEventType.PickupAlgae) {
+        flag = true;
+      } else if (
+        item.type === MatchEventType.DropAlgae ||
+        item.type === MatchEventType.ScoreNet ||
+        item.type === MatchEventType.ScoreProcessor
+      ) {
+        flag = false;
+      }
+    });
+    return flag;
+  },
+  getRemainingGroundNotes: () => {
+    const reportState = get();
+    let res = Object.values(groundPiecePositions).reduce(
+      (acc, curr) => ({
+        ...acc,
+        [curr]: {
+          coral: true,
+          algae: true,
+        },
+      }),
+      {} as Record<MatchEventPosition, PieceContainerContents>,
+    );
+
+    reportState.events.forEach((item) => {
+      if (item.position in groundPiecePositions) {
+        if (item.type === MatchEventType.PickupCoral) {
+          res = {
+            ...res,
+            [item.position]: {
+              ...res[item.position],
+              coral: false,
+            },
+          };
+        }
+        if (item.type === MatchEventType.PickupAlgae) {
+          res = {
+            ...res,
+            [item.position]: {
+              ...res[item.position],
+              algae: false,
+            },
+          };
+        }
+      }
+    });
+
+    return res;
   },
 
   addEvent: (event) => {
@@ -180,16 +217,6 @@ export const useReportStateStore = create<ReportState>((set, get) => ({
       startPiece: false,
       startTimestamp: undefined,
       startPosition: undefined,
-      groundPieces: Object.values(groundPiecePositions).reduce(
-        (acc, curr) => ({
-          ...acc,
-          [curr]: {
-            coral: true,
-            algae: true,
-          },
-        }),
-        {} as Record<MatchEventPosition, PieceContainerContents>,
-      ),
       gamePhase: GamePhase.Auto,
       robotRole: RobotRole.Offense,
       driverAbility: DriverAbility.Average,
