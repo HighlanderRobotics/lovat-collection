@@ -7,7 +7,12 @@ import {
 } from "./MatchEventPosition";
 import { create } from "zustand";
 import { v4 } from "uuid";
-import { AlgaePickUp, CoralPickUp, coralPickUpDescriptions } from "./PickUp";
+import {
+  AlgaePickUp,
+  algaePickUpDescriptions,
+  CoralPickUp,
+  coralPickUpDescriptions,
+} from "./PickUp";
 import { BargeResult, bargeResultDescriptions } from "./BargeResult";
 import { DriverAbility, driverAbilityDescriptions } from "./DriverAbility";
 import { MatchEvent } from "./MatchEvent";
@@ -36,7 +41,7 @@ export const useReportStateStore = create<ReportState>((set, get) => ({
       robotRole: RobotRole.Offense,
       driverAbility: DriverAbility.Average,
       bargeResult: BargeResult.NotAttempted,
-      coralPickUp: CoralPickUp.Ground,
+      coralPickUp: CoralPickUp.None,
       notes: "",
       uuid: v4(),
     })),
@@ -171,7 +176,10 @@ export const useReportStateStore = create<ReportState>((set, get) => ({
         notes: reportState.notes,
         robotRole: reportState.robotRole,
         barge: bargeResultDescriptions[reportState.bargeResult].num,
-        pickUp: coralPickUpDescriptions[reportState.coralPickUp].num,
+        coralPickUp: coralPickUpDescriptions[reportState.coralPickUp].num,
+        algaePickUp: algaePickUpDescriptions[reportState.algaePickUp].num,
+        knocksAlgae: reportState.knocksAlgae,
+        traversesUnderCage: reportState.traversesUnderCage,
         driverAbility:
           driverAbilityDescriptions[reportState.driverAbility].numericalRating,
         scouterUuid: reportState.meta.scouterUUID,
@@ -221,7 +229,7 @@ export const useReportStateStore = create<ReportState>((set, get) => ({
       robotRole: RobotRole.Offense,
       driverAbility: DriverAbility.Average,
       bargeResult: BargeResult.NotAttempted,
-      coralPickUp: CoralPickUp.Ground,
+      coralPickUp: CoralPickUp.None,
       notes: "",
     }),
 }));

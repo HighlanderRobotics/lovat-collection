@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useReportStateStore } from "../reportStateStore";
 import { router } from "expo-router";
 import { PreMatchActions } from "./actions/PreMatchActions";
@@ -113,7 +113,7 @@ export function Game() {
       field: <PreMatchActions />,
       topLeftReplacement: (
         <Checkbox
-          label="Loaded with a note"
+          label="Loaded with a coral"
           checked={reportState?.startPiece}
           onChange={reportState.setStartPiece}
         />
@@ -136,15 +136,16 @@ export function Game() {
     },
   };
 
-  const [
-    gameState,
-    // setGameState
-  ] = useState<GameState>(gameStates.testing);
+  const [gameState, setGameState] = useState<GameState>(gameStates.testing);
   const [overlay, setOverlay] = useState<OverlayState>(OverlayState.Reef);
   const [autoReefPos, setAutoReefPos] = useState<number>(-1);
-  // if (!reportState.startTimestamp) {
-  //   setGameState(gameStates.preMatch);
-  // } else {
+  useMemo(() => {
+    if (!reportState.startTimestamp) {
+      setGameState(gameStates.preMatch);
+    } else {
+      setGameState(gameStates.testing);
+    }
+  }, [reportState.startTimestamp]);
   //   if (reportState.gamePhase === GamePhase.Auto) {
   //     if (reportState.getHasExited()) {
   //       setGameState(

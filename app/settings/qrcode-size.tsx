@@ -21,7 +21,7 @@ const EXAMPLE_SCOUT_REPORT: ScoutReport = {
   notes: "",
   robotRole: 0,
   barge: 1,
-  pickUp: 2,
+  coralPickUp: 2,
   driverAbility: 4,
   scouterUuid: "034d8eda-d579-4e83-9ccf-53bebab38724",
   teamNumber: 3476,
