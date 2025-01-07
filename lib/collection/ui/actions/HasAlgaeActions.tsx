@@ -11,7 +11,7 @@ export const HasAlgaeActions = (props: {
   const addEvent = useReportStateStore((state) => state.addEvent);
   return (
     <>
-      <FieldElement edgeInsets={[0, 0.425, 0, 0.425]}>
+      <FieldElement edgeInsets={[0, 0.435, 0, 0.435]}>
         <GameAction
           color="#9cff9a"
           onPress={() => {

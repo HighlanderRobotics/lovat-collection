@@ -24,6 +24,8 @@ import { colors } from "../../colors";
 import { MatchEventType } from "../MatchEventType";
 import { Icon } from "../../components/Icon";
 import LabelSmall from "../../components/text/LabelSmall";
+import { TeleopScoreCoralActions } from "./actions/TeleopScoreCoralActions";
+import { MatchEventPosition } from "../MatchEventPosition";
 // import { colors } from "../../colors";
 // import { Icon } from "../../components/Icon";
 // import { AllianceColor } from "../../models/AllianceColor";
@@ -126,8 +128,9 @@ export function Game() {
       gamePhaseMessage: "Testing",
       field: (
         <>
-          <FloatingActions hasCoral hasAlgae gamePhase={GamePhase.Auto} />
+          <FloatingActions hasCoral hasAlgae gamePhase={GamePhase.Teleop} />
           <HasAlgaeActions setOverlay={(value) => setOverlay(value)} />
+          <TeleopScoreCoralActions />
         </>
       ),
     },
@@ -138,6 +141,7 @@ export function Game() {
     // setGameState
   ] = useState<GameState>(gameStates.testing);
   const [overlay, setOverlay] = useState<OverlayState>(OverlayState.Reef);
+  const [autoReefPos, setAutoReefPos] = useState<number>(-1);
   // if (!reportState.startTimestamp) {
   //   setGameState(gameStates.preMatch);
   // } else {
@@ -168,7 +172,9 @@ export function Game() {
     <GameViewTemplate
       {...{
         overlay: overlay,
+        reefPos: autoReefPos,
         setOverlay: (value) => setOverlay(value),
+        resetReefPos: () => setAutoReefPos(MatchEventPosition.None),
         onEnd: onEnd,
         onRestart: onRestart,
         ...gameState,

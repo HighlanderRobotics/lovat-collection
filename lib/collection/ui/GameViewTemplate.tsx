@@ -1,4 +1,4 @@
-import { Modal, Pressable, View } from "react-native";
+import { Pressable, View, TouchableOpacity } from "react-native";
 import { colors } from "../../colors";
 import { SafeAreaView } from "react-native-safe-area-context";
 import {
@@ -19,7 +19,6 @@ import { StatusBar } from "expo-status-bar";
 import * as DropdownMenu from "zeego/dropdown-menu";
 import { useReportStateStore } from "../reportStateStore";
 import React from "react";
-import { TouchableOpacity } from "react-native";
 import { Icon } from "../../components/Icon";
 import { MatchEventType } from "../MatchEventType";
 import TitleLarge from "../../components/text/TitleLarge";
@@ -37,7 +36,9 @@ export const GameViewTemplate = (props: {
   gamePhaseMessage: string;
   startEnabled?: boolean;
   overlay: OverlayState;
+  reefPos: number;
   setOverlay: (value: OverlayState) => void;
+  resetReefPos: () => void;
   onEnd: () => void;
   onRestart: () => void;
 }) => {
@@ -49,6 +50,7 @@ export const GameViewTemplate = (props: {
   return (
     <>
       <StatusBar hidden={true} backgroundColor={colors.background.default} />
+      {/* Overlay */}
       <Pressable
         pointerEvents={props.overlay !== OverlayState.None ? "auto" : "none"}
         disabled={props.overlay !== OverlayState.None}
@@ -310,25 +312,8 @@ export const GameViewTemplate = (props: {
             alignItems: "center",
           }}
         >
-          {props.topLeftReplacement ?? (
-            <View
-              style={{
-                flex: 1,
-                flexDirection: "row",
-              }}
-            >
-              <IconButton
-                icon="undo"
-                label="Undo"
-                color={colors.onBackground.default}
-                disabled={reportState?.events.length === 0}
-                onPress={() => {
-                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                  reportState.undoEvent();
-                }}
-              />
-            </View>
-          )}
+          {/* Left as null incase something should be added here */}
+          {props.topLeftReplacement ?? null}
 
           <View
             style={{ alignItems: "flex-end", gap: 2, flex: 1, marginRight: 13 }}
