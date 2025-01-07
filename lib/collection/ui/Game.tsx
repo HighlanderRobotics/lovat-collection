@@ -127,7 +127,7 @@ export function Game() {
       field: (
         <>
           <FloatingActions hasCoral hasAlgae gamePhase={GamePhase.Auto} />
-          <HasAlgaeActions />
+          <HasAlgaeActions setOverlay={(value) => setOverlay(value)} />
         </>
       ),
     },

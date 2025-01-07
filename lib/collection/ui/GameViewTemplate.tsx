@@ -242,6 +242,56 @@ export const GameViewTemplate = (props: {
             </View>
           )}
           {/* Net */}
+          {props.overlay === OverlayState.Net && (
+            <View
+              style={{
+                flexDirection: "row",
+                gap: 10,
+                width: "100%",
+              }}
+            >
+              <TouchableOpacity
+                style={{
+                  backgroundColor: "#9cff9a4d",
+                  borderRadius: 7,
+                  borderWidth: 2,
+                  borderColor: "#9cff9a",
+                  minWidth: 200,
+                  flexGrow: 1,
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+                onPress={() => {
+                  reportState.addEvent({
+                    type: MatchEventType.ScoreNet,
+                  });
+                  props.setOverlay(OverlayState.None);
+                }}
+              >
+                <TitleLarge color="#9cff9a"> Sucess </TitleLarge>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={{
+                  backgroundColor: "#b13b3b4d",
+                  borderRadius: 7,
+                  borderWidth: 2,
+                  borderColor: "#fbadad",
+                  minWidth: 200,
+                  flexGrow: 1,
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+                onPress={() => {
+                  reportState.addEvent({
+                    type: MatchEventType.PickupAlgae,
+                  });
+                  props.setOverlay(OverlayState.None);
+                }}
+              >
+                <TitleLarge color="#fbadad"> Fail </TitleLarge>
+              </TouchableOpacity>
+            </View>
+          )}
         </View>
       </Pressable>
       <View

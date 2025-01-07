@@ -3,8 +3,11 @@ import { useReportStateStore } from "../../reportStateStore";
 import { MatchEventType } from "../../MatchEventType";
 import { FieldElement } from "../FieldElement";
 import { GameAction } from "../GameAction";
+import { OverlayState } from "../GameViewTemplate";
 
-export const HasAlgaeActions = () => {
+export const HasAlgaeActions = (props: {
+  setOverlay: (value: OverlayState) => void;
+}) => {
   const addEvent = useReportStateStore((state) => state.addEvent);
   return (
     <>
@@ -12,9 +15,7 @@ export const HasAlgaeActions = () => {
         <GameAction
           color="#9cff9a"
           onPress={() => {
-            addEvent({
-              type: MatchEventType.ScoreNet,
-            });
+            props.setOverlay(OverlayState.Net);
           }}
         ></GameAction>
       </FieldElement>
