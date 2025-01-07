@@ -1,4 +1,4 @@
-import { View } from "react-native";
+import { Modal, Pressable, View } from "react-native";
 import { colors } from "../../colors";
 import { SafeAreaView } from "react-native-safe-area-context";
 import {
@@ -19,12 +19,25 @@ import { StatusBar } from "expo-status-bar";
 import * as DropdownMenu from "zeego/dropdown-menu";
 import { useReportStateStore } from "../reportStateStore";
 import React from "react";
+import { TouchableOpacity } from "react-native";
+import { Icon } from "../../components/Icon";
+import { MatchEventType } from "../MatchEventType";
+import TitleLarge from "../../components/text/TitleLarge";
+
+export enum OverlayState {
+  None,
+  GroundPiece,
+  Reef,
+  Net,
+}
 
 export const GameViewTemplate = (props: {
   field: React.ReactNode;
   topLeftReplacement?: React.ReactNode;
   gamePhaseMessage: string;
   startEnabled?: boolean;
+  overlay: OverlayState;
+  setOverlay: (value: OverlayState) => void;
   onEnd: () => void;
   onRestart: () => void;
 }) => {
@@ -36,6 +49,201 @@ export const GameViewTemplate = (props: {
   return (
     <>
       <StatusBar hidden={true} backgroundColor={colors.background.default} />
+      <Pressable
+        pointerEvents={props.overlay !== OverlayState.None ? "auto" : "none"}
+        disabled={props.overlay !== OverlayState.None}
+        style={{
+          backgroundColor: "#45454540",
+          opacity: props.overlay !== OverlayState.None ? 1 : 0,
+          position: "absolute",
+          zIndex: 50,
+          width: "100%",
+          height: "100%",
+        }}
+      >
+        <View
+          style={{
+            marginHorizontal: 40,
+            marginVertical: 20,
+            borderRadius: 14,
+            padding: 10,
+            backgroundColor: colors.background.default,
+            flexGrow: 1,
+            shadowColor: "#00000040",
+            elevation: 4,
+            shadowOpacity: 1,
+            shadowOffset: {
+              width: 0,
+              height: 4,
+            },
+            shadowRadius: 4,
+            flexDirection: "row",
+          }}
+        >
+          <TouchableOpacity
+            style={{
+              position: "absolute",
+              right: 16,
+              top: 16,
+              width: 40,
+              height: 40,
+              alignItems: "center",
+              justifyContent: "center",
+              borderRadius: 50,
+              backgroundColor: colors.secondaryContainer.default,
+              zIndex: 1,
+            }}
+            onPress={() => props.setOverlay(OverlayState.None)}
+            activeOpacity={0.1}
+          >
+            <Icon name="close" color={colors.onBackground.default} size={32} />
+          </TouchableOpacity>
+          {/* Ground Pieces */}
+          {props.overlay === OverlayState.GroundPiece && (
+            <View
+              style={{
+                flexDirection: "row",
+                gap: 10,
+                width: "100%",
+              }}
+            >
+              <TouchableOpacity
+                style={{
+                  backgroundColor: "#ffffff4d",
+                  borderRadius: 7,
+                  borderWidth: 2,
+                  borderColor: "#ffffff",
+                  flexGrow: 1,
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+                onPress={() => {
+                  reportState.addEvent({
+                    type: MatchEventType.PickupCoral,
+                  });
+                  props.setOverlay(OverlayState.None);
+                }}
+              >
+                <Icon name="frc_coral" color="#ffffff" size={100} />
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={{
+                  backgroundColor: "#14ceac4d",
+                  borderRadius: 7,
+                  borderWidth: 2,
+                  borderColor: "#14ceac",
+                  flexGrow: 1,
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+                onPress={() => {
+                  reportState.addEvent({
+                    type: MatchEventType.PickupAlgae,
+                  });
+                  props.setOverlay(OverlayState.None);
+                }}
+              >
+                <Icon name="frc_algae" color="#14ceac" size={100} />
+              </TouchableOpacity>
+            </View>
+          )}
+          {/* Reef */}
+          {props.overlay === OverlayState.Reef && (
+            <View
+              style={{
+                flexDirection: "column",
+                gap: 10,
+                width: "100%",
+              }}
+            >
+              <View
+                style={{
+                  height: "70%",
+                  flexDirection: "row",
+                  gap: 10,
+                }}
+              >
+                <TouchableOpacity
+                  style={{
+                    backgroundColor: "#9cff9a4d",
+                    borderRadius: 7,
+                    borderWidth: 2,
+                    borderColor: "#9cff9a",
+                    flexGrow: 1,
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                  onPress={() => {}}
+                >
+                  <TitleLarge color="#9cff9a">L1</TitleLarge>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={{
+                    backgroundColor: "#9cff9a4d",
+                    borderRadius: 7,
+                    borderWidth: 2,
+                    borderColor: "#9cff9a",
+                    flexGrow: 1,
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                  onPress={() => {}}
+                >
+                  <TitleLarge color="#9cff9a">L2</TitleLarge>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={{
+                    backgroundColor: "#9cff9a4d",
+                    borderRadius: 7,
+                    borderWidth: 2,
+                    borderColor: "#9cff9a",
+                    flexGrow: 1,
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                  onPress={() => {}}
+                >
+                  <TitleLarge color="#9cff9a">L3</TitleLarge>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={{
+                    backgroundColor: "#9cff9a4d",
+                    borderRadius: 7,
+                    borderWidth: 2,
+                    borderColor: "#9cff9a",
+                    flexGrow: 1,
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                  onPress={() => {}}
+                >
+                  <TitleLarge color="#9cff9a">L4</TitleLarge>
+                </TouchableOpacity>
+              </View>
+              <TouchableOpacity
+                style={{
+                  backgroundColor: "#14ceac4d",
+                  borderRadius: 7,
+                  borderWidth: 2,
+                  borderColor: "#14ceac",
+                  flexGrow: 1,
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+                onPress={() => {
+                  reportState.addEvent({
+                    type: MatchEventType.PickupAlgae,
+                  });
+                  props.setOverlay(OverlayState.None);
+                }}
+              >
+                <Icon name="frc_algae" color="#14ceac" size={60} />
+              </TouchableOpacity>
+            </View>
+          )}
+          {/* Net */}
+        </View>
+      </Pressable>
       <View
         style={{
           backgroundColor: colors.secondaryContainer.default,

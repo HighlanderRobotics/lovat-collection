@@ -2,11 +2,11 @@ import React, { useEffect, useState } from "react";
 import { useReportStateStore } from "../reportStateStore";
 import { router } from "expo-router";
 import { PreMatchActions } from "./actions/PreMatchActions";
-import { GameViewTemplate } from "./GameViewTemplate";
+import { GameViewTemplate, OverlayState } from "./GameViewTemplate";
 import { GamePhase } from "../ReportState";
 import { Checkbox } from "../../components/Checkbox";
 // import { MatchEventType } from "../MatchEventType";
-import { HasNoteActions } from "./actions/HasAlgaeActions";
+import { HasAlgaeActions } from "./actions/HasAlgaeActions";
 import { ExitWingAction } from "./actions/ExitWingAction";
 import * as Haptics from "expo-haptics";
 import {
@@ -118,40 +118,6 @@ export function Game() {
       ),
       startEnabled: reportState.startPosition !== undefined,
     },
-    autoExitedNote: {
-      gamePhaseMessage: "Autonomous",
-      field: <HasNoteActions />,
-    },
-    autoExitedNoNote: {
-      gamePhaseMessage: "Autonomous",
-      field: <AutoCollectGroundPieceActions />,
-    },
-    autoNotExitedNote: {
-      gamePhaseMessage: "Autonomous",
-      field: (
-        <>
-          <HasNoteActions />,
-          <ExitWingAction />
-        </>
-      ),
-    },
-    autoNotExitedNoNote: {
-      gamePhaseMessage: "Autonomous",
-      field: <ExitWingAction />,
-    },
-    teleopNote: {
-      gamePhaseMessage: "Teleop",
-      field: (
-        <>
-          {/* <FloatingActions feedEnabled /> */}
-          {/* <HasNoteActions trap /> */}
-        </>
-      ),
-    },
-    teleopNoNote: {
-      gamePhaseMessage: "Teleop",
-      field: <>{/* <FloatingActions pickupEnabled /> */}</>,
-    },
     unknown: {
       gamePhaseMessage: "Problem finding phase",
       field: <></>,
@@ -161,9 +127,7 @@ export function Game() {
       field: (
         <>
           <FloatingActions hasCoral hasAlgae gamePhase={GamePhase.Auto} />
-          {/* <PreMatchActions /> */}
-          {/* <ExitWingAction /> */}
-          <AutoCoralStationActions />
+          <HasAlgaeActions />
         </>
       ),
     },
@@ -173,7 +137,7 @@ export function Game() {
     gameState,
     // setGameState
   ] = useState<GameState>(gameStates.testing);
-
+  const [overlay, setOverlay] = useState<OverlayState>(OverlayState.Reef);
   // if (!reportState.startTimestamp) {
   //   setGameState(gameStates.preMatch);
   // } else {
@@ -203,6 +167,8 @@ export function Game() {
   return (
     <GameViewTemplate
       {...{
+        overlay: overlay,
+        setOverlay: (value) => setOverlay(value),
         onEnd: onEnd,
         onRestart: onRestart,
         ...gameState,
