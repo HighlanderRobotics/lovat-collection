@@ -21,7 +21,7 @@ import { ScoutReportEvent } from "./ScoutReport";
 
 export const useReportStateStore = create<ReportState>((set, get) => ({
   events: [],
-  startPiece: false,
+  startPiece: true,
   gamePhase: GamePhase.Auto,
   robotRole: RobotRole.Offense,
   driverAbility: DriverAbility.Average,
@@ -36,7 +36,7 @@ export const useReportStateStore = create<ReportState>((set, get) => ({
     set(() => ({
       meta: meta!,
       events: [],
-      startPiece: false,
+      startPiece: true,
       gamePhase: GamePhase.Auto,
       robotRole: RobotRole.Offense,
       driverAbility: DriverAbility.Average,
@@ -224,7 +224,7 @@ export const useReportStateStore = create<ReportState>((set, get) => ({
       uuid: undefined,
       meta: undefined,
       events: [],
-      startPiece: false,
+      startPiece: true,
       startTimestamp: undefined,
       startPosition: undefined,
       gamePhase: GamePhase.Auto,
