@@ -357,6 +357,7 @@ const FloatingActions = ({
             }
             style={{
               flex: 1,
+              width: "50%",
               backgroundColor: "#ffffff4d",
               opacity: !(gamePhase === GamePhase.Auto && !hasCoral) ? 1 : 0,
               borderRadius: 7,
@@ -403,6 +404,7 @@ const FloatingActions = ({
             }
             style={{
               flex: 1,
+              width: "50%",
               backgroundColor: "#14ceac4d",
               opacity: !(gamePhase === GamePhase.Auto && !hasAlgae) ? 1 : 0,
               borderRadius: 7,

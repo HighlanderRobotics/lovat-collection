@@ -21,11 +21,11 @@ export enum MatchEventPosition {
   LevelFourA,
   LevelFourB,
   LevelFourC,
-  GroundPieceA,
-  GroundPieceB,
-  GroundPieceC,
-  CoralStationA,
-  CoralStationB,
+  GroundPieceRedBarge,
+  GroundPieceCenter,
+  GroundPieceBlueBarge,
+  CoralStationRedBarge,
+  CoralStationBlueBarge,
 }
 
 export const startingPositions: Record<string, MatchEventPosition> = {
@@ -36,9 +36,9 @@ export const startingPositions: Record<string, MatchEventPosition> = {
 } as const;
 
 export const groundPiecePositions: Record<string, MatchEventPosition> = {
-  GroundPieceA: MatchEventPosition.GroundPieceA,
-  GroundPieceB: MatchEventPosition.GroundPieceB,
-  GroundPieceC: MatchEventPosition.GroundPieceC,
+  GroundPieceA: MatchEventPosition.GroundPieceRedBarge,
+  GroundPieceB: MatchEventPosition.GroundPieceCenter,
+  GroundPieceC: MatchEventPosition.GroundPieceBlueBarge,
 };
 
 // Can be used for the robot and/or ground pieces
