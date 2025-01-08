@@ -276,7 +276,7 @@ export const GameViewTemplate = (props: {
                   props.setOverlay(OverlayState.None);
                 }}
               >
-                <TitleLarge color="#9cff9a"> Sucess </TitleLarge>
+                <TitleLarge color="#9cff9a"> Success </TitleLarge>
               </TouchableOpacity>
               <TouchableOpacity
                 style={{
