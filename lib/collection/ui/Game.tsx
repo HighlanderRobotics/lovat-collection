@@ -138,7 +138,10 @@ export function Game() {
       gamePhaseMessage: "Auto",
       field: (
         <>
-          <AutoCollectGroundPieceActions />
+          <AutoCollectGroundPieceActions
+            setOverlay={(value) => setOverlay(value)}
+            setOverlayPos={(value) => setOverlayPos(value)}
+          />
           <AutoCoralStationActions />
           <FloatingActions gamePhase={GamePhase.Auto} />
         </>
@@ -150,7 +153,10 @@ export function Game() {
       field: (
         <>
           {/* <AutoReefActions /> */}
-          <AutoCollectGroundPieceActions />
+          <AutoCollectGroundPieceActions
+            setOverlay={(value) => setOverlay(value)}
+            setOverlayPos={(value) => setOverlayPos(value)}
+          />
           <FloatingActions hasCoral gamePhase={GamePhase.Auto} />
         </>
       ),
@@ -161,7 +167,10 @@ export function Game() {
       field: (
         <>
           <HasAlgaeActions setOverlay={(value) => setOverlay(value)} />
-          <AutoCollectGroundPieceActions />
+          <AutoCollectGroundPieceActions
+            setOverlay={(value) => setOverlay(value)}
+            setOverlayPos={(value) => setOverlayPos(value)}
+          />
           <AutoCoralStationActions />
           <FloatingActions hasAlgae gamePhase={GamePhase.Auto} />
         </>
@@ -174,7 +183,6 @@ export function Game() {
         <>
           {/* <AutoReefActions /> */}
           <HasAlgaeActions setOverlay={(value) => setOverlay(value)} />
-          <AutoCollectGroundPieceActions />
           <AutoCoralStationActions />
           <FloatingActions hasCoral hasAlgae gamePhase={GamePhase.Auto} />
         </>
@@ -232,13 +240,19 @@ export function Game() {
         <>
           <FloatingActions hasCoral hasAlgae gamePhase={GamePhase.Teleop} />
           <HasAlgaeActions setOverlay={(value) => setOverlay(value)} />
-          <TeleopScoreCoralActions />
+          {/* <TeleopScoreCoralActions /> */}
+          <AutoCollectGroundPieceActions
+            setOverlay={(value) => setOverlay(value)}
+            setOverlayPos={(value) => setOverlayPos(value)}
+          />
+          <AutoCoralStationActions />
         </>
       ),
     },
   } as const;
 
   const gameState: GameState = (() => {
+    return gameStates.testing;
     const hasCoral = reportState.getHasCoral();
     const hasAlgae = reportState.getHasAlgae();
     const hasExited = reportState.getHasExited();
@@ -271,14 +285,14 @@ export function Game() {
   })();
 
   const [overlay, setOverlay] = useState<OverlayState>(OverlayState.Reef);
-  const [autoReefPos, setAutoReefPos] = useState<number>(-1);
+  const [overlayPos, setOverlayPos] = useState<number>(-1);
   return (
     <GameViewTemplate
       {...{
         overlay: overlay,
-        reefPos: autoReefPos,
+        overlayPos: overlayPos,
         setOverlay: (value) => setOverlay(value),
-        resetReefPos: () => setAutoReefPos(MatchEventPosition.None),
+        resetOverlayPos: () => setOverlayPos(MatchEventPosition.None),
         onEnd: onEnd,
         onRestart: onRestart,
         ...gameState,

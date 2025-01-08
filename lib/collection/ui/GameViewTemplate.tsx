@@ -36,9 +36,9 @@ export const GameViewTemplate = (props: {
   gamePhaseMessage: string;
   startEnabled?: boolean;
   overlay: OverlayState;
-  reefPos: number;
+  overlayPos: number;
   setOverlay: (value: OverlayState) => void;
-  resetReefPos: () => void;
+  resetOverlayPos: () => void;
   onEnd: () => void;
   onRestart: () => void;
 }) => {
