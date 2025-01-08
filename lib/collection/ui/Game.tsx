@@ -105,7 +105,7 @@ export function Game() {
     startEnabled?: boolean;
   };
 
-  const gameStates: { [key: string]: GameState } = {
+  const gameStates: Record<string, GameState> = {
     preMatch: {
       gamePhaseMessage: "Pre-Match",
       field: <PreMatchActions />,
@@ -172,6 +172,7 @@ export function Game() {
       gamePhaseMessage: "Auto",
       field: (
         <>
+          {/* <AutoReefActions /> */}
           <HasAlgaeActions setOverlay={(value) => setOverlay(value)} />
           <AutoCollectGroundPieceActions />
           <AutoCoralStationActions />
@@ -235,12 +236,36 @@ export function Game() {
         </>
       ),
     },
-  };
+  } as const;
 
   const gameState: GameState = (() => {
+    const hasCoral = reportState.getHasCoral();
+    const hasAlgae = reportState.getHasAlgae();
+    const hasExited = reportState.getHasExited();
+
     if (!reportState.startTimestamp) {
       return gameStates.preMatch;
     } else if (reportState.gamePhase === GamePhase.Auto) {
+      if (!hasExited) {
+        if (hasCoral) return gameStates.autoHasCoralNotExited;
+        else return gameStates.autoNoCoralNotExited;
+      } else {
+        if (hasCoral) {
+          if (hasAlgae) return gameStates.autoHasBothExited;
+          else return gameStates.autoHasCoralExited;
+        } else if (hasAlgae) {
+          return gameStates.autoHasAlgaeExited;
+        }
+
+        return gameStates.autoNoPieceExited;
+      }
+    } else if (reportState.gamePhase === GamePhase.Teleop) {
+      if (hasCoral) {
+        if (hasAlgae) return gameStates.teleopHasBoth;
+        else return gameStates.teleopHasCoral;
+      } else if (hasAlgae) return gameStates.teleopHasAlgae;
+
+      return gameStates.teleopNoPiece;
     }
     return gameStates.unknown;
   })();
