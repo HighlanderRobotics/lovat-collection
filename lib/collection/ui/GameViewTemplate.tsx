@@ -291,7 +291,7 @@ export const GameViewTemplate = (props: {
                 }}
                 onPress={() => {
                   reportState.addEvent({
-                    type: MatchEventType.PickupAlgae,
+                    type: MatchEventType.FailNet,
                   });
                   props.setOverlay(OverlayState.None);
                 }}

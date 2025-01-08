@@ -91,6 +91,7 @@ export const useReportStateStore = create<ReportState>((set, get) => ({
       } else if (
         item.type === MatchEventType.DropAlgae ||
         item.type === MatchEventType.ScoreNet ||
+        item.type === MatchEventType.FailNet ||
         item.type === MatchEventType.ScoreProcessor ||
         item.type === MatchEventType.FeedAlgae
       ) {
