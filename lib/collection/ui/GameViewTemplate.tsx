@@ -179,7 +179,12 @@ export const GameViewTemplate = (props: {
                     alignItems: "center",
                     justifyContent: "center",
                   }}
-                  onPress={() => {}}
+                  onPress={() =>
+                    reportState.addEvent({
+                      type: MatchEventType.ScoreCoral,
+                      position: props.overlayPos + (1 - 1) * 3,
+                    })
+                  }
                 >
                   <TitleLarge color="#9cff9a">L1</TitleLarge>
                 </TouchableOpacity>
@@ -193,7 +198,12 @@ export const GameViewTemplate = (props: {
                     alignItems: "center",
                     justifyContent: "center",
                   }}
-                  onPress={() => {}}
+                  onPress={() => {
+                    reportState.addEvent({
+                      type: MatchEventType.ScoreCoral,
+                      position: props.overlayPos + (2 - 1) * 3,
+                    });
+                  }}
                 >
                   <TitleLarge color="#9cff9a">L2</TitleLarge>
                 </TouchableOpacity>
@@ -207,7 +217,12 @@ export const GameViewTemplate = (props: {
                     alignItems: "center",
                     justifyContent: "center",
                   }}
-                  onPress={() => {}}
+                  onPress={() => {
+                    reportState.addEvent({
+                      type: MatchEventType.ScoreCoral,
+                      position: props.overlayPos + (3 - 1) * 3,
+                    });
+                  }}
                 >
                   <TitleLarge color="#9cff9a">L3</TitleLarge>
                 </TouchableOpacity>
@@ -221,7 +236,12 @@ export const GameViewTemplate = (props: {
                     alignItems: "center",
                     justifyContent: "center",
                   }}
-                  onPress={() => {}}
+                  onPress={() => {
+                    reportState.addEvent({
+                      type: MatchEventType.ScoreCoral,
+                      position: props.overlayPos + (4 - 1) * 3,
+                    });
+                  }}
                 >
                   <TitleLarge color="#9cff9a">L4</TitleLarge>
                 </TouchableOpacity>

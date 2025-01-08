@@ -252,7 +252,7 @@ export function Game() {
   } as const;
 
   const gameState: GameState = (() => {
-    return gameStates.autoHasCoralNotExited;
+    // return gameStates.testing;
     const hasCoral = reportState.getHasCoral();
     const hasAlgae = reportState.getHasAlgae();
     const hasExited = reportState.getHasExited();
