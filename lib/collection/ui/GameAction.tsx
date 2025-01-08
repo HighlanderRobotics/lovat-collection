@@ -3,6 +3,42 @@ import { DimensionValue, TouchableOpacity, View } from "react-native";
 import * as Haptics from "expo-haptics";
 import { Icon } from "../../components/Icon";
 import { useFieldRelativeDimensions } from "../useFieldRelativeDimensions";
+import Svg, { Path } from "react-native-svg";
+import svgPathBounds from 'svg-path-bounds';
+
+
+const PressableContainer = (props: {
+  onPress: () => void;
+  children?: React.ReactNode;
+  color: string;
+  fieldRelativePadding?: [
+    DimensionValue,
+    DimensionValue,
+    DimensionValue,
+    DimensionValue,
+  ];
+} & ({ borderRadius?: number } | { svgPath: string })) => {
+  const [paddingTop, paddingRight, paddingBottom, paddingLeft] = props.fieldRelativePadding ?? [0, 0, 0, 0];
+
+
+  if ("svgPath" in props) {
+    const [xMin, yMin, xMax, yMax] = svgPathBounds(props.svgPath);
+
+    return (
+      <Svg
+        height="100%"
+        width="100%"
+        viewBox={`${xMin} ${yMin} ${xMax - xMin} ${yMax - yMin}`}
+      >
+        <Path
+          d={props.svgPath}
+          fill={props.color}
+          opacity={0.3}
+        />
+      </Svg>
+    )
+  }
+}
 
 export const GameAction = ({
   onPress,
@@ -10,10 +46,10 @@ export const GameAction = ({
   icon,
   color,
   iconColor,
-  borderRadius,
   backgroundViewReplacement,
   fieldRelativePadding,
   iconSize,
+  ...props
 }: {
   onPress: () => void;
   children?: React.ReactNode;
@@ -22,37 +58,27 @@ export const GameAction = ({
   icon?: string;
   iconColor?: string;
   iconSize?: number;
-  borderRadius?: number;
   fieldRelativePadding?: [
     DimensionValue,
     DimensionValue,
     DimensionValue,
     DimensionValue,
   ];
-}) => {
+} & ({ borderRadius?: number } | { svgPath: string })) => {
   const [paddingTop, paddingRight, paddingBottom, paddingLeft] =
     useFieldRelativeDimensions(fieldRelativePadding ?? [0, 0, 0, 0]);
 
   return (
-    <TouchableOpacity
+    <PressableContainer
       onPress={() => {
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
         onPress();
       }}
-      style={{
-        height: "100%",
-        width: "100%",
-        borderRadius: borderRadius ?? 7,
-        position: "relative",
-        overflow: "hidden",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        paddingTop: paddingTop,
-        paddingRight: paddingRight,
-        paddingBottom: paddingBottom,
-        paddingLeft: paddingLeft,
-      }}
+      color={color}
+      fieldRelativePadding={fieldRelativePadding}
+      borderRadius={("borderRadius" in props && props.borderRadius) || 7}
+      svgPath={"svgPath" in props && props.svgPath || undefined}
+
     >
       {backgroundViewReplacement ?? (
         <View

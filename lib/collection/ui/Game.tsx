@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useReportStateStore } from "../reportStateStore";
 import { router } from "expo-router";
 import { PreMatchActions } from "./actions/PreMatchActions";
@@ -26,6 +26,7 @@ import { Icon } from "../../components/Icon";
 import LabelSmall from "../../components/text/LabelSmall";
 import { TeleopScoreCoralActions } from "./actions/TeleopScoreCoralActions";
 import { MatchEventPosition } from "../MatchEventPosition";
+import { AutoReefActions } from "./actions/AutoReefActions";
 // import { colors } from "../../colors";
 // import { Icon } from "../../components/Icon";
 // import { AllianceColor } from "../../models/AllianceColor";
@@ -152,7 +153,7 @@ export function Game() {
       gamePhaseMessage: "Auto",
       field: (
         <>
-          {/* <AutoReefActions /> */}
+          <AutoReefActions setOverlay={(value) => setOverlay(value)} />
           <AutoCollectGroundPieceActions
             setOverlay={(value) => setOverlay(value)}
             setOverlayPos={(value) => setOverlayPos(value)}
@@ -241,6 +242,7 @@ export function Game() {
           <FloatingActions hasCoral hasAlgae gamePhase={GamePhase.Teleop} />
           <HasAlgaeActions setOverlay={(value) => setOverlay(value)} />
           {/* <TeleopScoreCoralActions /> */}
+          <AutoReefActions setOverlay={(value) => setOverlay(value)} />
           <AutoCollectGroundPieceActions
             setOverlay={(value) => setOverlay(value)}
             setOverlayPos={(value) => setOverlayPos(value)}
@@ -252,7 +254,7 @@ export function Game() {
   } as const;
 
   const gameState: GameState = (() => {
-    // return gameStates.testing;
+    return gameStates.testing;
     const hasCoral = reportState.getHasCoral();
     const hasAlgae = reportState.getHasAlgae();
     const hasExited = reportState.getHasExited();
