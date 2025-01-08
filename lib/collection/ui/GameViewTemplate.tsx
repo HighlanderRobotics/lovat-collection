@@ -114,6 +114,7 @@ export const GameViewTemplate = (props: {
               }}
             >
               <TouchableOpacity
+                disabled={hasCoral}
                 style={{
                   backgroundColor: "#ffffff4d",
                   borderRadius: 7,
@@ -122,6 +123,7 @@ export const GameViewTemplate = (props: {
                   flexGrow: 1,
                   alignItems: "center",
                   justifyContent: "center",
+                  opacity: !hasCoral ? 1 : 0.25,
                 }}
                 onPress={() => {
                   reportState.addEvent({
@@ -133,6 +135,7 @@ export const GameViewTemplate = (props: {
                 <Icon name="frc_coral" color="#ffffff" size={100} />
               </TouchableOpacity>
               <TouchableOpacity
+                disabled={hasAlgae}
                 style={{
                   backgroundColor: "#14ceac4d",
                   borderRadius: 7,
@@ -141,6 +144,7 @@ export const GameViewTemplate = (props: {
                   flexGrow: 1,
                   alignItems: "center",
                   justifyContent: "center",
+                  opacity: !hasAlgae ? 1 : 0.25,
                 }}
                 onPress={() => {
                   reportState.addEvent({

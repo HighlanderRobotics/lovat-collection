@@ -4,7 +4,6 @@ import { MatchEvent } from "./MatchEvent";
 import {
   PieceContainerContents,
   MatchEventPosition,
-  groundPiecePositions,
 } from "./MatchEventPosition";
 import { MatchEventType } from "./MatchEventType";
 import { AlgaePickUp, CoralPickUp } from "./PickUp";
