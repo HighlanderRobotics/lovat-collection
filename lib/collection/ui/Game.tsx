@@ -38,8 +38,6 @@ import { MatchEventPosition } from "../MatchEventPosition";
 export function Game() {
   const reportState = useReportStateStore();
 
-  // const addEvent = reportState.addEvent;
-
   const [autoTimeout, setAutoTimeout] = useState<NodeJS.Timeout | null>(null);
 
   const setPhase = reportState.setGamePhase;
@@ -120,10 +118,113 @@ export function Game() {
       ),
       startEnabled: reportState.startPosition !== undefined,
     },
+
+    autoNoCoralNotExited: {
+      gamePhaseMessage: "Auto",
+      field: <ExitWingAction />,
+    },
+
+    autoHasCoralNotExited: {
+      gamePhaseMessage: "Auto",
+      field: (
+        <>
+          <ExitWingAction />
+          <FloatingActions hasCoral gamePhase={GamePhase.Auto} />
+        </>
+      ),
+    },
+
+    autoNoPieceExited: {
+      gamePhaseMessage: "Auto",
+      field: (
+        <>
+          <AutoCollectGroundPieceActions />
+          <AutoCoralStationActions />
+          <FloatingActions gamePhase={GamePhase.Auto} />
+        </>
+      ),
+    },
+
+    autoHasCoralExited: {
+      gamePhaseMessage: "Auto",
+      field: (
+        <>
+          {/* <AutoReefActions /> */}
+          <AutoCollectGroundPieceActions />
+          <FloatingActions hasCoral gamePhase={GamePhase.Auto} />
+        </>
+      ),
+    },
+
+    autoHasAlgaeExited: {
+      gamePhaseMessage: "Auto",
+      field: (
+        <>
+          <HasAlgaeActions setOverlay={(value) => setOverlay(value)} />
+          <AutoCollectGroundPieceActions />
+          <AutoCoralStationActions />
+          <FloatingActions hasAlgae gamePhase={GamePhase.Auto} />
+        </>
+      ),
+    },
+
+    autoHasBothExited: {
+      gamePhaseMessage: "Auto",
+      field: (
+        <>
+          <HasAlgaeActions setOverlay={(value) => setOverlay(value)} />
+          <AutoCollectGroundPieceActions />
+          <AutoCoralStationActions />
+          <FloatingActions hasCoral hasAlgae gamePhase={GamePhase.Auto} />
+        </>
+      ),
+    },
+
+    teleopNoPiece: {
+      gamePhaseMessage: "Teleop",
+      field: (
+        <>
+          <FloatingActions gamePhase={GamePhase.Teleop} />
+        </>
+      ),
+    },
+
+    teleopHasCoral: {
+      gamePhaseMessage: "Teleop",
+      field: (
+        <>
+          <FloatingActions hasCoral gamePhase={GamePhase.Teleop} />
+          <TeleopScoreCoralActions />
+        </>
+      ),
+    },
+
+    teleopHasAlgae: {
+      gamePhaseMessage: "Teleop",
+      field: (
+        <>
+          <FloatingActions hasAlgae gamePhase={GamePhase.Teleop} />
+          <HasAlgaeActions setOverlay={(value) => setOverlay(value)} />
+        </>
+      ),
+    },
+
+    teleopHasBoth: {
+      gamePhaseMessage: "Teleop",
+      field: (
+        <>
+          <FloatingActions hasCoral hasAlgae gamePhase={GamePhase.Teleop} />
+          <HasAlgaeActions setOverlay={(value) => setOverlay(value)} />
+          <TeleopScoreCoralActions />
+        </>
+      ),
+    },
+
     unknown: {
       gamePhaseMessage: "Problem finding phase",
       field: <></>,
     },
+
     testing: {
       gamePhaseMessage: "Testing",
       field: (
@@ -136,39 +237,16 @@ export function Game() {
     },
   };
 
-  const [gameState, setGameState] = useState<GameState>(gameStates.testing);
+  const gameState: GameState = (() => {
+    if (!reportState.startTimestamp) {
+      return gameStates.preMatch;
+    } else if (reportState.gamePhase === GamePhase.Auto) {
+    }
+    return gameStates.unknown;
+  })();
+
   const [overlay, setOverlay] = useState<OverlayState>(OverlayState.Reef);
   const [autoReefPos, setAutoReefPos] = useState<number>(-1);
-  useMemo(() => {
-    if (!reportState.startTimestamp) {
-      setGameState(gameStates.preMatch);
-    } else {
-      setGameState(gameStates.testing);
-    }
-  }, [reportState.startTimestamp]);
-  //   if (reportState.gamePhase === GamePhase.Auto) {
-  //     if (reportState.getHasExited()) {
-  //       setGameState(
-  //         reportState.getHasNote()
-  //           ? gameStates.autoExitedNote
-  //           : gameStates.autoExitedNoNote,
-  //       );
-  //     } else {
-  //       setGameState(
-  //         reportState.getHasNote()
-  //           ? gameStates.autoNotExitedNote
-  //           : gameStates.autoNotExitedNoNote,
-  //       );
-  //     }
-  //   } else {
-  //     setGameState(
-  //       reportState.getHasNote()
-  //         ? gameStates.teleopNote
-  //         : gameStates.teleopNoNote,
-  //     );
-  //   }
-  // }
-
   return (
     <GameViewTemplate
       {...{
