@@ -11,6 +11,12 @@ import { useQrCodeSizeStore } from "../../lib/storage/userStores";
 import Slider from "@react-native-community/slider";
 import LabelSmall from "../../lib/components/text/LabelSmall";
 import React from "react";
+import { MatchEventType } from "../../lib/collection/MatchEventType";
+import { MatchEventPosition } from "../../lib/collection/MatchEventPosition";
+import {
+  AlgaePickUp,
+  algaePickUpDescriptions,
+} from "../../lib/collection/PickUp";
 
 const EXAMPLE_SCOUT_REPORT: ScoutReport = {
   uuid: "f23698c6-a084-4659-9644-fc91c9f88d14",
@@ -22,47 +28,37 @@ const EXAMPLE_SCOUT_REPORT: ScoutReport = {
   robotRole: 0,
   barge: 1,
   coralPickUp: 2,
+  algaePickUp: algaePickUpDescriptions[AlgaePickUp.Reef].num,
+  knocksAlgae: false,
+  traversesUnderCage: true,
   driverAbility: 4,
   scouterUuid: "034d8eda-d579-4e83-9ccf-53bebab38724",
   teamNumber: 3476,
   events: [
-    [0, 1, 5],
-    [0, 8, 5],
-    [2.991, 3, 2],
-    [3.601, 0, 0],
-    [4.535, 1, 9],
-    [5.333, 3, 2],
-    [7.501, 1, 14],
-    [10.744, 3, 2],
-    [12.365, 1, 8],
-    [15.265, 3, 2],
-    [16.165, 1, 10],
-    [16.592, 3, 2],
-    [30.086, 1, 0],
-    [39.767, 3, 1],
-    [48.89, 1, 0],
-    [54.458, 3, 1],
-    [59.577, 1, 0],
-    [60.658, 3, 2],
-    [61.238, 6, 0],
-    [71.286, 7, 0],
-    [77.185, 1, 0],
-    [78.794, 3, 1],
-    [89.164, 1, 0],
-    [95.08, 3, 1],
-    [99.253, 1, 0],
-    [100.583, 2, 0],
-    [102.218, 1, 0],
-    [104.12, 3, 2],
-    [105.836, 6, 0],
-    [115.886, 7, 0],
-    [125.171, 1, 0],
-    [136.625, 3, 2],
-    [147.056, 1, 0],
+    [0, MatchEventType.StartPosition, MatchEventPosition.StartBlueNet],
+    [0, MatchEventType.PickupCoral, MatchEventPosition.StartBlueNet],
+    [2.991, MatchEventType.AutoLeave, MatchEventPosition.None],
+    [3.601, MatchEventType.ScoreCoral, MatchEventPosition.LevelOneA],
+    [4.735, MatchEventType.PickupCoral, MatchEventPosition.GroundPieceRedBarge],
+    [4.535, MatchEventType.PickupAlgae, MatchEventPosition.LevelOneA],
+    [5.333, MatchEventType.ScoreNet, MatchEventPosition.None],
+    [7.501, MatchEventType.PickupAlgae, MatchEventPosition.LevelOneA],
+    [10.744, MatchEventType.FailNet, MatchEventPosition.None],
+    [11.534, MatchEventType.ScoreCoral, MatchEventPosition.LevelFourA],
+    [12.365, MatchEventType.PickupAlgae, MatchEventPosition.LevelOneA],
+    [15.265, MatchEventType.ScoreProcessor, MatchEventPosition.None],
+    [16.165, MatchEventType.Defend, MatchEventPosition.None],
+    [16.592, MatchEventType.PickupAlgae, MatchEventPosition.GroundPieceCenter],
+    [30.086, MatchEventType.FeedAlgae, MatchEventPosition.None],
+    [39.767, MatchEventType.PickupCoral, MatchEventPosition.None],
+    [48.89, MatchEventType.PickupAlgae, MatchEventPosition.None],
+    [54.458, MatchEventType.DropCoral, MatchEventPosition.None],
+    [59.577, MatchEventType.DropAlgae, MatchEventPosition.None],
   ],
 };
 
 export default function QRCodeSizeEditor() {
+  console.log(JSON.stringify(EXAMPLE_SCOUT_REPORT));
   return (
     <>
       <NavBar
