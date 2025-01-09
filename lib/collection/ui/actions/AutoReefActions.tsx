@@ -2,9 +2,11 @@ import React from "react";
 import { FieldElement } from "../FieldElement";
 import { GameAction } from "../GameAction";
 import { OverlayState } from "../GameViewTemplate";
+import { MatchEventPosition } from "../../MatchEventPosition";
 
 export const AutoReefActions = (props: {
   setOverlay: (value: OverlayState) => void;
+  setOverlayPos: (value: MatchEventPosition) => void;
 }) => {
   // const addEvent = useReportStateStore((state) => state.addEvent);
   return (
