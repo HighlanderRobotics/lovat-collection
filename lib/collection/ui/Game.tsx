@@ -11,14 +11,15 @@ import { ExitWingAction } from "./actions/ExitWingAction";
 import * as Haptics from "expo-haptics";
 import { AutoCollectPieceActions } from "./actions/AutoCollectPieceActions";
 import { Alert } from "react-native";
-// import { colors } from "../../colors";
-// import { Icon } from "../../components/Icon";
 // import { AllianceColor } from "../../models/AllianceColor";
 // import { GameAction } from "./GameAction";
 // import {
 //   FieldOrientation,
 //   useFieldOrientationStore,
 // } from "../../storage/userStores";
+import { View, TouchableOpacity } from "react-native";
+import { Icon } from "../../components/Icon";
+import { colors } from "../../colors";
 
 export function Game() {
   const reportState = useReportStateStore();
@@ -97,11 +98,25 @@ export function Game() {
       gamePhaseMessage: "Pre-Match",
       field: <PreMatchActions />,
       topLeftReplacement: (
-        <Checkbox
-          label="Loaded with a note"
-          checked={reportState?.startPiece}
-          onChange={reportState.setStartPiece}
-        />
+        <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+          {router.canGoBack() && (
+            <TouchableOpacity
+              onPress={() => router.back()}
+              style={{ padding: 8 }}
+            >
+              <Icon
+                name="arrow_back_ios"
+                size={24}
+                color={colors.onBackground.default}
+              />
+            </TouchableOpacity>
+          )}
+          <Checkbox
+            label="Loaded with a note"
+            checked={reportState?.startPiece}
+            onChange={reportState.setStartPiece}
+          />
+        </View>
       ),
       startEnabled: reportState.startPosition !== undefined,
     },
