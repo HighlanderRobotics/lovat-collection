@@ -15,7 +15,7 @@ export const AutoReefActions = (props: {
   // const addEvent = useReportStateStore((state) => state.addEvent);
   return (
     <>
-      <FieldElement edgeInsets={[0.02, 0.64, 0, 0.265]}>
+      <FieldElement edgeInsets={[0.265, 0.64, 0.265, 0.265]}>
         <GameAction
           color={colors.victoryPurple.default}
           backgroundViewReplacement={<HexagonBack />}
@@ -25,7 +25,7 @@ export const AutoReefActions = (props: {
           }}
         />
       </FieldElement>
-      <FieldElement edgeInsets={[-0.22, 0.75, 0, 0.157]}>
+      <FieldElement edgeInsets={[0.265, 0.747, 0.5, 0.16]}>
         <GameAction
           color={colors.victoryPurple.default}
           backgroundViewReplacement={<HexagonBlue />}
@@ -35,7 +35,7 @@ export const AutoReefActions = (props: {
           }}
         />
       </FieldElement>
-      <FieldElement edgeInsets={[0.26, 0.75, 0.3, 0.157]}>
+      <FieldElement edgeInsets={[0.5, 0.747, 0.265, 0.16]}>
         <GameAction
           color={colors.victoryPurple.default}
           backgroundViewReplacement={<HexagonRed />}

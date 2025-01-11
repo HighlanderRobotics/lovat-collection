@@ -20,18 +20,20 @@ const HexagonBack = (props: SvgProps) => (
     <View
       style={{
         aspectRatio: 86 / 190,
+        marginTop: 'auto',
+        marginBottom: 'auto',
         transform: [
           {
             scaleX:
               useReportStateStore.getState().meta!.allianceColor ===
-              AllianceColor.Red
+                AllianceColor.Blue
                 ? -1
                 : 1,
           },
           {
             rotate:
               useFieldOrientationStore.getState().value ===
-              FieldOrientation.Auspicious
+                FieldOrientation.Auspicious
                 ? "0deg"
                 : "180deg",
           },
