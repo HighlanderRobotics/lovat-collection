@@ -320,6 +320,7 @@ const FloatingActions = ({
 
   return (
     <View
+      pointerEvents="box-none"
       style={{
         position: "absolute",
         top: 0,
@@ -340,6 +341,7 @@ const FloatingActions = ({
     >
       <View
         key={"This view is for spacing purposes"}
+        pointerEvents="none"
         style={{
           flex: 1.8,
         }}

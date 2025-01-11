@@ -1,13 +1,3 @@
-// import React from "react";
-// import { useReportStateStore } from "../../reportStateStore";
-// import { MatchEventType } from "../../MatchEventType";
-// import { MatchEventPosition } from "../../MatchEventPosition";
-// import { FieldElement } from "../FieldElement";
-// import { GameAction } from "../GameAction";
-// import { fieldHeight, fieldWidth } from "../../../components/FieldImage";
-// import { View } from "react-native";
-// import { colors } from "../../../colors";
-
 import React from "react";
 import { Icon } from "../../../components/Icon";
 import { MatchEventPosition } from "../../MatchEventPosition";
@@ -15,7 +5,7 @@ import { MatchEventType } from "../../MatchEventType";
 import { useReportStateStore } from "../../reportStateStore";
 import { FieldElement } from "../FieldElement";
 import { GameAction } from "../GameAction";
-import { TouchableOpacity, View } from "react-native";
+import { TouchableOpacity } from "react-native";
 import { fieldHeight, fieldWidth } from "../../../components/FieldImage";
 import { OverlayState } from "../GameViewTemplate";
 

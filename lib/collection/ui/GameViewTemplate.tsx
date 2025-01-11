@@ -114,6 +114,7 @@ export const GameViewTemplate = (props: {
               }}
             >
               <TouchableOpacity
+                disabled={hasCoral}
                 style={{
                   backgroundColor: "#ffffff4d",
                   borderRadius: 7,
@@ -122,6 +123,7 @@ export const GameViewTemplate = (props: {
                   flexGrow: 1,
                   alignItems: "center",
                   justifyContent: "center",
+                  opacity: !hasCoral ? 1 : 0.25,
                 }}
                 onPress={() => {
                   reportState.addEvent({
@@ -133,6 +135,7 @@ export const GameViewTemplate = (props: {
                 <Icon name="frc_coral" color="#ffffff" size={100} />
               </TouchableOpacity>
               <TouchableOpacity
+                disabled={hasAlgae}
                 style={{
                   backgroundColor: "#14ceac4d",
                   borderRadius: 7,
@@ -141,6 +144,7 @@ export const GameViewTemplate = (props: {
                   flexGrow: 1,
                   alignItems: "center",
                   justifyContent: "center",
+                  opacity: !hasAlgae ? 1 : 0.25,
                 }}
                 onPress={() => {
                   reportState.addEvent({
@@ -179,7 +183,12 @@ export const GameViewTemplate = (props: {
                     alignItems: "center",
                     justifyContent: "center",
                   }}
-                  onPress={() => {}}
+                  onPress={() =>
+                    reportState.addEvent({
+                      type: MatchEventType.ScoreCoral,
+                      position: props.overlayPos + (1 - 1) * 3,
+                    })
+                  }
                 >
                   <TitleLarge color="#9cff9a">L1</TitleLarge>
                 </TouchableOpacity>
@@ -193,7 +202,12 @@ export const GameViewTemplate = (props: {
                     alignItems: "center",
                     justifyContent: "center",
                   }}
-                  onPress={() => {}}
+                  onPress={() => {
+                    reportState.addEvent({
+                      type: MatchEventType.ScoreCoral,
+                      position: props.overlayPos + (2 - 1) * 3,
+                    });
+                  }}
                 >
                   <TitleLarge color="#9cff9a">L2</TitleLarge>
                 </TouchableOpacity>
@@ -207,7 +221,12 @@ export const GameViewTemplate = (props: {
                     alignItems: "center",
                     justifyContent: "center",
                   }}
-                  onPress={() => {}}
+                  onPress={() => {
+                    reportState.addEvent({
+                      type: MatchEventType.ScoreCoral,
+                      position: props.overlayPos + (3 - 1) * 3,
+                    });
+                  }}
                 >
                   <TitleLarge color="#9cff9a">L3</TitleLarge>
                 </TouchableOpacity>
@@ -221,7 +240,12 @@ export const GameViewTemplate = (props: {
                     alignItems: "center",
                     justifyContent: "center",
                   }}
-                  onPress={() => {}}
+                  onPress={() => {
+                    reportState.addEvent({
+                      type: MatchEventType.ScoreCoral,
+                      position: props.overlayPos + (4 - 1) * 3,
+                    });
+                  }}
                 >
                   <TitleLarge color="#9cff9a">L4</TitleLarge>
                 </TouchableOpacity>
