@@ -11,7 +11,7 @@ import {
 } from "../../lib/models/match";
 import { Suspense, useEffect, useState } from "react";
 import { ScoutReport } from "../../lib/collection/ScoutReport";
-import { router } from "expo-router";
+import { router, Stack } from "expo-router";
 import { uploadReport } from "../../lib/lovatAPI/uploadReport";
 import { Icon } from "../../lib/components/Icon";
 import { useHistoryStore } from "../../lib/storage/historyStore";
@@ -72,6 +72,14 @@ export default function Submit() {
 
   return (
     <>
+      <Stack.Screen
+        options={{
+          animationDuration: 0,
+          animationTypeForReplace: "push",
+          animation: "flip",
+          gestureEnabled: false,
+        }}
+      />
       <NavBar
         title={`${reportState.meta!.teamNumber} in ${localizeMatchIdentity(reportState.meta!.matchIdentity, MatchIdentityLocalizationFormat.Short)}`}
       />
@@ -240,8 +248,8 @@ const UploadIndicator = ({ state }: { state: UploadState }) => {
             ))}
           {(effectiveState === UploadState.Uploaded ||
             effectiveState == UploadState.AlreadyUploaded) && (
-            <Icon name="check" color="#44ca6c" size={16} />
-          )}
+              <Icon name="check" color="#44ca6c" size={16} />
+            )}
           {effectiveState === UploadState.Error && (
             <Icon name="error" color={colors.danger.default} size={16} />
           )}
