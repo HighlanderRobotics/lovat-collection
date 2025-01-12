@@ -58,7 +58,6 @@ const EXAMPLE_SCOUT_REPORT: ScoutReport = {
 };
 
 export default function QRCodeSizeEditor() {
-  console.log(JSON.stringify(EXAMPLE_SCOUT_REPORT));
   return (
     <>
       <NavBar

@@ -5,86 +5,52 @@ import { FieldElement } from "../FieldElement";
 import React from "react";
 
 export const PreMatchActions = () => {
-  const reportState = useReportStateStore();
-
   return (
     <>
-      <FieldElement edgeInsets={[0.02, 0.5, 0.76, 0.36]}>
-        <TouchableOpacity
-          style={{
-            height: "98%",
-            width: "100%",
-            backgroundColor: "#e0e0e0",
-            opacity:
-              reportState.startPosition ===
-              MatchEventPosition.StartBlueProcessor
-                ? 0.8
-                : 0.3,
-            borderRadius: 7,
-          }}
-          activeOpacity={0.2}
-          onPress={() => {
-            reportState.setStartPosition(MatchEventPosition.StartBlueProcessor);
-          }}
-        />
-      </FieldElement>
+      <StartingPosition
+        edgeInsets={[0.02, 0.5, 0.76, 0.36]}
+        position={MatchEventPosition.StartBlueProcessor}
+      />
 
-      <FieldElement edgeInsets={[0.26, 0.5, 0.51, 0.36]}>
-        <TouchableOpacity
-          style={{
-            height: "98%",
-            width: "100%",
-            backgroundColor: "#e0e0e0",
-            opacity:
-              reportState.startPosition === MatchEventPosition.StartBlueNet
-                ? 0.8
-                : 0.3,
-            borderRadius: 7,
-          }}
-          activeOpacity={0.2}
-          onPress={() => {
-            reportState.setStartPosition(MatchEventPosition.StartBlueNet);
-          }}
-        />
-      </FieldElement>
+      <StartingPosition
+        edgeInsets={[0.26, 0.5, 0.51, 0.36]}
+        position={MatchEventPosition.StartBlueNet}
+      />
 
-      <FieldElement edgeInsets={[0.51, 0.5, 0.26, 0.36]}>
-        <TouchableOpacity
-          style={{
-            height: "98%",
-            width: "100%",
-            backgroundColor: "#e0e0e0",
-            opacity:
-              reportState.startPosition === MatchEventPosition.StartRedNet
-                ? 0.8
-                : 0.3,
-            borderRadius: 7,
-          }}
-          activeOpacity={0.2}
-          onPress={() => {
-            reportState.setStartPosition(MatchEventPosition.StartRedNet);
-          }}
-        />
-      </FieldElement>
+      <StartingPosition
+        edgeInsets={[0.51, 0.5, 0.26, 0.36]}
+        position={MatchEventPosition.StartRedNet}
+      />
 
-      <FieldElement edgeInsets={[0.76, 0.5, 0.02, 0.36]}>
-        <TouchableOpacity
-          style={{
-            height: "98%",
-            width: "100%",
-            backgroundColor: "#e0e0e0",
-            opacity:
-              reportState.startPosition === MatchEventPosition.StartRedProcessor
-                ? 0.8
-                : 0.3,
-            borderRadius: 7,
-          }}
-          activeOpacity={0.2}
-          onPress={() => {
-            reportState.setStartPosition(MatchEventPosition.StartRedProcessor);
-          }}
-        />
-      </FieldElement>
+      <StartingPosition
+        edgeInsets={[0.76, 0.5, 0.02, 0.36]}
+        position={MatchEventPosition.StartRedProcessor}
+      />
     </>
   );
 };
+
+function StartingPosition(props: {
+  edgeInsets: [number, number, number, number];
+  position: MatchEventPosition;
+}) {
+  const { edgeInsets, position } = props;
+  const reportState = useReportStateStore();
+  return (
+    <FieldElement edgeInsets={edgeInsets}>
+      <TouchableOpacity
+        style={{
+          height: "98%",
+          width: "100%",
+          backgroundColor: "#e0e0e0",
+          opacity: reportState.startPosition === position ? 0.8 : 0.3,
+          borderRadius: 7,
+        }}
+        activeOpacity={0.2}
+        onPress={() => {
+          reportState.setStartPosition(position);
+        }}
+      />
+    </FieldElement>
+  );
+}

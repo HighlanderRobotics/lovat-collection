@@ -49,7 +49,7 @@ export const useServiceErrorStore = create<GenericStore<string | null>>(
 
 type ServiceStore<T> = {
   data: T;
-  timeStamp: Date | null;
+  timestamp: number | null;
   fetchData: () => Promise<void>;
 };
 
@@ -61,13 +61,13 @@ export function createGenericServiceStore<T>(
     persist<ServiceStore<T | null>>(
       (set) => ({
         data: null,
-        timeStamp: null,
+        timestamp: null,
         fetchData: async () => {
           const data = await fetchFn();
-          const timeStamp = new Date();
+          const timestamp = Date.now();
           set({
             data: data,
-            timeStamp: timeStamp,
+            timestamp,
           });
         },
       }),

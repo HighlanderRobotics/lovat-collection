@@ -22,6 +22,7 @@ import React from "react";
 import { Icon } from "../../components/Icon";
 import { MatchEventType } from "../MatchEventType";
 import TitleLarge from "../../components/text/TitleLarge";
+import { MatchEventPosition } from "../MatchEventPosition";
 
 export enum OverlayState {
   None,
@@ -44,288 +45,17 @@ export const GameViewTemplate = (props: {
 }) => {
   const reportState = useReportStateStore();
   const { gamePhaseMessage, field, startEnabled } = props;
-
-  const [hasCoral, hasAlgae] = [
-    reportState.getHasCoral(),
-    reportState.getHasAlgae(),
-  ];
   if (!reportState.meta) return null;
 
   return (
     <>
       <StatusBar hidden={true} backgroundColor={colors.background.default} />
-      {/* Overlay */}
-      <Pressable
-        pointerEvents={props.overlay !== OverlayState.None ? "auto" : "none"}
-        disabled={props.overlay !== OverlayState.None}
-        style={{
-          backgroundColor: "#45454540",
-          opacity: props.overlay !== OverlayState.None ? 1 : 0,
-          position: "absolute",
-          zIndex: 50,
-          width: "100%",
-          height: "100%",
-        }}
-      >
-        <View
-          style={{
-            marginHorizontal: 40,
-            marginVertical: 20,
-            borderRadius: 14,
-            padding: 10,
-            backgroundColor: colors.background.default,
-            flexGrow: 1,
-            shadowColor: "#00000040",
-            elevation: 4,
-            shadowOpacity: 1,
-            shadowOffset: {
-              width: 0,
-              height: 4,
-            },
-            shadowRadius: 4,
-            flexDirection: "row",
-          }}
-        >
-          <TouchableOpacity
-            style={{
-              position: "absolute",
-              right: 16,
-              top: 16,
-              width: 40,
-              height: 40,
-              alignItems: "center",
-              justifyContent: "center",
-              borderRadius: 50,
-              backgroundColor: colors.secondaryContainer.default,
-              zIndex: 1,
-            }}
-            onPress={() => props.setOverlay(OverlayState.None)}
-            activeOpacity={0.1}
-          >
-            <Icon name="close" color={colors.onBackground.default} size={32} />
-          </TouchableOpacity>
-          {/* Ground Pieces */}
-          {props.overlay === OverlayState.GroundPiece && (
-            <View
-              style={{
-                flexDirection: "row",
-                gap: 10,
-                width: "100%",
-              }}
-            >
-              <TouchableOpacity
-                disabled={hasCoral}
-                style={{
-                  backgroundColor: "#ffffff4d",
-                  borderRadius: 7,
-                  borderWidth: 2,
-                  borderColor: "#ffffff",
-                  flexGrow: 1,
-                  alignItems: "center",
-                  justifyContent: "center",
-                  opacity: !hasCoral ? 1 : 0.25,
-                }}
-                onPress={() => {
-                  reportState.addEvent({
-                    type: MatchEventType.PickupCoral,
-                  });
-                  props.setOverlay(OverlayState.None);
-                }}
-              >
-                <Icon name="frc_coral" color="#ffffff" size={100} />
-              </TouchableOpacity>
-              <TouchableOpacity
-                disabled={hasAlgae}
-                style={{
-                  backgroundColor: "#14ceac4d",
-                  borderRadius: 7,
-                  borderWidth: 2,
-                  borderColor: "#14ceac",
-                  flexGrow: 1,
-                  alignItems: "center",
-                  justifyContent: "center",
-                  opacity: !hasAlgae ? 1 : 0.25,
-                }}
-                onPress={() => {
-                  reportState.addEvent({
-                    type: MatchEventType.PickupAlgae,
-                  });
-                  props.setOverlay(OverlayState.None);
-                }}
-              >
-                <Icon name="frc_algae" color="#14ceac" size={100} />
-              </TouchableOpacity>
-            </View>
-          )}
-          {/* Reef */}
-          {props.overlay === OverlayState.Reef && (
-            <View
-              style={{
-                flexDirection: "column",
-                gap: 10,
-                width: "100%",
-              }}
-            >
-              <View
-                style={{
-                  height: "70%",
-                  flexDirection: "row",
-                  gap: 10,
-                }}
-              >
-                <TouchableOpacity
-                  style={{
-                    backgroundColor: "#9cff9a4d",
-                    borderRadius: 7,
-                    borderWidth: 2,
-                    borderColor: "#9cff9a",
-                    flexGrow: 1,
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                  onPress={() =>
-                    reportState.addEvent({
-                      type: MatchEventType.ScoreCoral,
-                      position: props.overlayPos + (1 - 1) * 3,
-                    })
-                  }
-                >
-                  <TitleLarge color="#9cff9a">L1</TitleLarge>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={{
-                    backgroundColor: "#9cff9a4d",
-                    borderRadius: 7,
-                    borderWidth: 2,
-                    borderColor: "#9cff9a",
-                    flexGrow: 1,
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                  onPress={() => {
-                    reportState.addEvent({
-                      type: MatchEventType.ScoreCoral,
-                      position: props.overlayPos + (2 - 1) * 3,
-                    });
-                  }}
-                >
-                  <TitleLarge color="#9cff9a">L2</TitleLarge>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={{
-                    backgroundColor: "#9cff9a4d",
-                    borderRadius: 7,
-                    borderWidth: 2,
-                    borderColor: "#9cff9a",
-                    flexGrow: 1,
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                  onPress={() => {
-                    reportState.addEvent({
-                      type: MatchEventType.ScoreCoral,
-                      position: props.overlayPos + (3 - 1) * 3,
-                    });
-                  }}
-                >
-                  <TitleLarge color="#9cff9a">L3</TitleLarge>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={{
-                    backgroundColor: "#9cff9a4d",
-                    borderRadius: 7,
-                    borderWidth: 2,
-                    borderColor: "#9cff9a",
-                    flexGrow: 1,
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                  onPress={() => {
-                    reportState.addEvent({
-                      type: MatchEventType.ScoreCoral,
-                      position: props.overlayPos + (4 - 1) * 3,
-                    });
-                  }}
-                >
-                  <TitleLarge color="#9cff9a">L4</TitleLarge>
-                </TouchableOpacity>
-              </View>
-              <TouchableOpacity
-                disabled={hasAlgae}
-                style={{
-                  backgroundColor: "#14ceac4d",
-                  borderRadius: 7,
-                  borderWidth: 2,
-                  borderColor: "#14ceac",
-                  flexGrow: 1,
-                  alignItems: "center",
-                  justifyContent: "center",
-                  opacity: !hasAlgae ? 1 : 0.25,
-                }}
-                onPress={() => {
-                  reportState.addEvent({
-                    type: MatchEventType.PickupAlgae,
-                  });
-                  props.setOverlay(OverlayState.None);
-                }}
-              >
-                <Icon name="frc_algae" color="#14ceac" size={60} />
-              </TouchableOpacity>
-            </View>
-          )}
-          {/* Net */}
-          {props.overlay === OverlayState.Net && (
-            <View
-              style={{
-                flexDirection: "row",
-                gap: 10,
-                width: "100%",
-              }}
-            >
-              <TouchableOpacity
-                style={{
-                  backgroundColor: "#9cff9a4d",
-                  borderRadius: 7,
-                  borderWidth: 2,
-                  borderColor: "#9cff9a",
-                  minWidth: 200,
-                  flexGrow: 1,
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-                onPress={() => {
-                  reportState.addEvent({
-                    type: MatchEventType.ScoreNet,
-                  });
-                  props.setOverlay(OverlayState.None);
-                }}
-              >
-                <TitleLarge color="#9cff9a"> Success </TitleLarge>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={{
-                  backgroundColor: "#b13b3b4d",
-                  borderRadius: 7,
-                  borderWidth: 2,
-                  borderColor: "#fbadad",
-                  minWidth: 200,
-                  flexGrow: 1,
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-                onPress={() => {
-                  reportState.addEvent({
-                    type: MatchEventType.FailNet,
-                  });
-                  props.setOverlay(OverlayState.None);
-                }}
-              >
-                <TitleLarge color="#fbadad"> Fail </TitleLarge>
-              </TouchableOpacity>
-            </View>
-          )}
-        </View>
-      </Pressable>
+      <GameViewOverlay
+        overlay={props.overlay}
+        overlayPos={props.overlayPos}
+        setOverlay={props.setOverlay}
+        resetOverlayPos={props.resetOverlayPos}
+      />
       <View
         style={{
           backgroundColor: colors.secondaryContainer.default,
@@ -440,3 +170,361 @@ export const GameViewTemplate = (props: {
     </>
   );
 };
+
+type OverlayProps = {
+  overlay?: OverlayState;
+  overlayPos?: MatchEventPosition;
+  setOverlay: (value: OverlayState) => void;
+  resetOverlayPos: () => void;
+};
+
+function GameViewOverlay({
+  overlay,
+  overlayPos,
+  setOverlay,
+  resetOverlayPos,
+}: OverlayProps) {
+  return (
+    <Pressable
+      pointerEvents={overlay !== OverlayState.None ? "auto" : "none"}
+      disabled={overlay !== OverlayState.None}
+      style={{
+        backgroundColor: "#45454540",
+        opacity: overlay !== OverlayState.None ? 1 : 0,
+        position: "absolute",
+        zIndex: 50,
+        width: "100%",
+        height: "100%",
+      }}
+      onPress={() => {
+        setOverlay(OverlayState.None);
+        resetOverlayPos();
+      }}
+    >
+      <View
+        style={{
+          marginHorizontal: 40,
+          marginVertical: 20,
+          borderRadius: 14,
+          padding: 10,
+          backgroundColor: colors.background.default,
+          flexGrow: 1,
+          shadowColor: "#00000040",
+          elevation: 4,
+          shadowOpacity: 1,
+          shadowOffset: {
+            width: 0,
+            height: 4,
+          },
+          shadowRadius: 4,
+          flexDirection: "row",
+        }}
+      >
+        <TouchableOpacity
+          accessibilityLabel="Close Overlay"
+          style={{
+            position: "absolute",
+            right: 16,
+            top: 16,
+            width: 40,
+            height: 40,
+            alignItems: "center",
+            justifyContent: "center",
+            borderRadius: 50,
+            backgroundColor: colors.secondaryContainer.default,
+            zIndex: 1,
+          }}
+          onPress={() => {
+            setOverlay(OverlayState.None);
+            resetOverlayPos();
+          }}
+          activeOpacity={0.1}
+        >
+          <Icon name="close" color={colors.onBackground.default} size={32} />
+        </TouchableOpacity>
+        {/* Ground Pieces */}
+        {overlay === OverlayState.GroundPiece && (
+          <GroundPieceOverlay
+            overlayPos={overlayPos}
+            setOverlay={setOverlay}
+            resetOverlayPos={resetOverlayPos}
+          />
+        )}
+        {/* Reef */}
+        {overlay === OverlayState.Reef && (
+          <AutoReefOverlay
+            overlayPos={overlayPos}
+            setOverlay={setOverlay}
+            resetOverlayPos={resetOverlayPos}
+          />
+        )}
+        {/* Net */}
+        {overlay === OverlayState.Net && (
+          <NetOverlay
+            setOverlay={setOverlay}
+            resetOverlayPos={resetOverlayPos}
+          />
+        )}
+      </View>
+    </Pressable>
+  );
+}
+
+function GroundPieceOverlay({
+  overlayPos,
+  setOverlay,
+  resetOverlayPos,
+}: OverlayProps) {
+  const reportState = useReportStateStore();
+  const [hasCoral, hasAlgae] = [
+    reportState.getHasCoral(),
+    reportState.getHasAlgae(),
+  ];
+  return (
+    <View
+      style={{
+        flexDirection: "row",
+        gap: 10,
+        width: "100%",
+      }}
+    >
+      <TouchableOpacity
+        disabled={hasCoral}
+        style={{
+          backgroundColor: "#ffffff4d",
+          borderRadius: 7,
+          borderWidth: 2,
+          borderColor: "#ffffff",
+          flexGrow: 1,
+          alignItems: "center",
+          justifyContent: "center",
+          opacity: !hasCoral ? 1 : 0.25,
+        }}
+        onPress={() => {
+          reportState.addEvent({
+            type: MatchEventType.PickupCoral,
+            position: overlayPos,
+          });
+          setOverlay(OverlayState.None);
+          resetOverlayPos();
+        }}
+      >
+        <Icon name="frc_coral" color="#ffffff" size={100} />
+      </TouchableOpacity>
+      <TouchableOpacity
+        disabled={hasAlgae}
+        style={{
+          backgroundColor: "#14ceac4d",
+          borderRadius: 7,
+          borderWidth: 2,
+          borderColor: "#14ceac",
+          flexGrow: 1,
+          alignItems: "center",
+          justifyContent: "center",
+          opacity: !hasAlgae ? 1 : 0.25,
+        }}
+        onPress={() => {
+          reportState.addEvent({
+            type: MatchEventType.PickupAlgae,
+            position: overlayPos,
+          });
+          setOverlay(OverlayState.None);
+          resetOverlayPos();
+        }}
+      >
+        <Icon name="frc_algae" color="#14ceac" size={100} />
+      </TouchableOpacity>
+    </View>
+  );
+}
+
+function AutoReefOverlay({
+  overlayPos,
+  setOverlay,
+  resetOverlayPos,
+}: OverlayProps) {
+  const reportState = useReportStateStore();
+  const hasAlgae = reportState.getHasAlgae();
+
+  return (
+    <View
+      style={{
+        flexDirection: "column",
+        gap: 10,
+        width: "100%",
+      }}
+    >
+      <View
+        style={{
+          height: "70%",
+          flexDirection: "row",
+          gap: 10,
+        }}
+      >
+        <TouchableOpacity
+          style={{
+            backgroundColor: "#9cff9a4d",
+            borderRadius: 7,
+            borderWidth: 2,
+            borderColor: "#9cff9a",
+            flexGrow: 1,
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+          onPress={() => {
+            reportState.addEvent({
+              type: MatchEventType.ScoreCoral,
+              position: overlayPos! + (1 - 1) * 3,
+            });
+            setOverlay(OverlayState.None);
+            resetOverlayPos();
+          }}
+        >
+          <TitleLarge color="#9cff9a">L1</TitleLarge>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={{
+            backgroundColor: "#9cff9a4d",
+            borderRadius: 7,
+            borderWidth: 2,
+            borderColor: "#9cff9a",
+            flexGrow: 1,
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+          onPress={() => {
+            reportState.addEvent({
+              type: MatchEventType.ScoreCoral,
+              position: overlayPos! + (2 - 1) * 3,
+            });
+            setOverlay(OverlayState.None);
+            resetOverlayPos();
+          }}
+        >
+          <TitleLarge color="#9cff9a">L2</TitleLarge>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={{
+            backgroundColor: "#9cff9a4d",
+            borderRadius: 7,
+            borderWidth: 2,
+            borderColor: "#9cff9a",
+            flexGrow: 1,
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+          onPress={() => {
+            reportState.addEvent({
+              type: MatchEventType.ScoreCoral,
+              position: overlayPos! + (3 - 1) * 3,
+            });
+            setOverlay(OverlayState.None);
+            resetOverlayPos();
+          }}
+        >
+          <TitleLarge color="#9cff9a">L3</TitleLarge>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={{
+            backgroundColor: "#9cff9a4d",
+            borderRadius: 7,
+            borderWidth: 2,
+            borderColor: "#9cff9a",
+            flexGrow: 1,
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+          onPress={() => {
+            reportState.addEvent({
+              type: MatchEventType.ScoreCoral,
+              position: overlayPos! + (4 - 1) * 3,
+            });
+            setOverlay(OverlayState.None);
+            resetOverlayPos();
+          }}
+        >
+          <TitleLarge color="#9cff9a">L4</TitleLarge>
+        </TouchableOpacity>
+      </View>
+      <TouchableOpacity
+        disabled={hasAlgae}
+        style={{
+          backgroundColor: "#14ceac4d",
+          borderRadius: 7,
+          borderWidth: 2,
+          borderColor: "#14ceac",
+          flexGrow: 1,
+          alignItems: "center",
+          justifyContent: "center",
+          opacity: !hasAlgae ? 1 : 0.25,
+        }}
+        onPress={() => {
+          reportState.addEvent({
+            type: MatchEventType.PickupAlgae,
+            position: overlayPos!,
+          });
+          setOverlay(OverlayState.None);
+          resetOverlayPos();
+        }}
+      >
+        <Icon name="frc_algae" color="#14ceac" size={60} />
+      </TouchableOpacity>
+    </View>
+  );
+}
+
+function NetOverlay({ setOverlay, resetOverlayPos }: OverlayProps) {
+  const reportState = useReportStateStore();
+  return (
+    <View
+      style={{
+        flexDirection: "row",
+        gap: 10,
+        width: "100%",
+      }}
+    >
+      <TouchableOpacity
+        style={{
+          backgroundColor: "#9cff9a4d",
+          borderRadius: 7,
+          borderWidth: 2,
+          borderColor: "#9cff9a",
+          minWidth: 200,
+          flexGrow: 1,
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+        onPress={() => {
+          reportState.addEvent({
+            type: MatchEventType.ScoreNet,
+          });
+          setOverlay(OverlayState.None);
+          resetOverlayPos();
+        }}
+      >
+        <TitleLarge color="#9cff9a"> Success </TitleLarge>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={{
+          backgroundColor: "#b13b3b4d",
+          borderRadius: 7,
+          borderWidth: 2,
+          borderColor: "#fbadad",
+          minWidth: 200,
+          flexGrow: 1,
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+        onPress={() => {
+          reportState.addEvent({
+            type: MatchEventType.FailNet,
+          });
+          setOverlay(OverlayState.None);
+          resetOverlayPos();
+        }}
+      >
+        <TitleLarge color="#fbadad"> Fail </TitleLarge>
+      </TouchableOpacity>
+    </View>
+  );
+}
