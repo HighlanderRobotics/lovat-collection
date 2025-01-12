@@ -79,7 +79,7 @@ export default function Settings() {
                 }}
               >
                 <Button
-                  variant="danger"
+                  variant="secondary"
                   onPress={() => {
                     router.push("/settings/reset");
                   }}
