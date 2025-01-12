@@ -6,7 +6,6 @@ import { MatchEventType } from "../../MatchEventType";
 import { MatchEventPosition } from "../../MatchEventPosition";
 
 export function TeleopScoreCoralActions() {
-  const reportState = useReportStateStore();
   return (
     <FieldElement edgeInsets={[0.225, 0.59, 0.05, 0.025]}>
       <View
@@ -24,40 +23,14 @@ export function TeleopScoreCoralActions() {
             gap: 10,
           }}
         >
-          <TouchableOpacity
-            style={{
-              backgroundColor: "#9cff9a4d",
-              borderRadius: 7,
-              flexGrow: 1,
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-            onPress={() => {
-              reportState.addEvent({
-                type: MatchEventType.ScoreCoral,
-                position: MatchEventPosition.LevelOneTeleop,
-              });
-            }}
-          >
-            <TitleLarge color="#9cff9a">L1</TitleLarge>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={{
-              backgroundColor: "#9cff9a4d",
-              borderRadius: 7,
-              flexGrow: 1,
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-            onPress={() => {
-              reportState.addEvent({
-                type: MatchEventType.ScoreCoral,
-                position: MatchEventPosition.LevelTwoTeleop,
-              });
-            }}
-          >
-            <TitleLarge color="#9cff9a">L2</TitleLarge>
-          </TouchableOpacity>
+          <TeleopReefCoralLevel
+            position={MatchEventPosition.LevelOneTeleop}
+            label="L1"
+          />
+          <TeleopReefCoralLevel
+            position={MatchEventPosition.LevelTwoTeleop}
+            label="L2"
+          />
         </View>
         <View
           style={{
@@ -66,42 +39,46 @@ export function TeleopScoreCoralActions() {
             gap: 10,
           }}
         >
-          <TouchableOpacity
-            style={{
-              backgroundColor: "#9cff9a4d",
-              borderRadius: 7,
-              flexGrow: 1,
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-            onPress={() => {
-              reportState.addEvent({
-                type: MatchEventType.ScoreCoral,
-                position: MatchEventPosition.LevelThreeTeleop,
-              });
-            }}
-          >
-            <TitleLarge color="#9cff9a">L3</TitleLarge>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={{
-              backgroundColor: "#9cff9a4d",
-              borderRadius: 7,
-              flexGrow: 1,
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-            onPress={() => {
-              reportState.addEvent({
-                type: MatchEventType.ScoreCoral,
-                position: MatchEventPosition.LevelFourTeleop,
-              });
-            }}
-          >
-            <TitleLarge color="#9cff9a">L4</TitleLarge>
-          </TouchableOpacity>
+          <TeleopReefCoralLevel
+            position={MatchEventPosition.LevelThreeTeleop}
+            label="L3"
+          />
+          <TeleopReefCoralLevel
+            position={MatchEventPosition.LevelFourTeleop}
+            label="L4"
+          />
         </View>
       </View>
     </FieldElement>
+  );
+}
+
+function TeleopReefCoralLevel({
+  position,
+  label,
+}: {
+  position: MatchEventPosition;
+  label: string;
+}) {
+  const addEvent = useReportStateStore((state) => state.addEvent);
+
+  return (
+    <TouchableOpacity
+      style={{
+        backgroundColor: "#9cff9a4d",
+        borderRadius: 7,
+        flexGrow: 1,
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+      onPress={() => {
+        addEvent({
+          type: MatchEventType.ScoreCoral,
+          position: position,
+        });
+      }}
+    >
+      <TitleLarge color="#9cff9a">{label}</TitleLarge>
+    </TouchableOpacity>
   );
 }
