@@ -24,6 +24,7 @@ import { Icon } from "../../components/Icon";
 import LabelSmall from "../../components/text/LabelSmall";
 import { TeleopScoreCoralActions } from "./actions/TeleopScoreCoralActions";
 import { MatchEventPosition } from "../MatchEventPosition";
+import { AutoReefActions } from "./actions/AutoReefActions";
 
 export function Game() {
   const reportState = useReportStateStore();
@@ -142,7 +143,10 @@ export function Game() {
       gamePhaseMessage: "Auto",
       field: (
         <>
-          {/* <AutoReefActions /> */}
+          <AutoReefActions
+            setOverlay={(value) => setOverlay(value)}
+            setOverlayPos={(value) => setOverlayPos(value)}
+          />
           <AutoCollectGroundPieceActions
             setOverlay={(value) => setOverlay(value)}
             setOverlayPos={(value) => setOverlayPos(value)}
@@ -171,7 +175,10 @@ export function Game() {
       gamePhaseMessage: "Auto",
       field: (
         <>
-          {/* <AutoReefActions /> */}
+          <AutoReefActions
+            setOverlay={(value) => setOverlay(value)}
+            setOverlayPos={(value) => setOverlayPos(value)}
+          />
           <HasAlgaeActions setOverlay={(value) => setOverlay(value)} />
           <AutoCoralStationActions />
           <FloatingActions hasCoral hasAlgae gamePhase={GamePhase.Auto} />
@@ -231,6 +238,10 @@ export function Game() {
           <FloatingActions hasCoral hasAlgae gamePhase={GamePhase.Teleop} />
           <HasAlgaeActions setOverlay={(value) => setOverlay(value)} />
           {/* <TeleopScoreCoralActions /> */}
+          <AutoReefActions
+            setOverlay={(value) => setOverlay(value)}
+            setOverlayPos={(value) => setOverlayPos(value)}
+          />
           <AutoCollectGroundPieceActions
             setOverlay={(value) => setOverlay(value)}
             setOverlayPos={(value) => setOverlayPos(value)}
