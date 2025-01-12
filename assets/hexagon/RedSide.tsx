@@ -35,7 +35,7 @@ const HexagonRed = (props: SvgProps) => (
               useFieldOrientationStore.getState().value ===
               FieldOrientation.Auspicious
                 ? "0deg"
-                : "270deg",
+                : "180deg",
           },
         ],
       }}
