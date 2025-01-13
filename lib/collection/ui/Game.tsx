@@ -106,7 +106,7 @@ export function Game() {
             <TouchableOpacity
               onPress={() => {
                 reportState.reset();
-                router.back()
+                router.back();
               }}
               style={{ padding: 8 }}
             >
