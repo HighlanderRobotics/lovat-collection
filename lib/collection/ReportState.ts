@@ -4,8 +4,6 @@ import { MatchEvent } from "./MatchEvent";
 import {
   PieceContainerContents,
   MatchEventPosition,
-  StartingPosition,
-  GroundPiecePosition,
 } from "./MatchEventPosition";
 import { MatchEventType } from "./MatchEventType";
 import { AlgaePickUp, CoralPickUp } from "./PickUp";
@@ -29,10 +27,8 @@ export type ReportState = {
   meta?: ScoutReportMeta;
   events: MatchEvent[];
   startTimestamp?: Date;
-  startPosition?: StartingPosition;
+  startPosition?: MatchEventPosition;
   startPiece: boolean;
-  groundPieces: Record<GroundPiecePosition, PieceContainerContents>;
-  robotPieces: PieceContainerContents;
   gamePhase: GamePhase;
   robotRole: RobotRole;
   driverAbility: DriverAbility;
@@ -46,14 +42,9 @@ export type ReportState = {
   scoutMatch: (meta: ScoutReportMeta) => void;
   initializeMatchTimestamp: () => void;
 
-  setStartPosition: (value: StartingPosition) => void;
+  setStartPosition: (value: MatchEventPosition) => void;
   setStartPiece: (value: boolean) => void;
   setGamePhase: (value: GamePhase) => void;
-  setGroundPiece: (
-    value: PieceContainerContents,
-    position: GroundPiecePosition,
-  ) => void;
-  setRobotPiece: (value: PieceContainerContents) => void;
   setRobotRole: (value: RobotRole) => void;
   setDriverAbility: (value: DriverAbility) => void;
   setBargeResult: (value: BargeResult) => void;
@@ -64,6 +55,12 @@ export type ReportState = {
   setNotes: (value: string) => void;
 
   getHasExited: () => boolean;
+  getHasCoral: () => boolean;
+  getHasAlgae: () => boolean;
+  getRemainingGroundNotes: () => Record<
+    MatchEventPosition,
+    PieceContainerContents
+  >;
 
   addEvent: (event: {
     type: MatchEventType;

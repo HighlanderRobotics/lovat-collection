@@ -133,8 +133,8 @@ export default function PostMatch() {
             title="Clears Algae from Reef"
             updateStore={(value) => reportState.setKnocksAlgae(Boolean(value))}
             items={[
-              { label: "Yes", value: 1 },
               { label: "No", value: 0 },
+              { label: "Yes", value: 1 },
             ]}
             direction={ButtonGroupDirection.Horizontal}
             selected={reportState.knocksAlgae ? 1 : 0}
@@ -146,8 +146,8 @@ export default function PostMatch() {
               reportState.setTraversesUnderCage(Boolean(value))
             }
             items={[
-              { label: "Yes", value: 1 },
               { label: "No", value: 0 },
+              { label: "Yes", value: 1 },
             ]}
             direction={ButtonGroupDirection.Horizontal}
             selected={reportState.traversesUnderCage ? 1 : 0}

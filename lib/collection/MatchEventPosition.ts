@@ -1,8 +1,9 @@
 export enum MatchEventPosition {
   None,
-  StartOne,
-  StartTwo,
-  StartThree,
+  StartRedProcessor,
+  StartRedNet,
+  StartBlueNet,
+  StartBlueProcessor,
   // Teleop is listed to provide abstraction
   LevelOneTeleop,
   LevelTwoTeleop,
@@ -20,23 +21,25 @@ export enum MatchEventPosition {
   LevelFourA,
   LevelFourB,
   LevelFourC,
-  GroundPieceA,
-  GroundPieceB,
-  GroundPieceC,
-  CoralStationA,
-  CoralStationB,
+  GroundPieceRedBarge,
+  GroundPieceCenter,
+  GroundPieceBlueBarge,
+  CoralStationRedBarge,
+  CoralStationBlueBarge,
 }
 
-export type StartingPosition =
-  | MatchEventPosition.StartOne
-  | MatchEventPosition.StartTwo
-  | MatchEventPosition.StartThree;
+export const startingPositions: Record<string, MatchEventPosition> = {
+  StartRedProcessor: MatchEventPosition.StartRedProcessor,
+  StartRedNet: MatchEventPosition.StartRedNet,
+  StartBlueNet: MatchEventPosition.StartBlueNet,
+  StartBlueProcessor: MatchEventPosition.StartBlueProcessor,
+} as const;
 
-export enum GroundPiecePosition {
-  GroundPieceA = MatchEventPosition.GroundPieceA,
-  GroundPieceB = MatchEventPosition.GroundPieceB,
-  GroundPieceC = MatchEventPosition.GroundPieceC,
-}
+export const groundPiecePositions: Record<string, MatchEventPosition> = {
+  GroundPieceA: MatchEventPosition.GroundPieceRedBarge,
+  GroundPieceB: MatchEventPosition.GroundPieceCenter,
+  GroundPieceC: MatchEventPosition.GroundPieceBlueBarge,
+};
 
 // Can be used for the robot and/or ground pieces
 export type PieceContainerContents = {

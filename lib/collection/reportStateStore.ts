@@ -3,11 +3,16 @@ import { MatchEventType } from "./MatchEventType";
 import {
   PieceContainerContents,
   MatchEventPosition,
-  GroundPiecePosition,
+  groundPiecePositions,
 } from "./MatchEventPosition";
 import { create } from "zustand";
 import { v4 } from "uuid";
-import { AlgaePickUp, CoralPickUp, coralPickUpDescriptions } from "./PickUp";
+import {
+  AlgaePickUp,
+  algaePickUpDescriptions,
+  CoralPickUp,
+  coralPickUpDescriptions,
+} from "./PickUp";
 import { BargeResult, bargeResultDescriptions } from "./BargeResult";
 import { DriverAbility, driverAbilityDescriptions } from "./DriverAbility";
 import { MatchEvent } from "./MatchEvent";
@@ -16,21 +21,7 @@ import { ScoutReportEvent } from "./ScoutReport";
 
 export const useReportStateStore = create<ReportState>((set, get) => ({
   events: [],
-  startPiece: false,
-  groundPieces: Object.values(GroundPiecePosition).reduce(
-    (acc, curr) => ({
-      ...acc,
-      [curr]: {
-        coral: true,
-        algae: true,
-      },
-    }),
-    {} as Record<GroundPiecePosition, PieceContainerContents>,
-  ),
-  robotPieces: {
-    coral: false,
-    algae: false,
-  },
+  startPiece: true,
   gamePhase: GamePhase.Auto,
   robotRole: RobotRole.Offense,
   driverAbility: DriverAbility.Average,
@@ -45,22 +36,12 @@ export const useReportStateStore = create<ReportState>((set, get) => ({
     set(() => ({
       meta: meta!,
       events: [],
-      startPiece: false,
-      groundPieces: Object.values(GroundPiecePosition).reduce(
-        (acc, curr) => ({
-          ...acc,
-          [curr]: {
-            coral: true,
-            algae: true,
-          },
-        }),
-        {} as Record<GroundPiecePosition, PieceContainerContents>,
-      ),
+      startPiece: true,
       gamePhase: GamePhase.Auto,
       robotRole: RobotRole.Offense,
       driverAbility: DriverAbility.Average,
       bargeResult: BargeResult.NotAttempted,
-      coralPickUp: CoralPickUp.Ground,
+      coralPickUp: CoralPickUp.None,
       notes: "",
       uuid: v4(),
     })),
@@ -71,14 +52,6 @@ export const useReportStateStore = create<ReportState>((set, get) => ({
   setStartPosition: (value) => set({ startPosition: value }),
   setStartPiece: (value) => set({ startPiece: value }),
   setGamePhase: (value) => set({ gamePhase: value }),
-  setGroundPiece: (value, pos) =>
-    set((state) => ({
-      groundPieces: {
-        ...state.groundPieces,
-        [pos]: value,
-      },
-    })),
-  setRobotPiece: (value) => set({ robotPieces: value }),
   setRobotRole: (value) => set({ robotRole: value }),
   setDriverAbility: (value) => set({ driverAbility: value }),
   setBargeResult: (value) => set({ bargeResult: value }),
@@ -93,6 +66,77 @@ export const useReportStateStore = create<ReportState>((set, get) => ({
     return reportState.events.some(
       (event) => event.type === MatchEventType.AutoLeave,
     );
+  },
+  getHasCoral: () => {
+    const reportState = get();
+    let flag = reportState.startPiece;
+    reportState.events.forEach((item) => {
+      if (item.type === MatchEventType.PickupCoral) {
+        flag = true;
+      } else if (
+        item.type === MatchEventType.DropCoral ||
+        item.type === MatchEventType.ScoreCoral
+      ) {
+        flag = false;
+      }
+    });
+    return flag;
+  },
+  getHasAlgae: () => {
+    const reportState = get();
+    let flag = false;
+    reportState.events.forEach((item) => {
+      if (item.type === MatchEventType.PickupAlgae) {
+        flag = true;
+      } else if (
+        item.type === MatchEventType.DropAlgae ||
+        item.type === MatchEventType.ScoreNet ||
+        item.type === MatchEventType.FailNet ||
+        item.type === MatchEventType.ScoreProcessor ||
+        item.type === MatchEventType.FeedAlgae
+      ) {
+        flag = false;
+      }
+    });
+    return flag;
+  },
+  getRemainingGroundNotes: () => {
+    const reportState = get();
+    let res = Object.values(groundPiecePositions).reduce(
+      (acc, curr) => ({
+        ...acc,
+        [curr]: {
+          coral: true,
+          algae: true,
+        },
+      }),
+      {} as Record<MatchEventPosition, PieceContainerContents>,
+    );
+
+    reportState.events.forEach((item) => {
+      if (item.position in groundPiecePositions) {
+        if (item.type === MatchEventType.PickupCoral) {
+          res = {
+            ...res,
+            [item.position]: {
+              ...res[item.position],
+              coral: false,
+            },
+          };
+        }
+        if (item.type === MatchEventType.PickupAlgae) {
+          res = {
+            ...res,
+            [item.position]: {
+              ...res[item.position],
+              algae: false,
+            },
+          };
+        }
+      }
+    });
+
+    return res;
   },
 
   addEvent: (event) => {
@@ -134,7 +178,10 @@ export const useReportStateStore = create<ReportState>((set, get) => ({
         notes: reportState.notes,
         robotRole: reportState.robotRole,
         barge: bargeResultDescriptions[reportState.bargeResult].num,
-        pickUp: coralPickUpDescriptions[reportState.coralPickUp].num,
+        coralPickUp: coralPickUpDescriptions[reportState.coralPickUp].num,
+        algaePickUp: algaePickUpDescriptions[reportState.algaePickUp].num,
+        knocksAlgae: reportState.knocksAlgae,
+        traversesUnderCage: reportState.traversesUnderCage,
         driverAbility:
           driverAbilityDescriptions[reportState.driverAbility].numericalRating,
         scouterUuid: reportState.meta.scouterUUID,
@@ -177,24 +224,14 @@ export const useReportStateStore = create<ReportState>((set, get) => ({
       uuid: undefined,
       meta: undefined,
       events: [],
-      startPiece: false,
+      startPiece: true,
       startTimestamp: undefined,
       startPosition: undefined,
-      groundPieces: Object.values(GroundPiecePosition).reduce(
-        (acc, curr) => ({
-          ...acc,
-          [curr]: {
-            coral: true,
-            algae: true,
-          },
-        }),
-        {} as Record<GroundPiecePosition, PieceContainerContents>,
-      ),
       gamePhase: GamePhase.Auto,
       robotRole: RobotRole.Offense,
       driverAbility: DriverAbility.Average,
       bargeResult: BargeResult.NotAttempted,
-      coralPickUp: CoralPickUp.Ground,
+      coralPickUp: CoralPickUp.None,
       notes: "",
     }),
 }));

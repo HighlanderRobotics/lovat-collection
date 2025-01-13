@@ -30,7 +30,7 @@ export const bargeResultDescriptions: Record<
     num: 1,
   },
   [BargeResult.Shallow]: {
-    localizedDescription: "Shallow Cage",
+    localizedDescription: "Shallow Cage Succeeded",
     localizedLongDescription:
       "The robot successfully hung on the shallow cage during endgame.",
     num: 2,
@@ -42,7 +42,7 @@ export const bargeResultDescriptions: Record<
     num: 3,
   },
   [BargeResult.Deep]: {
-    localizedDescription: "Deep Cage",
+    localizedDescription: "Deep Cage Succeeded",
     localizedLongDescription:
       "The robot successfully hung on the deep cage during endgame.",
     num: 4,
