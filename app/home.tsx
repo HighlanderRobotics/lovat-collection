@@ -65,7 +65,6 @@ export default function Home() {
 
   useFocusEffect(
     useCallback(() => {
-      reportState.reset();
       loadServices();
     }, []),
   );

@@ -104,7 +104,10 @@ export function Game() {
         <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
           {router.canGoBack() && (
             <TouchableOpacity
-              onPress={() => router.back()}
+              onPress={() => {
+                reportState.reset();
+                router.back()
+              }}
               style={{ padding: 8 }}
             >
               <Icon
