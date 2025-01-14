@@ -28,15 +28,18 @@ export const AutoCollectGroundPieceActions = ({
     }),
     {} as Record<MatchEventPosition, boolean>,
   );
+
+  const coordsToInsets: (x: number, y: number) => [number, number, number, number] = (x: number, y: number) => [
+    y - radius / fieldHeight,
+    1 - x - radius / fieldWidth,
+    1 - y - radius / fieldHeight,
+    x - radius / fieldWidth,
+  ]
+
   return (
     <>
       <FieldElement
-        edgeInsets={[
-          0.3 - radius / fieldHeight,
-          0.931 - radius / fieldWidth,
-          0.069 - radius / fieldHeight,
-          0.7 - radius / fieldWidth,
-        ]}
+        edgeInsets={coordsToInsets(0.081, 0.728)}
       >
         <TouchableOpacity
           disabled={
@@ -64,12 +67,7 @@ export const AutoCollectGroundPieceActions = ({
         </TouchableOpacity>
       </FieldElement>
       <FieldElement
-        edgeInsets={[
-          0.52 - radius / fieldHeight,
-          0.931 - radius / fieldWidth,
-          0.069 - radius / fieldHeight,
-          0.48 - radius / fieldWidth,
-        ]}
+        edgeInsets={coordsToInsets(0.081, 0.51)}
       >
         <TouchableOpacity
           disabled={!existingGroundPieces[MatchEventPosition.GroundPieceCenter]}
@@ -93,12 +91,7 @@ export const AutoCollectGroundPieceActions = ({
         </TouchableOpacity>
       </FieldElement>
       <FieldElement
-        edgeInsets={[
-          0.735 - radius / fieldHeight,
-          0.931 - radius / fieldWidth,
-          0.069 - radius / fieldHeight,
-          0.265 - radius / fieldWidth,
-        ]}
+        edgeInsets={coordsToInsets(0.081, 0.29)}
       >
         <TouchableOpacity
           disabled={
