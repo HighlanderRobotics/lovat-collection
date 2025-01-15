@@ -43,11 +43,11 @@ export const AutoCollectGroundPieceActions = ({
       >
         <TouchableOpacity
           disabled={
-            !existingGroundPieces[MatchEventPosition.GroundPieceBlueBarge]
+            !existingGroundPieces[MatchEventPosition.GroundPieceRedBarge]
           }
           style={{
             opacity: existingGroundPieces[
-              MatchEventPosition.GroundPieceBlueBarge
+              MatchEventPosition.GroundPieceRedBarge
             ]
               ? 1
               : 0,
@@ -59,7 +59,7 @@ export const AutoCollectGroundPieceActions = ({
             justifyContent: "center",
           }}
           onPress={() => {
-            setOverlayPos(MatchEventPosition.GroundPieceBlueBarge);
+            setOverlayPos(MatchEventPosition.GroundPieceRedBarge);
             setOverlay(OverlayState.GroundPiece);
           }}
         >
@@ -95,11 +95,11 @@ export const AutoCollectGroundPieceActions = ({
       >
         <TouchableOpacity
           disabled={
-            !existingGroundPieces[MatchEventPosition.GroundPieceRedBarge]
+            !existingGroundPieces[MatchEventPosition.GroundPieceBlueBarge]
           }
           style={{
             opacity: existingGroundPieces[
-              MatchEventPosition.GroundPieceRedBarge
+              MatchEventPosition.GroundPieceBlueBarge
             ]
               ? 1
               : 0,
@@ -111,7 +111,7 @@ export const AutoCollectGroundPieceActions = ({
             justifyContent: "center",
           }}
           onPress={() => {
-            setOverlayPos(MatchEventPosition.GroundPieceRedBarge);
+            setOverlayPos(MatchEventPosition.GroundPieceBlueBarge);
             setOverlay(OverlayState.GroundPiece);
           }}
         >
