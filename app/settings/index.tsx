@@ -266,8 +266,6 @@ const CustomAPIUrlEditor = () => {
   const prefixIsCustom = useUrlPrefix((state) => state.getIsCustom());
   const setUrlPrefix = useUrlPrefix((state) => state.setUrlPrefix);
 
-  console.log({ prefixIsCustom });
-
   if (!prefixIsCustom) {
     return null;
   }
