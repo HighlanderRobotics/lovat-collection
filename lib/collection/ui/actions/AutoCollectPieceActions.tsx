@@ -29,18 +29,19 @@ export const AutoCollectGroundPieceActions = ({
     {} as Record<MatchEventPosition, boolean>,
   );
 
-  const coordsToInsets: (x: number, y: number) => [number, number, number, number] = (x: number, y: number) => [
+  const coordsToInsets: (
+    x: number,
+    y: number,
+  ) => [number, number, number, number] = (x: number, y: number) => [
     y - radius / fieldHeight,
     1 - x - radius / fieldWidth,
     1 - y - radius / fieldHeight,
     x - radius / fieldWidth,
-  ]
+  ];
 
   return (
     <>
-      <FieldElement
-        edgeInsets={coordsToInsets(0.081, 0.728)}
-      >
+      <FieldElement edgeInsets={coordsToInsets(0.081, 0.728)}>
         <TouchableOpacity
           disabled={
             !existingGroundPieces[MatchEventPosition.GroundPieceRedBarge]
@@ -66,9 +67,7 @@ export const AutoCollectGroundPieceActions = ({
           <Icon name="upload" color="#c1c337" />
         </TouchableOpacity>
       </FieldElement>
-      <FieldElement
-        edgeInsets={coordsToInsets(0.081, 0.51)}
-      >
+      <FieldElement edgeInsets={coordsToInsets(0.081, 0.51)}>
         <TouchableOpacity
           disabled={!existingGroundPieces[MatchEventPosition.GroundPieceCenter]}
           style={{
@@ -90,9 +89,7 @@ export const AutoCollectGroundPieceActions = ({
           <Icon name="upload" color="#c1c337" />
         </TouchableOpacity>
       </FieldElement>
-      <FieldElement
-        edgeInsets={coordsToInsets(0.081, 0.29)}
-      >
+      <FieldElement edgeInsets={coordsToInsets(0.081, 0.29)}>
         <TouchableOpacity
           disabled={
             !existingGroundPieces[MatchEventPosition.GroundPieceBlueBarge]
