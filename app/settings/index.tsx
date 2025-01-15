@@ -266,7 +266,7 @@ const CustomAPIUrlEditor = () => {
   const prefixIsCustom = useUrlPrefix((state) => state.getIsCustom());
   const setUrlPrefix = useUrlPrefix((state) => state.setUrlPrefix);
 
-  console.log({ prefixIsCustom })
+  console.log({ prefixIsCustom });
 
   if (!prefixIsCustom) {
     return null;
@@ -302,11 +302,9 @@ const CustomAPIUrlEditor = () => {
               {useUrlPrefix.getState().getUrlPrefix()}
             </BodyMedium>
           </View>
-          <Button onPress={() => setUrlPrefix(null)}>
-            Reset
-          </Button>
+          <Button onPress={() => setUrlPrefix(null)}>Reset</Button>
         </View>
       </View>
     </View>
   );
-}
+};

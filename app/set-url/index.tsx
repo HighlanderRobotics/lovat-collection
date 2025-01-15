@@ -9,7 +9,10 @@ export default function SetUrlPage() {
 
   if (params.u && typeof params.u === "string") {
     setUrlPrefix(params.u);
-    Alert.alert("API URL updated", "You can view this or reset to production in settings.");
+    Alert.alert(
+      "API URL updated",
+      "You can view this or reset to production in settings.",
+    );
   }
 
   router.back();
