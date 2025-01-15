@@ -31,6 +31,7 @@ import { useQrCodeSizeStore } from "../../lib/storage/userStores";
 import { Icon } from "../../lib/components/Icon";
 import { useTrainingModeStore } from "../../lib/storage/userStores";
 import React from "react";
+import { useUrlPrefix } from "../../lib/lovatAPI/lovatAPI";
 
 export default function Settings() {
   return (
@@ -72,6 +73,7 @@ export default function Settings() {
               <TournamentSelector />
               <TrainingModeSelector />
               <QRCodeSizeLink />
+              <CustomAPIUrlEditor />
               <View
                 style={{
                   marginTop: 50,
@@ -254,6 +256,51 @@ const TournamentSelector = () => {
           >
             {tournament ? "Change" : "Select a tournament"}
           </Button>
+        </View>
+      </View>
+    </View>
+  );
+};
+
+const CustomAPIUrlEditor = () => {
+  const prefixIsCustom = useUrlPrefix((state) => state.getIsCustom());
+  const setUrlPrefix = useUrlPrefix((state) => state.setUrlPrefix);
+
+  if (!prefixIsCustom) {
+    return null;
+  }
+
+  return (
+    <View>
+      <Heading1Small>Custom API URL</Heading1Small>
+      <View
+        style={{
+          marginTop: 7,
+          padding: 7,
+          borderRadius: 10,
+          backgroundColor: colors.secondaryContainer.default,
+          gap: 7,
+        }}
+      >
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+            gap: 7,
+          }}
+        >
+          <View
+            style={{
+              padding: 7,
+              flex: 1,
+            }}
+          >
+            <BodyMedium numberOfLines={1}>
+              {useUrlPrefix.getState().getUrlPrefix()}
+            </BodyMedium>
+          </View>
+          <Button onPress={() => setUrlPrefix(null)}>Reset</Button>
         </View>
       </View>
     </View>
