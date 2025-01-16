@@ -28,23 +28,27 @@ export const AutoCollectGroundPieceActions = ({
     }),
     {} as Record<MatchEventPosition, boolean>,
   );
+
+  const coordsToInsets: (
+    x: number,
+    y: number,
+  ) => [number, number, number, number] = (x: number, y: number) => [
+    y - radius / fieldHeight,
+    1 - x - radius / fieldWidth,
+    1 - y - radius / fieldHeight,
+    x - radius / fieldWidth,
+  ];
+
   return (
     <>
-      <FieldElement
-        edgeInsets={[
-          0.3 - radius / fieldHeight,
-          0.931 - radius / fieldWidth,
-          0.069 - radius / fieldHeight,
-          0.7 - radius / fieldWidth,
-        ]}
-      >
+      <FieldElement edgeInsets={coordsToInsets(0.081, 0.728)}>
         <TouchableOpacity
           disabled={
-            !existingGroundPieces[MatchEventPosition.GroundPieceBlueBarge]
+            !existingGroundPieces[MatchEventPosition.GroundPieceRedBarge]
           }
           style={{
             opacity: existingGroundPieces[
-              MatchEventPosition.GroundPieceBlueBarge
+              MatchEventPosition.GroundPieceRedBarge
             ]
               ? 1
               : 0,
@@ -56,21 +60,14 @@ export const AutoCollectGroundPieceActions = ({
             justifyContent: "center",
           }}
           onPress={() => {
-            setOverlayPos(MatchEventPosition.GroundPieceBlueBarge);
+            setOverlayPos(MatchEventPosition.GroundPieceRedBarge);
             setOverlay(OverlayState.GroundPiece);
           }}
         >
           <Icon name="upload" color="#c1c337" />
         </TouchableOpacity>
       </FieldElement>
-      <FieldElement
-        edgeInsets={[
-          0.52 - radius / fieldHeight,
-          0.931 - radius / fieldWidth,
-          0.069 - radius / fieldHeight,
-          0.48 - radius / fieldWidth,
-        ]}
-      >
+      <FieldElement edgeInsets={coordsToInsets(0.081, 0.51)}>
         <TouchableOpacity
           disabled={!existingGroundPieces[MatchEventPosition.GroundPieceCenter]}
           style={{
@@ -92,21 +89,14 @@ export const AutoCollectGroundPieceActions = ({
           <Icon name="upload" color="#c1c337" />
         </TouchableOpacity>
       </FieldElement>
-      <FieldElement
-        edgeInsets={[
-          0.735 - radius / fieldHeight,
-          0.931 - radius / fieldWidth,
-          0.069 - radius / fieldHeight,
-          0.265 - radius / fieldWidth,
-        ]}
-      >
+      <FieldElement edgeInsets={coordsToInsets(0.081, 0.29)}>
         <TouchableOpacity
           disabled={
-            !existingGroundPieces[MatchEventPosition.GroundPieceRedBarge]
+            !existingGroundPieces[MatchEventPosition.GroundPieceBlueBarge]
           }
           style={{
             opacity: existingGroundPieces[
-              MatchEventPosition.GroundPieceRedBarge
+              MatchEventPosition.GroundPieceBlueBarge
             ]
               ? 1
               : 0,
@@ -118,7 +108,7 @@ export const AutoCollectGroundPieceActions = ({
             justifyContent: "center",
           }}
           onPress={() => {
-            setOverlayPos(MatchEventPosition.GroundPieceRedBarge);
+            setOverlayPos(MatchEventPosition.GroundPieceBlueBarge);
             setOverlay(OverlayState.GroundPiece);
           }}
         >
