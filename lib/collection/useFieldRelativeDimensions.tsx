@@ -12,7 +12,7 @@ export function useFieldRelativeDimensions<T>(dimensions: [T, T, T, T]) {
 
   if (!reportState.meta) return [null, null, null, null];
 
-  const allianceColor = reportState?.meta.allianceColor;
+  const allianceColor = reportState.meta.allianceColor;
 
   const [top, right, bottom, left] = dimensions;
 
