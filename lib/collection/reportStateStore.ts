@@ -28,8 +28,8 @@ export const useReportStateStore = create<ReportState>((set, get) => ({
   bargeResult: BargeResult.NotAttempted,
   coralPickUp: CoralPickUp.None,
   algaePickUp: AlgaePickUp.None,
-  knocksAlgae: false,
-  traversesUnderCage: false,
+  knocksAlgae: 0,
+  traversesUnderCage: 0,
   notes: "",
 
   scoutMatch: (meta) =>
