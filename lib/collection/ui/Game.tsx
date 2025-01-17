@@ -285,7 +285,7 @@ export function Game() {
     return gameStates.unknown;
   })();
 
-  const [overlay, setOverlay] = useState<OverlayState>(OverlayState.Reef);
+  const [overlay, setOverlay] = useState<OverlayState>(OverlayState.None);
   const [overlayPos, setOverlayPos] = useState<number>(-1);
   return (
     <GameViewTemplate
