@@ -17,7 +17,7 @@ const BodyMedium = ({
       style={[
         {
           fontFamily: "Heebo_400Regular",
-          fontSize: 14,
+          fontSize: 16,
           color: color ?? colors.body.default,
         },
         style,
