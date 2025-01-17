@@ -130,26 +130,24 @@ export default function PostMatch() {
 
           <PostMatchSelector
             title="Clears Algae from Reef"
-            updateStore={(value) => reportState.setKnocksAlgae(Boolean(value))}
+            updateStore={(value) => reportState.setKnocksAlgae(value)}
             items={[
               { label: "No", value: 0 },
               { label: "Yes", value: 1 },
             ]}
             direction={ButtonGroupDirection.Horizontal}
-            selected={reportState.knocksAlgae ? 1 : 0}
+            selected={reportState.knocksAlgae}
           />
           <PostMatchSelector
             title="Traverses Under Shallow Cage"
             // Probably rename this
-            updateStore={(value) =>
-              reportState.setTraversesUnderCage(Boolean(value))
-            }
+            updateStore={(value) => reportState.setTraversesUnderCage(value)}
             items={[
               { label: "No", value: 0 },
               { label: "Yes", value: 1 },
             ]}
             direction={ButtonGroupDirection.Horizontal}
-            selected={reportState.traversesUnderCage ? 1 : 0}
+            selected={reportState.traversesUnderCage}
           />
 
           <View style={{ gap: 7, marginBottom: 18 }}>
