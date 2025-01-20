@@ -25,6 +25,7 @@ import LabelSmall from "../../components/text/LabelSmall";
 import { TeleopScoreCoralActions } from "./actions/TeleopScoreCoralActions";
 import { MatchEventPosition } from "../MatchEventPosition";
 import { AutoReefActions } from "./actions/AutoReefActions";
+import { IconButton } from "../../components/IconButton";
 
 export function Game() {
   const reportState = useReportStateStore();
@@ -233,6 +234,16 @@ export function Game() {
 
     testing: {
       gamePhaseMessage: "Testing",
+      topLeftReplacement: (
+        <IconButton
+          icon="arrow_back_ios"
+          onPress={() => {
+            reportState.reset();
+            router.push("../home");
+          }}
+          label=""
+        />
+      ),
       field: (
         <>
           <FloatingActions hasCoral hasAlgae gamePhase={GamePhase.Teleop} />
@@ -285,7 +296,7 @@ export function Game() {
     return gameStates.unknown;
   })();
 
-  const [overlay, setOverlay] = useState<OverlayState>(OverlayState.Reef);
+  const [overlay, setOverlay] = useState<OverlayState>(OverlayState.None);
   const [overlayPos, setOverlayPos] = useState<number>(-1);
   return (
     <GameViewTemplate

@@ -5,8 +5,7 @@ import { MatchEventType } from "../../MatchEventType";
 import { useReportStateStore } from "../../reportStateStore";
 import { FieldElement } from "../FieldElement";
 import { GameAction } from "../GameAction";
-import { TouchableOpacity } from "react-native";
-import { fieldHeight, fieldWidth } from "../../../components/FieldImage";
+import { TouchableOpacity, View } from "react-native";
 import { OverlayState } from "../GameViewTemplate";
 
 export const AutoCollectGroundPieceActions = ({
@@ -16,7 +15,7 @@ export const AutoCollectGroundPieceActions = ({
   setOverlay: (value: OverlayState) => void;
   setOverlayPos: (pos: MatchEventPosition) => void;
 }) => {
-  const radius = 35;
+  const diameter = 35;
   const getRemainingGroundPieces = useReportStateStore(
     (state) => state.getRemainingGroundNotes,
   );
@@ -33,87 +32,118 @@ export const AutoCollectGroundPieceActions = ({
     x: number,
     y: number,
   ) => [number, number, number, number] = (x: number, y: number) => [
-    y - radius / fieldHeight,
-    1 - x - radius / fieldWidth,
-    1 - y - radius / fieldHeight,
-    x - radius / fieldWidth,
+    y,
+    1 - x,
+    1 - y,
+    x,
   ];
 
   return (
     <>
-      <FieldElement edgeInsets={coordsToInsets(0.081, 0.728)}>
-        <TouchableOpacity
-          disabled={
-            !existingGroundPieces[MatchEventPosition.GroundPieceRedBarge]
-          }
+      <FieldElement edgeInsets={coordsToInsets(0.0755, 0.72)}>
+        <View
           style={{
-            opacity: existingGroundPieces[
-              MatchEventPosition.GroundPieceRedBarge
-            ]
-              ? 1
-              : 0,
-            backgroundColor: "#c1c3374d",
-            borderRadius: 50,
-            width: radius,
-            height: radius,
-            alignItems: "center",
+            width: 0,
+            height: 0,
             justifyContent: "center",
-          }}
-          onPress={() => {
-            setOverlayPos(MatchEventPosition.GroundPieceRedBarge);
-            setOverlay(OverlayState.GroundPiece);
+            alignItems: "center",
           }}
         >
-          <Icon name="upload" color="#c1c337" />
-        </TouchableOpacity>
+          <TouchableOpacity
+            disabled={
+              !existingGroundPieces[MatchEventPosition.GroundPieceRedBarge]
+            }
+            style={{
+              opacity: existingGroundPieces[
+                MatchEventPosition.GroundPieceRedBarge
+              ]
+                ? 1
+                : 0,
+              backgroundColor: "#c1c3374d",
+              borderRadius: 50,
+              width: diameter,
+              height: diameter,
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+            onPress={() => {
+              setOverlayPos(MatchEventPosition.GroundPieceRedBarge);
+              setOverlay(OverlayState.GroundPiece);
+            }}
+          >
+            <Icon name="upload" color="#c1c337" />
+          </TouchableOpacity>
+        </View>
       </FieldElement>
-      <FieldElement edgeInsets={coordsToInsets(0.081, 0.51)}>
-        <TouchableOpacity
-          disabled={!existingGroundPieces[MatchEventPosition.GroundPieceCenter]}
+      <FieldElement edgeInsets={coordsToInsets(0.0755, 0.5)}>
+        <View
           style={{
-            opacity: existingGroundPieces[MatchEventPosition.GroundPieceCenter]
-              ? 1
-              : 0,
-            backgroundColor: "#c1c3374d",
-            borderRadius: 50,
-            width: radius,
-            height: radius,
-            alignItems: "center",
+            width: 0,
+            height: 0,
             justifyContent: "center",
-          }}
-          onPress={() => {
-            setOverlayPos(MatchEventPosition.GroundPieceCenter);
-            setOverlay(OverlayState.GroundPiece);
+            alignItems: "center",
           }}
         >
-          <Icon name="upload" color="#c1c337" />
-        </TouchableOpacity>
+          <TouchableOpacity
+            disabled={
+              !existingGroundPieces[MatchEventPosition.GroundPieceCenter]
+            }
+            style={{
+              opacity: existingGroundPieces[
+                MatchEventPosition.GroundPieceCenter
+              ]
+                ? 1
+                : 0,
+              backgroundColor: "#c1c3374d",
+              borderRadius: 50,
+              width: diameter,
+              height: diameter,
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+            onPress={() => {
+              setOverlayPos(MatchEventPosition.GroundPieceCenter);
+              setOverlay(OverlayState.GroundPiece);
+            }}
+          >
+            <Icon name="upload" color="#c1c337" />
+          </TouchableOpacity>
+        </View>
       </FieldElement>
-      <FieldElement edgeInsets={coordsToInsets(0.081, 0.29)}>
-        <TouchableOpacity
-          disabled={
-            !existingGroundPieces[MatchEventPosition.GroundPieceBlueBarge]
-          }
+      <FieldElement edgeInsets={coordsToInsets(0.0755, 0.278)}>
+        <View
           style={{
-            opacity: existingGroundPieces[
-              MatchEventPosition.GroundPieceBlueBarge
-            ]
-              ? 1
-              : 0,
-            backgroundColor: "#c1c3374d",
-            borderRadius: 50,
-            width: radius,
-            height: radius,
-            alignItems: "center",
+            width: 0,
+            height: 0,
             justifyContent: "center",
-          }}
-          onPress={() => {
-            setOverlayPos(MatchEventPosition.GroundPieceBlueBarge);
-            setOverlay(OverlayState.GroundPiece);
+            alignItems: "center",
           }}
         >
-          <Icon name="upload" color="#c1c337" />
-        </TouchableOpacity>
+          <TouchableOpacity
+            disabled={
+              !existingGroundPieces[MatchEventPosition.GroundPieceBlueBarge]
+            }
+            style={{
+              opacity: existingGroundPieces[
+                MatchEventPosition.GroundPieceBlueBarge
+              ]
+                ? 1
+                : 0,
+              backgroundColor: "#c1c3374d",
+              borderRadius: 50,
+              width: diameter,
+              height: diameter,
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+            onPress={() => {
+              setOverlayPos(MatchEventPosition.GroundPieceBlueBarge);
+              setOverlay(OverlayState.GroundPiece);
+            }}
+          >
+            <Icon name="upload" color="#c1c337" />
+          </TouchableOpacity>
+        </View>
       </FieldElement>
     </>
   );
