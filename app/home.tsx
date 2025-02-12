@@ -388,7 +388,13 @@ const AutomaticMatchSelection = ({
             textColor={colors.onBackground.default}
           />
         ) : (
-          <BodyMedium>No matches found</BodyMedium>
+          <View style={{ width: 250, alignItems: "center" }}>
+            <Heading1Small>No matches found</Heading1Small>
+            <BodyMedium style={{ textAlign: "center" }}>
+              You haven&apos;t been assigned a scouter schedule by a scouting
+              lead. Tap below to enter a match&apos;s details manually.
+            </BodyMedium>
+          </View>
         )}
       </View>
     </View>
@@ -402,6 +408,7 @@ type ManualMatchSelectionProps = {
 const ManualMatchSelection = (props: ManualMatchSelectionProps) => {
   const [matchType, setMatchType] = useState(MatchType.Qualifier);
   const [matchNumber, setMatchNumber] = useState("");
+  const [isMatchNumberFocused, setIsMatchNumberFocused] = useState(false);
   const [teamNumber, setTeamNumber] = useState("");
   const [allianceColor, setAllianceColor] = useState(AllianceColor.Red);
   const tournament = useTournamentStore((state) => state.value);
@@ -444,8 +451,7 @@ const ManualMatchSelection = (props: ManualMatchSelectionProps) => {
   }, [matchType, matchNumber, teamNumber, allianceColor]);
 
   return (
-    <ScrollView style={{ flex: 1, paddingTop: 10 }}>
-      <TitleMedium>Match details</TitleMedium>
+    <ScrollView style={{ flex: 1, paddingTop: 14 }}>
       {tournament ? (
         <Heading1Small>
           {tournament.date.split("-")[0]} {tournament.name}
@@ -457,8 +463,19 @@ const ManualMatchSelection = (props: ManualMatchSelectionProps) => {
       <LabelSmall>Match number</LabelSmall>
       <View style={{ height: 7 }} />
       <TextField
-        placeholder="Match number"
-        value={matchNumber}
+        placeholder={
+          isMatchNumberFocused
+            ? "10"
+            : matchTypes.find((t) => t.type === matchType)?.shortName + "10"
+        }
+        value={
+          matchNumber.length === 0 || isMatchNumberFocused
+            ? matchNumber
+            : matchTypes.find((t) => t.type === matchType)?.shortName +
+              matchNumber
+        }
+        onFocus={() => setIsMatchNumberFocused(true)}
+        onBlur={() => setIsMatchNumberFocused(false)}
         onChangeText={(text) => setMatchNumber(text)}
         keyboardType="number-pad"
       />
@@ -477,7 +494,7 @@ const ManualMatchSelection = (props: ManualMatchSelectionProps) => {
       <LabelSmall>Team number</LabelSmall>
       <View style={{ height: 7 }} />
       <TextField
-        placeholder="Team number"
+        placeholder="8033"
         value={teamNumber}
         onChangeText={(text) => setTeamNumber(text)}
         keyboardType="number-pad"
@@ -511,7 +528,7 @@ const ScheduleColorGradient = () => {
     if (scouterScheduleForTournament?.hash) {
       setColor(getVerionsColor(scouterScheduleForTournament?.hash, 30, 30));
     } else {
-      setColor(colors.danger.default);
+      setColor("transparent");
     }
   }, [scouterScheduleForTournament]);
 
