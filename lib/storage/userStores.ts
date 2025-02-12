@@ -58,7 +58,7 @@ export const useTrainingModeStore = createGenericPersistantStore<boolean>(
 );
 export const useQrCodeSizeStore = createGenericPersistantStore<number>(
   "qrCodeSizeStore",
-  600,
+  450,
 );
 export const useFieldOrientationStore =
   createGenericPersistantStore<FieldOrientation>(
