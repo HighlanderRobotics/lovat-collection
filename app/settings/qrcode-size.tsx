@@ -108,7 +108,7 @@ const Body = () => {
           </View>
           <Slider
             minimumValue={100}
-            maximumValue={1100}
+            maximumValue={800}
             step={1}
             value={qrCodeSize}
             onSlidingComplete={(value) => {
