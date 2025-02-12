@@ -23,7 +23,7 @@ export enum RobotRole {
   Immobile,
 }
 
-type StartingPosition =
+export type StartingPosition =
   (typeof startingPositions)[keyof typeof startingPositions];
 
 export type ReportState = {
