@@ -65,7 +65,7 @@ export default function Submit() {
   }, [scoutReport]);
 
   useEffect(() => {
-    if (reportState) {
+    if (reportState.meta) {
       setScoutReport(reportState.exportScoutReport());
     }
   }, [reportState]);

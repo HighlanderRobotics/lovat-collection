@@ -328,6 +328,9 @@ const FloatingActions = ({
 
   const addEvent = reportState.addEvent;
 
+  const coralActive = !(gamePhase === GamePhase.Auto && !hasCoral);
+  const algaeActive = !(gamePhase === GamePhase.Auto && !hasAlgae);
+
   return (
     <View
       pointerEvents="box-none"
@@ -372,7 +375,7 @@ const FloatingActions = ({
         >
           {/* Coral */}
           <TouchableOpacity
-            disabled={gamePhase === GamePhase.Auto && !hasCoral}
+            disabled={!coralActive}
             accessibilityLabel={
               gamePhase === GamePhase.Teleop
                 ? hasCoral
@@ -386,10 +389,10 @@ const FloatingActions = ({
               flex: 1,
               width: "50%",
               backgroundColor: "#ffffff4d",
-              opacity: !(gamePhase === GamePhase.Auto && !hasCoral) ? 1 : 0,
+              opacity: coralActive ? 1 : 0,
               borderRadius: 7,
               borderColor: "#ffffff",
-              borderWidth: !hasCoral ? 2 : 0,
+              borderWidth: coralActive && !hasCoral ? 2 : 0,
               gap: 2,
               alignItems: "center",
               justifyContent: "center",
@@ -397,7 +400,7 @@ const FloatingActions = ({
             activeOpacity={0.9}
             onPress={() => {
               Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-              if (!hasCoral) {
+              if (coralActive && !hasCoral) {
                 addEvent({
                   type: MatchEventType.PickupCoral,
                 });
@@ -409,17 +412,17 @@ const FloatingActions = ({
             }}
           >
             <Icon
-              name={!hasCoral ? "frc_coral" : "output_circle"}
+              name={coralActive && !hasCoral ? "frc_coral" : "output_circle"}
               color={"#ffffff"}
               size={40}
             />
             <LabelSmall color="#ffffff">
-              {!hasCoral ? "Intake Coral" : "Drop Coral"}
+              {coralActive && !hasCoral ? "Intake Coral" : "Drop Coral"}
             </LabelSmall>
           </TouchableOpacity>
           {/* Algae */}
           <TouchableOpacity
-            disabled={gamePhase === GamePhase.Auto && !hasAlgae}
+            disabled={!algaeActive}
             accessibilityLabel={
               gamePhase === GamePhase.Teleop
                 ? hasAlgae
@@ -433,10 +436,10 @@ const FloatingActions = ({
               flex: 1,
               width: "50%",
               backgroundColor: "#14ceac4d",
-              opacity: !(gamePhase === GamePhase.Auto && !hasAlgae) ? 1 : 0,
+              opacity: algaeActive ? 1 : 0,
               borderRadius: 7,
               borderColor: "#14ceac",
-              borderWidth: !hasAlgae ? 2 : 0,
+              borderWidth: algaeActive && !hasAlgae ? 2 : 0,
               gap: 2,
               alignItems: "center",
               justifyContent: "center",
@@ -444,7 +447,7 @@ const FloatingActions = ({
             activeOpacity={0.9}
             onPress={() => {
               Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-              if (!hasAlgae) {
+              if (algaeActive && !hasAlgae) {
                 addEvent({
                   type: MatchEventType.PickupAlgae,
                 });
@@ -456,12 +459,12 @@ const FloatingActions = ({
             }}
           >
             <Icon
-              name={!hasAlgae ? "frc_algae" : "output_circle"}
+              name={algaeActive && !hasAlgae ? "frc_algae" : "output_circle"}
               color={"#14ceac"}
               size={40}
             />
             <LabelSmall color="#14ceac">
-              {!hasAlgae ? "Intake Algae" : "Drop Algae"}
+              {algaeActive && !hasAlgae ? "Intake Algae" : "Drop Algae"}
             </LabelSmall>
           </TouchableOpacity>
         </View>
