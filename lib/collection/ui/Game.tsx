@@ -181,7 +181,6 @@ export function Game() {
             setOverlayPos={(value) => setOverlayPos(value)}
           />
           <HasAlgaeActions setOverlay={(value) => setOverlay(value)} />
-          <AutoCoralStationActions />
           <FloatingActions hasCoral hasAlgae gamePhase={GamePhase.Auto} />
         </>
       ),
