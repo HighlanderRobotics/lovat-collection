@@ -21,7 +21,7 @@ import { ScoutReportEvent } from "./ScoutReport";
 import { AllianceColor } from "../models/AllianceColor";
 
 function mapPosition(position: MatchEventPosition, color: AllianceColor) {
-  if (color === AllianceColor.Blue) return position;
+  if (color === AllianceColor.Red) return position;
 
   const map: Partial<Record<MatchEventPosition, MatchEventPosition>> = {
     [MatchEventPosition.StartBlueProcessor]:
@@ -253,10 +253,7 @@ export const useReportStateStore = create<ReportState>((set, get) => ({
                 (event.timestamp - reportState.startTimestamp!.getTime()) /
                   1000,
                 event.type,
-                mapPosition(
-                  reportState.startPosition!,
-                  reportState.meta!.allianceColor,
-                )!,
+                mapPosition(event.position!, reportState.meta!.allianceColor)!,
               ] satisfies ScoutReportEvent,
           ),
         ],
