@@ -35,7 +35,7 @@ export function Game() {
   const setPhase = reportState.setGamePhase;
 
   useEffect(() => {
-    if (!reportState) {
+    if (!reportState.meta) {
       router.replace("/home");
     }
   }, [reportState]);
