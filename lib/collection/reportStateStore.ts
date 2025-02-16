@@ -104,7 +104,7 @@ export const useReportStateStore = create<ReportState>((set, get) => ({
     });
     return flag;
   },
-  getRemainingGroundNotes: () => {
+  getRemainingGroundPieces: () => {
     const reportState = get();
     let res = Object.values(groundPiecePositions).reduce(
       (acc, curr) => ({

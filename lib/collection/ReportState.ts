@@ -57,7 +57,7 @@ export type ReportState = {
   getHasExited: () => boolean;
   getHasCoral: () => boolean;
   getHasAlgae: () => boolean;
-  getRemainingGroundNotes: () => Record<
+  getRemainingGroundPieces: () => Record<
     MatchEventPosition,
     PieceContainerContents
   >;

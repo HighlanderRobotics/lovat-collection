@@ -276,9 +276,14 @@ function GroundPieceOverlay({
   resetOverlayPos,
 }: OverlayProps) {
   const reportState = useReportStateStore();
-  const [hasCoral, hasAlgae] = [
+  const [hasCoral, hasAlgae, remainingGroundPieces] = [
     reportState.getHasCoral(),
     reportState.getHasAlgae(),
+    reportState.getRemainingGroundPieces(),
+  ];
+  const [coralActive, algaeActive] = [
+    remainingGroundPieces[overlayPos!].coral,
+    remainingGroundPieces[overlayPos!].algae,
   ];
   return (
     <View
@@ -289,7 +294,7 @@ function GroundPieceOverlay({
       }}
     >
       <TouchableOpacity
-        disabled={hasCoral}
+        disabled={hasCoral || !coralActive}
         style={{
           backgroundColor: "#ffffff4d",
           borderRadius: 7,
@@ -298,7 +303,7 @@ function GroundPieceOverlay({
           flexGrow: 1,
           alignItems: "center",
           justifyContent: "center",
-          opacity: !hasCoral ? 1 : 0.25,
+          opacity: !hasCoral && coralActive ? 1 : 0.25,
         }}
         onPress={() => {
           reportState.addEvent({
@@ -312,7 +317,7 @@ function GroundPieceOverlay({
         <Icon name="frc_coral" color="#ffffff" size={100} />
       </TouchableOpacity>
       <TouchableOpacity
-        disabled={hasAlgae}
+        disabled={hasAlgae || !algaeActive}
         style={{
           backgroundColor: "#14ceac4d",
           borderRadius: 7,
@@ -321,7 +326,7 @@ function GroundPieceOverlay({
           flexGrow: 1,
           alignItems: "center",
           justifyContent: "center",
-          opacity: !hasAlgae ? 1 : 0.25,
+          opacity: !hasAlgae && algaeActive ? 1 : 0.25,
         }}
         onPress={() => {
           reportState.addEvent({

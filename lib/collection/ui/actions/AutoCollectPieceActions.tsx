@@ -17,7 +17,7 @@ export const AutoCollectGroundPieceActions = ({
 }) => {
   const diameter = 35;
   const getRemainingGroundPieces = useReportStateStore(
-    (state) => state.getRemainingGroundNotes,
+    (state) => state.getRemainingGroundPieces,
   );
   const remainingGroundPieces = getRemainingGroundPieces();
   const existingGroundPieces = Object.entries(remainingGroundPieces).reduce(
