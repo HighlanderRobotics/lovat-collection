@@ -3,6 +3,7 @@ import { TouchableOpacity } from "react-native";
 import { MatchEventPosition } from "../../MatchEventPosition";
 import { FieldElement } from "../FieldElement";
 import React from "react";
+import type { StartingPosition as StartingPositionType } from "../../ReportState";
 
 export const PreMatchActions = () => {
   return (
@@ -32,7 +33,7 @@ export const PreMatchActions = () => {
 
 function StartingPosition(props: {
   edgeInsets: [number, number, number, number];
-  position: MatchEventPosition;
+  position: StartingPositionType;
 }) {
   const { edgeInsets, position } = props;
   const reportState = useReportStateStore();

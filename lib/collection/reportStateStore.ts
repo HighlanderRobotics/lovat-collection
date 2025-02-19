@@ -18,6 +18,42 @@ import { DriverAbility, driverAbilityDescriptions } from "./DriverAbility";
 import { MatchEvent } from "./MatchEvent";
 import { matchTypes } from "../models/match";
 import { ScoutReportEvent } from "./ScoutReport";
+import { AllianceColor } from "../models/AllianceColor";
+
+function mapPosition(position: MatchEventPosition, color: AllianceColor) {
+  if (color === AllianceColor.Red) return position;
+
+  const map: Partial<Record<MatchEventPosition, MatchEventPosition>> = {
+    [MatchEventPosition.StartBlueProcessor]:
+      MatchEventPosition.StartRedProcessor,
+    [MatchEventPosition.StartBlueNet]: MatchEventPosition.StartRedNet,
+    [MatchEventPosition.StartRedProcessor]:
+      MatchEventPosition.StartBlueProcessor,
+    [MatchEventPosition.StartRedNet]: MatchEventPosition.StartBlueNet,
+
+    [MatchEventPosition.GroundPieceBlueBarge]:
+      MatchEventPosition.GroundPieceRedBarge,
+    [MatchEventPosition.GroundPieceRedBarge]:
+      MatchEventPosition.GroundPieceBlueBarge,
+
+    [MatchEventPosition.CoralStationBlueBarge]:
+      MatchEventPosition.CoralStationRedBarge,
+    [MatchEventPosition.CoralStationRedBarge]:
+      MatchEventPosition.CoralStationBlueBarge,
+
+    [MatchEventPosition.LevelOneB]: MatchEventPosition.LevelOneA,
+    [MatchEventPosition.LevelOneA]: MatchEventPosition.LevelOneB,
+    [MatchEventPosition.LevelTwoB]: MatchEventPosition.LevelTwoA,
+    [MatchEventPosition.LevelTwoA]: MatchEventPosition.LevelTwoB,
+    [MatchEventPosition.LevelThreeB]: MatchEventPosition.LevelThreeA,
+    [MatchEventPosition.LevelThreeA]: MatchEventPosition.LevelThreeB,
+    [MatchEventPosition.LevelFourB]: MatchEventPosition.LevelFourA,
+    [MatchEventPosition.LevelFourA]: MatchEventPosition.LevelFourB,
+  };
+
+  if (position in map) return map[position];
+  return position;
+}
 
 export const useReportStateStore = create<ReportState>((set, get) => ({
   events: [],
@@ -196,8 +232,11 @@ export const useReportStateStore = create<ReportState>((set, get) => ({
                 [
                   0,
                   MatchEventType.PickupCoral,
-                  reportState.startPosition,
-                ] as ScoutReportEvent,
+                  mapPosition(
+                    reportState.startPosition!,
+                    reportState.meta!.allianceColor,
+                  )!,
+                ] satisfies ScoutReportEvent,
               ]
             : []),
           ...(reportState.startPosition
@@ -205,8 +244,11 @@ export const useReportStateStore = create<ReportState>((set, get) => ({
                 [
                   0,
                   MatchEventType.StartPosition,
-                  reportState.startPosition,
-                ] as ScoutReportEvent,
+                  mapPosition(
+                    reportState.startPosition!,
+                    reportState.meta!.allianceColor,
+                  )!,
+                ] satisfies ScoutReportEvent,
               ]
             : []),
           ...reportState.events.map(
@@ -215,8 +257,8 @@ export const useReportStateStore = create<ReportState>((set, get) => ({
                 (event.timestamp - reportState.startTimestamp!.getTime()) /
                   1000,
                 event.type,
-                event.position,
-              ] as ScoutReportEvent,
+                mapPosition(event.position!, reportState.meta!.allianceColor)!,
+              ] satisfies ScoutReportEvent,
           ),
         ],
       };

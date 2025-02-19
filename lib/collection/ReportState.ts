@@ -4,6 +4,7 @@ import { MatchEvent } from "./MatchEvent";
 import {
   PieceContainerContents,
   MatchEventPosition,
+  startingPositions,
 } from "./MatchEventPosition";
 import { MatchEventType } from "./MatchEventType";
 import { AlgaePickUp, CoralPickUp } from "./PickUp";
@@ -22,12 +23,15 @@ export enum RobotRole {
   Immobile,
 }
 
+export type StartingPosition =
+  (typeof startingPositions)[keyof typeof startingPositions];
+
 export type ReportState = {
   uuid?: string;
   meta?: ScoutReportMeta;
   events: MatchEvent[];
   startTimestamp?: Date;
-  startPosition?: MatchEventPosition;
+  startPosition?: StartingPosition;
   startPiece: boolean;
   gamePhase: GamePhase;
   robotRole: RobotRole;
@@ -42,7 +46,7 @@ export type ReportState = {
   scoutMatch: (meta: ScoutReportMeta) => void;
   initializeMatchTimestamp: () => void;
 
-  setStartPosition: (value: MatchEventPosition) => void;
+  setStartPosition: (value: StartingPosition) => void;
   setStartPiece: (value: boolean) => void;
   setGamePhase: (value: GamePhase) => void;
   setRobotRole: (value: RobotRole) => void;
