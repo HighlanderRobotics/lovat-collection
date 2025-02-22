@@ -72,7 +72,7 @@ export default function Home() {
   useEffect(() => {
     if (!reportState.meta) return;
 
-    router.replace("/game");
+    router.push("/game");
   }, [reportState.meta]);
 
   return (

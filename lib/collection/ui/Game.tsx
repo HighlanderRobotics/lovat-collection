@@ -104,11 +104,28 @@ export function Game() {
       gamePhaseMessage: "Pre-Match",
       field: <PreMatchActions />,
       topLeftReplacement: (
-        <Checkbox
-          label="Loaded with a coral"
-          checked={reportState?.startPiece}
-          onChange={reportState.setStartPiece}
-        />
+        <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+          {router.canGoBack() && (
+            <TouchableOpacity
+              onPress={() => {
+                reportState.reset();
+                router.back();
+              }}
+              style={{ padding: 8 }}
+            >
+              <Icon
+                name="arrow_back_ios"
+                size={24}
+                color={colors.onBackground.default}
+              />
+            </TouchableOpacity>
+          )}
+          <Checkbox
+            label="Loaded with a coral"
+            checked={reportState?.startPiece}
+            onChange={reportState.setStartPiece}
+          />
+        </View>
       ),
       startEnabled: reportState.startPosition !== undefined,
     },

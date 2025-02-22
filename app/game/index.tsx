@@ -31,6 +31,7 @@ export default function GamePage() {
           animationDuration: 0,
           animationTypeForReplace: "push",
           animation: "flip",
+          gestureEnabled: false,
         }}
       />
       <Suspense fallback={<ActivityIndicator />}>

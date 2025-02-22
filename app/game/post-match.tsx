@@ -53,6 +53,7 @@ export default function PostMatch() {
           animationDuration: 0,
           animationTypeForReplace: "push",
           animation: "flip",
+          gestureEnabled: false,
         }}
       />
       <NavBar title="Post match" />
