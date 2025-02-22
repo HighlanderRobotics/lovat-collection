@@ -23,7 +23,7 @@
         "monochromeImage": "./assets/monochrome-icon.png"
       },
       "package": "com.frc8033.lovatcollection",
-      "versionCode": 3
+      "versionCode": 5
     },
     "androidNavigationBar": {
       "backgroundColor": "#1f1f1f"
@@ -46,6 +46,14 @@
         "expo-screen-orientation",
         {
           "initialOrientation": "PORTRAIT_UP"
+        }
+      ],
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "targetSdkVersion": 34
+          }
         }
       ]
     ],
