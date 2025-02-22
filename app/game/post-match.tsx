@@ -3,9 +3,7 @@ import { NavBar } from "../../lib/components/NavBar";
 import { Stack, router, useNavigation } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Button from "../../lib/components/Button";
-import LabelSmall from "../../lib/components/text/LabelSmall";
 import {
-  ButtonGroup,
   ButtonGroupButton,
   ButtonGroupDirection,
 } from "../../lib/components/ButtonGroup";
@@ -29,6 +27,9 @@ import { CommonActions } from "@react-navigation/native";
 import BodyMedium from "../../lib/components/text/BodyMedium";
 import { useTrainingModeStore } from "../../lib/storage/userStores";
 import React from "react";
+import { RadioButton } from "../../lib/components/RadioButton";
+import Heading1Small from "../../lib/components/text/Heading1Small";
+import { Checkbox } from "../../lib/components/Checkbox";
 
 export default function PostMatch() {
   const reportState = useReportStateStore();
@@ -128,7 +129,7 @@ export default function PostMatch() {
             selected={reportState.algaePickUp}
           />
 
-          <PostMatchSelector
+          {/* <PostMatchSelector
             title="Clears Algae from Reef"
             updateStore={(value) => reportState.setKnocksAlgae(value)}
             items={[
@@ -148,10 +149,26 @@ export default function PostMatch() {
             ]}
             direction={ButtonGroupDirection.Horizontal}
             selected={reportState.traversesUnderCage}
+          /> */}
+
+          <Heading1Small>Capabilities</Heading1Small>
+
+          <Checkbox
+            label="Clears Algae from Reef"
+            checked={reportState.knocksAlgae === 1}
+            onChange={(value) => reportState.setKnocksAlgae(value ? 1 : 0)}
+          />
+
+          <Checkbox
+            label="Traverses Under Shallow Cage"
+            checked={reportState.traversesUnderCage === 1}
+            onChange={(value) =>
+              reportState.setTraversesUnderCage(value ? 1 : 0)
+            }
           />
 
           <View style={{ gap: 7, marginBottom: 18 }}>
-            <LabelSmall>Notes</LabelSmall>
+            <Heading1Small>Notes</Heading1Small>
             <TextField
               value={reportState!.notes}
               onChangeText={reportState.setNotes}
@@ -221,14 +238,31 @@ function PostMatchSelector<T>(props: {
   const { title, updateStore, items, selected, direction } = props;
 
   return (
-    <View style={{ gap: 7 }}>
-      <LabelSmall>{title}</LabelSmall>
-      <ButtonGroup
+    <View style={{ gap: 7, marginBottom: 14 }}>
+      <Heading1Small>{title}</Heading1Small>
+      <View
+        style={{
+          flexDirection:
+            direction === ButtonGroupDirection.Horizontal ? "row" : "column",
+          gap: 14,
+        }}
+      >
+        {items.map((item) => (
+          <RadioButton
+            key={item.key}
+            label={item.label}
+            size={24}
+            checked={selected === item.value}
+            onChange={() => updateStore(item.value)}
+          />
+        ))}
+      </View>
+      {/* <ButtonGroup
         direction={direction ?? ButtonGroupDirection.Vertical}
         buttons={items}
         selected={selected}
         onChange={(value) => updateStore(value)}
-      />
+      /> */}
     </View>
   );
 }
