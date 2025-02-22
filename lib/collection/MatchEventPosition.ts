@@ -28,12 +28,12 @@ export enum MatchEventPosition {
   CoralStationBlueBarge,
 }
 
-export const startingPositions: Record<string, MatchEventPosition> = {
+export const startingPositions = {
   StartRedProcessor: MatchEventPosition.StartRedProcessor,
   StartRedNet: MatchEventPosition.StartRedNet,
   StartBlueNet: MatchEventPosition.StartBlueNet,
   StartBlueProcessor: MatchEventPosition.StartBlueProcessor,
-} as const;
+} as const satisfies Record<string, MatchEventPosition>;
 
 export const groundPiecePositions: Record<string, MatchEventPosition> = {
   GroundPieceA: MatchEventPosition.GroundPieceRedBarge,
