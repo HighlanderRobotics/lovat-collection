@@ -350,6 +350,7 @@ function AutoReefOverlay({
 }: OverlayProps) {
   const reportState = useReportStateStore();
   const hasAlgae = reportState.getHasAlgae();
+  const hasCoral = reportState.getHasCoral();
 
   return (
     <View
@@ -367,6 +368,7 @@ function AutoReefOverlay({
         }}
       >
         <TouchableOpacity
+          disabled={!hasCoral}
           style={{
             backgroundColor: "#9cff9a4d",
             borderRadius: 7,
@@ -375,6 +377,7 @@ function AutoReefOverlay({
             flexGrow: 1,
             alignItems: "center",
             justifyContent: "center",
+            opacity: hasCoral ? 1 : 0.25,
           }}
           onPress={() => {
             reportState.addEvent({
@@ -388,6 +391,7 @@ function AutoReefOverlay({
           <TitleLarge color="#9cff9a">L1</TitleLarge>
         </TouchableOpacity>
         <TouchableOpacity
+          disabled={!hasCoral}
           style={{
             backgroundColor: "#9cff9a4d",
             borderRadius: 7,
@@ -396,6 +400,7 @@ function AutoReefOverlay({
             flexGrow: 1,
             alignItems: "center",
             justifyContent: "center",
+            opacity: hasCoral ? 1 : 0.25,
           }}
           onPress={() => {
             reportState.addEvent({
@@ -409,6 +414,7 @@ function AutoReefOverlay({
           <TitleLarge color="#9cff9a">L2</TitleLarge>
         </TouchableOpacity>
         <TouchableOpacity
+          disabled={!hasCoral}
           style={{
             backgroundColor: "#9cff9a4d",
             borderRadius: 7,
@@ -417,6 +423,7 @@ function AutoReefOverlay({
             flexGrow: 1,
             alignItems: "center",
             justifyContent: "center",
+            opacity: hasCoral ? 1 : 0.25,
           }}
           onPress={() => {
             reportState.addEvent({
@@ -430,6 +437,7 @@ function AutoReefOverlay({
           <TitleLarge color="#9cff9a">L3</TitleLarge>
         </TouchableOpacity>
         <TouchableOpacity
+          disabled={!hasCoral}
           style={{
             backgroundColor: "#9cff9a4d",
             borderRadius: 7,
@@ -438,6 +446,7 @@ function AutoReefOverlay({
             flexGrow: 1,
             alignItems: "center",
             justifyContent: "center",
+            opacity: hasCoral ? 1 : 0.25,
           }}
           onPress={() => {
             reportState.addEvent({

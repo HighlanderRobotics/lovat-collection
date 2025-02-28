@@ -134,6 +134,10 @@ export function Game() {
             setOverlay={(value) => setOverlay(value)}
             setOverlayPos={(value) => setOverlayPos(value)}
           />
+          <AutoReefActions
+            setOverlay={(value) => setOverlay(value)}
+            setOverlayPos={(value) => setOverlayPos(value)}
+          />
           <AutoCoralStationActions />
           <FloatingActions gamePhase={GamePhase.Auto} />
         </>
