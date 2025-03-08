@@ -147,7 +147,6 @@ const DoneButton = ({
             routes: [{ key: "index", name: "index" }],
           }),
         );
-        router.replace("/");
       }}
     >
       Done
