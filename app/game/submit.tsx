@@ -11,12 +11,13 @@ import {
 } from "../../lib/models/match";
 import { Suspense, useEffect, useState } from "react";
 import { ScoutReport } from "../../lib/collection/ScoutReport";
-import { router } from "expo-router";
+import { router, useNavigation } from "expo-router";
 import { uploadReport } from "../../lib/lovatAPI/uploadReport";
 import { Icon } from "../../lib/components/Icon";
 import { useHistoryStore } from "../../lib/storage/historyStore";
 import { ScoutReportMeta } from "../../lib/models/ScoutReportMeta";
 import { ScoutReportCode } from "../../lib/collection/ui/ScoutReportCode";
+import { CommonActions } from "@react-navigation/native";
 import React from "react";
 
 export default function Submit() {
@@ -129,6 +130,7 @@ const DoneButton = ({
 }) => {
   const resetReportState = useReportStateStore((state) => state.reset);
   const upsertMatchToHistory = useHistoryStore((state) => state.upsertMatch);
+  const navigation = useNavigation();
 
   return (
     <Button
@@ -139,8 +141,13 @@ const DoneButton = ({
           uploadState === UploadState.Uploaded,
           meta,
         );
-        router.replace("/");
         resetReportState();
+        navigation.dispatch(
+          CommonActions.reset({
+            routes: [{ key: "index", name: "index" }],
+          }),
+        );
+        router.replace("/");
       }}
     >
       Done

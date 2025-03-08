@@ -165,7 +165,7 @@ export default function PostMatch() {
               disabled={trainingModeEnabled}
               variant="primary"
               onPress={() => {
-                router.push("/game/submit");
+                router.replace("/game/submit");
               }}
             >
               Submit
