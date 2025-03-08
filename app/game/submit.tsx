@@ -11,7 +11,7 @@ import {
 } from "../../lib/models/match";
 import { Suspense, useEffect, useState } from "react";
 import { ScoutReport } from "../../lib/collection/ScoutReport";
-import { router, useNavigation } from "expo-router";
+import { useNavigation } from "expo-router";
 import { uploadReport } from "../../lib/lovatAPI/uploadReport";
 import { Icon } from "../../lib/components/Icon";
 import { useHistoryStore } from "../../lib/storage/historyStore";
