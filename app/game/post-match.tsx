@@ -163,7 +163,7 @@ export default function PostMatch() {
                 marginTop: -5,
               }}
             >
-              <BodyMedium>Notes are publicly visible</BodyMedium>
+              <BodyMedium>Keep it helpful. Notes can be viewed by anyone.</BodyMedium>
             </View>
           </View>
 
