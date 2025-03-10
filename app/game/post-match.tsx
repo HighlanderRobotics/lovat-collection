@@ -158,6 +158,13 @@ export default function PostMatch() {
               multiline={true}
               returnKeyType="done"
             />
+            <View
+              style={{
+                marginTop: -5,
+              }}
+            >
+              <BodyMedium>Notes are publicly visible</BodyMedium>
+            </View>
           </View>
 
           <View style={{ gap: 10 }}>
