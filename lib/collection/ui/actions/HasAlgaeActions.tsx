@@ -23,29 +23,23 @@ export const HasAlgaeActions = (props: {
           }}
         ></GameAction>
       </FieldElement>
-      {allianceColor! === AllianceColor.Red ? (
-        <FieldElement edgeInsets={[0, 0.59, 0.8, 0.275]}>
-          <GameAction
-            color="#9cff9a"
-            onPress={() => {
-              addEvent({
-                type: MatchEventType.ScoreProcessor,
-              });
-            }}
-          ></GameAction>
-        </FieldElement>
-      ) : (
-        <FieldElement edgeInsets={[0.8, 0.59, 0, 0.275]}>
-          <GameAction
-            color="#9cff9a"
-            onPress={() => {
-              addEvent({
-                type: MatchEventType.ScoreProcessor,
-              });
-            }}
-          ></GameAction>
-        </FieldElement>
-      )}
+
+      <FieldElement
+        edgeInsets={
+          allianceColor! === AllianceColor.Red
+            ? [0, 0.59, 0.8, 0.275]
+            : [0.8, 0.59, 0, 0.275]
+        }
+      >
+        <GameAction
+          color="#9cff9a"
+          onPress={() => {
+            addEvent({
+              type: MatchEventType.ScoreProcessor,
+            });
+          }}
+        ></GameAction>
+      </FieldElement>
     </>
   );
 };
