@@ -4,11 +4,15 @@ import { MatchEventType } from "../../MatchEventType";
 import { FieldElement } from "../FieldElement";
 import { GameAction } from "../GameAction";
 import { OverlayState } from "../GameViewTemplate";
+import { AllianceColor } from "../../../models/AllianceColor";
 
 export const HasAlgaeActions = (props: {
   setOverlay: (value: OverlayState) => void;
 }) => {
   const addEvent = useReportStateStore((state) => state.addEvent);
+  const allianceColor = useReportStateStore(
+    (state) => state.meta?.allianceColor,
+  );
   return (
     <>
       <FieldElement edgeInsets={[0, 0.435, 0, 0.435]}>
@@ -20,7 +24,13 @@ export const HasAlgaeActions = (props: {
         ></GameAction>
       </FieldElement>
 
-      <FieldElement edgeInsets={[0, 0.59, 0.8, 0.275]}>
+      <FieldElement
+        edgeInsets={
+          allianceColor! === AllianceColor.Red
+            ? [0, 0.59, 0.8, 0.275]
+            : [0.8, 0.59, 0, 0.275]
+        }
+      >
         <GameAction
           color="#9cff9a"
           onPress={() => {
