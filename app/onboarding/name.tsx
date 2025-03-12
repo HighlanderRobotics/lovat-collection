@@ -18,7 +18,6 @@ import { z } from "zod";
 import { Scouter } from "../../lib/models/scouter";
 import { useTeamScoutersStore } from "../../lib/services";
 import { useScouterStore, useTeamStore } from "../../lib/storage/userStores";
-import { Alert } from "react-native";
 
 export default function Name() {
   const [loading, setLoading] = useState(true);
@@ -93,7 +92,7 @@ export default function Name() {
               filterText={fieldText}
             />
             <NewScouterPrompt
-              scouters={scouters!}
+              visible={!!fieldText && !filteredScouters?.length}
               name={fieldText}
               onSubmit={submitScouter}
             />
@@ -105,63 +104,53 @@ export default function Name() {
 }
 
 const NewScouterPrompt = ({
+  visible,
   name,
-  scouters,
   onSubmit,
 }: {
+  visible: boolean;
   name: string;
-  scouters: Scouter[];
   onSubmit: (scouter: Scouter) => void;
 }) => {
+  if (!visible) return null;
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const teamNumber = useTeamStore((state) => state.number);
 
   const onPress = async () => {
     if (loading) return;
-    Alert.alert(`Create scouter "${name}"?`, undefined, [
-      { text: "Cancel", style: "destructive" },
-      {
-        text: "Create",
-        onPress: async () => {
-          setLoading(true);
-          setError(null);
 
-          try {
-            const scouter = await addScouter(name, teamNumber!);
+    setLoading(true);
+    setError(null);
 
-            onSubmit(scouter);
-          } catch (e) {
-            let message;
-            try {
-              message = z.object({ message: z.string() }).parse(e).message;
-            } catch {
-              message = "An unknown error occurred";
-            }
+    try {
+      const scouter = await addScouter(name, teamNumber!);
 
-            setError(message);
-          } finally {
-            setLoading(false);
-          }
-        },
-      },
-    ]);
+      onSubmit(scouter);
+    } catch (e) {
+      let message;
+      try {
+        message = z.object({ message: z.string() }).parse(e).message;
+      } catch {
+        message = "An unknown error occurred";
+      }
+
+      setError(message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <View
-      style={{ alignItems: "stretch", marginBottom: 20, marginTop: "auto" }}
-    >
-      <Button
-        variant="primary"
-        onPress={onPress}
-        disabled={
-          loading || name === "" || scouters.some((item) => item.name === name)
-        }
-        filled={false}
-      >
+    <View style={{ alignItems: "center" }}>
+      <View style={{ padding: 10 }}>
+        <BodyMedium>Scouter &ldquo;{name}&rdquo; not found.</BodyMedium>
+      </View>
+      <Button variant="primary" onPress={onPress} disabled={loading}>
         Create new scouter
       </Button>
+
       <LoadingView loading={loading} />
       <ErrorView error={error} />
     </View>
