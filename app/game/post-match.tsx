@@ -158,6 +158,15 @@ export default function PostMatch() {
               multiline={true}
               returnKeyType="done"
             />
+            <View
+              style={{
+                marginTop: -2,
+              }}
+            >
+              <BodyMedium>
+                Keep it helpful. Notes can be viewed by anyone.
+              </BodyMedium>
+            </View>
           </View>
 
           <View style={{ gap: 10 }}>
