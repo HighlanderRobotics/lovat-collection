@@ -160,10 +160,12 @@ export default function PostMatch() {
             />
             <View
               style={{
-                marginTop: -5,
+                marginTop: -2,
               }}
             >
-              <BodyMedium>Keep it helpful. Notes can be viewed by anyone.</BodyMedium>
+              <BodyMedium>
+                Keep it helpful. Notes can be viewed by anyone.
+              </BodyMedium>
             </View>
           </View>
 
