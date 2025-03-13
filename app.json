@@ -2,7 +2,7 @@
   "expo": {
     "name": "Collection",
     "slug": "lovat-collection",
-    "version": "1.3.0",
+    "version": "1.4.0",
     "orientation": "portrait",
     "userInterfaceStyle": "dark",
     "splash": {
@@ -23,7 +23,7 @@
         "monochromeImage": "./assets/monochrome-icon.png"
       },
       "package": "com.frc8033.lovatcollection",
-      "versionCode": 5
+      "versionCode": 6
     },
     "androidNavigationBar": {
       "backgroundColor": "#1f1f1f"
