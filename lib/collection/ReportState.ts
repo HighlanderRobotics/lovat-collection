@@ -44,6 +44,7 @@ export type ReportState = {
   notes: string;
 
   scoutMatch: (meta: ScoutReportMeta) => void;
+  restartMatch: () => void;
   initializeMatchTimestamp: () => void;
 
   setStartPosition: (value: StartingPosition) => void;

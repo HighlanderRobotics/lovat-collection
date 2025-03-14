@@ -82,10 +82,8 @@ export function Game() {
           text: "Restart",
           style: "destructive",
           onPress: () => {
-            const meta = reportState.meta!;
             if (autoTimeout) clearTimeout(autoTimeout);
-            reportState.reset();
-            reportState.scoutMatch(meta);
+            reportState.restartMatch();
           },
         },
       ],
