@@ -4,6 +4,7 @@ import { MatchEventPosition } from "../../MatchEventPosition";
 import { FieldElement } from "../FieldElement";
 import React from "react";
 import type { StartingPosition as StartingPositionType } from "../../ReportState";
+import * as Haptics from "expo-haptics";
 
 export const PreMatchActions = () => {
   return (
@@ -49,6 +50,7 @@ function StartingPosition(props: {
         }}
         activeOpacity={0.2}
         onPress={() => {
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
           reportState.setStartPosition(position);
         }}
       />

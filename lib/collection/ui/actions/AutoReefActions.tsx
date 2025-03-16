@@ -7,6 +7,7 @@ import HexagonBack from "../../../../assets/hexagon/Back";
 import HexagonRed from "../../../../assets/hexagon/RedSide";
 import HexagonBlue from "../../../../assets/hexagon/BlueSide";
 import { colors } from "../../../colors";
+import * as Haptics from "expo-haptics";
 
 export const AutoReefActions = (props: {
   setOverlay: (value: OverlayState) => void;
@@ -20,6 +21,7 @@ export const AutoReefActions = (props: {
           color={colors.victoryPurple.default}
           backgroundViewReplacement={<HexagonBack />}
           onPress={() => {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
             props.setOverlay(OverlayState.Reef);
             props.setOverlayPos(MatchEventPosition.LevelOneC);
           }}
@@ -30,6 +32,7 @@ export const AutoReefActions = (props: {
           color={colors.victoryPurple.default}
           backgroundViewReplacement={<HexagonBlue />}
           onPress={() => {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
             props.setOverlay(OverlayState.Reef);
             props.setOverlayPos(MatchEventPosition.LevelOneA);
           }}
@@ -40,6 +43,7 @@ export const AutoReefActions = (props: {
           color={colors.victoryPurple.default}
           backgroundViewReplacement={<HexagonRed />}
           onPress={() => {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
             props.setOverlay(OverlayState.Reef);
             props.setOverlayPos(MatchEventPosition.LevelOneB);
           }}
