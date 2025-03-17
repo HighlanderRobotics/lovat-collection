@@ -306,6 +306,7 @@ function GroundPieceOverlay({
           opacity: !hasCoral && coralActive ? 1 : 0.25,
         }}
         onPress={() => {
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
           reportState.addEvent({
             type: MatchEventType.PickupCoral,
             position: overlayPos,
@@ -329,6 +330,7 @@ function GroundPieceOverlay({
           opacity: !hasAlgae && algaeActive ? 1 : 0.25,
         }}
         onPress={() => {
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
           reportState.addEvent({
             type: MatchEventType.PickupAlgae,
             position: overlayPos,
@@ -380,6 +382,7 @@ function AutoReefOverlay({
             opacity: hasCoral ? 1 : 0.25,
           }}
           onPress={() => {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
             reportState.addEvent({
               type: MatchEventType.ScoreCoral,
               position: overlayPos! + (1 - 1) * 3,
@@ -403,6 +406,7 @@ function AutoReefOverlay({
             opacity: hasCoral ? 1 : 0.25,
           }}
           onPress={() => {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
             reportState.addEvent({
               type: MatchEventType.ScoreCoral,
               position: overlayPos! + (2 - 1) * 3,
@@ -426,6 +430,7 @@ function AutoReefOverlay({
             opacity: hasCoral ? 1 : 0.25,
           }}
           onPress={() => {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
             reportState.addEvent({
               type: MatchEventType.ScoreCoral,
               position: overlayPos! + (3 - 1) * 3,
@@ -449,6 +454,7 @@ function AutoReefOverlay({
             opacity: hasCoral ? 1 : 0.25,
           }}
           onPress={() => {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
             reportState.addEvent({
               type: MatchEventType.ScoreCoral,
               position: overlayPos! + (4 - 1) * 3,
@@ -473,6 +479,7 @@ function AutoReefOverlay({
           opacity: !hasAlgae ? 1 : 0.25,
         }}
         onPress={() => {
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
           reportState.addEvent({
             type: MatchEventType.PickupAlgae,
             position: overlayPos!,
@@ -509,6 +516,7 @@ function NetOverlay({ setOverlay, resetOverlayPos }: OverlayProps) {
           justifyContent: "center",
         }}
         onPress={() => {
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
           reportState.addEvent({
             type: MatchEventType.ScoreNet,
           });
@@ -530,6 +538,7 @@ function NetOverlay({ setOverlay, resetOverlayPos }: OverlayProps) {
           justifyContent: "center",
         }}
         onPress={() => {
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
           reportState.addEvent({
             type: MatchEventType.FailNet,
           });

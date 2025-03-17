@@ -7,6 +7,7 @@ import { FieldElement } from "../FieldElement";
 import { GameAction } from "../GameAction";
 import { TouchableOpacity, View } from "react-native";
 import { OverlayState } from "../GameViewTemplate";
+import * as Haptics from "expo-haptics";
 
 export const AutoCollectGroundPieceActions = ({
   setOverlay,
@@ -67,6 +68,7 @@ export const AutoCollectGroundPieceActions = ({
               justifyContent: "center",
             }}
             onPress={() => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
               setOverlayPos(MatchEventPosition.GroundPieceRedBarge);
               setOverlay(OverlayState.GroundPiece);
             }}
@@ -102,6 +104,7 @@ export const AutoCollectGroundPieceActions = ({
               justifyContent: "center",
             }}
             onPress={() => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
               setOverlayPos(MatchEventPosition.GroundPieceCenter);
               setOverlay(OverlayState.GroundPiece);
             }}
@@ -137,6 +140,7 @@ export const AutoCollectGroundPieceActions = ({
               justifyContent: "center",
             }}
             onPress={() => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
               setOverlayPos(MatchEventPosition.GroundPieceBlueBarge);
               setOverlay(OverlayState.GroundPiece);
             }}
@@ -157,12 +161,13 @@ export const AutoCoralStationActions = () => {
       <FieldElement edgeInsets={[0, 0.85, 0.8, 0]}>
         <GameAction
           color="#c1c337"
-          onPress={() =>
+          onPress={() => {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
             reportState.addEvent({
               type: MatchEventType.PickupCoral,
               position: MatchEventPosition.CoralStationBlueBarge,
-            })
-          }
+            });
+          }}
         >
           <Icon name="frc_coral" size={32} color="#c1c337" />
         </GameAction>
@@ -170,12 +175,13 @@ export const AutoCoralStationActions = () => {
       <FieldElement edgeInsets={[0.8, 0.85, 0, 0]}>
         <GameAction
           color="#c1c337"
-          onPress={() =>
+          onPress={() => {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
             reportState.addEvent({
               type: MatchEventType.PickupCoral,
               position: MatchEventPosition.CoralStationRedBarge,
-            })
-          }
+            });
+          }}
         >
           <Icon name="frc_coral" size={32} color="#c1c337" />
         </GameAction>

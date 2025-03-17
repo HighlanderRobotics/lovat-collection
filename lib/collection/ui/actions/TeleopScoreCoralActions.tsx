@@ -4,6 +4,7 @@ import TitleLarge from "../../../components/text/TitleLarge";
 import { useReportStateStore } from "../../reportStateStore";
 import { MatchEventType } from "../../MatchEventType";
 import { MatchEventPosition } from "../../MatchEventPosition";
+import * as Haptics from "expo-haptics";
 
 export function TeleopScoreCoralActions() {
   return (
@@ -72,6 +73,7 @@ function TeleopReefCoralLevel({
         justifyContent: "center",
       }}
       onPress={() => {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
         addEvent({
           type: MatchEventType.ScoreCoral,
           position: position,
