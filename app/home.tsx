@@ -416,7 +416,6 @@ type ManualMatchSelectionProps = {
 const ManualMatchSelection = (props: ManualMatchSelectionProps) => {
   const [matchType, setMatchType] = useState(MatchType.Qualifier);
   const [matchNumber, setMatchNumber] = useState("");
-  const [isMatchNumberFocused, setIsMatchNumberFocused] = useState(false);
   const [teamNumber, setTeamNumber] = useState("");
   const [allianceColor, setAllianceColor] = useState(AllianceColor.Red);
   const tournament = useTournamentStore((state) => state.value);
@@ -471,19 +470,8 @@ const ManualMatchSelection = (props: ManualMatchSelectionProps) => {
       <LabelSmall>Match number</LabelSmall>
       <View style={{ height: 7 }} />
       <TextField
-        placeholder={
-          isMatchNumberFocused
-            ? "10"
-            : matchTypes.find((t) => t.type === matchType)?.shortName + "10"
-        }
-        value={
-          matchNumber.length === 0 || isMatchNumberFocused
-            ? matchNumber
-            : matchTypes.find((t) => t.type === matchType)?.shortName +
-              matchNumber
-        }
-        onFocus={() => setIsMatchNumberFocused(true)}
-        onBlur={() => setIsMatchNumberFocused(false)}
+        placeholder="Match number"
+        value={matchNumber}
         onChangeText={(text) => setMatchNumber(text)}
         keyboardType="number-pad"
       />
