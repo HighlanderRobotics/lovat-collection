@@ -47,42 +47,28 @@ import React from "react";
 import { useReportStateStore } from "../lib/collection/reportStateStore";
 import { useScouterScheduleStore, useTournamentsStore } from "../lib/services";
 import TimeAgo from "../lib/components/TimeAgo";
-import { create } from "zustand";
-import { persist } from "zustand/middleware";
-import { storage } from "../lib/storage/zustandStorage";
+import { createGenericPersistantStore } from "../lib/storage/zustandStorage";
 
 enum MatchSelectionMode {
   Automatic,
   Manual,
 }
 
-const useMatchSelectionMode = create<{
-  matchSelectionMode: MatchSelectionMode;
-  setMatchSelectionMode: (value: MatchSelectionMode) => void;
-  toggleMatchSelectionMode: () => void;
-}>()(
-  persist(
-    (set) => ({
-      matchSelectionMode: MatchSelectionMode.Automatic,
-      setMatchSelectionMode: (value) => set({ matchSelectionMode: value }),
-      toggleMatchSelectionMode: () =>
-        set((state) => ({
-          matchSelectionMode:
-            state.matchSelectionMode === MatchSelectionMode.Automatic
-              ? MatchSelectionMode.Manual
-              : MatchSelectionMode.Automatic,
-        })),
-    }),
-    {
-      name: "match-selection-mode",
-      storage: storage,
-    },
-  ),
-);
+export const useMatchSelectionMode =
+  createGenericPersistantStore<MatchSelectionMode>(
+    "match-selection-mode",
+    MatchSelectionMode.Automatic,
+  );
 
 export default function Home() {
-  const { matchSelectionMode, toggleMatchSelectionMode } =
+  const { value: matchSelectionMode, setValue: setMatchSelectionMode } =
     useMatchSelectionMode();
+  const toggleMatchSelectionMode = () =>
+    setMatchSelectionMode(
+      matchSelectionMode === MatchSelectionMode.Automatic
+        ? MatchSelectionMode.Manual
+        : MatchSelectionMode.Automatic,
+    );
   const [meta, setMeta] = useState<ScoutReportMeta | null>(null);
   const reportState = useReportStateStore();
 
