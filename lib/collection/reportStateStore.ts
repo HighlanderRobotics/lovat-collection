@@ -85,6 +85,20 @@ export const useReportStateStore = create<ReportState>((set, get) => ({
       notes: "",
       uuid: v4(),
     })),
+  restartMatch: () =>
+    set(() => ({
+      events: [],
+      startTimestamp: undefined,
+      gamePhase: GamePhase.Auto,
+      robotRole: RobotRole.Offense,
+      driverAbility: DriverAbility.Average,
+      bargeResult: BargeResult.NotAttempted,
+      coralPickUp: CoralPickUp.None,
+      algaePickUp: AlgaePickUp.None,
+      knocksAlgae: 0,
+      traversesUnderCage: 0,
+      notes: "",
+    })),
   initializeMatchTimestamp: () => {
     set(() => ({ startTimestamp: new Date() }));
   },
