@@ -47,16 +47,20 @@ import React from "react";
 import { useReportStateStore } from "../lib/collection/reportStateStore";
 import { useScouterScheduleStore, useTournamentsStore } from "../lib/services";
 import TimeAgo from "../lib/components/TimeAgo";
-
-enum MatchSelectionMode {
-  Automatic,
-  Manual,
-}
+import {
+  MatchSelectionMode,
+  useMatchSelectionModeStore,
+} from "../lib/storage/userStores";
 
 export default function Home() {
-  const [matchSelectionMode, setMatchSelectionMode] = useState(
-    MatchSelectionMode.Automatic,
-  );
+  const { value: matchSelectionMode, setValue: setMatchSelectionMode } =
+    useMatchSelectionModeStore();
+  const toggleMatchSelectionMode = () =>
+    setMatchSelectionMode(
+      matchSelectionMode === MatchSelectionMode.Automatic
+        ? MatchSelectionMode.Manual
+        : MatchSelectionMode.Automatic,
+    );
   const [meta, setMeta] = useState<ScoutReportMeta | null>(null);
   const reportState = useReportStateStore();
 
@@ -134,7 +138,7 @@ export default function Home() {
                 <Button
                   variant="primary"
                   filled={false}
-                  onPress={toggleMatchSelectionMode}
+                  onPress={onSwitchMatchSelectionMode}
                 >
                   {matchSelectionMode === MatchSelectionMode.Automatic
                     ? "Enter details manually"
@@ -148,13 +152,9 @@ export default function Home() {
     </>
   );
 
-  function toggleMatchSelectionMode() {
+  function onSwitchMatchSelectionMode() {
     setMeta(null);
-    setMatchSelectionMode((mode) =>
-      mode === MatchSelectionMode.Automatic
-        ? MatchSelectionMode.Manual
-        : MatchSelectionMode.Automatic,
-    );
+    toggleMatchSelectionMode();
   }
 }
 
@@ -388,7 +388,13 @@ const AutomaticMatchSelection = ({
             textColor={colors.onBackground.default}
           />
         ) : (
-          <BodyMedium>No matches found</BodyMedium>
+          <View style={{ width: 250, alignItems: "center" }}>
+            <Heading1Small>No matches found</Heading1Small>
+            <BodyMedium style={{ textAlign: "center" }}>
+              You haven&apos;t been assigned a scouter schedule by a scouting
+              lead. Tap below to enter a match&apos;s details manually.
+            </BodyMedium>
+          </View>
         )}
       </View>
     </View>
@@ -444,8 +450,7 @@ const ManualMatchSelection = (props: ManualMatchSelectionProps) => {
   }, [matchType, matchNumber, teamNumber, allianceColor]);
 
   return (
-    <ScrollView style={{ flex: 1, paddingTop: 10 }}>
-      <TitleMedium>Match details</TitleMedium>
+    <ScrollView style={{ flex: 1, paddingTop: 14 }}>
       {tournament ? (
         <Heading1Small>
           {tournament.date.split("-")[0]} {tournament.name}
@@ -477,7 +482,7 @@ const ManualMatchSelection = (props: ManualMatchSelectionProps) => {
       <LabelSmall>Team number</LabelSmall>
       <View style={{ height: 7 }} />
       <TextField
-        placeholder="Team number"
+        placeholder="8033"
         value={teamNumber}
         onChangeText={(text) => setTeamNumber(text)}
         keyboardType="number-pad"
@@ -511,7 +516,7 @@ const ScheduleColorGradient = () => {
     if (scouterScheduleForTournament?.hash) {
       setColor(getVerionsColor(scouterScheduleForTournament?.hash, 30, 30));
     } else {
-      setColor(colors.danger.default);
+      setColor("transparent");
     }
   }, [scouterScheduleForTournament]);
 

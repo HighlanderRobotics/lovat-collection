@@ -17,6 +17,8 @@ type TextInputProps = {
   value?: string;
   keyboardType?: KeyboardTypeOptions;
   multiline?: boolean;
+  onFocus?: () => void;
+  onBlur?: () => void;
 };
 
 const TextField: ForwardRefRenderFunction<TextInput, TextInputProps> = (
@@ -34,6 +36,8 @@ const TextField: ForwardRefRenderFunction<TextInput, TextInputProps> = (
     value,
     keyboardType,
     multiline,
+    onFocus,
+    onBlur,
   },
   ref,
 ) => {
@@ -73,8 +77,14 @@ const TextField: ForwardRefRenderFunction<TextInput, TextInputProps> = (
       onSubmitEditing={onSubmitEditing}
       editable={editable}
       ref={ref}
-      onFocus={() => setIsFocused(true)}
-      onBlur={() => setIsFocused(false)}
+      onFocus={() => {
+        setIsFocused(true);
+        if (onFocus) onFocus();
+      }}
+      onBlur={() => {
+        setIsFocused(false);
+        if (onBlur) onBlur();
+      }}
       blurOnSubmit={true}
       value={value}
       multiline={multiline}
