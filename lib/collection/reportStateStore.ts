@@ -88,6 +88,7 @@ export const useReportStateStore = create<ReportState>((set, get) => ({
   restartMatch: () =>
     set(() => ({
       events: [],
+      startTimestamp: undefined,
       gamePhase: GamePhase.Auto,
       robotRole: RobotRole.Offense,
       driverAbility: DriverAbility.Average,
