@@ -47,22 +47,14 @@ import React from "react";
 import { useReportStateStore } from "../lib/collection/reportStateStore";
 import { useScouterScheduleStore, useTournamentsStore } from "../lib/services";
 import TimeAgo from "../lib/components/TimeAgo";
-import { createGenericPersistantStore } from "../lib/storage/zustandStorage";
-
-enum MatchSelectionMode {
-  Automatic,
-  Manual,
-}
-
-export const useMatchSelectionMode =
-  createGenericPersistantStore<MatchSelectionMode>(
-    "match-selection-mode",
-    MatchSelectionMode.Automatic,
-  );
+import {
+  MatchSelectionMode,
+  useMatchSelectionModeStore,
+} from "../lib/storage/userStores";
 
 export default function Home() {
   const { value: matchSelectionMode, setValue: setMatchSelectionMode } =
-    useMatchSelectionMode();
+    useMatchSelectionModeStore();
   const toggleMatchSelectionMode = () =>
     setMatchSelectionMode(
       matchSelectionMode === MatchSelectionMode.Automatic

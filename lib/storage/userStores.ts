@@ -39,6 +39,11 @@ export enum FieldOrientation {
   Sinister, // Red on the left, blue on the right
 }
 
+export enum MatchSelectionMode {
+  Automatic,
+  Manual,
+}
+
 export const useOnboardingCompleteStore = createGenericPersistantStore<boolean>(
   "onboardingCompleteStore",
   false,
@@ -64,4 +69,10 @@ export const useFieldOrientationStore =
   createGenericPersistantStore<FieldOrientation>(
     "fieldOrienetationStore",
     FieldOrientation.Auspicious,
+  );
+
+export const useMatchSelectionModeStore =
+  createGenericPersistantStore<MatchSelectionMode>(
+    "matchSelectionModeStore",
+    MatchSelectionMode.Automatic,
   );
