@@ -18,7 +18,8 @@
     "build-ios-staging": "eas build --platform ios --local --output ./build/app-staging.ipa --profile staging",
     "build-android": "eas build --platform android --local --output ./build/app-release.aab",
     "build-android-dev": "eas build --platform android --local --output ./build/app-development.apk --profile development",
-    "build-android-staging": "eas build --platform android --local --output ./build/app-development.aab --profile staging"
+    "build-android-staging": "eas build --platform android --local --output ./build/app-development.aab --profile staging",
+    "build-android-preview": "eas build --platform android --local --output ./build/app-release.apk --profile preview"
   },
   "dependencies": {
     "@expo-google-fonts/heebo": "^0.2.3",
