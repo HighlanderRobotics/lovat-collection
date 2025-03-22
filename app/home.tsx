@@ -51,6 +51,7 @@ import {
   MatchSelectionMode,
   useMatchSelectionModeStore,
 } from "../lib/storage/userStores";
+import { createGenericPersistantStore } from "../lib/storage/zustandStorage";
 
 export default function Home() {
   const { value: matchSelectionMode, setValue: setMatchSelectionMode } =
@@ -405,11 +406,17 @@ type ManualMatchSelectionProps = {
   onChanged: (meta: ScoutReportMeta | null) => void;
 };
 
+const useAllianceColorChoice = createGenericPersistantStore<AllianceColor>(
+  "allianceColorChoice",
+  AllianceColor.Red,
+);
+
 const ManualMatchSelection = (props: ManualMatchSelectionProps) => {
   const [matchType, setMatchType] = useState(MatchType.Qualifier);
   const [matchNumber, setMatchNumber] = useState("");
   const [teamNumber, setTeamNumber] = useState("");
-  const [allianceColor, setAllianceColor] = useState(AllianceColor.Red);
+  const { value: allianceColor, setValue: setAllianceColor } =
+    useAllianceColorChoice();
   const tournament = useTournamentStore((state) => state.value);
   const scouter = useScouterStore((state) => state.value);
 
