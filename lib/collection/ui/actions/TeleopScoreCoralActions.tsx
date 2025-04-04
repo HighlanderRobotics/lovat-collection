@@ -5,10 +5,21 @@ import { useReportStateStore } from "../../reportStateStore";
 import { MatchEventType } from "../../MatchEventType";
 import { MatchEventPosition } from "../../MatchEventPosition";
 import * as Haptics from "expo-haptics";
+import { AllianceColor } from "../../../models/AllianceColor";
 
 export function TeleopScoreCoralActions() {
+  const allianceColor = useReportStateStore(
+    (state) => state.meta?.allianceColor,
+  );
+
   return (
-    <FieldElement edgeInsets={[0.225, 0.59, 0.05, 0.025]}>
+    <FieldElement
+      edgeInsets={
+        allianceColor! === AllianceColor.Red
+          ? [0.225, 0.59, 0.05, 0.025]
+          : [0.05, 0.59, 0.225, 0.025]
+      }
+    >
       <View
         style={{
           gap: 10,
