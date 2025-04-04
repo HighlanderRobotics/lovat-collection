@@ -17,7 +17,8 @@
       "bundleIdentifier": "com.frc8033.lovatcollection",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
-      }
+      },
+      "buildNumber": 2
     },
     "android": {
       "adaptiveIcon": {
