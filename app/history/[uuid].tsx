@@ -14,6 +14,7 @@ import Button from "../../lib/components/Button";
 import { uploadReport } from "../../lib/lovatAPI/uploadReport";
 import { useHistoryStore } from "../../lib/storage/historyStore";
 import React from "react";
+import { z } from "zod";
 
 export default function HistoryDetails() {
   return (
@@ -76,8 +77,23 @@ const Details = () => {
             {!match!.uploaded && (
               <Button
                 onPress={async () => {
-                  await uploadReport(match!.scoutReport);
-                  setMatchUploaded(match!.scoutReport.uuid);
+                  try {
+                    await uploadReport(match!.scoutReport);
+                    setMatchUploaded(match!.scoutReport.uuid);
+                  } catch (error) {
+                    try {
+                      if (
+                        z.object({ message: z.string() }).parse(error)
+                          .message === "Scout report already uploaded"
+                      ) {
+                        setMatchUploaded(match!.scoutReport.uuid);
+                      }
+                    } catch {
+                      throw Error("Upload failed");
+                    }
+
+                    throw error;
+                  }
                 }}
                 loadingChildren="Uploading"
               >
