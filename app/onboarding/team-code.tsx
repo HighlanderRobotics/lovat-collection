@@ -65,7 +65,7 @@ export default function TeamCode() {
           autoCapitalize="characters"
           returnKeyType="done"
           onChangeText={(text) => {
-            setCode(text);
+            setCode(text.toUpperCase());
             setError(null);
           }}
           editable={true}
