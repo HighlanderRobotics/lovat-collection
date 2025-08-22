@@ -232,18 +232,19 @@ const TournamentSelector = () => {
       >
         <View
           style={{
-            flexDirection: "column",
+            flexDirection: "row",
             justifyContent: "space-between",
-            alignItems: "stretch",
+            alignItems: "center",
             gap: 7,
           }}
         >
           <View
             style={{
               padding: 7,
+              flex: 1,
             }}
           >
-            <BodyMedium>
+            <BodyMedium numberOfLines={1}>
               {tournament
                 ? `${tournament.date.split("-")[0]} ${tournament.name}`
                 : "No tournament selected"}
