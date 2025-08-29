@@ -1,11 +1,11 @@
 import { View } from "react-native";
 import { NavBar } from "../../lib/components/NavBar";
 import { IconButton } from "../../lib/components/IconButton";
-import { router } from "expo-router";
+import { Link, router } from "expo-router";
 import { colors } from "../../lib/colors";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ScoutReportCode } from "../../lib/collection/ui/ScoutReportCode";
-import { Suspense } from "react";
+import { Suspense, useState } from "react";
 import { ScoutReport } from "../../lib/collection/ScoutReport";
 import { useQrCodeSizeStore } from "../../lib/storage/userStores";
 import Slider from "@react-native-community/slider";
@@ -17,7 +17,9 @@ import {
   AlgaePickUp,
   algaePickUpDescriptions,
 } from "../../lib/collection/PickUp";
-
+import Button from "../../lib/components/Button";
+import { Label } from "zeego/dropdown-menu";
+import { secret1 } from "../../lib/lovatAPI/checkTeamCode";
 const EXAMPLE_SCOUT_REPORT: ScoutReport = {
   uuid: "f23698c6-a084-4659-9644-fc91c9f88d14",
   tournamentKey: "2024caoc",
@@ -120,6 +122,18 @@ const Body = () => {
           />
         </View>
       </View>
+      {(qrCodeSize === 117 || qrCodeSize === 797) && (
+        <View
+          style={{
+            padding: 16,
+            borderRadius: 8,
+            position: "absolute",
+            bottom: 0,
+          }}
+        >
+          <Link href={secret1}>_</Link>
+        </View>
+      )}
     </SafeAreaView>
   );
 };
