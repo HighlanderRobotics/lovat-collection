@@ -29,7 +29,7 @@ import { CommonActions } from "@react-navigation/native";
 import BodyMedium from "../../lib/components/text/BodyMedium";
 import { useTrainingModeStore } from "../../lib/storage/userStores";
 import React from "react";
-
+export const secret3 = "https://jstris.jezevec10.com/?play=1";
 export default function PostMatch() {
   const reportState = useReportStateStore();
   const trainingModeEnabled = useTrainingModeStore((state) => state.value);
