@@ -79,11 +79,9 @@ export function createGenericServiceStore<T>(
   );
 }
 
-export const useScouterScheduleStore =
-  createGenericServiceStore<ScouterSchedule>(
-    getScouterSchedule,
-    "scouterScheduleStore",
-  );
+export const useScouterScheduleStore = createGenericServiceStore<
+  ScouterSchedule | undefined
+>(getScouterSchedule, "scouterScheduleStore");
 
 export const useTeamScoutersStore = createGenericServiceStore<Scouter[]>(
   getTeamScouters,

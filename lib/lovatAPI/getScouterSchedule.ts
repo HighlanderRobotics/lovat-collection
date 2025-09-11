@@ -38,11 +38,19 @@ type ScouterScheduleScouterEntry = {
   allianceColor: AllianceColor;
 };
 
-export async function getScouterSchedule(): Promise<ScouterSchedule> {
+export async function getScouterSchedule(): Promise<
+  ScouterSchedule | undefined
+> {
   const tournamentKey = useTournamentStore.getState().value!.key;
   const response = await get("/v1/manager/scouterschedules/" + tournamentKey);
 
   if (!response.ok) {
+    const json = await response.json();
+
+    if (json["error"] === "Matches are not available for this tournamnet") {
+      return;
+    }
+
     throw new Error("Error fetching scouter schedule");
   }
 
