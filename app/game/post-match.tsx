@@ -96,9 +96,7 @@ export default function PostMatch() {
               label="Robot broke"
               checked={reportState.robotBrokeDescription != null}
               onChange={(checked) => {
-                checked
-                  ? reportState.setRobotBrokeDescription("")
-                  : reportState.setRobotBrokeDescription(null);
+                reportState.setRobotBrokeDescription(checked ? "" : null);
               }}
             ></Checkbox>
             {reportState.robotBrokeDescription != null && (
