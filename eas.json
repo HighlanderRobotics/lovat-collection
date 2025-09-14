@@ -8,6 +8,7 @@
       "developmentClient": true,
       "distribution": "internal",
       "ios": {
+        "image": "macos-sonoma-14.6-xcode-16.0",
         "simulator": true
       }
     },
@@ -16,20 +17,33 @@
       "distribution": "internal",
       "android": {
         "buildType": "apk"
+      },
+      "ios": {
+        "image": "macos-sonoma-14.6-xcode-16.0"
       }
     },
     "preview": {
       "distribution": "internal",
       "android": {
         "buildType": "apk"
+      },
+      "ios": {
+        "image": "macos-sonoma-14.6-xcode-16.0"
       }
     },
     "staging": {
       "env": {
         "EXPO_PUBLIC_API_URL": "https://lovat-server-staging.up.railway.app"
+      },
+      "ios": {
+        "image": "macos-sonoma-14.6-xcode-16.0"
       }
     },
-    "production": {}
+    "production": {
+      "ios": {
+        "image": "macos-sonoma-14.6-xcode-16.0"
+      }
+    }
   },
   "submit": {
     "production": {}
