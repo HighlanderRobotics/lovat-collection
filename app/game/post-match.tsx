@@ -98,7 +98,7 @@ export default function PostMatch() {
               onChange={(checked) => {
                 reportState.setRobotBrokeDescription(checked ? "" : null);
               }}
-            ></Checkbox>
+            />
             {reportState.robotBrokeDescription != null && (
               <View style={{ gap: 7, marginTop: 7 }}>
                 <TextField
