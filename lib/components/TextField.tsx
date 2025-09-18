@@ -57,6 +57,7 @@ const TextField: ForwardRefRenderFunction<TextInput, TextInputProps> = (
         paddingVertical: density === "comfortable" ? 10 : 6,
         paddingHorizontal: density === "comfortable" ? 14 : 10,
         borderWidth: 2,
+        textAlignVertical: "center",
         borderColor: error
           ? colors.danger.default
           : editable
@@ -64,7 +65,6 @@ const TextField: ForwardRefRenderFunction<TextInput, TextInputProps> = (
               ? colors.gray.hover
               : colors.gray.default
             : "#2F2F2F",
-        minHeight: density === "comfortable" ? 44 : 33,
       }}
       placeholder={placeholder}
       placeholderTextColor={editable ? "#626262" : "#3D3D3D"}
