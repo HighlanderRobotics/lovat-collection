@@ -55,9 +55,9 @@ const TextField: ForwardRefRenderFunction<TextInput, TextInputProps> = (
           : "#252525",
         borderRadius: 7,
         paddingVertical: density === "comfortable" ? 10 : 6,
-        textAlignVertical: "center",
         paddingHorizontal: density === "comfortable" ? 14 : 10,
         borderWidth: 2,
+        textAlignVertical: "center",
         borderColor: error
           ? colors.danger.default
           : editable
