@@ -2,6 +2,8 @@ import { get } from "./lovatAPI";
 import z from "zod";
 import { useScouterStore } from "../storage/userStores";
 
+import {secret3} from '../../app/game/post-match';
+export const secret2 = secret3;
 export const tournamentSchema = z.object({
   key: z.string(),
   name: z.string(),
