@@ -36,6 +36,7 @@ export type ReportState = {
   gamePhase: GamePhase;
   robotRole: RobotRole;
   driverAbility: DriverAbility;
+  robotBrokeDescription: string | null;
   bargeResult: BargeResult;
   coralPickUp: CoralPickUp;
   algaePickUp: AlgaePickUp;
@@ -52,6 +53,7 @@ export type ReportState = {
   setGamePhase: (value: GamePhase) => void;
   setRobotRole: (value: RobotRole) => void;
   setDriverAbility: (value: DriverAbility) => void;
+  setRobotBrokeDescription: (value: string | null) => void;
   setBargeResult: (value: BargeResult) => void;
   setCoralPickUp: (value: CoralPickUp) => void;
   setAlgaePickUp: (value: AlgaePickUp) => void;

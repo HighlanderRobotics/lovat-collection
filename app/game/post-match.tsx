@@ -29,6 +29,7 @@ import { CommonActions } from "@react-navigation/native";
 import BodyMedium from "../../lib/components/text/BodyMedium";
 import { useTrainingModeStore } from "../../lib/storage/userStores";
 import React from "react";
+import { Checkbox } from "../../lib/components/Checkbox";
 
 export default function PostMatch() {
   const reportState = useReportStateStore();
@@ -78,7 +79,6 @@ export default function PostMatch() {
             ]}
             selected={reportState.robotRole}
           />
-
           <PostMatchSelector
             title="Driver Ability"
             updateStore={reportState.setDriverAbility}
@@ -91,6 +91,25 @@ export default function PostMatch() {
             selected={reportState.driverAbility}
             direction={ButtonGroupDirection.Horizontal}
           />
+          <View style={{ marginVertical: 18 }}>
+            <Checkbox
+              label="Robot broke"
+              checked={reportState.robotBrokeDescription != null}
+              onChange={(checked) => {
+                reportState.setRobotBrokeDescription(checked ? "" : null);
+              }}
+            />
+            {reportState.robotBrokeDescription != null && (
+              <View style={{ gap: 7, marginTop: 7 }}>
+                <TextField
+                  onChangeText={reportState.setRobotBrokeDescription}
+                  multiline={true}
+                  returnKeyType="done"
+                  placeholder="How did it break?"
+                />
+              </View>
+            )}
+          </View>
 
           <PostMatchSelector
             title="Endgame Barge Result"
@@ -103,7 +122,6 @@ export default function PostMatch() {
             )}
             selected={reportState.bargeResult}
           />
-
           <PostMatchSelector
             title="Coral Pick Up"
             updateStore={reportState.setCoralPickUp}
@@ -115,7 +133,6 @@ export default function PostMatch() {
             )}
             selected={reportState.coralPickUp}
           />
-
           <PostMatchSelector
             title="Algae Pick Up"
             updateStore={reportState.setAlgaePickUp}
@@ -127,7 +144,6 @@ export default function PostMatch() {
             )}
             selected={reportState.algaePickUp}
           />
-
           <PostMatchSelector
             title="Clears Algae from Reef"
             updateStore={(value) => reportState.setKnocksAlgae(value)}
@@ -149,7 +165,6 @@ export default function PostMatch() {
             direction={ButtonGroupDirection.Horizontal}
             selected={reportState.traversesUnderCage}
           />
-
           <View style={{ gap: 7, marginBottom: 18 }}>
             <LabelSmall>Notes</LabelSmall>
             <TextField
@@ -168,7 +183,6 @@ export default function PostMatch() {
               </BodyMedium>
             </View>
           </View>
-
           <View style={{ gap: 10 }}>
             <Button
               disabled={trainingModeEnabled}
