@@ -39,6 +39,8 @@ export default function Submit() {
       setUploadState(UploadState.Uploaded);
     } else if (uploadError?.message === "Scout report already uploaded") {
       setUploadState(UploadState.AlreadyUploaded);
+    } else if (uploadError?.message == "Match does not exist") {
+      setUploadState(UploadState.WrongMatchMeta);
     } else if (uploadError) {
       setUploadState(UploadState.Error);
     } else {
@@ -159,6 +161,7 @@ enum UploadState {
   Uploading,
   Uploaded,
   AlreadyUploaded,
+  WrongMatchMeta,
   Error,
 }
 
@@ -175,6 +178,12 @@ const UploadIndicatorInner = ({ state }: { state: UploadState }) => {
     case UploadState.Error:
       return (
         <BodyMedium color={colors.danger.default}>Upload failed</BodyMedium>
+      );
+    case UploadState.WrongMatchMeta:
+      return (
+        <BodyMedium color={colors.danger.default}>
+          Match does not exist
+        </BodyMedium>
       );
   }
 };
@@ -248,7 +257,8 @@ const UploadIndicator = ({ state }: { state: UploadState }) => {
             effectiveState == UploadState.AlreadyUploaded) && (
             <Icon name="check" color="#44ca6c" size={16} />
           )}
-          {effectiveState === UploadState.Error && (
+          {(effectiveState === UploadState.Error ||
+            effectiveState === UploadState.WrongMatchMeta) && (
             <Icon name="error" color={colors.danger.default} size={16} />
           )}
         </View>
