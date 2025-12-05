@@ -2,7 +2,7 @@
   "expo": {
     "name": "Collection",
     "slug": "lovat-collection",
-    "version": "1.8.0",
+    "version": "1.9.0",
     "orientation": "portrait",
     "userInterfaceStyle": "dark",
     "splash": {
@@ -27,7 +27,7 @@
         "monochromeImage": "./assets/monochrome-icon.png"
       },
       "package": "com.frc8033.lovatcollection",
-      "versionCode": 8
+      "versionCode": 10
     },
     "androidNavigationBar": {
       "backgroundColor": "#1f1f1f"
@@ -56,7 +56,7 @@
         "expo-build-properties",
         {
           "android": {
-            "targetSdkVersion": 34
+            "targetSdkVersion": 35
           }
         }
       ]
