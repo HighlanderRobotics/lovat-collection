@@ -1,73 +1,68 @@
 export enum MatchEventType {
-  PickupCoral,
-  PickupAlgae,
-  FeedAlgae,
-  AutoLeave,
-  Defend,
-  ScoreNet,
-  FailNet,
-  ScoreProcessor,
-  ScoreCoral,
-  DropAlgae,
-  DropCoral,
-  StartPosition,
+  StartScoring,
+  StopScoring,
+  StartMatch,
+  StartCamping,
+  StopCamping,
+  StartDefending,
+  StopDefending,
+  Intake,
+  Outtake,
+  Disrupt,
+  Cross,
+  Climb,
+  StartFeeding,
+  StopFeeding,
 }
 
 export type MatchEventTypeDescription = {
   name: string;
-  icon: string;
 };
 
 export const matchEventTypeDescriptions: Record<
   MatchEventType,
   MatchEventTypeDescription
 > = {
-  [MatchEventType.PickupCoral]: {
-    name: "Pickup Coral",
-    icon: "frc_coral",
+  [MatchEventType.StartMatch]: {
+    name: "Start Match",
   },
-  [MatchEventType.PickupAlgae]: {
-    name: "Pickup Algae",
-    icon: "frc_algae",
+  [MatchEventType.StartScoring]: {
+    name: "Start Scoring",
   },
-  [MatchEventType.FeedAlgae]: {
-    name: "Feed",
-    icon: "feeder",
+  [MatchEventType.StopScoring]: {
+    name: "Stop Scoring",
   },
-  [MatchEventType.AutoLeave]: {
-    name: "Leave",
-    icon: "exit_to_app",
+  [MatchEventType.StartFeeding]: {
+    name: "Start Feeding",
   },
-  [MatchEventType.Defend]: {
-    name: "Defend",
-    icon: "shield",
+  [MatchEventType.StopFeeding]: {
+    name: "Stop Feeding",
   },
-  [MatchEventType.ScoreNet]: {
-    name: "Score Net",
-    icon: "hub",
+  [MatchEventType.StartCamping]: {
+    name: "Start Camping",
   },
-  [MatchEventType.FailNet]: {
-    name: "Miss Net",
-    icon: "signal_wifi_bad",
+  [MatchEventType.StopCamping]: {
+    name: "Stop Camping",
   },
-  [MatchEventType.ScoreProcessor]: {
-    name: "Score Processor",
-    icon: "account_tree",
+  [MatchEventType.StartDefending]: {
+    name: "Start Defending",
   },
-  [MatchEventType.ScoreCoral]: {
-    name: "Score Coral",
-    icon: "token",
+  [MatchEventType.StopDefending]: {
+    name: "Stop Defending",
   },
-  [MatchEventType.DropAlgae]: {
-    name: "Drop Algae",
-    icon: "arrow_drop_down_circle",
+  [MatchEventType.Intake]: {
+    name: "Intake",
   },
-  [MatchEventType.DropCoral]: {
-    name: "Drop Coral",
-    icon: "output_circle",
+  [MatchEventType.Outtake]: {
+    name: "Outtake",
   },
-  [MatchEventType.StartPosition]: {
-    name: "Start Position",
-    icon: "text_select_start",
+  [MatchEventType.Disrupt]: {
+    name: "Disrupt",
+  },
+  [MatchEventType.Cross]: {
+    name: "Cross",
+  },
+  [MatchEventType.Climb]: {
+    name: "Climb",
   },
 };
