@@ -9,20 +9,42 @@ import {
   ButtonGroupButton,
   ButtonGroupDirection,
 } from "../../lib/components/ButtonGroup";
-import { RobotRole } from "../../lib/collection/ReportState";
 import { useReportStateStore } from "../../lib/collection/reportStateStore";
 import {
   DriverAbility,
   driverAbilityDescriptions,
 } from "../../lib/collection/DriverAbility";
 import {
-  BargeResult,
-  bargeResultDescriptions,
-} from "../../lib/collection/BargeResult";
+  RobotRole,
+  robotRoleDescriptions,
+} from "../../lib/collection/RobotRole";
 import {
-  algaePickUpDescriptions,
-  coralPickUpDescriptions,
-} from "../../lib/collection/PickUp";
+  FieldTraversal,
+  fieldTraversalDescriptions,
+} from "../../lib/collection/FieldTraversal";
+import { Accuracy, accuracyDescriptions } from "../../lib/collection/Accuracy";
+import {
+  AutoClimb,
+  autoClimbDescriptions,
+} from "../../lib/collection/AutoClimb";
+import { IntakeType } from "../../lib/collection/IntakeType";
+import {
+  FeederType,
+  feederTypeDescriptions,
+} from "../../lib/collection/FeederType";
+import { Beached } from "../../lib/collection/Beached";
+import {
+  DefenseEffectiveness,
+  defenseEffectivenessDescriptions,
+} from "../../lib/collection/DefenseEffectiveness";
+import {
+  ScoresWhileMoving,
+  scoresWhileMovingDescriptions,
+} from "../../lib/collection/ScoresWhileMoving";
+import {
+  EndgameClimb,
+  endgameClimbDescriptions,
+} from "../../lib/collection/EndgameClimb";
 import TextField from "../../lib/components/TextField";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { CommonActions } from "@react-navigation/native";
@@ -70,18 +92,18 @@ export default function PostMatch() {
         >
           <PostMatchSelector
             title="Robot Role"
-            updateStore={reportState.setRobotRole}
-            items={[
-              { label: "Offense", value: RobotRole.Offense },
-              { label: "Defense", value: RobotRole.Defense },
-              { label: "Feeder", value: RobotRole.Feeder },
-              { label: "Immobile", value: RobotRole.Immobile },
-            ]}
+            items={Object.entries(robotRoleDescriptions).map(
+              ([key, value]) => ({
+                label: value.localizedDescription,
+                value: key as unknown as RobotRole,
+              }),
+            )}
             selected={reportState.robotRole}
+            onChange={reportState.setRobotRole}
+            multiSelect
           />
           <PostMatchSelector
             title="Driver Ability"
-            updateStore={reportState.setDriverAbility}
             items={Object.entries(driverAbilityDescriptions).map(
               ([key, value]) => ({
                 label: value.numericalRating.toString(),
@@ -89,6 +111,7 @@ export default function PostMatch() {
               }),
             )}
             selected={reportState.driverAbility}
+            onChange={reportState.setDriverAbility}
             direction={ButtonGroupDirection.Horizontal}
           />
           <View style={{ marginVertical: 18 }}>
@@ -102,6 +125,7 @@ export default function PostMatch() {
             {reportState.robotBrokeDescription != null && (
               <View style={{ gap: 7, marginTop: 7 }}>
                 <TextField
+                  value={reportState.robotBrokeDescription}
                   onChangeText={reportState.setRobotBrokeDescription}
                   multiline={true}
                   returnKeyType="done"
@@ -110,60 +134,144 @@ export default function PostMatch() {
               </View>
             )}
           </View>
-
           <PostMatchSelector
-            title="Endgame Barge Result"
-            updateStore={reportState.setBargeResult}
-            items={Object.entries(bargeResultDescriptions).map(
+            title="Field Traversal"
+            items={Object.entries(fieldTraversalDescriptions).map(
               ([key, value]) => ({
                 label: value.localizedDescription,
-                value: key as BargeResult,
+                value: key as unknown as FieldTraversal,
               }),
             )}
-            selected={reportState.bargeResult}
+            selected={reportState.fieldTraversal}
+            onChange={reportState.setFieldTraversal}
           />
           <PostMatchSelector
-            title="Coral Pick Up"
-            updateStore={reportState.setCoralPickUp}
-            items={Object.entries(coralPickUpDescriptions).map(
+            title="Accuracy"
+            items={Object.entries(accuracyDescriptions).map(([key, value]) => ({
+              label: value.localizedDescription,
+              value: key as unknown as Accuracy,
+            }))}
+            selected={reportState.accuracy}
+            onChange={reportState.setAccuracy}
+          />
+          <PostMatchSelector
+            title="Endgame Climb"
+            items={Object.entries(endgameClimbDescriptions).map(
               ([key, value]) => ({
                 label: value.localizedDescription,
-                value: Number(key),
+                value: key as unknown as EndgameClimb,
               }),
             )}
-            selected={reportState.coralPickUp}
+            selected={reportState.climbResult}
+            onChange={reportState.setClimbResult}
           />
           <PostMatchSelector
-            title="Algae Pick Up"
-            updateStore={reportState.setAlgaePickUp}
-            items={Object.entries(algaePickUpDescriptions).map(
+            title="Auto Climb"
+            items={Object.entries(autoClimbDescriptions).map(
               ([key, value]) => ({
                 label: value.localizedDescription,
-                value: Number(key),
+                value: key as unknown as AutoClimb,
               }),
             )}
-            selected={reportState.algaePickUp}
+            selected={reportState.autoClimb}
+            onChange={reportState.setAutoClimb}
+          />
+          <PostMatchSelector<string, IntakeType>
+            title="Intake Type"
+            items={[
+              { label: "Ground", value: "ground" },
+              { label: "Outpost", value: "outpost" },
+            ]}
+            selected={
+              reportState.intakeType === IntakeType.Both
+                ? ["ground", "outpost"]
+                : reportState.intakeType === IntakeType.Ground
+                  ? ["ground"]
+                  : reportState.intakeType === IntakeType.Outpost
+                    ? ["outpost"]
+                    : []
+            }
+            onChange={reportState.setIntakeType}
+            multiSelect
+            mapSelection={(selected) => {
+              const hasGround = selected.includes("ground");
+              const hasOutpost = selected.includes("outpost");
+              if (hasGround && hasOutpost) return IntakeType.Both;
+              if (hasGround) return IntakeType.Ground;
+              if (hasOutpost) return IntakeType.Outpost;
+              return IntakeType.Neither;
+            }}
           />
           <PostMatchSelector
-            title="Clears Algae from Reef"
-            updateStore={(value) => reportState.setKnocksAlgae(value)}
+            title="Feeder Type"
+            items={Object.entries(feederTypeDescriptions).map(
+              ([key, value]) => ({
+                label: value.localizedDescription,
+                value: key as unknown as FeederType,
+              }),
+            )}
+            selected={reportState.feederType}
+            onChange={reportState.setFeederType}
+            multiSelect
+          />
+          <PostMatchSelector<string, Beached>
+            title="Beached"
+            items={[
+              { label: "On Fuel", value: "fuel" },
+              { label: "On Bump", value: "bump" },
+            ]}
+            selected={
+              reportState.beached === Beached.Both
+                ? ["fuel", "bump"]
+                : reportState.beached === Beached.OnFuel
+                  ? ["fuel"]
+                  : reportState.beached === Beached.OnBump
+                    ? ["bump"]
+                    : []
+            }
+            onChange={reportState.setBeached}
+            multiSelect
+            mapSelection={(selected) => {
+              const hasFuel = selected.includes("fuel");
+              const hasBump = selected.includes("bump");
+              if (hasFuel && hasBump) return Beached.Both;
+              if (hasFuel) return Beached.OnFuel;
+              if (hasBump) return Beached.OnBump;
+              return Beached.Neither;
+            }}
+          />
+          <PostMatchSelector
+            title="Defense Effectiveness"
+            items={Object.entries(defenseEffectivenessDescriptions).map(
+              ([key, value]) => ({
+                label: value.localizedDescription,
+                value: key as unknown as DefenseEffectiveness,
+              }),
+            )}
+            selected={reportState.defenseEffectiveness}
+            onChange={reportState.setDefenseEffectiveness}
+          />
+          <PostMatchSelector
+            title="Disrupts"
             items={[
               { label: "No", value: 0 },
               { label: "Yes", value: 1 },
             ]}
+            selected={reportState.disrupts ? 1 : 0}
+            onChange={(value: number) => reportState.setDisrupts(value === 1)}
             direction={ButtonGroupDirection.Horizontal}
-            selected={reportState.knocksAlgae}
           />
           <PostMatchSelector
-            title="Traverses Under Shallow Cage"
-            // Probably rename this
-            updateStore={(value) => reportState.setTraversesUnderCage(value)}
-            items={[
-              { label: "No", value: 0 },
-              { label: "Yes", value: 1 },
-            ]}
+            title="Scores While Moving"
+            items={Object.entries(scoresWhileMovingDescriptions).map(
+              ([key, value]) => ({
+                label: value.localizedDescription,
+                value: key as unknown as ScoresWhileMoving,
+              }),
+            )}
+            selected={reportState.scoresWhileMoving}
+            onChange={reportState.setScoresWhileMoving}
             direction={ButtonGroupDirection.Horizontal}
-            selected={reportState.traversesUnderCage}
           />
           <View style={{ gap: 7, marginBottom: 18 }}>
             <LabelSmall>Notes</LabelSmall>
@@ -234,14 +342,78 @@ export default function PostMatch() {
   );
 }
 
-function PostMatchSelector<T>(props: {
+// Base props shared by all variants
+type BaseProps<T> = {
   title: string;
-  updateStore: (value: T) => void;
   items: ButtonGroupButton<T>[];
-  selected: T;
   direction?: ButtonGroupDirection;
-}) {
-  const { title, updateStore, items, selected, direction } = props;
+};
+
+// Single-select: multiSelect is false or undefined
+type SingleSelectProps<T> = BaseProps<T> & {
+  selected: T;
+  onChange: (value: T) => void;
+  multiSelect?: false;
+  mapSelection?: undefined;
+};
+
+// True multi-select: multiSelect is true, no mapSelection
+type TrueMultiSelectProps<T> = BaseProps<T> & {
+  selected: T[];
+  onChange: (value: T[]) => void;
+  multiSelect: true;
+  mapSelection?: undefined;
+};
+
+// Pseudo multi-select: multiSelect is true with mapSelection
+type MappedMultiSelectProps<TItem, TOutput> = BaseProps<TItem> & {
+  selected: TItem[];
+  onChange: (value: TOutput) => void;
+  multiSelect: true;
+  mapSelection: (selected: TItem[]) => TOutput;
+};
+
+// Overloaded function signatures for proper type inference
+function PostMatchSelector<T>(props: SingleSelectProps<T>): React.ReactElement;
+function PostMatchSelector<T>(
+  props: TrueMultiSelectProps<T>,
+): React.ReactElement;
+function PostMatchSelector<TItem, TOutput>(
+  props: MappedMultiSelectProps<TItem, TOutput>,
+): React.ReactElement;
+function PostMatchSelector<TItem, TOutput = TItem>(
+  props:
+    | SingleSelectProps<TItem>
+    | TrueMultiSelectProps<TItem>
+    | MappedMultiSelectProps<TItem, TOutput>,
+) {
+  const { title, items, direction, multiSelect, selected } = props;
+
+  const handleChange = (value: TItem) => {
+    if (!multiSelect) {
+      // Single select
+      (props as SingleSelectProps<TItem>).onChange(value);
+    } else {
+      // Multi-select
+      const selectedArray = selected as TItem[];
+      let newSelected: TItem[];
+      if (selectedArray.includes(value)) {
+        newSelected = selectedArray.filter((v) => v !== value);
+      } else {
+        newSelected = [...selectedArray, value];
+      }
+
+      if ("mapSelection" in props && props.mapSelection) {
+        // Pseudo multi-select: map to enum value
+        (props as MappedMultiSelectProps<TItem, TOutput>).onChange(
+          props.mapSelection(newSelected),
+        );
+      } else {
+        // True multi-select: pass array
+        (props as TrueMultiSelectProps<TItem>).onChange(newSelected);
+      }
+    }
+  };
 
   return (
     <View style={{ gap: 7 }}>
@@ -250,7 +422,8 @@ function PostMatchSelector<T>(props: {
         direction={direction ?? ButtonGroupDirection.Vertical}
         buttons={items}
         selected={selected}
-        onChange={(value) => updateStore(value)}
+        onChange={handleChange}
+        multiSelect={multiSelect}
       />
     </View>
   );

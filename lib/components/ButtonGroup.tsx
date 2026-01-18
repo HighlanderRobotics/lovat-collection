@@ -18,9 +18,10 @@ export type ButtonGroupButton<T> =
 
 type ButtonGroupProps<T> = {
   buttons: ButtonGroupButton<T>[];
-  selected: T;
+  selected: T | T[];
   direction?: ButtonGroupDirection;
   onChange: (value: T) => void;
+  multiSelect?: boolean;
 };
 
 export enum ButtonGroupDirection {
@@ -34,7 +35,15 @@ export function ButtonGroup<T = string>(props: ButtonGroupProps<T>) {
     selected,
     onChange,
     direction = ButtonGroupDirection.Horizontal,
+    multiSelect = false,
   } = props;
+
+  const isSelected = (value: T) => {
+    if (multiSelect && Array.isArray(selected)) {
+      return selected.includes(value);
+    }
+    return value === selected;
+  };
 
   return (
     <View
@@ -48,14 +57,12 @@ export function ButtonGroup<T = string>(props: ButtonGroupProps<T>) {
       }}
     >
       {buttons.map((button) => {
-        const isSelected = button.value === selected;
-
         return (
           <Button
             key={button.key ?? button.value}
             flex={1}
             borderRadius={0}
-            variant={isSelected ? "primary" : "secondary"}
+            variant={isSelected(button.value) ? "primary" : "secondary"}
             onPress={() => {
               Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
               onChange(button.value);

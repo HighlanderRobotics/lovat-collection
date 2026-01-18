@@ -1,13 +1,13 @@
 import { z } from "zod";
 
-export const scoutReportEventSchema = z.tuple([
-  z.number(),
-  z.number(),
-  z.number(),
+export const scoutReportEventSchema = z.union([
+  z.tuple([z.number(), z.number(), z.number()]),
+  z.tuple([z.number(), z.number(), z.number(), z.number()]),
 ]);
 
 /**
- * [time (seconds), event/action enum, position enum]
+ * [time (seconds), event/action enum, position enum, quantity?]
+ * 4th field is quantity (e.g., fuel scored/fed), specified in stop events
  */
 export type ScoutReportEvent = z.infer<typeof scoutReportEventSchema>;
 
@@ -19,12 +19,18 @@ export const scoutReportSchema = z.object({
   startTime: z.number(),
   teamNumber: z.number(),
   notes: z.string(),
-  robotRole: z.number(),
-  barge: z.number(),
-  coralPickUp: z.number(),
-  algaePickUp: z.number(),
-  knocksAlgae: z.number(),
-  traversesUnderCage: z.number(),
+  robotBrokeDescription: z.string().nullable(),
+  robotRole: z.array(z.number()),
+  fieldTraversal: z.number(),
+  disrupts: z.number(),
+  accuracy: z.number(),
+  autoClimb: z.number(),
+  intakeType: z.number(),
+  feederType: z.array(z.number()),
+  beached: z.number(),
+  defenseEffectiveness: z.number(),
+  scoresWhileMoving: z.number(),
+  climbResult: z.number(),
   driverAbility: z.number(),
   scouterUuid: z.string(),
   events: z.array(scoutReportEventSchema),

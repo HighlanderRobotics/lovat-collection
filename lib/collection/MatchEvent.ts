@@ -5,4 +5,5 @@ export type MatchEvent = {
   type: MatchEventType;
   position: MatchEventPosition;
   timestamp: number;
+  quantity?: number;
 };

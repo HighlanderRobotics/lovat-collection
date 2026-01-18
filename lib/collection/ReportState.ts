@@ -1,26 +1,23 @@
 import { ScoutReportMeta } from "../models/ScoutReportMeta";
 import { DriverAbility } from "./DriverAbility";
 import { MatchEvent } from "./MatchEvent";
-import {
-  PieceContainerContents,
-  MatchEventPosition,
-  startingPositions,
-} from "./MatchEventPosition";
+import { MatchEventPosition, startingPositions } from "./MatchEventPosition";
 import { MatchEventType } from "./MatchEventType";
-import { AlgaePickUp, CoralPickUp } from "./PickUp";
 import { ScoutReport } from "./ScoutReport";
-import { BargeResult } from "./BargeResult";
+import { RobotRole } from "./RobotRole";
+import { FieldTraversal } from "./FieldTraversal";
+import { Accuracy } from "./Accuracy";
+import { AutoClimb } from "./AutoClimb";
+import { IntakeType } from "./IntakeType";
+import { FeederType } from "./FeederType";
+import { Beached } from "./Beached";
+import { DefenseEffectiveness } from "./DefenseEffectiveness";
+import { ScoresWhileMoving } from "./ScoresWhileMoving";
+import { EndgameClimb } from "./EndgameClimb";
 
 export enum GamePhase {
   Auto,
   Teleop,
-}
-
-export enum RobotRole {
-  Offense,
-  Defense,
-  Feeder,
-  Immobile,
 }
 
 export type StartingPosition =
@@ -32,46 +29,50 @@ export type ReportState = {
   events: MatchEvent[];
   startTimestamp?: Date;
   startPosition?: StartingPosition;
-  startPiece: boolean;
   gamePhase: GamePhase;
-  robotRole: RobotRole;
-  driverAbility: DriverAbility;
+
+  // Post-match fields
+  robotRole: RobotRole[];
   robotBrokeDescription: string | null;
-  bargeResult: BargeResult;
-  coralPickUp: CoralPickUp;
-  algaePickUp: AlgaePickUp;
-  knocksAlgae: number;
-  traversesUnderCage: number;
+  fieldTraversal: FieldTraversal;
+  disrupts: boolean;
+  accuracy: Accuracy;
+  autoClimb: AutoClimb;
+  intakeType: IntakeType;
+  feederType: FeederType[];
+  beached: Beached;
+  defenseEffectiveness: DefenseEffectiveness;
+  scoresWhileMoving: ScoresWhileMoving;
+  climbResult: EndgameClimb;
+  driverAbility: DriverAbility;
   notes: string;
 
+  // Actions
   scoutMatch: (meta: ScoutReportMeta) => void;
   restartMatch: () => void;
   initializeMatchTimestamp: () => void;
 
   setStartPosition: (value: StartingPosition) => void;
-  setStartPiece: (value: boolean) => void;
   setGamePhase: (value: GamePhase) => void;
-  setRobotRole: (value: RobotRole) => void;
-  setDriverAbility: (value: DriverAbility) => void;
+  setRobotRole: (value: RobotRole[]) => void;
   setRobotBrokeDescription: (value: string | null) => void;
-  setBargeResult: (value: BargeResult) => void;
-  setCoralPickUp: (value: CoralPickUp) => void;
-  setAlgaePickUp: (value: AlgaePickUp) => void;
-  setKnocksAlgae: (value: number) => void;
-  setTraversesUnderCage: (value: number) => void;
+  setFieldTraversal: (value: FieldTraversal) => void;
+  setDisrupts: (value: boolean) => void;
+  setAccuracy: (value: Accuracy) => void;
+  setAutoClimb: (value: AutoClimb) => void;
+  setIntakeType: (value: IntakeType) => void;
+  setFeederType: (value: FeederType[]) => void;
+  setBeached: (value: Beached) => void;
+  setDefenseEffectiveness: (value: DefenseEffectiveness) => void;
+  setScoresWhileMoving: (value: ScoresWhileMoving) => void;
+  setClimbResult: (value: EndgameClimb) => void;
+  setDriverAbility: (value: DriverAbility) => void;
   setNotes: (value: string) => void;
-
-  getHasExited: () => boolean;
-  getHasCoral: () => boolean;
-  getHasAlgae: () => boolean;
-  getRemainingGroundPieces: () => Record<
-    MatchEventPosition,
-    PieceContainerContents
-  >;
 
   addEvent: (event: {
     type: MatchEventType;
     position?: MatchEventPosition;
+    quantity?: number;
   }) => void;
   undoEvent: () => void;
 
