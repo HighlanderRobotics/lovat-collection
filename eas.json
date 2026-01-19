@@ -1,7 +1,6 @@
 {
   "cli": {
-    "version": ">= 7.2.0",
-    "promptToConfigurePushNotifications": false
+    "version": ">= 7.2.0"
   },
   "build": {
     "development-simulator": {

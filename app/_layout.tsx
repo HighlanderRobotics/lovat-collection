@@ -1,5 +1,6 @@
 import { SplashScreen, Stack } from "expo-router";
 import { NativeModules, View } from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { colors } from "../lib/colors";
 
 import {
@@ -126,7 +127,7 @@ export default function Layout() {
   }
 
   return (
-    <View
+    <GestureHandlerRootView
       style={{ backgroundColor: colors.background.default, flex: 1 }}
       onLayout={onLayoutRootView}
     >
@@ -138,6 +139,6 @@ export default function Layout() {
           },
         }}
       />
-    </View>
+    </GestureHandlerRootView>
   );
 }
