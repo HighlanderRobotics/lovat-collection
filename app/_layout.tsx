@@ -1,5 +1,5 @@
 import { SplashScreen, Stack } from "expo-router";
-import { NativeModules, View } from "react-native";
+import { NativeModules } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { colors } from "../lib/colors";
 
