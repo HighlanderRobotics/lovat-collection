@@ -4,7 +4,6 @@ import { router } from "expo-router";
 import { PreMatchActions } from "./actions/PreMatchActions";
 import { GameViewTemplate, OverlayState } from "./GameViewTemplate";
 import { GamePhase } from "../ReportState";
-import { Checkbox } from "../../components/Checkbox";
 import { HasAlgaeActions } from "./actions/HasAlgaeActions";
 import { ExitWingAction } from "./actions/ExitWingAction";
 import * as Haptics from "expo-haptics";
@@ -101,13 +100,6 @@ export function Game() {
     preMatch: {
       gamePhaseMessage: "Pre-Match",
       field: <PreMatchActions />,
-      topLeftReplacement: (
-        <Checkbox
-          label="Loaded with a coral"
-          checked={reportState?.startPiece}
-          onChange={reportState.setStartPiece}
-        />
-      ),
       startEnabled: reportState.startPosition !== undefined,
     },
 
@@ -268,32 +260,11 @@ export function Game() {
 
   const gameState: GameState = (() => {
     // return gameStates.testing;
-    const hasCoral = reportState.getHasCoral();
-    const hasAlgae = reportState.getHasAlgae();
-    const hasExited = reportState.getHasExited();
-
     if (!reportState.startTimestamp) {
       return gameStates.preMatch;
     } else if (reportState.gamePhase === GamePhase.Auto) {
-      if (!hasExited) {
-        if (hasCoral) return gameStates.autoHasCoralNotExited;
-        else return gameStates.autoNoCoralNotExited;
-      } else {
-        if (hasCoral) {
-          if (hasAlgae) return gameStates.autoHasBothExited;
-          else return gameStates.autoHasCoralExited;
-        } else if (hasAlgae) {
-          return gameStates.autoHasAlgaeExited;
-        }
-
-        return gameStates.autoNoPieceExited;
-      }
+      return gameStates.autoNoPieceExited;
     } else if (reportState.gamePhase === GamePhase.Teleop) {
-      if (hasCoral) {
-        if (hasAlgae) return gameStates.teleopHasBoth;
-        else return gameStates.teleopHasCoral;
-      } else if (hasAlgae) return gameStates.teleopHasAlgae;
-
       return gameStates.teleopNoPiece;
     }
     return gameStates.unknown;
@@ -404,15 +375,7 @@ const FloatingActions = ({
             activeOpacity={0.9}
             onPress={() => {
               Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-              if (coralActive && !hasCoral) {
-                addEvent({
-                  type: MatchEventType.PickupCoral,
-                });
-              } else {
-                addEvent({
-                  type: MatchEventType.DropCoral,
-                });
-              }
+              // TODO: Implement coral pickup/drop
             }}
           >
             <Icon
@@ -451,15 +414,7 @@ const FloatingActions = ({
             activeOpacity={0.9}
             onPress={() => {
               Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-              if (algaeActive && !hasAlgae) {
-                addEvent({
-                  type: MatchEventType.PickupAlgae,
-                });
-              } else {
-                addEvent({
-                  type: MatchEventType.DropAlgae,
-                });
-              }
+              // TODO: Implement algae pickup/drop
             }}
           >
             <Icon
@@ -488,9 +443,7 @@ const FloatingActions = ({
           activeOpacity={0.9}
           onPress={() => {
             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-            addEvent({
-              type: MatchEventType.Defend,
-            });
+            // TODO: Implement defend action
 
             setDefenseHighlighted(true);
             setTimeout(() => setDefenseHighlighted(false), 200);
@@ -538,9 +491,7 @@ const FloatingActions = ({
             activeOpacity={0.9}
             onPress={() => {
               Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-              addEvent({
-                type: MatchEventType.FeedAlgae,
-              });
+              // TODO: Implement feed algae action
             }}
           >
             <Icon name="feeder" color={colors.onBackground.default} size={40} />
