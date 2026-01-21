@@ -22,17 +22,34 @@ export const FieldElement = (props: {
 
   const top = useMemo(() => {
     if (fieldOrientation === FieldOrientation.Auspicious) {
-      return givenTop;
+      // return givenTop;
+      return respectAlliance
+        ? allianceColor === AllianceColor.Blue
+          ? givenTop
+          : givenButtom
+        : givenButtom;
     } else {
-      return givenButtom;
+      return respectAlliance
+        ? allianceColor === AllianceColor.Blue
+          ? givenButtom
+          : givenTop
+        : givenTop;
     }
   }, [respectAlliance, fieldOrientation, givenTop, givenButtom]);
 
   const bottom = useMemo(() => {
     if (fieldOrientation === FieldOrientation.Auspicious) {
-      return givenButtom;
+      return respectAlliance
+        ? allianceColor === AllianceColor.Blue
+          ? givenButtom
+          : givenTop
+        : givenTop;
     } else {
-      return givenTop;
+      return respectAlliance
+        ? allianceColor === AllianceColor.Blue
+          ? givenTop
+          : givenButtom
+        : givenButtom;
     }
   }, [respectAlliance, fieldOrientation, givenTop, givenButtom]);
 
