@@ -52,6 +52,7 @@ import {
   useMatchSelectionModeStore,
 } from "../lib/storage/userStores";
 import { createGenericPersistantStore } from "../lib/storage/zustandStorage";
+import { DraggableContainer } from "../lib/collection/ui/DraggableContainer";
 
 export default function Home() {
   const { value: matchSelectionMode, setValue: setMatchSelectionMode } =
