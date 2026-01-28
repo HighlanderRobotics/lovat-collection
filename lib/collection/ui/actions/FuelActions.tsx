@@ -41,8 +41,9 @@ function useDragFunctionsFromScoringMode(scoringMode: ScoringMode): {
   const reportState = useReportStateStore((state) => state);
   // const scoringSensitivity = useScoringSensitivityStore
 
-  // only used for rate
   const currentCount = useRef(0);
+
+  // for rate
   const currentDelay = useRef(17);
   const isCounting = useRef(false);
   useEffect(() => {
@@ -58,6 +59,10 @@ function useDragFunctionsFromScoringMode(scoringMode: ScoringMode): {
     startCounting();
   }, []);
 
+  // for count
+  const getCountFromDisplacement = (displacement: number) =>
+    1 + Math.floor((Math.abs(displacement) + displacement) / (2 * 20));
+
   if (scoringMode === ScoringMode.Count) {
     return {
       onStart: () => {
@@ -65,18 +70,23 @@ function useDragFunctionsFromScoringMode(scoringMode: ScoringMode): {
           type: MatchEventType.StartScoring,
           position: MatchEventPosition.Hub,
         });
-        // turn on number
-        // set count to 1
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+        currentCount.current = 0;
       },
-      onMove: () => {
-        // set count to number based on sensitivity
+      onMove: (displacement) => {
+        const count = getCountFromDisplacement(displacement);
+        if (count != currentCount.current) {
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+          currentCount.current = count;
+        }
       },
       onEnd: (displacement) => {
         reportState.addEvent({
           type: MatchEventType.StopScoring,
           position: MatchEventPosition.Hub,
-          quantity: displacement, // / scoringSensitivity * sensitivityFactor,
+          quantity: getCountFromDisplacement(displacement),
         });
+        currentCount.current = 0;
       },
     };
   } else {
@@ -93,7 +103,7 @@ function useDragFunctionsFromScoringMode(scoringMode: ScoringMode): {
       onMove: (displacement) => {
         currentDelay.current =
           displacement / Math.abs(displacement) === 1 // checks if you're dragging in the right direction
-            ? 1000 / Math.log(displacement)
+            ? 1000 / Math.log(1 + displacement)
             : 1000;
       },
       onEnd: () => {

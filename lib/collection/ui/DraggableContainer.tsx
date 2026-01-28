@@ -36,8 +36,8 @@ export const DraggableContainer = ({
   const allianceColor = reportState.meta?.allianceColor;
 
   const signGestureDirection = (gesture: {
-    moveX: number;
-    moveY: number;
+    vx: number;
+    vy: number;
     dx: number;
     dy: number;
   }) => {
@@ -50,7 +50,7 @@ export const DraggableContainer = ({
     const vertical =
       dragDirection === DragDirection.Up ||
       dragDirection === DragDirection.Down;
-    const movement = sign * (vertical ? gesture.moveY : gesture.moveX);
+    const movement = sign * (vertical ? gesture.vy : gesture.vx) * 10;
     const displacement = sign * (vertical ? gesture.dy : gesture.dx);
     return { movement, displacement };
   };
@@ -59,13 +59,13 @@ export const DraggableContainer = ({
     PanResponder.create({
       onStartShouldSetPanResponder: () => true,
       onPanResponderStart: onStart,
-      onPanResponderMove: (_, { moveX, moveY, dx, dy }) => {
-        const signedGesture = signGestureDirection({ moveX, moveY, dx, dy });
+      onPanResponderMove: (_, { vx, vy, dx, dy }) => {
+        const signedGesture = signGestureDirection({ vx, vy, dx, dy });
         console.log(signedGesture.displacement);
         onMove(signedGesture.displacement, signedGesture.movement);
       },
-      onPanResponderEnd: (_, { moveX, moveY, dx, dy }) => {
-        const signedGesture = signGestureDirection({ moveX, moveY, dx, dy });
+      onPanResponderEnd: (_, { vx, vy, dx, dy }) => {
+        const signedGesture = signGestureDirection({ vx, vy, dx, dy });
         onEnd(signedGesture.displacement, signedGesture.movement);
       },
     }),
