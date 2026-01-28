@@ -4,13 +4,7 @@ import { router } from "expo-router";
 import { PreMatchActions } from "./actions/PreMatchActions";
 import { GameViewTemplate, OverlayState } from "./GameViewTemplate";
 import { GamePhase } from "../ReportState";
-import { HasAlgaeActions } from "./actions/HasAlgaeActions";
-import { ExitWingAction } from "./actions/ExitWingAction";
 import * as Haptics from "expo-haptics";
-import {
-  AutoCollectGroundPieceActions,
-  AutoCoralStationActions,
-} from "./actions/AutoCollectPieceActions";
 import { Alert, TouchableOpacity, View } from "react-native";
 import {
   FieldOrientation,
@@ -21,10 +15,9 @@ import { colors } from "../../colors";
 import { MatchEventType } from "../MatchEventType";
 import { Icon } from "../../components/Icon";
 import LabelSmall from "../../components/text/LabelSmall";
-import { TeleopScoreCoralActions } from "./actions/TeleopScoreCoralActions";
 import { MatchEventPosition } from "../MatchEventPosition";
-import { AutoReefActions } from "./actions/AutoReefActions";
 import { IconButton } from "../../components/IconButton";
+import { ScoreFuelInHubAction } from "./actions/FuelActions";
 
 export function Game() {
   const reportState = useReportStateStore();
@@ -99,128 +92,133 @@ export function Game() {
   const gameStates: Record<string, GameState> = {
     preMatch: {
       gamePhaseMessage: "Pre-Match",
-      field: <PreMatchActions />,
+      field: (
+        <>
+          <PreMatchActions />
+          <ScoreFuelInHubAction />
+        </>
+      ),
       startEnabled: reportState.startPosition !== undefined,
     },
 
-    autoNoCoralNotExited: {
-      gamePhaseMessage: "Auto",
-      field: <ExitWingAction />,
-    },
+    // autoNoCoralNotExited: {
+    //   gamePhaseMessage: "Auto",
+    //   field: <ExitWingAction />,
+    // },
 
-    autoHasCoralNotExited: {
-      gamePhaseMessage: "Auto",
-      field: (
-        <>
-          <ExitWingAction />
-          <FloatingActions hasCoral gamePhase={GamePhase.Auto} />
-        </>
-      ),
-    },
+    // autoHasCoralNotExited: {
+    //   gamePhaseMessage: "Auto",
+    //   field: (
+    //     <>
+    //       <ExitWingAction />
+    //       <FloatingActions hasCoral gamePhase={GamePhase.Auto} />
+    //     </>
+    //   ),
+    // },
 
-    autoNoPieceExited: {
-      gamePhaseMessage: "Auto",
-      field: (
-        <>
-          <AutoCollectGroundPieceActions
-            setOverlay={(value) => setOverlay(value)}
-            setOverlayPos={(value) => setOverlayPos(value)}
-          />
-          <AutoReefActions
-            setOverlay={(value) => setOverlay(value)}
-            setOverlayPos={(value) => setOverlayPos(value)}
-          />
-          <AutoCoralStationActions />
-          <FloatingActions gamePhase={GamePhase.Auto} />
-        </>
-      ),
-    },
+    // autoNoPieceExited: {
+    //   gamePhaseMessage: "Auto",
+    //   field: (
+    //     <>
+    //       <AutoCollectGroundPieceActions
+    //         setOverlay={(value) => setOverlay(value)}
+    //         setOverlayPos={(value) => setOverlayPos(value)}
+    //       />
+    //       <AutoReefActions
+    //         setOverlay={(value) => setOverlay(value)}
+    //         setOverlayPos={(value) => setOverlayPos(value)}
+    //       />
+    //       <AutoCoralStationActions />
+    //       <FloatingActions gamePhase={GamePhase.Auto} />
+    //     </>
+    //   ),
+    // },
 
-    autoHasCoralExited: {
-      gamePhaseMessage: "Auto",
-      field: (
-        <>
-          <AutoReefActions
-            setOverlay={(value) => setOverlay(value)}
-            setOverlayPos={(value) => setOverlayPos(value)}
-          />
-          <AutoCollectGroundPieceActions
-            setOverlay={(value) => setOverlay(value)}
-            setOverlayPos={(value) => setOverlayPos(value)}
-          />
-          <FloatingActions hasCoral gamePhase={GamePhase.Auto} />
-        </>
-      ),
-    },
+    // autoHasCoralExited: {
+    //   gamePhaseMessage: "Auto",
+    //   field: (
+    //     <>
+    //       <AutoReefActions
+    //         setOverlay={(value) => setOverlay(value)}
+    //         setOverlayPos={(value) => setOverlayPos(value)}
+    //       />
+    //       <AutoCollectGroundPieceActions
+    //         setOverlay={(value) => setOverlay(value)}
+    //         setOverlayPos={(value) => setOverlayPos(value)}
+    //       />
+    //       <FloatingActions hasCoral gamePhase={GamePhase.Auto} />
+    //     </>
+    //   ),
+    // },
 
-    autoHasAlgaeExited: {
-      gamePhaseMessage: "Auto",
-      field: (
-        <>
-          <HasAlgaeActions setOverlay={(value) => setOverlay(value)} />
-          <AutoCollectGroundPieceActions
-            setOverlay={(value) => setOverlay(value)}
-            setOverlayPos={(value) => setOverlayPos(value)}
-          />
-          <AutoCoralStationActions />
-          <FloatingActions hasAlgae gamePhase={GamePhase.Auto} />
-        </>
-      ),
-    },
+    // autoHasAlgaeExited: {
+    //   gamePhaseMessage: "Auto",
+    //   field: (
+    //     <>
+    //       <HasAlgaeActions setOverlay={(value) => setOverlay(value)} />
+    //       <AutoCollectGroundPieceActions
+    //         setOverlay={(value) => setOverlay(value)}
+    //         setOverlayPos={(value) => setOverlayPos(value)}
+    //       />
+    //       <AutoCoralStationActions />
+    //       <FloatingActions hasAlgae gamePhase={GamePhase.Auto} />
+    //     </>
+    //   ),
+    // },
 
-    autoHasBothExited: {
-      gamePhaseMessage: "Auto",
-      field: (
-        <>
-          <AutoReefActions
-            setOverlay={(value) => setOverlay(value)}
-            setOverlayPos={(value) => setOverlayPos(value)}
-          />
-          <HasAlgaeActions setOverlay={(value) => setOverlay(value)} />
-          <FloatingActions hasCoral hasAlgae gamePhase={GamePhase.Auto} />
-        </>
-      ),
-    },
+    // autoHasBothExited: {
+    //   gamePhaseMessage: "Auto",
+    //   field: (
+    //     <>
+    //       <AutoReefActions
+    //         setOverlay={(value) => setOverlay(value)}
+    //         setOverlayPos={(value) => setOverlayPos(value)}
+    //       />
+    //       <HasAlgaeActions setOverlay={(value) => setOverlay(value)} />
+    //       <FloatingActions hasCoral hasAlgae gamePhase={GamePhase.Auto} />
+    //     </>
+    //   ),
+    // },
 
-    teleopNoPiece: {
-      gamePhaseMessage: "Teleop",
-      field: (
-        <>
-          <FloatingActions gamePhase={GamePhase.Teleop} />
-        </>
-      ),
-    },
+    // teleopNoPiece: {
+    //   gamePhaseMessage: "Teleop",
+    //   field: (
+    //     <>
+    //       <FloatingActions gamePhase={GamePhase.Teleop} />
+    //     </>
+    //   ),
+    // },
 
-    teleopHasCoral: {
-      gamePhaseMessage: "Teleop",
-      field: (
-        <>
-          <FloatingActions hasCoral gamePhase={GamePhase.Teleop} />
-          <TeleopScoreCoralActions />
-        </>
-      ),
-    },
+    // teleopHasCoral: {
+    //   gamePhaseMessage: "Teleop",
+    //   field: (
+    //     <>
+    //       <FloatingActions hasCoral gamePhase={GamePhase.Teleop} />
+    //       <TeleopScoreCoralActions />
+    //     </>
+    //   ),
+    // },
 
-    teleopHasAlgae: {
-      gamePhaseMessage: "Teleop",
-      field: (
-        <>
-          <FloatingActions hasAlgae gamePhase={GamePhase.Teleop} />
-          <HasAlgaeActions setOverlay={(value) => setOverlay(value)} />
-        </>
-      ),
-    },
+    // teleopHasAlgae: {
+    //   gamePhaseMessage: "Teleop",
+    //   field: (
+    //     <>
+    //       <FloatingActions hasAlgae gamePhase={GamePhase.Teleop} />
+    //       <HasAlgaeActions setOverlay={(value) => setOverlay(value)} />
+    //     </>
+    //   ),
+    // },
 
-    teleopHasBoth: {
-      gamePhaseMessage: "Teleop",
-      field: (
-        <>
-          <FloatingActions hasCoral hasAlgae gamePhase={GamePhase.Teleop} />
-          <HasAlgaeActions setOverlay={(value) => setOverlay(value)} />
-          <TeleopScoreCoralActions />
-        </>
-      ),
-    },
+    // teleopHasBoth: {
+    //   gamePhaseMessage: "Teleop",
+    //   field: (
+    //     <>
+    //       <FloatingActions hasCoral hasAlgae gamePhase={GamePhase.Teleop} />
+    //       <HasAlgaeActions setOverlay={(value) => setOverlay(value)} />
+    //       <TeleopScoreCoralActions />
+    //     </>
+    //   ),
+    // },
 
     unknown: {
       gamePhaseMessage: "Problem finding phase",
@@ -242,17 +240,6 @@ export function Game() {
       field: (
         <>
           <FloatingActions hasCoral hasAlgae gamePhase={GamePhase.Teleop} />
-          <HasAlgaeActions setOverlay={(value) => setOverlay(value)} />
-          {/* <TeleopScoreCoralActions /> */}
-          <AutoReefActions
-            setOverlay={(value) => setOverlay(value)}
-            setOverlayPos={(value) => setOverlayPos(value)}
-          />
-          <AutoCollectGroundPieceActions
-            setOverlay={(value) => setOverlay(value)}
-            setOverlayPos={(value) => setOverlayPos(value)}
-          />
-          <AutoCoralStationActions />
         </>
       ),
     },

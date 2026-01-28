@@ -1,6 +1,12 @@
-import React, { useRef } from "react";
+import React, { useMemo, useRef } from "react";
 import { PanResponder, View } from "react-native";
 import * as Haptics from "expo-haptics";
+import {
+  FieldOrientation,
+  useFieldOrientationStore,
+} from "../../storage/userStores";
+import { AllianceColor } from "../../models/AllianceColor";
+import { useReportStateStore } from "../reportStateStore";
 
 export enum DragDirection {
   Up,
@@ -10,17 +16,25 @@ export enum DragDirection {
 }
 
 export const DraggableContainer = ({
-  onDrag,
+  onStart,
+  onMove,
+  onEnd,
   children,
   edgeInsets,
+  respectAlliance,
   dragDirection,
 }: {
-  onDrag: (displacement: number, movement: number) => void;
+  onStart: () => void;
+  onMove: (displacement: number, movement: number) => void;
+  onEnd: (displacement: number, movement: number) => void;
   children?: React.ReactNode;
   edgeInsets: [number, number, number, number];
+  respectAlliance: boolean;
   dragDirection: DragDirection;
 }) => {
-  console.log(edgeInsets);
+  const fieldOrientation = useFieldOrientationStore((state) => state.value);
+  const reportState = useReportStateStore();
+  const allianceColor = reportState.meta?.allianceColor;
 
   const signGestureDirection = (gesture: {
     moveX: number;
@@ -45,21 +59,93 @@ export const DraggableContainer = ({
   const dragResponder = useRef(
     PanResponder.create({
       onStartShouldSetPanResponder: () => true,
+      onPanResponderStart: onStart,
       onPanResponderMove: (_, { moveX, moveY, dx, dy }) => {
-        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
         const signedGesture = signGestureDirection({ moveX, moveY, dx, dy });
-        onDrag(signedGesture.displacement, signedGesture.movement);
+        onMove(signedGesture.displacement, signedGesture.movement);
+      },
+      onPanResponderEnd: (_, { moveX, moveY, dx, dy }) => {
+        const signedGesture = signGestureDirection({ moveX, moveY, dx, dy });
+        onEnd(signedGesture.displacement, signedGesture.movement);
       },
     }),
   ).current;
+
+  const [givenTop, givenRight, givenButtom, givenLeft] = edgeInsets;
+
+  const top = useMemo(() => {
+    if (fieldOrientation === FieldOrientation.Auspicious) {
+      // return givenTop;
+      return respectAlliance
+        ? allianceColor === AllianceColor.Blue
+          ? givenTop
+          : givenButtom
+        : givenButtom;
+    } else {
+      return respectAlliance
+        ? allianceColor === AllianceColor.Blue
+          ? givenButtom
+          : givenTop
+        : givenTop;
+    }
+  }, [respectAlliance, fieldOrientation, givenTop, givenButtom]);
+
+  const bottom = useMemo(() => {
+    if (fieldOrientation === FieldOrientation.Auspicious) {
+      return respectAlliance
+        ? allianceColor === AllianceColor.Blue
+          ? givenButtom
+          : givenTop
+        : givenTop;
+    } else {
+      return respectAlliance
+        ? allianceColor === AllianceColor.Blue
+          ? givenTop
+          : givenButtom
+        : givenButtom;
+    }
+  }, [respectAlliance, fieldOrientation, givenTop, givenButtom]);
+
+  const left = useMemo(() => {
+    if (fieldOrientation === FieldOrientation.Auspicious) {
+      return respectAlliance
+        ? allianceColor === AllianceColor.Blue
+          ? givenLeft
+          : givenRight
+        : givenLeft;
+    } else {
+      return respectAlliance
+        ? allianceColor === AllianceColor.Blue
+          ? givenRight
+          : givenLeft
+        : givenRight;
+    }
+  }, [respectAlliance, fieldOrientation, givenLeft, givenRight]);
+
+  const right = useMemo(() => {
+    if (fieldOrientation === FieldOrientation.Auspicious) {
+      return respectAlliance
+        ? allianceColor === AllianceColor.Blue
+          ? givenRight
+          : givenLeft
+        : givenRight;
+    } else {
+      return respectAlliance
+        ? allianceColor === AllianceColor.Blue
+          ? givenLeft
+          : givenRight
+        : givenLeft;
+    }
+  }, [respectAlliance, fieldOrientation, givenLeft, givenRight]);
   return (
     <View
       style={{
         position: "absolute",
-        left: 0,
-        right: 0,
-        top: 0,
-        bottom: 0,
+        top: `${top * 100}%`,
+        right: `${right * 100}%`,
+        bottom: `${bottom * 100}%`,
+        left: `${left * 100}%`,
       }}
       {...dragResponder.panHandlers}
     >

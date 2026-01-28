@@ -39,6 +39,11 @@ export enum FieldOrientation {
   Sinister, // Red on the left, blue on the right
 }
 
+export enum ScoringMode {
+  Rate,
+  Count,
+}
+
 export enum MatchSelectionMode {
   Automatic,
   Manual,
@@ -76,3 +81,8 @@ export const useMatchSelectionModeStore =
     "matchSelectionModeStore",
     MatchSelectionMode.Automatic,
   );
+
+export const useScoringModeStore = createGenericPersistantStore<ScoringMode>(
+  "scoringModeStore",
+  ScoringMode.Count,
+);
