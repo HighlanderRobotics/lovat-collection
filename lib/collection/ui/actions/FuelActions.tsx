@@ -6,6 +6,7 @@ import Hub from "../../../../assets/hub";
 import { useReportStateStore } from "../../reportStateStore";
 import { MatchEventPosition } from "../../MatchEventPosition";
 import { MatchEventType } from "../../MatchEventType";
+import * as Haptics from "expo-haptics";
 
 export function ScoreFuelInHubAction() {
   const scoringMode = useScoringModeStore((state) => state.value);
@@ -47,7 +48,8 @@ function useDragFunctionsFromScoringMode(scoringMode: ScoringMode): {
   useEffect(() => {
     const startCounting = () => {
       setTimeout(() => {
-        if (isCounting) {
+        if (isCounting.current) {
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
           currentCount.current += 1;
         }
         startCounting();
@@ -88,8 +90,11 @@ function useDragFunctionsFromScoringMode(scoringMode: ScoringMode): {
           position: MatchEventPosition.Hub,
         });
       },
-      onMove: () => {
-        currentDelay.current = 1000; // add sensitivity
+      onMove: (displacement) => {
+        currentDelay.current =
+          displacement / Math.abs(displacement) === 1 // checks if you're dragging in the right direction
+            ? 1000 / Math.log(displacement)
+            : 1000;
       },
       onEnd: () => {
         reportState.addEvent({

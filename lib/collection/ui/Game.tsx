@@ -239,6 +239,7 @@ export function Game() {
       ),
       field: (
         <>
+          <ScoreFuelInHubAction />
           <FloatingActions hasCoral hasAlgae gamePhase={GamePhase.Teleop} />
         </>
       ),

@@ -1,6 +1,5 @@
 import React, { useMemo, useRef } from "react";
 import { PanResponder, View } from "react-native";
-import * as Haptics from "expo-haptics";
 import {
   FieldOrientation,
   useFieldOrientationStore,
@@ -61,8 +60,8 @@ export const DraggableContainer = ({
       onStartShouldSetPanResponder: () => true,
       onPanResponderStart: onStart,
       onPanResponderMove: (_, { moveX, moveY, dx, dy }) => {
-        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
         const signedGesture = signGestureDirection({ moveX, moveY, dx, dy });
+        console.log(signedGesture.displacement);
         onMove(signedGesture.displacement, signedGesture.movement);
       },
       onPanResponderEnd: (_, { moveX, moveY, dx, dy }) => {
