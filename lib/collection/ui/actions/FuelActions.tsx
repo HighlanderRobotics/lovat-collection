@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useCallback, useEffect, useRef } from "react";
 import { figmaDimensionsToFieldInsets } from "../../util";
 import { DragDirection, DraggableContainer } from "../DraggableContainer";
 import { ScoringMode, useScoringModeStore } from "../../../storage/userStores";
@@ -7,16 +7,16 @@ import { useReportStateStore } from "../../reportStateStore";
 import { MatchEventPosition } from "../../MatchEventPosition";
 import { MatchEventType } from "../../MatchEventType";
 import * as Haptics from "expo-haptics";
-import { Text, View } from "react-native";
+import { TextInput } from "react-native";
 
 export function ScoreFuelInHubAction() {
   const scoringMode = useScoringModeStore((state) => state.value);
 
-  // this is pretty much directly from the react native docs, not sure if there's a better way to do this
-  const textRef = useRef<Text>(null);
-  const updateTextDisplay = (newValue: string) => {
-    textRef.current?.setNativeProps({ text: newValue });
-  };
+  // textinput is used to allow direct manipulation
+  const textContainerRef = useRef<TextInput>(null);
+  const updateTextDisplay = useCallback((newValue: string) => {
+    textContainerRef.current?.setNativeProps({ text: newValue });
+  }, []);
 
   const { onStart, onMove, onEnd } = useDragFunctionsFromScoringMode(
     scoringMode,
@@ -39,7 +39,9 @@ export function ScoreFuelInHubAction() {
       onEnd={onEnd}
     >
       <Hub />
-      <View
+      <TextInput
+        pointerEvents="none"
+        ref={textContainerRef}
         style={{
           position: "absolute",
           left: 0,
@@ -47,19 +49,13 @@ export function ScoreFuelInHubAction() {
           top: 0,
           bottom: 0,
           alignItems: "center",
-          justifyContent: "center",
+          textAlign: "center",
+          fontFamily: "Heebo_500Medium",
+          fontSize: 36,
+          fontWeight: "500",
+          color: "#3EE679",
         }}
-      >
-        <Text
-          ref={textRef}
-          style={{
-            fontFamily: "Heebo_500Medium",
-            fontSize: 40,
-            fontWeight: "500",
-            color: "#3EE679",
-          }}
-        />
-      </View>
+      />
     </DraggableContainer>
   );
 }
@@ -69,8 +65,9 @@ function useDragFunctionsFromScoringMode(
   updateDisplay: (value: string) => void,
 ): {
   onStart: () => void;
-  onMove: (displacement: number, movement: number) => void;
-  onEnd: (displacement: number) => void;
+  // unused _ to fit function parameters
+  onMove: (_: number, displacement: number) => void;
+  onEnd: (_: number, displacement: number) => void;
 } {
   const reportState = useReportStateStore((state) => state);
   // const scoringSensitivity = useScoringSensitivityStore
@@ -109,7 +106,7 @@ function useDragFunctionsFromScoringMode(
         currentCount.current = 0;
         updateDisplay("1");
       },
-      onMove: (displacement) => {
+      onMove: (_, displacement) => {
         const count = getCountFromDisplacement(displacement);
         if (count != currentCount.current) {
           Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -117,13 +114,14 @@ function useDragFunctionsFromScoringMode(
           updateDisplay(count.toString());
         }
       },
-      onEnd: (displacement) => {
+      onEnd: (_, displacement) => {
         reportState.addEvent({
           type: MatchEventType.StopScoring,
           position: MatchEventPosition.Hub,
           quantity: getCountFromDisplacement(displacement),
         });
         currentCount.current = 0;
+        updateDisplay("");
       },
     };
   } else {
@@ -137,7 +135,7 @@ function useDragFunctionsFromScoringMode(
           position: MatchEventPosition.Hub,
         });
       },
-      onMove: (displacement) => {
+      onMove: (_, displacement) => {
         currentDelay.current =
           displacement / Math.abs(displacement) === 1 // checks if you're dragging in the right direction
             ? 1000 / Math.log(1 + displacement)

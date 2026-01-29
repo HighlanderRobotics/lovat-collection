@@ -24,8 +24,8 @@ export const DraggableContainer = ({
   dragDirection,
 }: {
   onStart: () => void;
-  onMove: (displacement: number, movement: number) => void;
-  onEnd: (displacement: number, movement: number) => void;
+  onMove: (displacement: number, totalDistance: number) => void;
+  onEnd: (displacement: number, totalDistance: number) => void;
   children?: React.ReactNode;
   edgeInsets: [number, number, number, number];
   respectAlliance: boolean;
@@ -35,12 +35,7 @@ export const DraggableContainer = ({
   const reportState = useReportStateStore();
   const allianceColor = reportState.meta?.allianceColor;
 
-  const signGestureDirection = (gesture: {
-    vx: number;
-    vy: number;
-    dx: number;
-    dy: number;
-  }) => {
+  const signGestureDirection = (gesture: { dx: number; dy: number }) => {
     const sign = {
       [DragDirection.Up]: -1,
       [DragDirection.Down]: 1,
@@ -50,24 +45,18 @@ export const DraggableContainer = ({
     const vertical =
       dragDirection === DragDirection.Up ||
       dragDirection === DragDirection.Down;
-    const movement = sign * (vertical ? gesture.vy : gesture.vx) * 10;
     const displacement = sign * (vertical ? gesture.dy : gesture.dx);
-    return { movement, displacement };
+    return displacement;
   };
 
   const dragResponder = useRef(
     PanResponder.create({
       onStartShouldSetPanResponder: () => true,
       onPanResponderStart: onStart,
-      onPanResponderMove: (_, { vx, vy, dx, dy }) => {
-        const signedGesture = signGestureDirection({ vx, vy, dx, dy });
-        console.log(signedGesture.displacement);
-        onMove(signedGesture.displacement, signedGesture.movement);
-      },
-      onPanResponderEnd: (_, { vx, vy, dx, dy }) => {
-        const signedGesture = signGestureDirection({ vx, vy, dx, dy });
-        onEnd(signedGesture.displacement, signedGesture.movement);
-      },
+      onPanResponderMove: (_, { dx, dy }) =>
+        onMove(signGestureDirection({ dx, dy }), Math.sqrt(dy ** 2 + dx ** 2)),
+      onPanResponderEnd: (_, { dx, dy }) =>
+        onEnd(signGestureDirection({ dx, dy }), Math.sqrt(dy ** 2 + dx ** 2)),
     }),
   ).current;
 
