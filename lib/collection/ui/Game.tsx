@@ -18,6 +18,7 @@ import LabelSmall from "../../components/text/LabelSmall";
 import { MatchEventPosition } from "../MatchEventPosition";
 import { IconButton } from "../../components/IconButton";
 import { ScoreFuelInHubAction } from "./actions/FuelActions";
+import { AllianceZoneIntakeActions } from "./actions/AutoIntakeActions";
 
 export function Game() {
   const reportState = useReportStateStore();
@@ -95,7 +96,6 @@ export function Game() {
       field: (
         <>
           <PreMatchActions />
-          <ScoreFuelInHubAction />
         </>
       ),
       startEnabled: reportState.startPosition !== undefined,
@@ -240,22 +240,23 @@ export function Game() {
       field: (
         <>
           <ScoreFuelInHubAction />
-          <FloatingActions hasCoral hasAlgae gamePhase={GamePhase.Teleop} />
+          {/* <FloatingActions hasCoral hasAlgae gamePhase={GamePhase.Teleop} /> */}
+          <AllianceZoneIntakeActions />
         </>
       ),
     },
   } as const;
 
   const gameState: GameState = (() => {
-    // return gameStates.testing;
-    if (!reportState.startTimestamp) {
-      return gameStates.preMatch;
-    } else if (reportState.gamePhase === GamePhase.Auto) {
-      return gameStates.autoNoPieceExited;
-    } else if (reportState.gamePhase === GamePhase.Teleop) {
-      return gameStates.teleopNoPiece;
-    }
-    return gameStates.unknown;
+    return gameStates.testing;
+    // if (!reportState.startTimestamp) {
+    //   return gameStates.preMatch;
+    // } else if (reportState.gamePhase === GamePhase.Auto) {
+    //   return gameStates.autoNoPieceExited;
+    // } else if (reportState.gamePhase === GamePhase.Teleop) {
+    //   return gameStates.teleopNoPiece;
+    // }
+    // return gameStates.unknown;
   })();
 
   const [overlay, setOverlay] = useState<OverlayState>(OverlayState.None);
