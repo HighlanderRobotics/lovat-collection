@@ -35,6 +35,8 @@ export const DraggableContainer = ({
   const reportState = useReportStateStore();
   const allianceColor = reportState.meta?.allianceColor;
 
+  const isPressing = useRef(false);
+
   const signGestureDirection = (gesture: { dx: number; dy: number }) => {
     const sign = {
       [DragDirection.Up]: -1,
@@ -57,14 +59,17 @@ export const DraggableContainer = ({
 
   const dragResponder = useRef(
     PanResponder.create({
-      onStartShouldSetPanResponder: (event) => {
-        return Number(event.nativeEvent.identifier) == 0;
+      onStartShouldSetPanResponder: () => !isPressing.current,
+      onPanResponderStart: () => {
+        isPressing.current = true;
+        onStart();
       },
-      onPanResponderStart: onStart,
       onPanResponderMove: (_, { dx, dy }) =>
         onMove(signGestureDirection({ dx, dy }), Math.sqrt(dy ** 2 + dx ** 2)),
-      onPanResponderEnd: (_, { dx, dy }) =>
-        onEnd(signGestureDirection({ dx, dy }), Math.sqrt(dy ** 2 + dx ** 2)),
+      onPanResponderEnd: (_, { dx, dy }) => {
+        isPressing.current = false;
+        onEnd(signGestureDirection({ dx, dy }), Math.sqrt(dy ** 2 + dx ** 2));
+      },
     }),
   ).current;
 
