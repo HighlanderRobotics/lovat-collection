@@ -22,6 +22,7 @@ import {
   scoresWhileMovingDescriptions,
 } from "./ScoresWhileMoving";
 import { EndgameClimb, endgameClimbDescriptions } from "./EndgameClimb";
+import { MatchEventType } from "./MatchEventType";
 
 const initialState = {
   events: [],
@@ -77,6 +78,24 @@ export const useReportStateStore = create<ReportState>((set, get) => ({
   setClimbResult: (value) => set({ climbResult: value }),
   setDriverAbility: (value) => set({ driverAbility: value }),
   setNotes: (value) => set({ notes: value }),
+
+  isClimbing: () => {
+    const reportState = get();
+    return reportState.events.some(
+      (item) => item.type === MatchEventType.Climb,
+    );
+  },
+
+  stopClimbing: () => {
+    const reportState = get();
+    if (reportState.events) {
+      set({
+        events: reportState.events.filter(
+          (item) => item.type !== MatchEventType.Climb,
+        ),
+      });
+    }
+  },
 
   addEvent: (event) => {
     const reportState = get();

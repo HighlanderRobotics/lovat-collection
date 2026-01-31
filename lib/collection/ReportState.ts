@@ -69,6 +69,9 @@ export type ReportState = {
   setDriverAbility: (value: DriverAbility) => void;
   setNotes: (value: string) => void;
 
+  isClimbing: () => boolean;
+  stopClimbing: () => void;
+
   addEvent: (event: {
     type: MatchEventType;
     position?: MatchEventPosition;

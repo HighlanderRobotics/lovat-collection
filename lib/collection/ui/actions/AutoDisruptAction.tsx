@@ -5,7 +5,7 @@ import { figmaDimensionsToFieldInsets } from "../../util";
 import { FieldElement } from "../FieldElement";
 import { GameAction } from "../GameAction";
 
-export function AutoDisruptActoin() {
+export function AutoDisruptAction() {
   const reportState = useReportStateStore();
 
   return (
