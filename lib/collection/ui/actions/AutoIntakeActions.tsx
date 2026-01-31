@@ -2,7 +2,6 @@ import { MatchEventPosition } from "../../MatchEventPosition";
 import { MatchEventType } from "../../MatchEventType";
 import { useReportStateStore } from "../../reportStateStore";
 import { figmaDimensionsToFieldInsets } from "../../util";
-import { DragDirection, DraggableContainer } from "../DraggableContainer";
 import { FieldElement } from "../FieldElement";
 import { GameAction } from "../GameAction";
 
@@ -31,20 +30,7 @@ export function AllianceZoneIntakeActions() {
           iconSize={48}
         />
       </FieldElement>
-      <DraggableContainer
-        respectAlliance
-        dragDirection={DragDirection.Left}
-        onStart={() => null}
-        onMove={() => null}
-        onEnd={(displacement) =>
-          reportState.addEvent({
-            type:
-              displacement > 100
-                ? MatchEventType.Outtake
-                : MatchEventType.Intake,
-            position: MatchEventPosition.Outpost,
-          })
-        }
+      <FieldElement
         edgeInsets={figmaDimensionsToFieldInsets({
           x: 9.5,
           y: 252.5,
@@ -53,12 +39,39 @@ export function AllianceZoneIntakeActions() {
         })}
       >
         <GameAction
-          onPress={() => null}
+          onPress={() => null} // overlay istg
           color="#C1C337"
           icon="fort"
           iconSize={48}
         />
-      </DraggableContainer>
+      </FieldElement>
     </>
+  );
+}
+
+export function NeutralZoneAutoIntakeAction() {
+  const reportState = useReportStateStore();
+
+  return (
+    <FieldElement
+      edgeInsets={figmaDimensionsToFieldInsets({
+        x: 247.5,
+        y: 12.5,
+        width: 132.66,
+        height: 311,
+      })}
+    >
+      <GameAction
+        onPress={() =>
+          reportState.addEvent({
+            type: MatchEventType.Intake,
+            position: MatchEventPosition.NeutralZone,
+          })
+        }
+        color="#C1C337"
+        icon="upload"
+        iconSize={48}
+      />
+    </FieldElement>
   );
 }

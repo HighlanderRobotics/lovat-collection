@@ -13,7 +13,7 @@ export default function TraversalActions() {
       <FieldElement
         edgeInsets={figmaDimensionsToFieldInsets({
           x: 163,
-          y: 5.5,
+          y: 8,
           width: 61,
           height: 53,
         })}
@@ -31,7 +31,7 @@ export default function TraversalActions() {
       <FieldElement
         edgeInsets={figmaDimensionsToFieldInsets({
           x: 163,
-          y: 62.5,
+          y: 65,
           width: 61,
           height: 52.5,
         })}
@@ -49,7 +49,7 @@ export default function TraversalActions() {
       <FieldElement
         edgeInsets={figmaDimensionsToFieldInsets({
           x: 163,
-          y: 216,
+          y: 218.5,
           width: 61,
           height: 52.5,
         })}
@@ -67,7 +67,7 @@ export default function TraversalActions() {
       <FieldElement
         edgeInsets={figmaDimensionsToFieldInsets({
           x: 163,
-          y: 272.5,
+          y: 275,
           width: 61,
           height: 53,
         })}
