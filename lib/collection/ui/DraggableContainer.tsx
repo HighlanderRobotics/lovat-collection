@@ -42,10 +42,16 @@ export const DraggableContainer = ({
       [DragDirection.Left]: -1,
       [DragDirection.Right]: 1,
     }[dragDirection];
+    const allianceRespectingConstant =
+      (fieldOrientation === FieldOrientation.Auspicious ? 1 : -1) *
+      (reportState.meta?.allianceColor === AllianceColor.Blue ? 1 : -1);
     const vertical =
       dragDirection === DragDirection.Up ||
       dragDirection === DragDirection.Down;
-    const displacement = sign * (vertical ? gesture.dy : gesture.dx);
+    const displacement =
+      sign *
+      (vertical ? gesture.dy : gesture.dx) *
+      (respectAlliance ? allianceRespectingConstant : 1);
     return displacement;
   };
 
