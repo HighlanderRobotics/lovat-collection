@@ -17,9 +17,14 @@ import { Icon } from "../../components/Icon";
 import LabelSmall from "../../components/text/LabelSmall";
 import { MatchEventPosition } from "../MatchEventPosition";
 import { IconButton } from "../../components/IconButton";
-import { ScoreFuelInHubAction } from "./actions/FuelActions";
-import { AllianceZoneIntakeActions } from "./actions/AutoIntakeActions";
+import { AutoFeedAction, ScoreFuelInHubAction } from "./actions/FuelActions";
+import {
+  AllianceZoneIntakeActions,
+  NeutralZoneAutoIntakeAction,
+} from "./actions/AutoIntakeActions";
 import TraversalActions from "./actions/TraversalActions";
+import { AutoClimbAction } from "./actions/AutoClimbAction";
+import { AutoDisruptAction } from "./actions/AutoDisruptAction";
 
 export function Game() {
   const reportState = useReportStateStore();
@@ -244,6 +249,10 @@ export function Game() {
           <ScoreFuelInHubAction />
           <AllianceZoneIntakeActions />
           <TraversalActions />
+          <AutoClimbAction />
+          <AutoDisruptAction />
+          <NeutralZoneAutoIntakeAction />
+          <AutoFeedAction />
         </>
       ),
     },

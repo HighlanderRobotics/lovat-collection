@@ -7,7 +7,9 @@ import { useReportStateStore } from "../../reportStateStore";
 import { MatchEventPosition } from "../../MatchEventPosition";
 import { MatchEventType } from "../../MatchEventType";
 import * as Haptics from "expo-haptics";
-import { TextInput } from "react-native";
+import { TextInput, View } from "react-native";
+import { colors } from "../../../colors";
+import { Icon } from "../../../components/Icon";
 
 export function ScoreFuelInHubAction() {
   const scoringMode = useScoringModeStore((state) => state.value);
@@ -20,6 +22,8 @@ export function ScoreFuelInHubAction() {
 
   const { onStart, onMove, onEnd } = useDragFunctionsFromScoringMode(
     scoringMode,
+    MatchEventType.StartScoring,
+    MatchEventType.StopScoring,
     updateTextDisplay,
   );
 
@@ -60,14 +64,106 @@ export function ScoreFuelInHubAction() {
   );
 }
 
+function GeneralisedFeedAction({
+  edgeInsets,
+}: {
+  edgeInsets: [number, number, number, number];
+}) {
+  const scoringMode = useScoringModeStore((state) => state.value);
+
+  // textinput is used to allow direct manipulation
+  const textContainerRef = useRef<TextInput>(null);
+  const updateTextDisplay = useCallback((newValue: string) => {
+    textContainerRef.current?.setNativeProps({ text: newValue });
+  }, []);
+
+  const { onStart, onMove, onEnd, isCounting } =
+    useDragFunctionsFromScoringMode(
+      scoringMode,
+      MatchEventType.StartFeeding,
+      MatchEventType.StopFeeding,
+      updateTextDisplay,
+    );
+
+  return (
+    <DraggableContainer
+      edgeInsets={edgeInsets}
+      respectAlliance={true}
+      dragDirection={DragDirection.Up}
+      onStart={onStart}
+      onMove={onMove}
+      onEnd={onEnd}
+    >
+      <View
+        style={{
+          height: "100%",
+          width: "100%",
+          borderRadius: 7,
+          alignItems: "center",
+          justifyContent: "center",
+          backgroundColor: colors.secondaryContainer.default,
+        }}
+      >
+        <TextInput
+          pointerEvents="none"
+          ref={textContainerRef}
+          style={{
+            position: "absolute",
+            left: 0,
+            right: 0,
+            top: 0,
+            bottom: 0,
+            alignItems: "center",
+            textAlign: "center",
+            fontFamily: "Heebo_500Medium",
+            fontSize: 36,
+            fontWeight: "500",
+            color: colors.onBackground.default,
+          }}
+        />
+        {!isCounting && (
+          <Icon
+            name={"conveyor_belt"}
+            color={colors.onBackground.default}
+            size={48}
+          />
+        )}
+      </View>
+    </DraggableContainer>
+  );
+}
+
+export function AutoFeedAction() {
+  const edgeInsets = figmaDimensionsToFieldInsets({
+    x: 530.83,
+    y: 12.5,
+    width: 132.66,
+    height: 311,
+  });
+  return <GeneralisedFeedAction edgeInsets={edgeInsets} />;
+}
+
+export function TeleopFeedAction() {
+  const edgeInsets = figmaDimensionsToFieldInsets({
+    x: 280.5,
+    y: 12.5,
+    width: 152,
+    height: 311,
+  });
+  return <GeneralisedFeedAction edgeInsets={edgeInsets} />;
+}
+
 function useDragFunctionsFromScoringMode(
   scoringMode: ScoringMode,
+  matchEventStartType: MatchEventType,
+  matchEventEndType: MatchEventType,
   updateDisplay: (value: string) => void,
 ): {
   onStart: () => void;
   // unused _ to fit function parameters
   onMove: (_: number, displacement: number) => void;
   onEnd: (_: number, displacement: number) => void;
+  isCounting: boolean;
 } {
   const reportState = useReportStateStore((state) => state);
   // const scoringSensitivity = useScoringSensitivityStore
@@ -99,7 +195,7 @@ function useDragFunctionsFromScoringMode(
     return {
       onStart: () => {
         reportState.addEvent({
-          type: MatchEventType.StartScoring,
+          type: matchEventStartType,
           position: MatchEventPosition.Hub,
         });
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -116,13 +212,14 @@ function useDragFunctionsFromScoringMode(
       },
       onEnd: (_, displacement) => {
         reportState.addEvent({
-          type: MatchEventType.StopScoring,
+          type: matchEventEndType,
           position: MatchEventPosition.Hub,
           quantity: getCountFromDisplacement(displacement),
         });
         currentCount.current = 0;
         updateDisplay("");
       },
+      isCounting: isCounting.current,
     };
   } else {
     return {
@@ -131,7 +228,7 @@ function useDragFunctionsFromScoringMode(
         isCounting.current = true;
         currentCount.current = 0;
         reportState.addEvent({
-          type: MatchEventType.StartScoring,
+          type: matchEventStartType,
           position: MatchEventPosition.Hub,
         });
       },
@@ -143,7 +240,7 @@ function useDragFunctionsFromScoringMode(
       },
       onEnd: () => {
         reportState.addEvent({
-          type: MatchEventType.StopScoring,
+          type: matchEventEndType,
           position: MatchEventPosition.Hub,
           quantity: currentCount.current,
         });
@@ -152,6 +249,7 @@ function useDragFunctionsFromScoringMode(
         currentCount.current = 0;
         updateDisplay("");
       },
+      isCounting: isCounting.current,
     };
   }
 }

@@ -24,8 +24,8 @@ export function AutoDisruptAction() {
             position: MatchEventPosition.NeutralZone,
           })
         }
-        color="#C1C337"
-        icon="upload"
+        color="#1DA3F6"
+        icon="bomb"
         iconSize={48}
       />
     </FieldElement>
