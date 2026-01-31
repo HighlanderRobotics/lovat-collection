@@ -21,25 +21,15 @@ import { useReportStateStore } from "../reportStateStore";
 import React from "react";
 import { Icon } from "../../components/Icon";
 import { MatchEventType } from "../MatchEventType";
-import TitleLarge from "../../components/text/TitleLarge";
 import { MatchEventPosition } from "../MatchEventPosition";
-
-export enum OverlayState {
-  None,
-  GroundPiece,
-  Reef,
-  Net,
-}
 
 export const GameViewTemplate = (props: {
   field: React.ReactNode;
   topLeftReplacement?: React.ReactNode;
   gamePhaseMessage: string;
   startEnabled?: boolean;
-  overlay: OverlayState;
-  overlayPos: number;
-  setOverlay: (value: OverlayState) => void;
-  resetOverlayPos: () => void;
+  overlay: boolean;
+  setOverlay: (value: boolean) => void;
   onEnd: () => void;
   onRestart: () => void;
 }) => {
@@ -50,12 +40,7 @@ export const GameViewTemplate = (props: {
   return (
     <>
       <StatusBar hidden={true} backgroundColor={colors.background.default} />
-      <GameViewOverlay
-        overlay={props.overlay}
-        overlayPos={props.overlayPos}
-        setOverlay={props.setOverlay}
-        resetOverlayPos={props.resetOverlayPos}
-      />
+      <GameViewOverlay overlay={props.overlay} setOverlay={props.setOverlay} />
       <View
         style={{
           backgroundColor: colors.secondaryContainer.default,
@@ -73,7 +58,25 @@ export const GameViewTemplate = (props: {
           }}
         >
           {/* Left as null incase something should be added here */}
-          {props.topLeftReplacement ?? null}
+          {props.topLeftReplacement ?? (
+            <View
+              style={{
+                flex: 1,
+                flexDirection: "row",
+              }}
+            >
+              <IconButton
+                icon="undo"
+                label="Undo"
+                color={colors.onBackground.default}
+                disabled={reportState.events.length === 0}
+                onPress={() => {
+                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                  reportState.undoEvent();
+                }}
+              />
+            </View>
+          )}
 
           <View
             style={{ alignItems: "flex-end", gap: 2, flex: 1, marginRight: 13 }}
@@ -171,34 +174,27 @@ export const GameViewTemplate = (props: {
   );
 };
 
-type OverlayProps = {
-  overlay?: OverlayState;
-  overlayPos?: MatchEventPosition;
-  setOverlay: (value: OverlayState) => void;
-  resetOverlayPos: () => void;
-};
-
 function GameViewOverlay({
   overlay,
-  overlayPos,
   setOverlay,
-  resetOverlayPos,
-}: OverlayProps) {
+}: {
+  overlay: boolean;
+  setOverlay: (value: boolean) => void;
+}) {
   return (
     <Pressable
-      pointerEvents={overlay !== OverlayState.None ? "auto" : "none"}
-      disabled={overlay !== OverlayState.None}
+      pointerEvents={overlay ? "auto" : "none"}
+      disabled={overlay}
       style={{
         backgroundColor: "#45454540",
-        opacity: overlay !== OverlayState.None ? 1 : 0,
+        opacity: overlay ? 1 : 0,
         position: "absolute",
         zIndex: 50,
         width: "100%",
         height: "100%",
       }}
       onPress={() => {
-        setOverlay(OverlayState.None);
-        resetOverlayPos();
+        setOverlay(false);
       }}
     >
       <View
@@ -235,60 +231,71 @@ function GameViewOverlay({
             zIndex: 1,
           }}
           onPress={() => {
-            setOverlay(OverlayState.None);
-            resetOverlayPos();
+            setOverlay(false);
           }}
           activeOpacity={0.1}
         >
           <Icon name="close" color={colors.onBackground.default} size={32} />
         </TouchableOpacity>
-        {/* Ground Pieces */}
-        {overlay === OverlayState.GroundPiece && (
-          <GroundPieceOverlay
-            overlayPos={overlayPos}
-            setOverlay={setOverlay}
-            resetOverlayPos={resetOverlayPos}
-          />
-        )}
-        {/* Reef */}
-        {overlay === OverlayState.Reef && (
-          <AutoReefOverlay
-            overlayPos={overlayPos}
-            setOverlay={setOverlay}
-            resetOverlayPos={resetOverlayPos}
-          />
-        )}
-        {/* Net */}
-        {overlay === OverlayState.Net && (
-          <NetOverlay
-            setOverlay={setOverlay}
-            resetOverlayPos={resetOverlayPos}
-          />
-        )}
+        <OutpostOverlay setOverlay={setOverlay} />
       </View>
     </Pressable>
   );
 }
 
-function GroundPieceOverlay({
-  overlayPos,
+function OutpostOverlay({
   setOverlay,
-  resetOverlayPos,
-}: OverlayProps) {
-  // TODO: Implement for 2026 game
-  return null;
-}
+}: {
+  setOverlay: (value: boolean) => void;
+}) {
+  const reportState = useReportStateStore();
 
-function AutoReefOverlay({
-  overlayPos,
-  setOverlay,
-  resetOverlayPos,
-}: OverlayProps) {
-  // TODO: Implement for 2026 game
-  return null;
-}
-
-function NetOverlay({ setOverlay, resetOverlayPos }: OverlayProps) {
-  // TODO: Implement for 2026 game
-  return null;
+  return (
+    <View
+      style={{
+        flexDirection: "row",
+        gap: 10,
+        width: "100%",
+      }}
+    >
+      <TouchableOpacity
+        style={{
+          backgroundColor: "#3EE6794d",
+          borderRadius: 7,
+          flexGrow: 1,
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+        onPress={() => {
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+          reportState.addEvent({
+            type: MatchEventType.Outtake,
+            position: MatchEventPosition.Outpost,
+          });
+          setOverlay(false);
+        }}
+      >
+        <Icon name="download" size={60} color="#3EE679" />
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={{
+          backgroundColor: "#c1c3374d",
+          borderRadius: 7,
+          flexGrow: 1,
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+        onPress={() => {
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+          reportState.addEvent({
+            type: MatchEventType.Intake,
+            position: MatchEventPosition.Outpost,
+          });
+          setOverlay(false);
+        }}
+      >
+        <Icon name="upload" size={60} color="#c1c337" />
+      </TouchableOpacity>
+    </View>
+  );
 }

@@ -5,47 +5,30 @@ import { figmaDimensionsToFieldInsets } from "../../util";
 import { FieldElement } from "../FieldElement";
 import { GameAction } from "../GameAction";
 
-export function AllianceZoneIntakeActions() {
+export function DepotIntakeAction() {
   const reportState = useReportStateStore();
 
   return (
-    <>
-      <FieldElement
-        edgeInsets={figmaDimensionsToFieldInsets({
-          x: 9.5,
-          y: 54.5,
-          width: 70,
-          height: 74,
-        })}
-      >
-        <GameAction
-          onPress={() =>
-            reportState.addEvent({
-              type: MatchEventType.Intake,
-              position: MatchEventPosition.Depot,
-            })
-          }
-          color="#C1C337"
-          icon="upload"
-          iconSize={48}
-        />
-      </FieldElement>
-      <FieldElement
-        edgeInsets={figmaDimensionsToFieldInsets({
-          x: 9.5,
-          y: 252.5,
-          width: 78,
-          height: 76,
-        })}
-      >
-        <GameAction
-          onPress={() => null} // overlay istg
-          color="#C1C337"
-          icon="fort"
-          iconSize={48}
-        />
-      </FieldElement>
-    </>
+    <FieldElement
+      edgeInsets={figmaDimensionsToFieldInsets({
+        x: 9.5,
+        y: 54.5,
+        width: 70,
+        height: 74,
+      })}
+    >
+      <GameAction
+        onPress={() =>
+          reportState.addEvent({
+            type: MatchEventType.Intake,
+            position: MatchEventPosition.Depot,
+          })
+        }
+        color="#C1C337"
+        icon="upload"
+        iconSize={48}
+      />
+    </FieldElement>
   );
 }
 
