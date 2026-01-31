@@ -25,7 +25,7 @@ export function ScoreFuelInHubAction() {
 
   const edgeInsets = figmaDimensionsToFieldInsets({
     x: 139.5,
-    y: 121.5,
+    y: 119,
     width: 108,
     height: 93,
   });

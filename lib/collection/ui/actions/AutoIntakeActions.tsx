@@ -28,7 +28,7 @@ export function AllianceZoneIntakeActions() {
           }
           color="#C1C337"
           icon="upload"
-          iconSize={42}
+          iconSize={48}
         />
       </FieldElement>
       <DraggableContainer
@@ -56,7 +56,7 @@ export function AllianceZoneIntakeActions() {
           onPress={() => null}
           color="#C1C337"
           icon="fort"
-          iconSize={42}
+          iconSize={48}
         />
       </DraggableContainer>
     </>
