@@ -57,7 +57,9 @@ export const DraggableContainer = ({
 
   const dragResponder = useRef(
     PanResponder.create({
-      onStartShouldSetPanResponder: () => true,
+      onStartShouldSetPanResponder: (event) => {
+        return Number(event.nativeEvent.identifier) == 0;
+      },
       onPanResponderStart: onStart,
       onPanResponderMove: (_, { dx, dy }) =>
         onMove(signGestureDirection({ dx, dy }), Math.sqrt(dy ** 2 + dx ** 2)),
