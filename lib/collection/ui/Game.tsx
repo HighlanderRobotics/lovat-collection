@@ -42,6 +42,10 @@ export function Game() {
         setTimeout(() => {
           Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
           setPhase(GamePhase.Teleop);
+          setTimeout(() => {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+            setPhase(GamePhase.Endgame);
+          }, 205 * 100);
         }, 18 * 1000),
       );
 

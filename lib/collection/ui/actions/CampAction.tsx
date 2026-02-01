@@ -46,7 +46,7 @@ export function CampAction() {
           justifyContent: "center",
           backgroundColor: isCamping.current ? "#1DA3F6" : "#1DA3F64d",
         }}
-        activeOpacity={1}
+        activeOpacity={0.7}
       >
         <Icon
           name="camping"

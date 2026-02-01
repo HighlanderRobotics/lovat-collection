@@ -18,6 +18,7 @@ import { EndgameClimb } from "./EndgameClimb";
 export enum GamePhase {
   Auto,
   Teleop,
+  Endgame,
 }
 
 export type StartingPosition =
