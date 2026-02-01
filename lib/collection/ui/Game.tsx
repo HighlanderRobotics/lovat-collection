@@ -16,6 +16,8 @@ import {
 import TraversalActions from "./actions/TraversalActions";
 import { AutoClimbAction } from "./actions/AutoClimbAction";
 import { AutoDisruptAction } from "./actions/AutoDisruptAction";
+import { OutpostAction } from "./actions/OutpostAction";
+import { CampAction } from "./actions/CampAction";
 
 export function Game() {
   const reportState = useReportStateStore();
@@ -118,13 +120,15 @@ export function Game() {
       ),
       field: (
         <>
-          <ScoreFuelInHubAction />
+          {/* <ScoreFuelInHubAction />
           <DepotIntakeAction />
           <TraversalActions />
           <AutoClimbAction />
           <AutoDisruptAction />
           <NeutralZoneAutoIntakeAction />
           <AutoFeedAction />
+          <OutpostAction setOverlay={(value) => setOverlay(value)} /> */}
+          <CampAction />
         </>
       ),
     },
