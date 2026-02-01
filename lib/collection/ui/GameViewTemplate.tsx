@@ -275,7 +275,7 @@ function OutpostOverlay({
           setOverlay(false);
         }}
       >
-        <Icon name="download" size={60} color="#3EE679" />
+        <Icon name="download" size={100} color="#3EE679" />
       </TouchableOpacity>
       <TouchableOpacity
         style={{
@@ -294,7 +294,7 @@ function OutpostOverlay({
           setOverlay(false);
         }}
       >
-        <Icon name="upload" size={60} color="#c1c337" />
+        <Icon name="upload" size={100} color="#c1c337" />
       </TouchableOpacity>
     </View>
   );
