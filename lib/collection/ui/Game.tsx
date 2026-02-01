@@ -99,6 +99,46 @@ export function Game() {
       ),
       startEnabled: reportState.startPosition !== undefined,
     },
+    AutoAllianceZone: {
+      gamePhaseMessage: "Auto",
+      field: (
+        <>
+          <ScoreFuelInHubAction />
+          <DepotIntakeAction />
+          <AutoClimbAction />
+          <OutpostAction setOverlay={(value) => setOverlay(value)} />
+          <TraversalActions />
+        </>
+      ),
+    },
+    AutoNeutralZone: {
+      gamePhaseMessage: "Auto",
+      field: (
+        <>
+          <TraversalActions />
+          <NeutralZoneAutoIntakeAction />
+          <AutoDisruptAction />
+          <AutoFeedAction />
+        </>
+      ),
+    },
+    TeleopAllianceZone: {
+      gamePhaseMessage: "Teleop",
+      field: (
+        <>
+          <TraversalActions />
+          <ScoreFuelInHubAction />
+        </>
+      ),
+    },
+    TeleopNeutralZone: {
+      gamePhaseMessage: "Teleop",
+      field: (
+        <>
+          <TraversalActions />
+        </>
+      ),
+    },
 
     unknown: {
       gamePhaseMessage: "Problem finding phase",

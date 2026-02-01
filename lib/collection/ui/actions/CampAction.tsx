@@ -1,12 +1,11 @@
-import { TouchableOpacity, View } from "react-native";
-import { MatchEventPosition } from "../../MatchEventPosition";
+import { TouchableOpacity } from "react-native";
 import { MatchEventType } from "../../MatchEventType";
 import { useReportStateStore } from "../../reportStateStore";
 import { figmaDimensionsToFieldInsets } from "../../util";
 import { FieldElement } from "../FieldElement";
-import { GameAction } from "../GameAction";
 import { Icon } from "../../../components/Icon";
 import { useRef } from "react";
+import * as Haptics from "expo-haptics";
 
 export function CampAction() {
   const reportState = useReportStateStore();
@@ -23,12 +22,14 @@ export function CampAction() {
     >
       <TouchableOpacity
         onPressIn={() => {
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
           reportState.addEvent({
             type: MatchEventType.StartCamping,
           });
           isCamping.current = true;
         }}
         onPressOut={() => {
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
           reportState.addEvent({
             type: MatchEventType.StopCamping,
           });
