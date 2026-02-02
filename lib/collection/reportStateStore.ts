@@ -67,7 +67,6 @@ export const useReportStateStore = create<ReportState>((set, get) => ({
   setRobotRole: (value) => set({ robotRole: value }),
   setRobotBrokeDescription: (value) => set({ robotBrokeDescription: value }),
   setFieldTraversal: (value) => set({ fieldTraversal: value }),
-  setDisrupts: (value) => set({ disrupts: value }),
   setAccuracy: (value) => set({ accuracy: value }),
   setAutoClimb: (value) => set({ autoClimb: value }),
   setIntakeType: (value) => set({ intakeType: value }),
@@ -137,26 +136,46 @@ export const useReportStateStore = create<ReportState>((set, get) => ({
         notes: reportState.notes,
         robotBrokeDescription: reportState.robotBrokeDescription,
         robotRole: reportState.robotRole.map(
-          (role) => robotRoleDescriptions[role].num,
+          (role) =>
+            robotRoleDescriptions.find((desc) => desc.role === role)!.num,
         ),
-        fieldTraversal:
-          fieldTraversalDescriptions[reportState.fieldTraversal].num,
-        disrupts: reportState.disrupts ? 1 : 0,
-        accuracy: accuracyDescriptions[reportState.accuracy].num,
-        autoClimb: autoClimbDescriptions[reportState.autoClimb].num,
-        intakeType: intakeTypeDescriptions[reportState.intakeType].num,
+        fieldTraversal: fieldTraversalDescriptions.find(
+          (desc) => desc.traversal === reportState.fieldTraversal,
+        )!.num,
+        disrupts:
+          reportState.events.filter((e) => e.type === MatchEventType.Disrupt)
+            .length > 0
+            ? 1
+            : 0,
+        accuracy: accuracyDescriptions.find(
+          (desc) => desc.accuracy === reportState.accuracy,
+        )!.num,
+        autoClimb: autoClimbDescriptions.find(
+          (desc) => desc.climb === reportState.autoClimb,
+        )!.num,
+        intakeType: intakeTypeDescriptions.find(
+          (desc) => desc.intakeType === reportState.intakeType,
+        )!.num,
         feederType: reportState.feederType.map(
-          (type) => feederTypeDescriptions[type].num,
+          (type) =>
+            feederTypeDescriptions.find((desc) => desc.feederType === type)!
+              .num,
         ),
-        beached: beachedDescriptions[reportState.beached].num,
-        defenseEffectiveness:
-          defenseEffectivenessDescriptions[reportState.defenseEffectiveness]
-            .num,
-        scoresWhileMoving:
-          scoresWhileMovingDescriptions[reportState.scoresWhileMoving].num,
-        climbResult: endgameClimbDescriptions[reportState.climbResult].num,
-        driverAbility:
-          driverAbilityDescriptions[reportState.driverAbility].numericalRating,
+        beached: beachedDescriptions.find(
+          (desc) => desc.beached === reportState.beached,
+        )!.num,
+        defenseEffectiveness: defenseEffectivenessDescriptions.find(
+          (desc) => desc.effectiveness === reportState.defenseEffectiveness,
+        )!.num,
+        scoresWhileMoving: scoresWhileMovingDescriptions.find(
+          (desc) => desc.scoresWhileMoving === reportState.scoresWhileMoving,
+        )!.num,
+        climbResult: endgameClimbDescriptions.find(
+          (desc) => desc.climb === reportState.climbResult,
+        )!.num,
+        driverAbility: driverAbilityDescriptions.find(
+          (desc) => desc.ability === reportState.driverAbility,
+        )!.numericalRating,
         scouterUuid: reportState.meta.scouterUUID,
         teamNumber: reportState.meta.teamNumber,
         events: reportState.events.map((event) => {

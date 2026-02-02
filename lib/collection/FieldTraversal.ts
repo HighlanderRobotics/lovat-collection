@@ -16,13 +16,13 @@ export const fieldTraversalDescriptions = [
   {
     traversal: FieldTraversal.Trench,
     localizedDescription: "Trench",
-    localizedLongDescription: "The robot traverses through the trench.",
+    localizedLongDescription: "The robot drove under the trench.",
     num: 0,
   },
   {
     traversal: FieldTraversal.Bump,
     localizedDescription: "Bump",
-    localizedLongDescription: "The robot traverses over the bump.",
+    localizedLongDescription: "The robot drove over the bump.",
     num: 1,
   },
   {
