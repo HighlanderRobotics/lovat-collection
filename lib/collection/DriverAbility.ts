@@ -7,43 +7,46 @@ export enum DriverAbility {
 }
 
 export type DriverAbilityDescription = {
+  ability: DriverAbility;
   localizedDescription: string;
   localizedLongDescription: string;
   numericalRating: number;
 };
 
-export const driverAbilityDescriptions: Record<
-  DriverAbility,
-  DriverAbilityDescription
-> = {
-  [DriverAbility.Terrible]: {
+export const driverAbilityDescriptions = [
+  {
+    ability: DriverAbility.Terrible,
     localizedDescription: "Terrible",
     localizedLongDescription:
       "This driver cannot control the robot at all. They are a danger to everyone around them.",
     numericalRating: 1,
   },
-  [DriverAbility.Poor]: {
+  {
+    ability: DriverAbility.Poor,
     localizedDescription: "Poor",
     localizedLongDescription:
       "This driver struggles to keep the robot under control. They make many mistakes and are not very reliable.",
     numericalRating: 2,
   },
-  [DriverAbility.Average]: {
+  {
+    ability: DriverAbility.Average,
     localizedDescription: "Average",
     localizedLongDescription:
       "This driver can operate the robot competently. However, they are not particularly skilled or exceptional.",
     numericalRating: 3,
   },
-  [DriverAbility.Good]: {
+  {
+    ability: DriverAbility.Good,
     localizedDescription: "Good",
     localizedLongDescription:
       "This driver can operate the robot with skill and precision. They are reliable and make few mistakes.",
     numericalRating: 4,
   },
-  [DriverAbility.Great]: {
+  {
+    ability: DriverAbility.Great,
     localizedDescription: "Great",
     localizedLongDescription:
       "This driver can operate the robot with mastery. They are highly skilled, precise, and efficient and they can think ahead.",
     numericalRating: 5,
   },
-};
+] as const satisfies DriverAbilityDescription[];

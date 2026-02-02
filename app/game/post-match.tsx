@@ -6,38 +6,20 @@ import Button from "../../lib/components/Button";
 import LabelSmall from "../../lib/components/text/LabelSmall";
 import { Picker, PickerOption } from "../../lib/components/Picker";
 import { useReportStateStore } from "../../lib/collection/reportStateStore";
-import {
-  DriverAbility,
-  driverAbilityDescriptions,
-} from "../../lib/collection/DriverAbility";
+import { driverAbilityDescriptions } from "../../lib/collection/DriverAbility";
 import { robotRoleDescriptions } from "../../lib/collection/RobotRole";
+import { fieldTraversalDescriptions } from "../../lib/collection/FieldTraversal";
+import { accuracyDescriptions } from "../../lib/collection/Accuracy";
+import { autoClimbDescriptions } from "../../lib/collection/AutoClimb";
 import {
-  FieldTraversal,
-  fieldTraversalDescriptions,
-} from "../../lib/collection/FieldTraversal";
-import { Accuracy, accuracyDescriptions } from "../../lib/collection/Accuracy";
-import {
-  AutoClimb,
-  autoClimbDescriptions,
-} from "../../lib/collection/AutoClimb";
-import { IntakeType } from "../../lib/collection/IntakeType";
-import {
-  FeederType,
-  feederTypeDescriptions,
-} from "../../lib/collection/FeederType";
-import { Beached } from "../../lib/collection/Beached";
-import {
-  DefenseEffectiveness,
-  defenseEffectivenessDescriptions,
-} from "../../lib/collection/DefenseEffectiveness";
-import {
-  ScoresWhileMoving,
-  scoresWhileMovingDescriptions,
-} from "../../lib/collection/ScoresWhileMoving";
-import {
-  EndgameClimb,
-  endgameClimbDescriptions,
-} from "../../lib/collection/EndgameClimb";
+  IntakeType,
+  intakeTypeDescriptions,
+} from "../../lib/collection/IntakeType";
+import { feederTypeDescriptions } from "../../lib/collection/FeederType";
+import { Beached, beachedDescriptions } from "../../lib/collection/Beached";
+import { defenseEffectivenessDescriptions } from "../../lib/collection/DefenseEffectiveness";
+import { scoresWhileMovingDescriptions } from "../../lib/collection/ScoresWhileMoving";
+import { endgameClimbDescriptions } from "../../lib/collection/EndgameClimb";
 import TextField from "../../lib/components/TextField";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { CommonActions } from "@react-navigation/native";
@@ -96,12 +78,11 @@ export default function PostMatch() {
           />
           <PostMatchSelector
             title="Driver Ability"
-            items={Object.entries(driverAbilityDescriptions).map(
-              ([key, value]) => ({
-                label: value.numericalRating.toString(),
-                value: key as DriverAbility,
-              }),
-            )}
+            items={driverAbilityDescriptions.map((desc) => ({
+              label: desc.numericalRating.toString(),
+              description: desc.localizedLongDescription,
+              value: desc.ability,
+            }))}
             selected={reportState.driverAbility}
             onChange={reportState.setDriverAbility}
           />
@@ -127,52 +108,58 @@ export default function PostMatch() {
           </View>
           <PostMatchSelector
             title="Field Traversal"
-            items={Object.entries(fieldTraversalDescriptions).map(
-              ([key, value]) => ({
-                label: value.localizedDescription,
-                value: key as unknown as FieldTraversal,
-              }),
-            )}
+            items={fieldTraversalDescriptions.map((desc) => ({
+              label: desc.localizedDescription,
+              description: desc.localizedLongDescription,
+              value: desc.traversal,
+            }))}
             selected={reportState.fieldTraversal}
             onChange={reportState.setFieldTraversal}
           />
           <PostMatchSelector
             title="Accuracy"
-            items={Object.entries(accuracyDescriptions).map(([key, value]) => ({
-              label: value.localizedDescription,
-              value: key as unknown as Accuracy,
+            items={accuracyDescriptions.map((desc) => ({
+              label: desc.localizedDescription,
+              description: desc.localizedLongDescription,
+              value: desc.accuracy,
             }))}
             selected={reportState.accuracy}
             onChange={reportState.setAccuracy}
           />
           <PostMatchSelector
             title="Endgame Climb"
-            items={Object.entries(endgameClimbDescriptions).map(
-              ([key, value]) => ({
-                label: value.localizedDescription,
-                value: key as unknown as EndgameClimb,
-              }),
-            )}
+            items={endgameClimbDescriptions.map((desc) => ({
+              label: desc.localizedDescription,
+              description: desc.localizedLongDescription,
+              value: desc.climb,
+            }))}
             selected={reportState.climbResult}
             onChange={reportState.setClimbResult}
           />
           <PostMatchSelector
             title="Auto Climb"
-            items={Object.entries(autoClimbDescriptions).map(
-              ([key, value]) => ({
-                label: value.localizedDescription,
-                value: key as unknown as AutoClimb,
-              }),
-            )}
+            items={autoClimbDescriptions.map((desc) => ({
+              label: desc.localizedDescription,
+              description: desc.localizedLongDescription,
+              value: desc.climb,
+            }))}
             selected={reportState.autoClimb}
             onChange={reportState.setAutoClimb}
           />
           <PostMatchSelector<string, IntakeType>
             title="Intake Type"
-            items={[
-              { label: "Ground", value: "ground" },
-              { label: "Outpost", value: "outpost" },
-            ]}
+            items={intakeTypeDescriptions
+              .filter(
+                (desc) =>
+                  desc.intakeType === IntakeType.Ground ||
+                  desc.intakeType === IntakeType.Outpost,
+              )
+              .map((desc) => ({
+                label: desc.localizedDescription,
+                description: desc.localizedLongDescription,
+                value:
+                  desc.intakeType === IntakeType.Ground ? "ground" : "outpost",
+              }))}
             selected={
               reportState.intakeType === IntakeType.Both
                 ? ["ground", "outpost"]
@@ -195,22 +182,28 @@ export default function PostMatch() {
           />
           <PostMatchSelector
             title="Feeder Type"
-            items={Object.entries(feederTypeDescriptions).map(
-              ([key, value]) => ({
-                label: value.localizedDescription,
-                value: key as unknown as FeederType,
-              }),
-            )}
+            items={feederTypeDescriptions.map((desc) => ({
+              label: desc.localizedDescription,
+              description: desc.localizedLongDescription,
+              value: desc.feederType,
+            }))}
             selected={reportState.feederType}
             onChange={reportState.setFeederType}
             multiSelect
           />
           <PostMatchSelector<string, Beached>
             title="Beached"
-            items={[
-              { label: "On Fuel", value: "fuel" },
-              { label: "On Bump", value: "bump" },
-            ]}
+            items={beachedDescriptions
+              .filter(
+                (desc) =>
+                  desc.beached === Beached.OnFuel ||
+                  desc.beached === Beached.OnBump,
+              )
+              .map((desc) => ({
+                label: desc.localizedDescription,
+                description: desc.localizedLongDescription,
+                value: desc.beached === Beached.OnFuel ? "fuel" : "bump",
+              }))}
             selected={
               reportState.beached === Beached.Both
                 ? ["fuel", "bump"]
@@ -233,32 +226,38 @@ export default function PostMatch() {
           />
           <PostMatchSelector
             title="Defense Effectiveness"
-            items={Object.entries(defenseEffectivenessDescriptions).map(
-              ([key, value]) => ({
-                label: value.localizedDescription,
-                value: key as unknown as DefenseEffectiveness,
-              }),
-            )}
+            items={defenseEffectivenessDescriptions.map((desc) => ({
+              label: desc.localizedDescription,
+              description: desc.localizedLongDescription,
+              value: desc.effectiveness,
+            }))}
             selected={reportState.defenseEffectiveness}
             onChange={reportState.setDefenseEffectiveness}
           />
           <PostMatchSelector
             title="Disrupts"
             items={[
-              { label: "No", value: 0 },
-              { label: "Yes", value: 1 },
+              {
+                label: "No",
+                description: "The robot did not disrupt opposing robots.",
+                value: 0,
+              },
+              {
+                label: "Yes",
+                description: "The robot disrupted opposing robots.",
+                value: 1,
+              },
             ]}
             selected={reportState.disrupts ? 1 : 0}
             onChange={(value: number) => reportState.setDisrupts(value === 1)}
           />
           <PostMatchSelector
             title="Scores While Moving"
-            items={Object.entries(scoresWhileMovingDescriptions).map(
-              ([key, value]) => ({
-                label: value.localizedDescription,
-                value: key as unknown as ScoresWhileMoving,
-              }),
-            )}
+            items={scoresWhileMovingDescriptions.map((desc) => ({
+              label: desc.localizedDescription,
+              description: desc.localizedLongDescription,
+              value: desc.scoresWhileMoving,
+            }))}
             selected={reportState.scoresWhileMoving}
             onChange={reportState.setScoresWhileMoving}
           />

@@ -84,7 +84,7 @@ export function Picker<T = string>(props: PickerProps<T>) {
                   type={multiSelect ? "checkbox" : "radio"}
                   selected={isSelected(option.value)}
                 />
-                <View>
+                <View style={{ flex: 1 }}>
                   <LabelSmall>{option.label}</LabelSmall>
                   <BodyMedium>{option.description}</BodyMedium>
                 </View>
