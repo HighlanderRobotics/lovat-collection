@@ -179,15 +179,14 @@ export function Game() {
   } as const;
 
   const gameState: GameState = (() => {
-    return gameStates.testing;
-    // if (!reportState.startTimestamp) {
-    //   return gameStates.preMatch;
-    // } else if (reportState.gamePhase === GamePhase.Auto) {
-    //   return gameStates.autoNoPieceExited;
-    // } else if (reportState.gamePhase === GamePhase.Teleop) {
-    //   return gameStates.teleopNoPiece;
-    // }
-    // return gameStates.unknown;
+    if (!reportState.startTimestamp) {
+      return gameStates.preMatch;
+    } else if (reportState.gamePhase === GamePhase.Auto) {
+      return gameStates.autoNoPieceExited;
+    } else if (reportState.gamePhase === GamePhase.Teleop) {
+      return gameStates.teleopNoPiece;
+    }
+    return gameStates.unknown;
   })();
 
   const [overlay, setOverlay] = useState(false);

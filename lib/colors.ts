@@ -1,3 +1,9 @@
+export type ColorSet = {
+  default: string;
+  hover: string;
+  faded: string;
+};
+
 export const colors = {
   victoryPurple: {
     default: "#b59aff",
@@ -26,4 +32,4 @@ export const colors = {
   body: {
     default: "#b8b8b8",
   },
-};
+} as const satisfies Record<string, Partial<ColorSet>>;

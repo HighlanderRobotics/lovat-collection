@@ -16,7 +16,7 @@ import {
   useFieldOrientationStore,
   useScoringModeStore,
 } from "../../lib/storage/userStores";
-import { ButtonGroup } from "../../lib/components/ButtonGroup";
+import { Picker } from "../../lib/components/Picker";
 import { colors } from "../../lib/colors";
 import {
   FieldImage,
@@ -199,8 +199,8 @@ const FieldOrientationEditor = () => {
         >
           <FieldImage />
         </View>
-        <ButtonGroup
-          buttons={[
+        <Picker
+          options={[
             {
               label: "Auspicious",
               value: FieldOrientation.Auspicious,
@@ -233,8 +233,8 @@ const HubMode = () => {
           gap: 7,
         }}
       >
-        <ButtonGroup
-          buttons={[
+        <Picker
+          options={[
             {
               label: "Count",
               value: ScoringMode.Count,

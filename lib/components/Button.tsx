@@ -6,13 +6,14 @@ import {
   ActivityIndicator,
   View,
 } from "react-native";
-import { colors } from "../colors";
+import { colors, ColorSet } from "../colors";
 import BodyMedium from "./text/BodyMedium";
 
 type ButtonProps = {
   variant?: "primary" | "secondary" | "danger";
   filled?: boolean;
   disabled?: boolean;
+  backgroundColorSet?: ColorSet;
   density?: "comfortable" | "compact";
   children: React.ReactNode;
   loadingChildren?: React.ReactNode;
@@ -34,6 +35,7 @@ const Button: React.FC<ButtonProps> = ({
   onPress,
   flex,
   borderRadius,
+  backgroundColorSet,
   loadingChildren,
 }) => {
   let textColor: string = "";
@@ -70,17 +72,19 @@ const Button: React.FC<ButtonProps> = ({
       ? colors.background.default
       : colors.onBackground.default;
 
-  const backgroundColors = {
-    primary: colors.victoryPurple,
-    secondary: filled
-      ? colors.gray
-      : {
-          ...colors.onBackground,
-          faded: colors.gray.default,
-          hover: colors.gray.hover,
-        },
-    danger: colors.danger,
-  }[variant];
+  const backgroundColors =
+    backgroundColorSet ??
+    {
+      primary: colors.victoryPurple,
+      secondary: filled
+        ? colors.gray
+        : {
+            ...colors.onBackground,
+            faded: colors.gray.default,
+            hover: colors.gray.hover,
+          },
+      danger: colors.danger,
+    }[variant];
 
   const disabledTextColor = {
     primary: colors.background.default,

@@ -4,20 +4,13 @@ import { Stack, router, useNavigation } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Button from "../../lib/components/Button";
 import LabelSmall from "../../lib/components/text/LabelSmall";
-import {
-  ButtonGroup,
-  ButtonGroupButton,
-  ButtonGroupDirection,
-} from "../../lib/components/ButtonGroup";
+import { Picker, PickerOption } from "../../lib/components/Picker";
 import { useReportStateStore } from "../../lib/collection/reportStateStore";
 import {
   DriverAbility,
   driverAbilityDescriptions,
 } from "../../lib/collection/DriverAbility";
-import {
-  RobotRole,
-  robotRoleDescriptions,
-} from "../../lib/collection/RobotRole";
+import { robotRoleDescriptions } from "../../lib/collection/RobotRole";
 import {
   FieldTraversal,
   fieldTraversalDescriptions,
@@ -92,12 +85,11 @@ export default function PostMatch() {
         >
           <PostMatchSelector
             title="Robot Role"
-            items={Object.entries(robotRoleDescriptions).map(
-              ([key, value]) => ({
-                label: value.localizedDescription,
-                value: key as unknown as RobotRole,
-              }),
-            )}
+            items={robotRoleDescriptions.map((roleDescription) => ({
+              label: roleDescription.localizedDescription,
+              description: roleDescription.localizedLongDescription,
+              value: roleDescription.role,
+            }))}
             selected={reportState.robotRole}
             onChange={reportState.setRobotRole}
             multiSelect
@@ -112,7 +104,6 @@ export default function PostMatch() {
             )}
             selected={reportState.driverAbility}
             onChange={reportState.setDriverAbility}
-            direction={ButtonGroupDirection.Horizontal}
           />
           <View style={{ marginVertical: 18 }}>
             <Checkbox
@@ -259,7 +250,6 @@ export default function PostMatch() {
             ]}
             selected={reportState.disrupts ? 1 : 0}
             onChange={(value: number) => reportState.setDisrupts(value === 1)}
-            direction={ButtonGroupDirection.Horizontal}
           />
           <PostMatchSelector
             title="Scores While Moving"
@@ -271,7 +261,6 @@ export default function PostMatch() {
             )}
             selected={reportState.scoresWhileMoving}
             onChange={reportState.setScoresWhileMoving}
-            direction={ButtonGroupDirection.Horizontal}
           />
           <View style={{ gap: 7, marginBottom: 18 }}>
             <LabelSmall>Notes</LabelSmall>
@@ -345,8 +334,7 @@ export default function PostMatch() {
 // Base props shared by all variants
 type BaseProps<T> = {
   title: string;
-  items: ButtonGroupButton<T>[];
-  direction?: ButtonGroupDirection;
+  items: PickerOption<T>[];
 };
 
 // Single-select: multiSelect is false or undefined
@@ -387,7 +375,7 @@ function PostMatchSelector<TItem, TOutput = TItem>(
     | TrueMultiSelectProps<TItem>
     | MappedMultiSelectProps<TItem, TOutput>,
 ) {
-  const { title, items, direction, multiSelect, selected } = props;
+  const { title, items, multiSelect, selected } = props;
 
   const handleChange = (value: TItem) => {
     if (!multiSelect) {
@@ -418,9 +406,9 @@ function PostMatchSelector<TItem, TOutput = TItem>(
   return (
     <View style={{ gap: 7 }}>
       <LabelSmall>{title}</LabelSmall>
-      <ButtonGroup
-        direction={direction ?? ButtonGroupDirection.Vertical}
-        buttons={items}
+      <Picker
+        style="inset-picker"
+        options={items}
         selected={selected}
         onChange={handleChange}
         multiSelect={multiSelect}

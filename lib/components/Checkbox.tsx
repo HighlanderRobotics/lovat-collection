@@ -10,6 +10,27 @@ export const Checkbox = (props: {
 }) => {
   const { label, checked, onChange } = props;
 
+  return (
+    <Pressable
+      style={{ flexDirection: "row", alignItems: "center", gap: 10 }}
+      onPress={() => {
+        onChange?.(!checked);
+      }}
+      role="checkbox"
+      aria-checked={checked}
+    >
+      <SelectionIndicator type="checkbox" selected={checked ?? false} />
+      <LabelSmall color={colors.body.default}>{label}</LabelSmall>
+    </Pressable>
+  );
+};
+
+type SelectionIndicatorProps = {
+  type: "checkbox" | "radio";
+  selected: boolean;
+};
+
+export const SelectionIndicator = (props: SelectionIndicatorProps) => {
   const unCheckedStyle: StyleProp<ViewStyle> = {
     backgroundColor: colors.secondaryContainer.default,
     borderColor: colors.gray.default,
@@ -21,32 +42,31 @@ export const Checkbox = (props: {
   };
 
   return (
-    <Pressable
-      style={{ flexDirection: "row", alignItems: "center", gap: 10 }}
-      onPress={() => {
-        onChange?.(!checked);
-      }}
-      role="checkbox"
-      aria-checked={checked}
+    <View
+      style={[
+        props.selected ? checkedStyle : unCheckedStyle,
+        {
+          width: 24,
+          height: 24,
+          borderRadius: props.type === "checkbox" ? 5 : 12,
+          alignItems: "center",
+          justifyContent: "center",
+        },
+      ]}
     >
-      <View
-        style={[
-          checked ? checkedStyle : unCheckedStyle,
-          {
-            width: 24,
-            height: 24,
-            borderRadius: 5,
-            alignItems: "center",
-            justifyContent: "center",
-          },
-        ]}
-      >
-        {checked && (
-          <Icon name="check" color={colors.background.default} size={20} />
-        )}
-      </View>
-
-      <LabelSmall color={colors.body.default}>{label}</LabelSmall>
-    </Pressable>
+      {props.selected && props.type === "checkbox" && (
+        <Icon name="check" color={colors.background.default} size={20} />
+      )}
+      {props.selected && props.type === "radio" && (
+        <View
+          style={{
+            height: 8,
+            width: 8,
+            borderRadius: 4,
+            backgroundColor: colors.background.default,
+          }}
+        />
+      )}
+    </View>
   );
 };
