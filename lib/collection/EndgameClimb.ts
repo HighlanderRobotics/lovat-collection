@@ -15,18 +15,6 @@ export type EndgameClimbDescription = {
 
 export const endgameClimbDescriptions = [
   {
-    climb: EndgameClimb.NotAttempted,
-    localizedDescription: "Not Attempted",
-    localizedLongDescription: "The robot did not attempt to climb.",
-    num: 0,
-  },
-  {
-    climb: EndgameClimb.Failed,
-    localizedDescription: "Failed",
-    localizedLongDescription: "The robot attempted to climb but failed.",
-    num: 1,
-  },
-  {
     climb: EndgameClimb.L1,
     localizedDescription: "L1",
     localizedLongDescription: "The robot successfully climbed to Level 1.",
@@ -43,5 +31,17 @@ export const endgameClimbDescriptions = [
     localizedDescription: "L3",
     localizedLongDescription: "The robot successfully climbed to Level 3.",
     num: 4,
+  },
+  {
+    climb: EndgameClimb.Failed,
+    localizedDescription: "Failed",
+    localizedLongDescription: "The robot attempted to climb but failed.",
+    num: 1,
+  },
+  {
+    climb: EndgameClimb.NotAttempted,
+    localizedDescription: "Not Attempted",
+    localizedLongDescription: "The robot did not attempt to climb.",
+    num: 0,
   },
 ] as const satisfies EndgameClimbDescription[];
