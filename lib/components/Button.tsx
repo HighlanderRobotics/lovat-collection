@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { ComponentProps, useEffect, useRef } from "react";
 import {
   TouchableOpacity,
   Text,
@@ -20,6 +20,7 @@ type ButtonProps = {
   onPress?: () => void | Promise<void>;
   flex?: number;
   borderRadius?: number;
+  style?: ComponentProps<typeof AnimatedTouchableOpacity>["style"];
 };
 
 const AnimatedTouchableOpacity =
@@ -37,6 +38,7 @@ const Button: React.FC<ButtonProps> = ({
   borderRadius,
   backgroundColorSet,
   loadingChildren,
+  style,
 }) => {
   let textColor: string = "";
   let padding: number[] = [];
@@ -173,6 +175,7 @@ const Button: React.FC<ButtonProps> = ({
             alignItems: "center",
             gap: 8,
           },
+          style,
         ]}
         disabled={effectivelyDisabled}
         onPress={() => {

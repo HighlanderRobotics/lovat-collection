@@ -2,8 +2,8 @@ export enum DriverAbility {
   Terrible = "TERRIBLE",
   Poor = "POOR",
   Average = "AVERAGE",
-  Good = "GOOD",
-  Great = "GREAT",
+  Great = "GOOD",
+  Exceptional = "GREAT",
 }
 
 export type DriverAbilityDescription = {
@@ -36,15 +36,15 @@ export const driverAbilityDescriptions = [
     numericalRating: 3,
   },
   {
-    ability: DriverAbility.Good,
-    localizedDescription: "Good",
+    ability: DriverAbility.Great,
+    localizedDescription: "Great",
     localizedLongDescription:
       "This driver can operate the robot with skill and precision. They are reliable and make few mistakes.",
     numericalRating: 4,
   },
   {
-    ability: DriverAbility.Great,
-    localizedDescription: "Great",
+    ability: DriverAbility.Exceptional,
+    localizedDescription: "Exceptional",
     localizedLongDescription:
       "This driver can operate the robot with mastery. They are highly skilled, precise, and efficient and they can think ahead.",
     numericalRating: 5,

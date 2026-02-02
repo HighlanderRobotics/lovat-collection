@@ -79,7 +79,7 @@ export default function PostMatch() {
           <PostMatchSelector
             title="Driver Ability"
             items={driverAbilityDescriptions.map((desc) => ({
-              label: desc.numericalRating.toString(),
+              label: desc.localizedDescription,
               description: desc.localizedLongDescription,
               value: desc.ability,
             }))}

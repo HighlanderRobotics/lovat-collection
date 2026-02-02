@@ -57,7 +57,7 @@ export function Picker<T = string>(props: PickerProps<T>) {
           overflow: "hidden",
         }}
       >
-        {options.map((option) => {
+        {options.map((option, i) => {
           return (
             <Button
               key={option.key ?? option.value}
@@ -73,11 +73,16 @@ export function Picker<T = string>(props: PickerProps<T>) {
                 }
                 onChange(option.value);
               }}
+              style={{
+                paddingHorizontal: 14,
+                paddingTop: i === 0 ? 14 : 8,
+                paddingBlock: i === options.length - 1 ? 14 : 8,
+              }}
             >
               <View
                 style={{
                   flexDirection: "row",
-                  gap: 10,
+                  gap: 12,
                 }}
               >
                 <SelectionIndicator
