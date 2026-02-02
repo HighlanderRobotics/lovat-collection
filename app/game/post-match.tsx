@@ -4,47 +4,25 @@ import { Stack, router, useNavigation } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Button from "../../lib/components/Button";
 import LabelSmall from "../../lib/components/text/LabelSmall";
-import {
-  ButtonGroup,
-  ButtonGroupButton,
-  ButtonGroupDirection,
-} from "../../lib/components/ButtonGroup";
+import { Picker, PickerOption } from "../../lib/components/Picker";
 import { useReportStateStore } from "../../lib/collection/reportStateStore";
-import {
-  DriverAbility,
-  driverAbilityDescriptions,
-} from "../../lib/collection/DriverAbility";
-import {
-  RobotRole,
-  robotRoleDescriptions,
-} from "../../lib/collection/RobotRole";
+import { driverAbilityDescriptions } from "../../lib/collection/DriverAbility";
+import { robotRoleDescriptions } from "../../lib/collection/RobotRole";
 import {
   FieldTraversal,
   fieldTraversalDescriptions,
 } from "../../lib/collection/FieldTraversal";
-import { Accuracy, accuracyDescriptions } from "../../lib/collection/Accuracy";
+import { accuracyDescriptions } from "../../lib/collection/Accuracy";
+import { autoClimbDescriptions } from "../../lib/collection/AutoClimb";
 import {
-  AutoClimb,
-  autoClimbDescriptions,
-} from "../../lib/collection/AutoClimb";
-import { IntakeType } from "../../lib/collection/IntakeType";
-import {
-  FeederType,
-  feederTypeDescriptions,
-} from "../../lib/collection/FeederType";
-import { Beached } from "../../lib/collection/Beached";
-import {
-  DefenseEffectiveness,
-  defenseEffectivenessDescriptions,
-} from "../../lib/collection/DefenseEffectiveness";
-import {
-  ScoresWhileMoving,
-  scoresWhileMovingDescriptions,
-} from "../../lib/collection/ScoresWhileMoving";
-import {
-  EndgameClimb,
-  endgameClimbDescriptions,
-} from "../../lib/collection/EndgameClimb";
+  IntakeType,
+  intakeTypeDescriptions,
+} from "../../lib/collection/IntakeType";
+import { feederTypeDescriptions } from "../../lib/collection/FeederType";
+import { Beached, beachedDescriptions } from "../../lib/collection/Beached";
+import { defenseEffectivenessDescriptions } from "../../lib/collection/DefenseEffectiveness";
+import { scoresWhileMovingDescriptions } from "../../lib/collection/ScoresWhileMoving";
+import { endgameClimbDescriptions } from "../../lib/collection/EndgameClimb";
 import TextField from "../../lib/components/TextField";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { CommonActions } from "@react-navigation/native";
@@ -52,6 +30,8 @@ import BodyMedium from "../../lib/components/text/BodyMedium";
 import { useTrainingModeStore } from "../../lib/storage/userStores";
 import React from "react";
 import { Checkbox } from "../../lib/components/Checkbox";
+import { RobotRole } from "../../lib/collection/RobotRole";
+import { MatchEventType } from "../../lib/collection/MatchEventType";
 
 export default function PostMatch() {
   const reportState = useReportStateStore();
@@ -67,6 +47,14 @@ export default function PostMatch() {
     );
     return null;
   }
+
+  const shouldShowDefenseEffectiveness =
+    reportState.robotRole.includes(RobotRole.Defending) ||
+    reportState.events.filter(
+      (e) =>
+        e.type === MatchEventType.StartDefending ||
+        e.type === MatchEventType.StartCamping,
+    ).length > 0;
 
   return (
     <>
@@ -88,100 +76,68 @@ export default function PostMatch() {
       >
         <SafeAreaView
           edges={["bottom", "left", "right"]}
-          style={{ flex: 1, gap: 7, paddingBottom: 200, maxWidth: 550 }}
+          style={{ flex: 1, gap: 14, paddingBottom: 200, maxWidth: 550 }}
         >
           <PostMatchSelector
-            title="Robot Role"
-            items={Object.entries(robotRoleDescriptions).map(
-              ([key, value]) => ({
-                label: value.localizedDescription,
-                value: key as unknown as RobotRole,
-              }),
-            )}
+            title="Robot roles"
+            items={robotRoleDescriptions.map((roleDescription) => ({
+              label: roleDescription.localizedDescription,
+              description: roleDescription.localizedLongDescription,
+              value: roleDescription.role,
+            }))}
             selected={reportState.robotRole}
             onChange={reportState.setRobotRole}
             multiSelect
           />
           <PostMatchSelector
-            title="Driver Ability"
-            items={Object.entries(driverAbilityDescriptions).map(
-              ([key, value]) => ({
-                label: value.numericalRating.toString(),
-                value: key as DriverAbility,
-              }),
-            )}
-            selected={reportState.driverAbility}
-            onChange={reportState.setDriverAbility}
-            direction={ButtonGroupDirection.Horizontal}
-          />
-          <View style={{ marginVertical: 18 }}>
-            <Checkbox
-              label="Robot broke"
-              checked={reportState.robotBrokeDescription != null}
-              onChange={(checked) => {
-                reportState.setRobotBrokeDescription(checked ? "" : null);
-              }}
-            />
-            {reportState.robotBrokeDescription != null && (
-              <View style={{ gap: 7, marginTop: 7 }}>
-                <TextField
-                  value={reportState.robotBrokeDescription}
-                  onChangeText={reportState.setRobotBrokeDescription}
-                  multiline={true}
-                  returnKeyType="done"
-                  placeholder="How did it break?"
-                />
-              </View>
-            )}
-          </View>
-          <PostMatchSelector
-            title="Field Traversal"
-            items={Object.entries(fieldTraversalDescriptions).map(
-              ([key, value]) => ({
-                label: value.localizedDescription,
-                value: key as unknown as FieldTraversal,
-              }),
-            )}
-            selected={reportState.fieldTraversal}
-            onChange={reportState.setFieldTraversal}
-          />
-          <PostMatchSelector
             title="Accuracy"
-            items={Object.entries(accuracyDescriptions).map(([key, value]) => ({
-              label: value.localizedDescription,
-              value: key as unknown as Accuracy,
+            items={accuracyDescriptions.map((desc) => ({
+              label: desc.localizedDescription,
+              description: desc.localizedLongDescription,
+              value: desc.accuracy,
             }))}
             selected={reportState.accuracy}
             onChange={reportState.setAccuracy}
           />
-          <PostMatchSelector
-            title="Endgame Climb"
-            items={Object.entries(endgameClimbDescriptions).map(
-              ([key, value]) => ({
-                label: value.localizedDescription,
-                value: key as unknown as EndgameClimb,
-              }),
-            )}
-            selected={reportState.climbResult}
-            onChange={reportState.setClimbResult}
-          />
-          <PostMatchSelector
-            title="Auto Climb"
-            items={Object.entries(autoClimbDescriptions).map(
-              ([key, value]) => ({
-                label: value.localizedDescription,
-                value: key as unknown as AutoClimb,
-              }),
-            )}
-            selected={reportState.autoClimb}
-            onChange={reportState.setAutoClimb}
-          />
+          {reportState.robotRole.includes(RobotRole.Feeding) && (
+            <PostMatchSelector
+              title="Feeder Type"
+              items={feederTypeDescriptions.map((desc) => ({
+                label: desc.localizedDescription,
+                description: desc.localizedLongDescription,
+                value: desc.feederType,
+              }))}
+              selected={reportState.feederType}
+              onChange={reportState.setFeederType}
+              multiSelect
+            />
+          )}
+          {shouldShowDefenseEffectiveness && (
+            <PostMatchSelector
+              title="Defense Effectiveness"
+              items={defenseEffectivenessDescriptions.map((desc) => ({
+                label: desc.localizedDescription,
+                description: desc.localizedLongDescription,
+                value: desc.effectiveness,
+              }))}
+              selected={reportState.defenseEffectiveness}
+              onChange={reportState.setDefenseEffectiveness}
+            />
+          )}
           <PostMatchSelector<string, IntakeType>
             title="Intake Type"
-            items={[
-              { label: "Ground", value: "ground" },
-              { label: "Outpost", value: "outpost" },
-            ]}
+            items={intakeTypeDescriptions
+              .filter(
+                (desc) =>
+                  desc.intakeType === IntakeType.Ground ||
+                  desc.intakeType === IntakeType.Outpost,
+              )
+              .map((desc) => ({
+                label: desc.localizedDescription,
+                description: desc.localizedLongDescription,
+                value:
+                  desc.intakeType === IntakeType.Ground ? "ground" : "outpost",
+              }))}
             selected={
               reportState.intakeType === IntakeType.Both
                 ? ["ground", "outpost"]
@@ -202,24 +158,74 @@ export default function PostMatch() {
               return IntakeType.Neither;
             }}
           />
-          <PostMatchSelector
-            title="Feeder Type"
-            items={Object.entries(feederTypeDescriptions).map(
-              ([key, value]) => ({
-                label: value.localizedDescription,
-                value: key as unknown as FeederType,
-              }),
-            )}
-            selected={reportState.feederType}
-            onChange={reportState.setFeederType}
+          <PostMatchSelector<string, FieldTraversal>
+            title="Field Traversal"
+            items={fieldTraversalDescriptions
+              .filter(
+                (desc) =>
+                  desc.traversal === FieldTraversal.Trench ||
+                  desc.traversal === FieldTraversal.Bump,
+              )
+              .map((desc) => ({
+                label: desc.localizedDescription,
+                description: desc.localizedLongDescription,
+                value:
+                  desc.traversal === FieldTraversal.Trench ? "trench" : "bump",
+              }))}
+            selected={
+              reportState.fieldTraversal === FieldTraversal.Both
+                ? ["trench", "bump"]
+                : reportState.fieldTraversal === FieldTraversal.Trench
+                  ? ["trench"]
+                  : reportState.fieldTraversal === FieldTraversal.Bump
+                    ? ["bump"]
+                    : []
+            }
+            onChange={reportState.setFieldTraversal}
             multiSelect
+            mapSelection={(selected) => {
+              const hasTrench = selected.includes("trench");
+              const hasBump = selected.includes("bump");
+              if (hasTrench && hasBump) return FieldTraversal.Both;
+              if (hasTrench) return FieldTraversal.Trench;
+              if (hasBump) return FieldTraversal.Bump;
+              return FieldTraversal.None;
+            }}
           />
+          <PostMatchSelector
+            title="Auto Climb"
+            items={autoClimbDescriptions.map((desc) => ({
+              label: desc.localizedDescription,
+              description: desc.localizedLongDescription,
+              value: desc.climb,
+            }))}
+            selected={reportState.autoClimb}
+            onChange={reportState.setAutoClimb}
+          />
+          <PostMatchSelector
+            title="Endgame Climb"
+            items={endgameClimbDescriptions.map((desc) => ({
+              label: desc.localizedDescription,
+              description: desc.localizedLongDescription,
+              value: desc.climb,
+            }))}
+            selected={reportState.climbResult}
+            onChange={reportState.setClimbResult}
+          />
+
           <PostMatchSelector<string, Beached>
             title="Beached"
-            items={[
-              { label: "On Fuel", value: "fuel" },
-              { label: "On Bump", value: "bump" },
-            ]}
+            items={beachedDescriptions
+              .filter(
+                (desc) =>
+                  desc.beached === Beached.OnFuel ||
+                  desc.beached === Beached.OnBump,
+              )
+              .map((desc) => ({
+                label: desc.localizedDescription,
+                description: desc.localizedLongDescription,
+                value: desc.beached === Beached.OnFuel ? "fuel" : "bump",
+              }))}
             selected={
               reportState.beached === Beached.Both
                 ? ["fuel", "bump"]
@@ -241,38 +247,48 @@ export default function PostMatch() {
             }}
           />
           <PostMatchSelector
-            title="Defense Effectiveness"
-            items={Object.entries(defenseEffectivenessDescriptions).map(
-              ([key, value]) => ({
-                label: value.localizedDescription,
-                value: key as unknown as DefenseEffectiveness,
-              }),
-            )}
-            selected={reportState.defenseEffectiveness}
-            onChange={reportState.setDefenseEffectiveness}
+            title="Driver ability"
+            items={driverAbilityDescriptions.map((desc) => ({
+              label: desc.localizedDescription,
+              description: desc.localizedLongDescription,
+              value: desc.ability,
+            }))}
+            selected={reportState.driverAbility}
+            onChange={reportState.setDriverAbility}
           />
-          <PostMatchSelector
-            title="Disrupts"
-            items={[
-              { label: "No", value: 0 },
-              { label: "Yes", value: 1 },
-            ]}
-            selected={reportState.disrupts ? 1 : 0}
-            onChange={(value: number) => reportState.setDisrupts(value === 1)}
-            direction={ButtonGroupDirection.Horizontal}
-          />
+
           <PostMatchSelector
             title="Scores While Moving"
-            items={Object.entries(scoresWhileMovingDescriptions).map(
-              ([key, value]) => ({
-                label: value.localizedDescription,
-                value: key as unknown as ScoresWhileMoving,
-              }),
-            )}
+            items={scoresWhileMovingDescriptions.map((desc) => ({
+              label: desc.localizedDescription,
+              description: desc.localizedLongDescription,
+              value: desc.scoresWhileMoving,
+            }))}
             selected={reportState.scoresWhileMoving}
             onChange={reportState.setScoresWhileMoving}
-            direction={ButtonGroupDirection.Horizontal}
           />
+
+          <View style={{ marginVertical: 18 }}>
+            <Checkbox
+              label="Robot broke"
+              checked={reportState.robotBrokeDescription != null}
+              onChange={(checked) => {
+                reportState.setRobotBrokeDescription(checked ? "" : null);
+              }}
+            />
+            {reportState.robotBrokeDescription != null && (
+              <View style={{ gap: 7, marginTop: 7 }}>
+                <TextField
+                  value={reportState.robotBrokeDescription}
+                  onChangeText={reportState.setRobotBrokeDescription}
+                  multiline={true}
+                  returnKeyType="done"
+                  placeholder="How did it break?"
+                />
+              </View>
+            )}
+          </View>
+
           <View style={{ gap: 7, marginBottom: 18 }}>
             <LabelSmall>Notes</LabelSmall>
             <TextField
@@ -345,8 +361,7 @@ export default function PostMatch() {
 // Base props shared by all variants
 type BaseProps<T> = {
   title: string;
-  items: ButtonGroupButton<T>[];
-  direction?: ButtonGroupDirection;
+  items: PickerOption<T>[];
 };
 
 // Single-select: multiSelect is false or undefined
@@ -387,7 +402,7 @@ function PostMatchSelector<TItem, TOutput = TItem>(
     | TrueMultiSelectProps<TItem>
     | MappedMultiSelectProps<TItem, TOutput>,
 ) {
-  const { title, items, direction, multiSelect, selected } = props;
+  const { title, items, multiSelect, selected } = props;
 
   const handleChange = (value: TItem) => {
     if (!multiSelect) {
@@ -418,9 +433,9 @@ function PostMatchSelector<TItem, TOutput = TItem>(
   return (
     <View style={{ gap: 7 }}>
       <LabelSmall>{title}</LabelSmall>
-      <ButtonGroup
-        direction={direction ?? ButtonGroupDirection.Vertical}
-        buttons={items}
+      <Picker
+        style="inset-picker"
+        options={items}
         selected={selected}
         onChange={handleChange}
         multiSelect={multiSelect}

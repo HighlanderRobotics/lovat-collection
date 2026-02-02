@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { ComponentProps, useEffect, useRef } from "react";
 import {
   TouchableOpacity,
   Text,
@@ -6,19 +6,21 @@ import {
   ActivityIndicator,
   View,
 } from "react-native";
-import { colors } from "../colors";
+import { colors, ColorSet } from "../colors";
 import BodyMedium from "./text/BodyMedium";
 
 type ButtonProps = {
   variant?: "primary" | "secondary" | "danger";
   filled?: boolean;
   disabled?: boolean;
+  backgroundColorSet?: ColorSet;
   density?: "comfortable" | "compact";
   children: React.ReactNode;
   loadingChildren?: React.ReactNode;
   onPress?: () => void | Promise<void>;
   flex?: number;
   borderRadius?: number;
+  style?: ComponentProps<typeof AnimatedTouchableOpacity>["style"];
 };
 
 const AnimatedTouchableOpacity =
@@ -34,7 +36,9 @@ const Button: React.FC<ButtonProps> = ({
   onPress,
   flex,
   borderRadius,
+  backgroundColorSet,
   loadingChildren,
+  style,
 }) => {
   let textColor: string = "";
   let padding: number[] = [];
@@ -70,17 +74,19 @@ const Button: React.FC<ButtonProps> = ({
       ? colors.background.default
       : colors.onBackground.default;
 
-  const backgroundColors = {
-    primary: colors.victoryPurple,
-    secondary: filled
-      ? colors.gray
-      : {
-          ...colors.onBackground,
-          faded: colors.gray.default,
-          hover: colors.gray.hover,
-        },
-    danger: colors.danger,
-  }[variant];
+  const backgroundColors =
+    backgroundColorSet ??
+    {
+      primary: colors.victoryPurple,
+      secondary: filled
+        ? colors.gray
+        : {
+            ...colors.onBackground,
+            faded: colors.gray.default,
+            hover: colors.gray.hover,
+          },
+      danger: colors.danger,
+    }[variant];
 
   const disabledTextColor = {
     primary: colors.background.default,
@@ -169,6 +175,7 @@ const Button: React.FC<ButtonProps> = ({
             alignItems: "center",
             gap: 8,
           },
+          style,
         ]}
         disabled={effectivelyDisabled}
         onPress={() => {

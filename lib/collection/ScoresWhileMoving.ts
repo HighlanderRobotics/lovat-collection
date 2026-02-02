@@ -4,23 +4,23 @@ export enum ScoresWhileMoving {
 }
 
 export type ScoresWhileMovingDescription = {
+  scoresWhileMoving: ScoresWhileMoving;
   localizedDescription: string;
   localizedLongDescription: string;
   num: number;
 };
 
-export const scoresWhileMovingDescriptions: Record<
-  ScoresWhileMoving,
-  ScoresWhileMovingDescription
-> = {
-  [ScoresWhileMoving.No]: {
+export const scoresWhileMovingDescriptions = [
+  {
+    scoresWhileMoving: ScoresWhileMoving.No,
     localizedDescription: "No",
     localizedLongDescription: "The robot does not score while moving.",
     num: 0,
   },
-  [ScoresWhileMoving.Yes]: {
+  {
+    scoresWhileMoving: ScoresWhileMoving.Yes,
     localizedDescription: "Yes",
     localizedLongDescription: "The robot scores while moving.",
     num: 1,
   },
-};
+] as const satisfies ScoresWhileMovingDescription[];

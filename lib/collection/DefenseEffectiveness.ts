@@ -7,43 +7,46 @@ export enum DefenseEffectiveness {
 }
 
 export type DefenseEffectivenessDescription = {
+  effectiveness: DefenseEffectiveness;
   localizedDescription: string;
   localizedLongDescription: string;
   num: number;
 };
 
-export const defenseEffectivenessDescriptions: Record<
-  DefenseEffectiveness,
-  DefenseEffectivenessDescription
-> = {
-  [DefenseEffectiveness.Terrible]: {
+export const defenseEffectivenessDescriptions = [
+  {
+    effectiveness: DefenseEffectiveness.Terrible,
     localizedDescription: "Terrible",
     localizedLongDescription:
       "The robot's defense was ineffective and detrimental.",
     num: 0,
   },
-  [DefenseEffectiveness.Poor]: {
+  {
+    effectiveness: DefenseEffectiveness.Poor,
     localizedDescription: "Poor",
     localizedLongDescription:
       "The robot's defense was mostly ineffective with minimal impact.",
     num: 1,
   },
-  [DefenseEffectiveness.Average]: {
+  {
+    effectiveness: DefenseEffectiveness.Average,
     localizedDescription: "Average",
     localizedLongDescription:
       "The robot's defense was adequate but not exceptional.",
     num: 2,
   },
-  [DefenseEffectiveness.Good]: {
+  {
+    effectiveness: DefenseEffectiveness.Good,
     localizedDescription: "Good",
     localizedLongDescription:
       "The robot's defense was effective and impactful.",
     num: 3,
   },
-  [DefenseEffectiveness.Great]: {
+  {
+    effectiveness: DefenseEffectiveness.Great,
     localizedDescription: "Great",
     localizedLongDescription:
       "The robot's defense was exceptional and highly disruptive.",
     num: 4,
   },
-};
+] as const satisfies DefenseEffectivenessDescription[];

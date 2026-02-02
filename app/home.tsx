@@ -23,7 +23,7 @@ import {
   useTeamScoutersStore,
 } from "../lib/services";
 import { useScouterStore, useTournamentStore } from "../lib/storage/userStores";
-import { ButtonGroup } from "../lib/components/ButtonGroup";
+import { Picker } from "../lib/components/Picker";
 import {
   MatchIdentity,
   MatchIdentityLocalizationFormat,
@@ -40,7 +40,7 @@ import {
   ScouterScheduleMatch,
   getVerionsColor,
 } from "../lib/lovatAPI/getScouterSchedule";
-import { Picker } from "react-native-wheel-pick";
+import { Picker as PickerWheel } from "react-native-wheel-pick";
 import { useHistoryStore } from "../lib/storage/historyStore";
 import { useStartMatchEnabledStore } from "../lib/storage/userStores";
 import React from "react";
@@ -359,7 +359,7 @@ const AutomaticMatchSelection = ({
         }}
       >
         {matchesWithScouter.length >= 1 && selectedMatch != null ? (
-          <Picker
+          <PickerWheel
             style={{
               width: "100%",
               height: "100%",
@@ -476,8 +476,8 @@ const ManualMatchSelection = (props: ManualMatchSelectionProps) => {
       />
       <View style={{ height: 14 }} />
 
-      <ButtonGroup
-        buttons={matchTypes.map((type) => ({
+      <Picker
+        options={matchTypes.map((type) => ({
           label: type.localizedDescription,
           value: type.type,
         }))}
@@ -495,8 +495,8 @@ const ManualMatchSelection = (props: ManualMatchSelectionProps) => {
         keyboardType="number-pad"
       />
       <View style={{ height: 14 }} />
-      <ButtonGroup
-        buttons={allianceColors.map((color) => ({
+      <Picker
+        options={allianceColors.map((color) => ({
           label: color.localizedDescription,
           value: color.color,
         }))}
