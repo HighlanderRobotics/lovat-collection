@@ -8,7 +8,11 @@ import * as Haptics from "expo-haptics";
 import { Alert } from "react-native";
 import { colors } from "../../colors";
 import { IconButton } from "../../components/IconButton";
-import { AutoFeedAction, ScoreFuelInHubAction } from "./actions/FuelActions";
+import {
+  AutoFeedAction,
+  ScoreFuelInHubAction,
+  TeleopFeedAction,
+} from "./actions/FuelActions";
 import {
   DepotIntakeAction,
   NeutralZoneAutoIntakeAction,
@@ -18,6 +22,8 @@ import { AutoClimbAction } from "./actions/AutoClimbAction";
 import { AutoDisruptAction } from "./actions/AutoDisruptAction";
 import { OutpostAction } from "./actions/OutpostAction";
 import { CampAction } from "./actions/CampAction";
+import { DefendAction } from "./actions/DefendAction";
+import { MatchEventType } from "../MatchEventType";
 
 export function Game() {
   const reportState = useReportStateStore();
@@ -42,10 +48,12 @@ export function Game() {
         setTimeout(() => {
           Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
           setPhase(GamePhase.Teleop);
-          setTimeout(() => {
-            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-            setPhase(GamePhase.Endgame);
-          }, 205 * 100);
+          setAutoTimeout(
+            setTimeout(() => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+              setPhase(GamePhase.Endgame);
+            }, 205 * 100),
+          );
         }, 18 * 1000),
       );
 
@@ -93,7 +101,7 @@ export function Game() {
     startEnabled?: boolean;
   };
 
-  const gameStates: Record<string, GameState> = {
+  const gameStates = {
     preMatch: {
       gamePhaseMessage: "Pre-Match",
       field: (
@@ -103,7 +111,7 @@ export function Game() {
       ),
       startEnabled: reportState.startPosition !== undefined,
     },
-    AutoAllianceZone: {
+    autoAllianceZone: {
       gamePhaseMessage: "Auto",
       field: (
         <>
@@ -115,7 +123,7 @@ export function Game() {
         </>
       ),
     },
-    AutoNeutralZone: {
+    autoNeutralZone: {
       gamePhaseMessage: "Auto",
       field: (
         <>
@@ -126,20 +134,28 @@ export function Game() {
         </>
       ),
     },
-    TeleopAllianceZone: {
+    teleop: {
       gamePhaseMessage: "Teleop",
       field: (
         <>
-          <TraversalActions />
           <ScoreFuelInHubAction />
+          <OutpostAction setOverlay={(value) => setOverlay(value)} />
+          <TeleopFeedAction />
+          <CampAction />
+          <DefendAction />
         </>
       ),
     },
-    TeleopNeutralZone: {
+    endgame: {
       gamePhaseMessage: "Teleop",
       field: (
         <>
-          <TraversalActions />
+          <ScoreFuelInHubAction />
+          <OutpostAction setOverlay={(value) => setOverlay(value)} />
+          <TeleopFeedAction />
+          <CampAction />
+          <DefendAction />
+          <AutoClimbAction />
         </>
       ),
     },
@@ -176,18 +192,29 @@ export function Game() {
         </>
       ),
     },
-  } as const;
+  } as const satisfies Record<string, GameState>;
 
   const gameState: GameState = (() => {
-    return gameStates.testing;
-    // if (!reportState.startTimestamp) {
-    //   return gameStates.preMatch;
-    // } else if (reportState.gamePhase === GamePhase.Auto) {
-    //   return gameStates.autoNoPieceExited;
-    // } else if (reportState.gamePhase === GamePhase.Teleop) {
-    //   return gameStates.teleopNoPiece;
-    // }
-    // return gameStates.unknown;
+    if (!reportState.startTimestamp) {
+      return gameStates.preMatch;
+    } else if (reportState.gamePhase === GamePhase.Auto) {
+      if (
+        reportState.events.filter(
+          (event) => event.type === MatchEventType.Cross,
+        ).length %
+          2 ==
+        0
+      ) {
+        return gameStates.autoAllianceZone;
+      } else {
+        return gameStates.autoNeutralZone;
+      }
+    } else if (reportState.gamePhase === GamePhase.Teleop) {
+      return gameStates.teleop;
+    } else if (reportState.gamePhase === GamePhase.Endgame) {
+      return gameStates.endgame;
+    }
+    return gameStates.unknown;
   })();
 
   const [overlay, setOverlay] = useState(false);
