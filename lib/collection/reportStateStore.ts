@@ -5,7 +5,7 @@ import { v4 } from "uuid";
 import { DriverAbility, driverAbilityDescriptions } from "./DriverAbility";
 import { MatchEvent } from "./MatchEvent";
 import { MatchType } from "../models/match";
-import { ScoutReportEvent, ScoutReport } from "./ScoutReport";
+import { ScoutReportEvent } from "./ScoutReport";
 import { RobotRole } from "./RobotRole";
 import { FieldTraversal } from "./FieldTraversal";
 import { Accuracy, accuracyDescriptions } from "./Accuracy";

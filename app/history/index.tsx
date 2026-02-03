@@ -200,7 +200,12 @@ const Match = ({ match }: { match: HistoryEntry }) => {
           </TouchableOpacity>
         </Link>
       </ContextMenu.Trigger>
-      <ContextMenu.Content>
+      <ContextMenu.Content
+        loop={false}
+        alignOffset={0}
+        avoidCollisions={true}
+        collisionPadding={0}
+      >
         {!match.uploaded && (
           <ContextMenu.Item
             key="upload"

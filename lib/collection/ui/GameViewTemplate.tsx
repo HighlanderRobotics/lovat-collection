@@ -135,7 +135,15 @@ export const GameViewTemplate = (props: {
                 />
               </DropdownMenu.Trigger>
 
-              <DropdownMenu.Content>
+              <DropdownMenu.Content
+                loop={false}
+                side="bottom"
+                align="end"
+                alignOffset={0}
+                avoidCollisions={true}
+                collisionPadding={0}
+                sideOffset={0}
+              >
                 <DropdownMenu.Item key="end" onSelect={props.onEnd}>
                   <DropdownMenu.ItemTitle>End match</DropdownMenu.ItemTitle>
                 </DropdownMenu.Item>
