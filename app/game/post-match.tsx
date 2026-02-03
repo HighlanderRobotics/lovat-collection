@@ -50,11 +50,10 @@ export default function PostMatch() {
 
   const shouldShowDefenseEffectiveness =
     reportState.robotRole.includes(RobotRole.Defending) ||
-    reportState.events.filter(
-      (e) =>
-        e.type === MatchEventType.StartDefending ||
-        e.type === MatchEventType.StartCamping,
-    ).length > 0;
+    reportState.hasEventOfType(
+      MatchEventType.StartDefending,
+      MatchEventType.StartCamping,
+    );
 
   return (
     <>

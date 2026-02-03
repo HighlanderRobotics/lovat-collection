@@ -82,6 +82,11 @@ export const useReportStateStore = create<ReportState>((set, get) => ({
     );
   },
 
+  hasEventOfType: (...types: MatchEventType[]) => {
+    const reportState = get();
+    return reportState.events.some((event) => types.includes(event.type));
+  },
+
   stopClimbing: () => {
     const reportState = get();
     if (reportState.events) {
@@ -254,9 +259,7 @@ export const useReportStateStore = create<ReportState>((set, get) => ({
         robotBrokeDescription: reportState.robotBrokeDescription,
         robotRoles: reportState.robotRole.map(robotRoleToString),
         mobility: fieldTraversalToString(reportState.fieldTraversal),
-        disrupts:
-          reportState.events.filter((e) => e.type === MatchEventType.Disrupt)
-            .length > 0,
+        disrupts: get().hasEventOfType(MatchEventType.Disrupt),
         accuracy: accuracyDescriptions.find(
           (desc) => desc.accuracy === reportState.accuracy,
         )!.num,
