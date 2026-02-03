@@ -4,12 +4,12 @@ import { useReportStateStore } from "../../reportStateStore";
 import { figmaDimensionsToFieldInsets } from "../../util";
 import { FieldElement } from "../FieldElement";
 import { Icon } from "../../../components/Icon";
-import { useRef } from "react";
+import { useState } from "react";
 import * as Haptics from "expo-haptics";
 
 export function CampAction() {
   const reportState = useReportStateStore();
-  const isCamping = useRef(false);
+  const [isCamping, setIsCamping] = useState(false);
 
   return (
     <FieldElement
@@ -26,14 +26,14 @@ export function CampAction() {
           reportState.addEvent({
             type: MatchEventType.StartCamping,
           });
-          isCamping.current = true;
+          setIsCamping(true);
         }}
         onPressOut={() => {
           Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
           reportState.addEvent({
             type: MatchEventType.StopCamping,
           });
-          isCamping.current = false;
+          setIsCamping(false);
         }}
         style={{
           height: "100%",
@@ -44,13 +44,13 @@ export function CampAction() {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          backgroundColor: isCamping.current ? "#1DA3F6" : "#1DA3F64d",
+          backgroundColor: isCamping ? "#1DA3F6b2" : "#1DA3F64d",
         }}
-        activeOpacity={0.7}
+        activeOpacity={1}
       >
         <Icon
           name="camping"
-          color={isCamping.current ? "#1e4760" : "#1da3f6"}
+          color={isCamping ? "#003455" : "#1da3f6"}
           size={48}
         />
       </TouchableOpacity>

@@ -11,26 +11,53 @@ export const scoutReportEventSchema = z.union([
  */
 export type ScoutReportEvent = z.infer<typeof scoutReportEventSchema>;
 
+// String enum values for the spec
+export const MatchTypeString = z.enum(["QUALIFICATION", "ELIMINATION"]);
+export const MobilityString = z.enum(["TRENCH", "BUMP", "BOTH", "NONE"]);
+export const RobotRoleString = z.enum([
+  "CYCLING",
+  "SCORING",
+  "FEEDING",
+  "DEFENDING",
+  "IMMOBILE",
+]);
+export const AutoClimbString = z.enum(["NOT_ATTEMPTED", "FAILED", "SUCCEEDED"]);
+export const IntakeTypeString = z.enum([
+  "GROUND",
+  "OUTPOST",
+  "BOTH",
+  "NEITHER",
+]);
+export const FeederTypeString = z.enum(["CONTINUOUS", "STOP_TO_SHOOT", "DUMP"]);
+export const BeachedString = z.enum(["ON_FUEL", "ON_BUMP", "BOTH", "NEITHER"]);
+export const EndgameClimbString = z.enum([
+  "NOT_ATTEMPTED",
+  "FAILED",
+  "L1",
+  "L2",
+  "L3",
+]);
+
 export const scoutReportSchema = z.object({
   uuid: z.string(),
   tournamentKey: z.string(),
-  matchType: z.number(),
+  matchType: MatchTypeString,
   matchNumber: z.number(),
   startTime: z.number(),
   teamNumber: z.number(),
   notes: z.string(),
   robotBrokeDescription: z.string().nullable(),
-  robotRole: z.array(z.number()),
-  fieldTraversal: z.number(),
-  disrupts: z.number(),
+  robotRoles: z.array(RobotRoleString),
+  mobility: MobilityString,
+  disrupts: z.boolean(),
   accuracy: z.number(),
-  autoClimb: z.number(),
-  intakeType: z.number(),
-  feederType: z.array(z.number()),
-  beached: z.number(),
+  autoClimb: AutoClimbString,
+  intakeType: IntakeTypeString,
+  feederTypes: z.array(FeederTypeString),
+  beached: BeachedString,
   defenseEffectiveness: z.number(),
-  scoresWhileMoving: z.number(),
-  climbResult: z.number(),
+  scoresWhileMoving: z.boolean(),
+  endgameClimb: EndgameClimbString,
   driverAbility: z.number(),
   scouterUuid: z.string(),
   events: z.array(scoutReportEventSchema),
