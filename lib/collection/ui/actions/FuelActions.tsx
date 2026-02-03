@@ -85,6 +85,8 @@ function GeneralisedFeedAction({
       updateTextDisplay,
     );
 
+  console.log({ isCounting });
+
   return (
     <DraggableContainer
       edgeInsets={edgeInsets}
@@ -172,11 +174,13 @@ function useDragFunctionsFromScoringMode(
 
   // for rate
   const currentDelay = useRef(17);
+  const isTicking = useRef(false);
   const isCounting = useRef(false);
+
   useEffect(() => {
     const startCounting = () => {
       setTimeout(() => {
-        if (isCounting.current) {
+        if (isTicking.current) {
           Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
           currentCount.current += 1;
           updateDisplay(currentCount.current.toString());
@@ -194,6 +198,7 @@ function useDragFunctionsFromScoringMode(
   if (scoringMode === ScoringMode.Count) {
     return {
       onStart: () => {
+        isCounting.current = true;
         reportState.addEvent({
           type: matchEventStartType,
           position: MatchEventPosition.Hub,
@@ -211,6 +216,7 @@ function useDragFunctionsFromScoringMode(
         }
       },
       onEnd: (_, displacement) => {
+        isCounting.current = false;
         reportState.addEvent({
           type: matchEventEndType,
           position: MatchEventPosition.Hub,
@@ -225,6 +231,7 @@ function useDragFunctionsFromScoringMode(
     return {
       onStart: () => {
         currentDelay.current = 1000; // add sensitivity
+        isTicking.current = true;
         isCounting.current = true;
         currentCount.current = 0;
         reportState.addEvent({
@@ -245,6 +252,7 @@ function useDragFunctionsFromScoringMode(
           quantity: currentCount.current,
         });
         currentDelay.current = 17;
+        isTicking.current = false;
         isCounting.current = false;
         currentCount.current = 0;
         updateDisplay("");
