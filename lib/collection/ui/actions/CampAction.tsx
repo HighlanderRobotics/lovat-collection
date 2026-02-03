@@ -14,9 +14,9 @@ export function CampAction() {
   return (
     <FieldElement
       edgeInsets={figmaDimensionsToFieldInsets({
-        x: 389.17,
+        x: 441.5,
         y: 12.5,
-        width: 132.66,
+        width: 85,
         height: 311,
       })}
     >
