@@ -7,9 +7,11 @@ import { useReportStateStore } from "../../reportStateStore";
 import { MatchEventPosition } from "../../MatchEventPosition";
 import { MatchEventType } from "../../MatchEventType";
 import * as Haptics from "expo-haptics";
-import { TextInput, View } from "react-native";
+import { Animated, TextInput, View } from "react-native";
 import { colors } from "../../../colors";
 import { Icon } from "../../../components/Icon";
+
+const ACTIVE_OPACITY = 0.2;
 
 export function ScoreFuelInHubAction() {
   const scoringMode = useScoringModeStore((state) => state.value);
@@ -20,11 +22,38 @@ export function ScoreFuelInHubAction() {
     textContainerRef.current?.setNativeProps({ text: newValue });
   }, []);
 
-  const { onStart, onMove, onEnd } = useDragFunctionsFromScoringMode(
+  const hubOpacity = useRef(new Animated.Value(1)).current;
+
+  const {
+    onStart: baseOnStart,
+    onMove,
+    onEnd: baseOnEnd,
+  } = useDragFunctionsFromScoringMode(
     scoringMode,
     MatchEventType.StartScoring,
     MatchEventType.StopScoring,
     updateTextDisplay,
+  );
+
+  const onStart = useCallback(() => {
+    Animated.timing(hubOpacity, {
+      toValue: ACTIVE_OPACITY,
+      duration: 0,
+      useNativeDriver: true,
+    }).start();
+    baseOnStart();
+  }, [baseOnStart, hubOpacity]);
+
+  const onEnd = useCallback(
+    (displacement: number, totalDistance: number) => {
+      Animated.timing(hubOpacity, {
+        toValue: 1,
+        duration: 150,
+        useNativeDriver: true,
+      }).start();
+      baseOnEnd(displacement, totalDistance);
+    },
+    [baseOnEnd, hubOpacity],
   );
 
   const edgeInsets = figmaDimensionsToFieldInsets({
@@ -42,7 +71,18 @@ export function ScoreFuelInHubAction() {
       onMove={onMove}
       onEnd={onEnd}
     >
-      <Hub />
+      <Animated.View
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          opacity: hubOpacity,
+        }}
+      >
+        <Hub />
+      </Animated.View>
       <TextInput
         pointerEvents="none"
         ref={textContainerRef}
