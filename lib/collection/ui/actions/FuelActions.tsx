@@ -7,14 +7,17 @@ import { useReportStateStore } from "../../reportStateStore";
 import { MatchEventPosition } from "../../MatchEventPosition";
 import { MatchEventType } from "../../MatchEventType";
 import * as Haptics from "expo-haptics";
-import { Animated, TextInput, View } from "react-native";
+import { Animated, Easing, TextInput, View } from "react-native";
 import { colors } from "../../../colors";
 import { Icon } from "../../../components/Icon";
+import { GamePhase } from "../../ReportState";
 
 const ACTIVE_OPACITY = 0.2;
+const TELEOP_SCALE = 1.28;
 
 export function ScoreFuelInHubAction() {
   const scoringMode = useScoringModeStore((state) => state.value);
+  const gamePhase = useReportStateStore((state) => state.gamePhase);
 
   // textinput is used to allow direct manipulation
   const textContainerRef = useRef<TextInput>(null);
@@ -23,6 +26,16 @@ export function ScoreFuelInHubAction() {
   }, []);
 
   const hubOpacity = useRef(new Animated.Value(1)).current;
+  const hubScale = useRef(new Animated.Value(1)).current;
+
+  useEffect(() => {
+    Animated.timing(hubScale, {
+      toValue: gamePhase === GamePhase.Auto ? 1 : TELEOP_SCALE,
+      duration: 300,
+      easing: Easing.out(Easing.cubic),
+      useNativeDriver: true,
+    }).start();
+  }, [gamePhase, hubScale]);
 
   const {
     onStart: baseOnStart,
@@ -79,6 +92,7 @@ export function ScoreFuelInHubAction() {
           right: 0,
           bottom: 0,
           opacity: hubOpacity,
+          transform: [{ scale: hubScale }],
         }}
       >
         <Hub />
@@ -98,6 +112,7 @@ export function ScoreFuelInHubAction() {
           fontSize: 36,
           fontWeight: "500",
           color: "#3EE679",
+          opacity: 0.8,
         }}
       />
     </DraggableContainer>
