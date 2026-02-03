@@ -1,7 +1,12 @@
 import React, { useCallback, useEffect, useRef } from "react";
 import { figmaDimensionsToFieldInsets } from "../../util";
 import { DragDirection, DraggableContainer } from "../DraggableContainer";
-import { ScoringMode, useScoringModeStore } from "../../../storage/userStores";
+import {
+  FieldOrientation,
+  ScoringMode,
+  useFieldOrientationStore,
+  useScoringModeStore,
+} from "../../../storage/userStores";
 import Hub from "../../../../assets/hub";
 import { useReportStateStore } from "../../reportStateStore";
 import { MatchEventPosition } from "../../MatchEventPosition";
@@ -11,6 +16,7 @@ import { Animated, Easing, TextInput, View } from "react-native";
 import { colors } from "../../../colors";
 import { Icon } from "../../../components/Icon";
 import { GamePhase } from "../../ReportState";
+import { AllianceColor } from "../../../models/AllianceColor";
 
 const ACTIVE_OPACITY = 0.2;
 const TELEOP_SCALE = 1.28;
@@ -125,6 +131,21 @@ function GeneralisedFeedAction({
   edgeInsets: [number, number, number, number];
 }) {
   const scoringMode = useScoringModeStore((state) => state.value);
+  const fieldOrientation = useFieldOrientationStore((state) => state.value);
+  const allianceColor = useReportStateStore(
+    (state) => state.meta?.allianceColor,
+  );
+
+  // Flip icon to face the robot's alliance side
+  // Default icon faces right
+  // In Auspicious mode: Blue is on left, Red is on right
+  // In Sinister mode: Red is on left, Blue is on right
+  // Flip when alliance is on the left side:
+  //   - Red + Sinister (Red is on left)
+  //   - Blue + Auspicious (Blue is on left)
+  const shouldFlipIcon =
+    (allianceColor === AllianceColor.Red) ===
+    (fieldOrientation === FieldOrientation.Sinister);
 
   // textinput is used to allow direct manipulation
   const textContainerRef = useRef<TextInput>(null);
@@ -179,11 +200,13 @@ function GeneralisedFeedAction({
           }}
         />
         {!isCounting && (
-          <Icon
-            name={"conveyor_belt"}
-            color={colors.onBackground.default}
-            size={48}
-          />
+          <View style={{ transform: [{ scaleX: shouldFlipIcon ? -1 : 1 }] }}>
+            <Icon
+              name={"conveyor_belt"}
+              color={colors.onBackground.default}
+              size={48}
+            />
+          </View>
         )}
       </View>
     </DraggableContainer>
