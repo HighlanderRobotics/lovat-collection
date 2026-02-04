@@ -1,10 +1,15 @@
-import { View } from "react-native";
+import {
+  View,
+  FlatList,
+  useWindowDimensions,
+  NativeScrollEvent,
+  NativeSyntheticEvent,
+} from "react-native";
 import { colors } from "../../colors";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { ScoutReport } from "../ScoutReport";
 import QRCode from "qrcode";
 import { SvgXml } from "react-native-svg";
-import SwiperFlatList from "react-native-swiper-flatlist";
 import { useQrCodeSizeStore } from "../../storage/userStores";
 import React from "react";
 
@@ -34,7 +39,7 @@ function splitScoutReportIntoCodes(
   return chunks;
 }
 
-export const ResizableQRCode = ({ chunk }: { chunk: ScoutReport }) => {
+export const ResizableQRCode = ({ chunk }: { chunk: ReportChunk }) => {
   const [svgXml, setSvgXml] = useState<string | null>(null);
 
   useEffect(() => {
@@ -61,15 +66,56 @@ export const ResizableQRCode = ({ chunk }: { chunk: ScoutReport }) => {
   );
 };
 
+const PaginationDot = ({ active }: { active: boolean }) => (
+  <View
+    style={{
+      width: 8,
+      height: 8,
+      borderRadius: 4,
+      marginHorizontal: 4,
+      backgroundColor: active
+        ? colors.onBackground.default
+        : colors.gray.default,
+    }}
+  />
+);
+
 export const ScoutReportCode = ({
   scoutReport,
 }: {
   scoutReport: ScoutReport;
 }) => {
   const maxCodeLength = useQrCodeSizeStore((state) => state.value);
+  const { width } = useWindowDimensions();
+  const [activeIndex, setActiveIndex] = useState(0);
+  const flatListRef = useRef<FlatList<ReportChunk>>(null);
 
   const chunks = splitScoutReportIntoCodes(scoutReport, maxCodeLength);
   const showPagination = chunks.length > 1;
+
+  const onScroll = useCallback(
+    (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+      const offsetX = event.nativeEvent.contentOffset.x;
+      const index = Math.round(offsetX / width);
+      setActiveIndex(index);
+    },
+    [width],
+  );
+
+  const renderItem = useCallback(
+    ({ item }: { item: ReportChunk }) => (
+      <View
+        style={{
+          width,
+          padding: 16,
+          aspectRatio: 1,
+        }}
+      >
+        <ResizableQRCode chunk={item} />
+      </View>
+    ),
+    [width],
+  );
 
   return (
     <>
@@ -78,32 +124,33 @@ export const ScoutReportCode = ({
           aspectRatio: 1,
         }}
       >
-        <SwiperFlatList
+        <FlatList
+          ref={flatListRef}
           data={chunks}
           horizontal
-          showPagination={showPagination}
-          paginationActiveColor={colors.onBackground.default}
-          paginationDefaultColor={colors.gray.default}
-          paginationStyleItem={{
-            width: 8,
-            height: 8,
-            borderRadius: 4,
-            marginHorizontal: 4,
-            transform: [{ translateY: 24 }],
-          }}
-          renderItem={({ item }) => (
-            <View
-              style={{
-                padding: 16,
-                aspectRatio: 1,
-              }}
-            >
-              <ResizableQRCode chunk={item} />
-            </View>
-          )}
+          pagingEnabled
+          showsHorizontalScrollIndicator={false}
+          onScroll={onScroll}
+          scrollEventThrottle={16}
+          renderItem={renderItem}
+          keyExtractor={(_, index) => index.toString()}
         />
       </View>
-      <View style={{ height: showPagination ? 24 : 0 }} />
+      {showPagination && (
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "center",
+            paddingTop: 8,
+            height: 24,
+          }}
+        >
+          {chunks.map((_, index) => (
+            <PaginationDot key={index} active={index === activeIndex} />
+          ))}
+        </View>
+      )}
+      {!showPagination && <View style={{ height: 0 }} />}
     </>
   );
 };
