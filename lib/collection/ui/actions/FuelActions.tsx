@@ -307,13 +307,14 @@ function useDragFunctionsFromScoringMode(
           position: MatchEventPosition.Hub,
         });
         currentCount.current = 0;
+        updateDisplay("0");
       },
       onMove: (_, totalDistance) => {
         const count = pixelsToItems(totalDistance);
         if (count !== currentCount.current) {
           Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
           currentCount.current = count;
-          updateDisplay(count > 0 ? count.toString() : "");
+          updateDisplay(count.toString());
         }
       },
       onEnd: (_, totalDistance) => {
@@ -337,6 +338,7 @@ function useDragFunctionsFromScoringMode(
         targetIntervalRef.current = BASE_INTERVAL_MS;
         isCounting.current = true;
         currentCount.current = 0;
+        updateDisplay("0");
         reportState.addEvent({
           type: matchEventStartType,
           position: MatchEventPosition.Hub,
