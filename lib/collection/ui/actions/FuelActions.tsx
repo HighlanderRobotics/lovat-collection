@@ -241,8 +241,8 @@ function useDragFunctionsFromScoringMode(
 ): {
   onStart: () => void;
   // unused _ to fit function parameters
-  onMove: (_: number, displacement: number) => void;
-  onEnd: (_: number, displacement: number) => void;
+  onMove: (_: number, totalDistance: number) => void;
+  onEnd: (_: number, totalDistance: number) => void;
   isCounting: boolean;
 } {
   const reportState = useReportStateStore((state) => state);
@@ -250,28 +250,53 @@ function useDragFunctionsFromScoringMode(
 
   const currentCount = useRef(0);
 
-  // for rate
-  const currentDelay = useRef(17);
-  const isTicking = useRef(false);
+  // for rate mode - using fast polling approach from gist
+  const BASE_INTERVAL_MS = 500;
+  const MIN_INTERVAL_MS = 25;
+  const DRAG_SENSITIVITY = 200;
+
+  const targetIntervalRef = useRef(BASE_INTERVAL_MS);
+  const lastIncrementTimeRef = useRef(0);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const isCounting = useRef(false);
 
-  useEffect(() => {
-    const startCounting = () => {
-      setTimeout(() => {
-        if (isTicking.current) {
-          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-          currentCount.current += 1;
-          updateDisplay(currentCount.current.toString());
-        }
-        startCounting();
-      }, currentDelay.current);
-    };
-    startCounting();
+  const startIncrementing = useCallback(() => {
+    if (intervalRef.current) return; // Already running
+
+    lastIncrementTimeRef.current = Date.now();
+
+    // Use a fast polling interval and check elapsed time
+    // This allows the rate to change dynamically as the user drags
+    intervalRef.current = setInterval(() => {
+      const now = Date.now();
+      const elapsed = now - lastIncrementTimeRef.current;
+
+      if (elapsed >= targetIntervalRef.current) {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+        currentCount.current += 1;
+        updateDisplay(currentCount.current.toString());
+        lastIncrementTimeRef.current = now;
+      }
+    }, 16); // ~60fps polling
+  }, [updateDisplay]);
+
+  const stopIncrementing = useCallback(() => {
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+    targetIntervalRef.current = BASE_INTERVAL_MS;
   }, []);
 
-  // for count
-  const getCountFromDisplacement = (displacement: number) =>
-    1 + Math.floor((Math.abs(displacement) + displacement) / (2 * 20));
+  // for count mode - quadratic falloff from gist
+  // Using formula: items = (pixels / SCALE_FACTOR)^2
+  // Solving for SCALE_FACTOR: 50 = (400 / k)^2 => k = 400 / sqrt(50) ~= 56.57
+  const SCALE_FACTOR = 400 / Math.sqrt(50);
+
+  const pixelsToItems = (pixels: number): number => {
+    if (pixels <= 0) return 0;
+    return Math.floor(Math.pow(pixels / SCALE_FACTOR, 2));
+  };
 
   if (scoringMode === ScoringMode.Count) {
     return {
@@ -281,25 +306,26 @@ function useDragFunctionsFromScoringMode(
           type: matchEventStartType,
           position: MatchEventPosition.Hub,
         });
-        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
         currentCount.current = 0;
-        updateDisplay("1");
       },
-      onMove: (_, displacement) => {
-        const count = getCountFromDisplacement(displacement);
-        if (count != currentCount.current) {
+      onMove: (_, totalDistance) => {
+        const count = pixelsToItems(totalDistance);
+        if (count !== currentCount.current) {
           Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
           currentCount.current = count;
-          updateDisplay(count.toString());
+          updateDisplay(count > 0 ? count.toString() : "");
         }
       },
-      onEnd: (_, displacement) => {
+      onEnd: (_, totalDistance) => {
         isCounting.current = false;
-        reportState.addEvent({
-          type: matchEventEndType,
-          position: MatchEventPosition.Hub,
-          quantity: getCountFromDisplacement(displacement),
-        });
+        const finalCount = pixelsToItems(totalDistance);
+        if (finalCount > 0) {
+          reportState.addEvent({
+            type: matchEventEndType,
+            position: MatchEventPosition.Hub,
+            quantity: finalCount,
+          });
+        }
         currentCount.current = 0;
         updateDisplay("");
       },
@@ -308,29 +334,35 @@ function useDragFunctionsFromScoringMode(
   } else {
     return {
       onStart: () => {
-        currentDelay.current = 1000; // add sensitivity
-        isTicking.current = true;
+        targetIntervalRef.current = BASE_INTERVAL_MS;
         isCounting.current = true;
         currentCount.current = 0;
         reportState.addEvent({
           type: matchEventStartType,
           position: MatchEventPosition.Hub,
         });
+        startIncrementing();
       },
-      onMove: (_, displacement) => {
-        currentDelay.current =
-          displacement / Math.abs(displacement) === 1 // checks if you're dragging in the right direction
-            ? 1000 / Math.log(1 + displacement)
-            : 1000;
+      onMove: (_, totalDistance) => {
+        // Linear interpolation from BASE_INTERVAL_MS to MIN_INTERVAL_MS
+        const speedMultiplier = Math.max(
+          0,
+          Math.min(1, totalDistance / DRAG_SENSITIVITY),
+        );
+        targetIntervalRef.current = Math.round(
+          BASE_INTERVAL_MS -
+            speedMultiplier * (BASE_INTERVAL_MS - MIN_INTERVAL_MS),
+        );
       },
       onEnd: () => {
-        reportState.addEvent({
-          type: matchEventEndType,
-          position: MatchEventPosition.Hub,
-          quantity: currentCount.current,
-        });
-        currentDelay.current = 17;
-        isTicking.current = false;
+        stopIncrementing();
+        if (currentCount.current > 0) {
+          reportState.addEvent({
+            type: matchEventEndType,
+            position: MatchEventPosition.Hub,
+            quantity: currentCount.current,
+          });
+        }
         isCounting.current = false;
         currentCount.current = 0;
         updateDisplay("");

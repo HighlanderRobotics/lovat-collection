@@ -1,4 +1,4 @@
-import React, { useMemo, useRef } from "react";
+import React, { useCallback, useMemo, useRef } from "react";
 import { PanResponder, View } from "react-native";
 import {
   FieldOrientation,
@@ -35,43 +35,68 @@ export const DraggableContainer = ({
   const reportState = useReportStateStore();
   const allianceColor = reportState.meta?.allianceColor;
 
-  const isPressing = useRef(false);
+  const startXRef = useRef<number>(0);
+  const startYRef = useRef<number>(0);
 
-  const signGestureDirection = (gesture: { dx: number; dy: number }) => {
-    const sign = {
-      [DragDirection.Up]: -1,
-      [DragDirection.Down]: 1,
-      [DragDirection.Left]: -1,
-      [DragDirection.Right]: 1,
-    }[dragDirection];
-    const allianceRespectingConstant =
-      (fieldOrientation === FieldOrientation.Auspicious ? 1 : -1) *
-      (reportState.meta?.allianceColor === AllianceColor.Blue ? 1 : -1);
-    const vertical =
-      dragDirection === DragDirection.Up ||
-      dragDirection === DragDirection.Down;
-    const displacement =
-      sign *
-      (vertical ? gesture.dy : gesture.dx) *
-      (respectAlliance ? allianceRespectingConstant : 1);
-    return displacement;
-  };
+  const signGestureDirection = useCallback(
+    (dx: number, dy: number) => {
+      const sign = {
+        [DragDirection.Up]: -1,
+        [DragDirection.Down]: 1,
+        [DragDirection.Left]: -1,
+        [DragDirection.Right]: 1,
+      }[dragDirection];
+      const allianceRespectingConstant =
+        (fieldOrientation === FieldOrientation.Auspicious ? 1 : -1) *
+        (allianceColor === AllianceColor.Blue ? 1 : -1);
+      const vertical =
+        dragDirection === DragDirection.Up ||
+        dragDirection === DragDirection.Down;
+      const displacement =
+        sign *
+        (vertical ? dy : dx) *
+        (respectAlliance ? allianceRespectingConstant : 1);
+      return displacement;
+    },
+    [dragDirection, fieldOrientation, allianceColor, respectAlliance],
+  );
 
-  const dragResponder = useRef(
-    PanResponder.create({
-      onStartShouldSetPanResponder: () => !isPressing.current,
-      onPanResponderStart: () => {
-        isPressing.current = true;
-        onStart();
-      },
-      onPanResponderMove: (_, { dx, dy }) =>
-        onMove(signGestureDirection({ dx, dy }), Math.sqrt(dy ** 2 + dx ** 2)),
-      onPanResponderEnd: (_, { dx, dy }) => {
-        isPressing.current = false;
-        onEnd(signGestureDirection({ dx, dy }), Math.sqrt(dy ** 2 + dx ** 2));
-      },
-    }),
-  ).current;
+  const panResponder = useMemo(
+    () =>
+      PanResponder.create({
+        onStartShouldSetPanResponder: () => true,
+        onMoveShouldSetPanResponder: () => true,
+        onPanResponderTerminationRequest: () => false,
+        onPanResponderGrant: (event) => {
+          const { pageX, pageY } = event.nativeEvent;
+          startXRef.current = pageX;
+          startYRef.current = pageY;
+          onStart();
+        },
+        onPanResponderMove: (event) => {
+          const { pageX, pageY } = event.nativeEvent;
+          const dx = pageX - startXRef.current;
+          const dy = pageY - startYRef.current;
+          const totalDistance = Math.sqrt(dx * dx + dy * dy);
+          onMove(signGestureDirection(dx, dy), totalDistance);
+        },
+        onPanResponderRelease: (event) => {
+          const { pageX, pageY } = event.nativeEvent;
+          const dx = pageX - startXRef.current;
+          const dy = pageY - startYRef.current;
+          const totalDistance = Math.sqrt(dx * dx + dy * dy);
+          onEnd(signGestureDirection(dx, dy), totalDistance);
+        },
+        onPanResponderTerminate: (event) => {
+          const { pageX, pageY } = event.nativeEvent;
+          const dx = pageX - startXRef.current;
+          const dy = pageY - startYRef.current;
+          const totalDistance = Math.sqrt(dx * dx + dy * dy);
+          onEnd(signGestureDirection(dx, dy), totalDistance);
+        },
+      }),
+    [onStart, onMove, onEnd, signGestureDirection],
+  );
 
   const [givenTop, givenRight, givenButtom, givenLeft] = edgeInsets;
 
@@ -148,7 +173,7 @@ export const DraggableContainer = ({
         bottom: `${bottom * 100}%`,
         left: `${left * 100}%`,
       }}
-      {...dragResponder.panHandlers}
+      {...panResponder.panHandlers}
     >
       {children}
     </View>
