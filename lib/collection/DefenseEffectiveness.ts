@@ -15,25 +15,11 @@ export type DefenseEffectivenessDescription = {
 
 export const defenseEffectivenessDescriptions = [
   {
-    effectiveness: DefenseEffectiveness.Terrible,
-    localizedDescription: "Terrible",
+    effectiveness: DefenseEffectiveness.Great,
+    localizedDescription: "Great",
     localizedLongDescription:
-      "The robot's defense was ineffective and detrimental.",
-    num: 0,
-  },
-  {
-    effectiveness: DefenseEffectiveness.Poor,
-    localizedDescription: "Poor",
-    localizedLongDescription:
-      "The robot's defense was mostly ineffective with minimal impact.",
-    num: 1,
-  },
-  {
-    effectiveness: DefenseEffectiveness.Average,
-    localizedDescription: "Average",
-    localizedLongDescription:
-      "The robot's defense was adequate but not exceptional.",
-    num: 2,
+      "The robot's defense was exceptional and highly disruptive.",
+    num: 4,
   },
   {
     effectiveness: DefenseEffectiveness.Good,
@@ -43,10 +29,24 @@ export const defenseEffectivenessDescriptions = [
     num: 3,
   },
   {
-    effectiveness: DefenseEffectiveness.Great,
-    localizedDescription: "Great",
+    effectiveness: DefenseEffectiveness.Average,
+    localizedDescription: "Average",
     localizedLongDescription:
-      "The robot's defense was exceptional and highly disruptive.",
-    num: 4,
+      "The robot's defense was adequate but not exceptional.",
+    num: 2,
+  },
+  {
+    effectiveness: DefenseEffectiveness.Poor,
+    localizedDescription: "Poor",
+    localizedLongDescription:
+      "The robot's defense was mostly ineffective with minimal impact.",
+    num: 1,
+  },
+  {
+    effectiveness: DefenseEffectiveness.Terrible,
+    localizedDescription: "Terrible",
+    localizedLongDescription:
+      "The robot's defense was ineffective and detrimental.",
+    num: 0,
   },
 ] as const satisfies DefenseEffectivenessDescription[];
