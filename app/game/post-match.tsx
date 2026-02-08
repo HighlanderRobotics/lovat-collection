@@ -61,7 +61,7 @@ export default function PostMatch() {
   const hasEndgameClimbEvent = reportState.hasEndgameClimbEvent();
 
   const endgameClimbIsMismatched =
-    !hasEndgameClimbEvent &&
+    hasEndgameClimbEvent &&
     reportState.climbResult === EndgameClimb.NotAttempted;
 
   return (
