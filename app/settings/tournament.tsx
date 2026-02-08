@@ -9,7 +9,7 @@ import { colors } from "../../lib/colors";
 import { IconButton } from "../../lib/components/IconButton";
 import { NavBar } from "../../lib/components/NavBar";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { Icon } from "../../lib/components/Icon";
 import BodyMedium from "../../lib/components/text/BodyMedium";

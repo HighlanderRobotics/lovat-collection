@@ -14,7 +14,7 @@ import Heading1Small from "../../lib/components/text/Heading1Small";
 import { Icon } from "../../lib/components/Icon";
 import BodyMedium from "../../lib/components/text/BodyMedium";
 import TextField from "../../lib/components/TextField";
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import * as ContextMenu from "zeego/context-menu";
 import { uploadReport } from "../../lib/lovatAPI/uploadReport";
 import { z } from "zod";

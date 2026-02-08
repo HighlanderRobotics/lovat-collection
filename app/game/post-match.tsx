@@ -27,7 +27,7 @@ import {
   endgameClimbDescriptions,
 } from "../../lib/collection/EndgameClimb";
 import TextField from "../../lib/components/TextField";
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { CommonActions } from "@react-navigation/native";
 import BodyMedium from "../../lib/components/text/BodyMedium";
 import { useTrainingModeStore } from "../../lib/storage/userStores";
@@ -81,6 +81,9 @@ export default function PostMatch() {
           flexDirection: "row",
           justifyContent: "center",
         }}
+        bottomOffset={48}
+        keyboardDismissMode="interactive"
+        disableScrollOnKeyboardHide={true}
       >
         <SafeAreaView
           edges={["bottom", "left", "right"]}

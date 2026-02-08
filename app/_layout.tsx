@@ -2,6 +2,7 @@ import { SplashScreen, Stack } from "expo-router";
 import { NativeModules } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { colors } from "../lib/colors";
+import { KeyboardProvider } from "react-native-keyboard-controller";
 
 import {
   useFonts,
@@ -127,18 +128,20 @@ export default function Layout() {
   }
 
   return (
-    <GestureHandlerRootView
-      style={{ backgroundColor: colors.background.default, flex: 1 }}
-      onLayout={onLayoutRootView}
-    >
-      <Stack
-        screenOptions={{
-          headerShown: false,
-          contentStyle: {
-            backgroundColor: colors.background.default,
-          },
-        }}
-      />
-    </GestureHandlerRootView>
+    <KeyboardProvider>
+      <GestureHandlerRootView
+        style={{ backgroundColor: colors.background.default, flex: 1 }}
+        onLayout={onLayoutRootView}
+      >
+        <Stack
+          screenOptions={{
+            headerShown: false,
+            contentStyle: {
+              backgroundColor: colors.background.default,
+            },
+          }}
+        />
+      </GestureHandlerRootView>
+    </KeyboardProvider>
   );
 }

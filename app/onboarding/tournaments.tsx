@@ -11,7 +11,7 @@ import TextField from "../../lib/components/TextField";
 
 import { colors } from "../../lib/colors";
 import { NavBar } from "../../lib/components/NavBar";
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { Tournament } from "../../lib/lovatAPI/getTournaments";
 import {
