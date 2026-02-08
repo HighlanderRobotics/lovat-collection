@@ -51,6 +51,7 @@ export function ScoreFuelInHubAction() {
     scoringMode,
     MatchEventType.StartScoring,
     MatchEventType.StopScoring,
+    MatchEventPosition.Hub,
     updateTextDisplay,
   );
 
@@ -158,6 +159,7 @@ function GeneralisedFeedAction({
       scoringMode,
       MatchEventType.StartFeeding,
       MatchEventType.StopFeeding,
+      MatchEventPosition.NeutralZone,
       updateTextDisplay,
     );
 
@@ -237,6 +239,7 @@ function useDragFunctionsFromScoringMode(
   scoringMode: ScoringMode,
   matchEventStartType: MatchEventType,
   matchEventEndType: MatchEventType,
+  matchEventPosition: MatchEventPosition,
   updateDisplay: (value: string) => void,
 ): {
   onStart: () => void;
@@ -306,7 +309,7 @@ function useDragFunctionsFromScoringMode(
         isCounting.current = true;
         reportState.addEvent({
           type: matchEventStartType,
-          position: MatchEventPosition.Hub,
+          position: matchEventPosition,
         });
         currentCount.current = 0;
         updateDisplay("0");
@@ -327,7 +330,7 @@ function useDragFunctionsFromScoringMode(
         if (finalCount > 0) {
           reportState.addEvent({
             type: matchEventEndType,
-            position: MatchEventPosition.Hub,
+            position: matchEventPosition,
             quantity: finalCount,
           });
         }
@@ -347,7 +350,7 @@ function useDragFunctionsFromScoringMode(
         updateDisplay("0");
         reportState.addEvent({
           type: matchEventStartType,
-          position: MatchEventPosition.Hub,
+          position: matchEventPosition,
         });
         startIncrementing();
       },
@@ -369,7 +372,7 @@ function useDragFunctionsFromScoringMode(
         if (currentCount.current > 0) {
           reportState.addEvent({
             type: matchEventEndType,
-            position: MatchEventPosition.Hub,
+            position: matchEventPosition,
             quantity: currentCount.current,
           });
         }
