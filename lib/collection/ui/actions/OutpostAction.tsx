@@ -19,7 +19,7 @@ export function OutpostAction({
       <GameAction
         onPress={() => setOverlay(true)}
         color="#C1C337"
-        icon="fort"
+        icon="flag"
         iconSize={48}
       />
     </FieldElement>
