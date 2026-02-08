@@ -289,22 +289,33 @@ export const useReportStateStore = create<ReportState>((set, get) => ({
         )!.numericalRating,
         scouterUuid: reportState.meta.scouterUUID,
         teamNumber: reportState.meta.teamNumber,
-        events: reportState.events.map((event) => {
-          const baseEvent: ScoutReportEvent = [
-            (event.timestamp - reportState.startTimestamp!.getTime()) / 1000,
-            event.type,
-            event.position,
-          ];
-          if (event.quantity !== undefined) {
-            return [
-              baseEvent[0],
-              baseEvent[1],
-              baseEvent[2],
-              event.quantity,
-            ] as ScoutReportEvent;
-          }
-          return baseEvent;
-        }),
+        events: [
+          ...(reportState.startTimestamp
+            ? [
+                [
+                  0,
+                  MatchEventType.StartMatch,
+                  reportState.startPosition ?? MatchEventPosition.None,
+                ] satisfies ScoutReportEvent,
+              ]
+            : []),
+          ...reportState.events.map((event) => {
+            const baseEvent: ScoutReportEvent = [
+              (event.timestamp - reportState.startTimestamp!.getTime()) / 1000,
+              event.type,
+              event.position,
+            ];
+            if (event.quantity !== undefined) {
+              return [
+                baseEvent[0],
+                baseEvent[1],
+                baseEvent[2],
+                event.quantity,
+              ] satisfies ScoutReportEvent;
+            }
+            return baseEvent;
+          }),
+        ],
       };
     }
     return null;
