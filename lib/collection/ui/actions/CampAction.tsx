@@ -4,14 +4,13 @@ import { useReportStateStore } from "../../reportStateStore";
 import { figmaDimensionsToFieldInsets } from "../../util";
 import { FieldElement } from "../FieldElement";
 import { Icon } from "../../../components/Icon";
-import { useState, useRef } from "react";
+import { useState } from "react";
 import * as Haptics from "expo-haptics";
 import { MatchEventPosition } from "../../MatchEventPosition";
 
 export function CampAction() {
   const reportState = useReportStateStore();
   const [isCamping, setIsCamping] = useState(false);
-  const startTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   return (
     <FieldElement
