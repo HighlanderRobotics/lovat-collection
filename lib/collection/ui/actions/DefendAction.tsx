@@ -7,6 +7,7 @@ import { MatchEventType } from "../../MatchEventType";
 import { useReportStateStore } from "../../reportStateStore";
 import { useState } from "react";
 import * as Haptics from "expo-haptics";
+import { MatchEventPosition } from "../../MatchEventPosition";
 
 export function DefendAction() {
   const reportState = useReportStateStore();
@@ -22,20 +23,25 @@ export function DefendAction() {
       })}
     >
       <TouchableOpacity
-        onPressIn={() => {
+        onLongPress={() => {
           Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
           reportState.addEvent({
             type: MatchEventType.StartDefending,
+            position: MatchEventPosition.None,
+            timestamp: Date.now() - 150,
           });
           setIsDefending(true);
         }}
         onPressOut={() => {
-          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-          reportState.addEvent({
-            type: MatchEventType.StopDefending,
-          });
-          setIsDefending(false);
+          if (isDefending) {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+            reportState.addEvent({
+              type: MatchEventType.StopDefending,
+            });
+            setIsDefending(false);
+          }
         }}
+        delayLongPress={150}
         style={{
           width: "100%",
           height: "100%",

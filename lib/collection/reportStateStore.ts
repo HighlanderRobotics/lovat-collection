@@ -118,7 +118,7 @@ export const useReportStateStore = create<ReportState>((set, get) => ({
           {
             type: event.type,
             position: event.position ?? MatchEventPosition.None,
-            timestamp: Date.now(),
+            timestamp: event.timestamp ?? Date.now(),
             quantity: event.quantity,
           },
         ],

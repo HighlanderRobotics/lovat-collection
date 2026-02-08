@@ -77,6 +77,7 @@ export type ReportState = {
     type: MatchEventType;
     position?: MatchEventPosition;
     quantity?: number;
+    timestamp?: number;
   }) => void;
   undoEvent: () => void;
 

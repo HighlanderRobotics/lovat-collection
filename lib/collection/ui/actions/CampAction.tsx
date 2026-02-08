@@ -4,12 +4,14 @@ import { useReportStateStore } from "../../reportStateStore";
 import { figmaDimensionsToFieldInsets } from "../../util";
 import { FieldElement } from "../FieldElement";
 import { Icon } from "../../../components/Icon";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import * as Haptics from "expo-haptics";
+import { MatchEventPosition } from "../../MatchEventPosition";
 
 export function CampAction() {
   const reportState = useReportStateStore();
   const [isCamping, setIsCamping] = useState(false);
+  const startTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   return (
     <FieldElement
@@ -21,20 +23,26 @@ export function CampAction() {
       })}
     >
       <TouchableOpacity
-        onPressIn={() => {
+        onLongPress={() => {
           Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
           reportState.addEvent({
             type: MatchEventType.StartCamping,
+            position: MatchEventPosition.None,
+            timestamp: Date.now() - 150,
           });
           setIsCamping(true);
         }}
         onPressOut={() => {
-          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-          reportState.addEvent({
-            type: MatchEventType.StopCamping,
-          });
-          setIsCamping(false);
+          if (isCamping) {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+            reportState.addEvent({
+              type: MatchEventType.StopCamping,
+              position: MatchEventPosition.None,
+            });
+            setIsCamping(false);
+          }
         }}
+        delayLongPress={150}
         style={{
           height: "100%",
           width: "100%",
