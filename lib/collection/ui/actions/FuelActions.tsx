@@ -301,6 +301,8 @@ function useDragFunctionsFromScoringMode(
   if (scoringMode === ScoringMode.Count) {
     return {
       onStart: () => {
+        if (isCounting.current) return;
+
         isCounting.current = true;
         reportState.addEvent({
           type: matchEventStartType,
@@ -310,6 +312,8 @@ function useDragFunctionsFromScoringMode(
         updateDisplay("0");
       },
       onMove: (_, totalDistance) => {
+        if (!isCounting.current) return;
+
         const count = pixelsToItems(totalDistance);
         if (count !== currentCount.current) {
           Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -335,6 +339,8 @@ function useDragFunctionsFromScoringMode(
   } else {
     return {
       onStart: () => {
+        if (isCounting.current) return;
+
         targetIntervalRef.current = BASE_INTERVAL_MS;
         isCounting.current = true;
         currentCount.current = 0;
@@ -346,6 +352,8 @@ function useDragFunctionsFromScoringMode(
         startIncrementing();
       },
       onMove: (_, totalDistance) => {
+        if (!isCounting.current) return;
+
         // Linear interpolation from BASE_INTERVAL_MS to MIN_INTERVAL_MS
         const speedMultiplier = Math.max(
           0,

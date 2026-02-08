@@ -37,6 +37,7 @@ export const DraggableContainer = ({
 
   const startXRef = useRef<number>(0);
   const startYRef = useRef<number>(0);
+  const initialTouchIdRef = useRef<string | null>(null);
 
   const signGestureDirection = useCallback(
     (dx: number, dy: number) => {
@@ -64,16 +65,32 @@ export const DraggableContainer = ({
   const panResponder = useMemo(
     () =>
       PanResponder.create({
-        onStartShouldSetPanResponder: () => true,
-        onMoveShouldSetPanResponder: () => true,
-        onPanResponderTerminationRequest: () => false,
+        onStartShouldSetPanResponder: (event) =>
+          event.nativeEvent.identifier === initialTouchIdRef.current ||
+          initialTouchIdRef.current === null,
+        onMoveShouldSetPanResponder: (event) =>
+          event.nativeEvent.identifier === initialTouchIdRef.current,
+        onPanResponderTerminationRequest: (event) =>
+          event.nativeEvent.identifier === initialTouchIdRef.current,
         onPanResponderGrant: (event) => {
+          if (initialTouchIdRef.current === null) {
+            initialTouchIdRef.current = event.nativeEvent.identifier;
+          }
+
+          if (initialTouchIdRef.current !== event.nativeEvent.identifier) {
+            return;
+          }
+
           const { pageX, pageY } = event.nativeEvent;
           startXRef.current = pageX;
           startYRef.current = pageY;
           onStart();
         },
         onPanResponderMove: (event) => {
+          if (initialTouchIdRef.current !== event.nativeEvent.identifier) {
+            return;
+          }
+
           const { pageX, pageY } = event.nativeEvent;
           const dx = pageX - startXRef.current;
           const dy = pageY - startYRef.current;
@@ -81,6 +98,12 @@ export const DraggableContainer = ({
           onMove(signGestureDirection(dx, dy), totalDistance);
         },
         onPanResponderRelease: (event) => {
+          if (initialTouchIdRef.current !== event.nativeEvent.identifier) {
+            return;
+          }
+
+          initialTouchIdRef.current = null;
+
           const { pageX, pageY } = event.nativeEvent;
           const dx = pageX - startXRef.current;
           const dy = pageY - startYRef.current;
@@ -88,6 +111,12 @@ export const DraggableContainer = ({
           onEnd(signGestureDirection(dx, dy), totalDistance);
         },
         onPanResponderTerminate: (event) => {
+          if (initialTouchIdRef.current !== event.nativeEvent.identifier) {
+            return;
+          }
+
+          initialTouchIdRef.current = null;
+
           const { pageX, pageY } = event.nativeEvent;
           const dx = pageX - startXRef.current;
           const dy = pageY - startYRef.current;
