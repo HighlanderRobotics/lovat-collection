@@ -8,7 +8,12 @@ import { GameAction } from "../GameAction";
 export function AutoClimbAction() {
   const reportState = useReportStateStore();
 
-  const climbing = reportState.isClimbing();
+  const hasClimbEvent = reportState.isClimbing();
+
+  // Hide the button if a climb event has already been added
+  if (hasClimbEvent) {
+    return null;
+  }
 
   return (
     <FieldElement
@@ -21,15 +26,12 @@ export function AutoClimbAction() {
     >
       <GameAction
         onPress={() => {
-          if (climbing) {
-            reportState.stopClimbing();
-          } else
-            reportState.addEvent({
-              type: MatchEventType.Climb,
-            });
+          reportState.addEvent({
+            type: MatchEventType.Climb,
+          });
         }}
-        color={!climbing ? colors.victoryPurple.default : colors.danger.default}
-        icon={climbing ? "close" : ""}
+        color={colors.victoryPurple.default}
+        icon=""
         iconSize={48}
       />
     </FieldElement>

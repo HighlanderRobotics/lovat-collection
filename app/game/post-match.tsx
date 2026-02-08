@@ -22,7 +22,10 @@ import { feederTypeDescriptions } from "../../lib/collection/FeederType";
 import { Beached, beachedDescriptions } from "../../lib/collection/Beached";
 import { defenseEffectivenessDescriptions } from "../../lib/collection/DefenseEffectiveness";
 import { scoresWhileMovingDescriptions } from "../../lib/collection/ScoresWhileMoving";
-import { endgameClimbDescriptions } from "../../lib/collection/EndgameClimb";
+import {
+  EndgameClimb,
+  endgameClimbDescriptions,
+} from "../../lib/collection/EndgameClimb";
 import TextField from "../../lib/components/TextField";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { CommonActions } from "@react-navigation/native";
@@ -54,6 +57,12 @@ export default function PostMatch() {
       MatchEventType.StartDefending,
       MatchEventType.StartCamping,
     );
+
+  const hasEndgameClimbEvent = reportState.hasEndgameClimbEvent();
+
+  const endgameClimbIsMismatched =
+    !hasEndgameClimbEvent &&
+    reportState.climbResult === EndgameClimb.NotAttempted;
 
   return (
     <>
@@ -201,16 +210,20 @@ export default function PostMatch() {
             selected={reportState.autoClimb}
             onChange={reportState.setAutoClimb}
           />
-          <PostMatchSelector
-            title="Endgame Climb"
-            items={endgameClimbDescriptions.map((desc) => ({
-              label: desc.localizedDescription,
-              description: desc.localizedLongDescription,
-              value: desc.climb,
-            }))}
-            selected={reportState.climbResult}
-            onChange={reportState.setClimbResult}
-          />
+          {hasEndgameClimbEvent && (
+            <PostMatchSelector
+              title="Endgame Climb"
+              items={endgameClimbDescriptions
+                .filter((desc) => desc.climb !== EndgameClimb.NotAttempted)
+                .map((desc) => ({
+                  label: desc.localizedDescription,
+                  description: desc.localizedLongDescription,
+                  value: desc.climb,
+                }))}
+              selected={reportState.climbResult}
+              onChange={reportState.setClimbResult}
+            />
+          )}
 
           <PostMatchSelector<string, Beached>
             title="Beached"
@@ -308,7 +321,7 @@ export default function PostMatch() {
           </View>
           <View style={{ gap: 10 }}>
             <Button
-              disabled={trainingModeEnabled}
+              disabled={trainingModeEnabled || endgameClimbIsMismatched}
               variant="primary"
               onPress={() => {
                 router.replace("/game/submit");

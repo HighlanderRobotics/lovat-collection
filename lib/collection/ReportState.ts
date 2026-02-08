@@ -71,6 +71,7 @@ export type ReportState = {
   isClimbing: () => boolean;
   stopClimbing: () => void;
   hasEventOfType: (...types: MatchEventType[]) => boolean;
+  hasEndgameClimbEvent: () => boolean;
 
   addEvent: (event: {
     type: MatchEventType;

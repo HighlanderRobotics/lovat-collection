@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useReportStateStore } from "../reportStateStore";
 import { router } from "expo-router";
 import { PreMatchActions } from "./actions/PreMatchActions";
@@ -28,7 +28,10 @@ import { MatchEventType } from "../MatchEventType";
 export function Game() {
   const reportState = useReportStateStore();
 
-  const [autoTimeout, setAutoTimeout] = useState<NodeJS.Timeout | null>(null);
+  const timeoutsRef = useRef<{
+    teleop?: NodeJS.Timeout;
+    endgame?: NodeJS.Timeout;
+  }>({});
 
   const setPhase = reportState.setGamePhase;
 
@@ -42,37 +45,38 @@ export function Game() {
     if (
       reportState?.gamePhase === GamePhase.Auto &&
       reportState.startTimestamp &&
-      !autoTimeout
+      !timeoutsRef.current.teleop &&
+      !timeoutsRef.current.endgame
     ) {
-      setAutoTimeout(
-        setTimeout(() => {
-          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-          setPhase(GamePhase.Teleop);
-          setAutoTimeout(
-            setTimeout(() => {
-              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-              setPhase(GamePhase.Endgame);
-            }, 205 * 100),
-          );
-        }, 18 * 1000),
-      );
+      timeoutsRef.current.teleop = setTimeout(() => {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+        setPhase(GamePhase.Teleop);
+      }, 18 * 1000);
 
-      return () => {
-        if (autoTimeout) {
-          clearTimeout(autoTimeout);
-        }
-      };
-    } else {
-      if (autoTimeout) {
-        clearTimeout(autoTimeout);
-      }
-      setAutoTimeout(null);
+      timeoutsRef.current.endgame = setTimeout(
+        () => {
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+          setPhase(GamePhase.Endgame);
+        },
+        18 * 1000 + 102 * 1000,
+      ); // 18s auto + 102s teleop = last 30 seconds of match
     }
   }, [reportState?.gamePhase, reportState?.startTimestamp]);
 
+  const clearTimeouts = () => {
+    if (timeoutsRef.current.teleop) {
+      clearTimeout(timeoutsRef.current.teleop);
+      timeoutsRef.current.teleop = undefined;
+    }
+    if (timeoutsRef.current.endgame) {
+      clearTimeout(timeoutsRef.current.endgame);
+      timeoutsRef.current.endgame = undefined;
+    }
+  };
+
   const onEnd = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    if (autoTimeout) clearTimeout(autoTimeout);
+    clearTimeouts();
     router.replace("/game/post-match");
   };
   const onRestart = () => {
@@ -86,7 +90,7 @@ export function Game() {
           text: "Restart",
           style: "destructive",
           onPress: () => {
-            if (autoTimeout) clearTimeout(autoTimeout);
+            clearTimeouts();
             reportState.restartMatch();
           },
         },

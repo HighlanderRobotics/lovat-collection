@@ -87,6 +87,17 @@ export const useReportStateStore = create<ReportState>((set, get) => ({
     return reportState.events.some((event) => types.includes(event.type));
   },
 
+  hasEndgameClimbEvent: () => {
+    const reportState = get();
+    if (!reportState.startTimestamp) return false;
+
+    const autoEndTime = reportState.startTimestamp.getTime() + 18 * 1000;
+    return reportState.events.some(
+      (event) =>
+        event.type === MatchEventType.Climb && event.timestamp >= autoEndTime,
+    );
+  },
+
   stopClimbing: () => {
     const reportState = get();
     if (reportState.events) {

@@ -15,10 +15,10 @@ export type EndgameClimbDescription = {
 
 export const endgameClimbDescriptions = [
   {
-    climb: EndgameClimb.L1,
-    localizedDescription: "L1",
-    localizedLongDescription: "The robot successfully climbed to Level 1.",
-    num: 2,
+    climb: EndgameClimb.L3,
+    localizedDescription: "L3",
+    localizedLongDescription: "The robot successfully climbed to Level 3.",
+    num: 4,
   },
   {
     climb: EndgameClimb.L2,
@@ -27,10 +27,10 @@ export const endgameClimbDescriptions = [
     num: 3,
   },
   {
-    climb: EndgameClimb.L3,
-    localizedDescription: "L3",
-    localizedLongDescription: "The robot successfully climbed to Level 3.",
-    num: 4,
+    climb: EndgameClimb.L1,
+    localizedDescription: "L1",
+    localizedLongDescription: "The robot successfully climbed to Level 1.",
+    num: 2,
   },
   {
     climb: EndgameClimb.Failed,
