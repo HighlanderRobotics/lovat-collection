@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { figmaDimensionsToFieldInsets } from "../../util";
 import { DragDirection, DraggableContainer } from "../DraggableContainer";
 import {
@@ -261,7 +261,16 @@ function useDragFunctionsFromScoringMode(
   const targetIntervalRef = useRef(BASE_INTERVAL_MS);
   const lastIncrementTimeRef = useRef(0);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const isCounting = useRef(false);
+  const [isCounting, setIsCounting] = useState(false);
+  const [shouldClearDisplay, setShouldClearDisplay] = useState(false);
+
+  // Clear display when isCounting changes to false and shouldClearDisplay is set
+  useEffect(() => {
+    if (!isCounting && shouldClearDisplay) {
+      updateDisplay("");
+      setShouldClearDisplay(false);
+    }
+  }, [isCounting, shouldClearDisplay, updateDisplay]);
 
   const startIncrementing = useCallback(() => {
     if (intervalRef.current) return; // Already running
@@ -304,9 +313,9 @@ function useDragFunctionsFromScoringMode(
   if (scoringMode === ScoringMode.Count) {
     return {
       onStart: () => {
-        if (isCounting.current) return;
+        if (isCounting) return;
 
-        isCounting.current = true;
+        setIsCounting(true);
         reportState.addEvent({
           type: matchEventStartType,
           position: matchEventPosition,
@@ -315,7 +324,7 @@ function useDragFunctionsFromScoringMode(
         updateDisplay("0");
       },
       onMove: (_, totalDistance) => {
-        if (!isCounting.current) return;
+        if (!isCounting) return;
 
         const count = pixelsToItems(totalDistance);
         if (count !== currentCount.current) {
@@ -325,7 +334,7 @@ function useDragFunctionsFromScoringMode(
         }
       },
       onEnd: (_, totalDistance) => {
-        isCounting.current = false;
+        setIsCounting(false);
         const finalCount = pixelsToItems(totalDistance);
         if (finalCount > 0) {
           reportState.addEvent({
@@ -335,17 +344,17 @@ function useDragFunctionsFromScoringMode(
           });
         }
         currentCount.current = 0;
-        updateDisplay("");
+        setShouldClearDisplay(true);
       },
-      isCounting: isCounting.current,
+      isCounting: isCounting,
     };
   } else {
     return {
       onStart: () => {
-        if (isCounting.current) return;
+        if (isCounting) return;
 
         targetIntervalRef.current = BASE_INTERVAL_MS;
-        isCounting.current = true;
+        setIsCounting(true);
         currentCount.current = 0;
         updateDisplay("0");
         reportState.addEvent({
@@ -355,7 +364,7 @@ function useDragFunctionsFromScoringMode(
         startIncrementing();
       },
       onMove: (_, totalDistance) => {
-        if (!isCounting.current) return;
+        if (!isCounting) return;
 
         // Linear interpolation from BASE_INTERVAL_MS to MIN_INTERVAL_MS
         const speedMultiplier = Math.max(
@@ -376,11 +385,11 @@ function useDragFunctionsFromScoringMode(
             quantity: currentCount.current,
           });
         }
-        isCounting.current = false;
+        setIsCounting(false);
         currentCount.current = 0;
-        updateDisplay("");
+        setShouldClearDisplay(true);
       },
-      isCounting: isCounting.current,
+      isCounting: isCounting,
     };
   }
 }
