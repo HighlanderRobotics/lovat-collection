@@ -28,17 +28,20 @@ export const Checkbox = (props: {
 type SelectionIndicatorProps = {
   type: "checkbox" | "radio";
   selected: boolean;
+  disabled?: boolean;
 };
 
 export const SelectionIndicator = (props: SelectionIndicatorProps) => {
   const unCheckedStyle: StyleProp<ViewStyle> = {
     backgroundColor: colors.secondaryContainer.default,
-    borderColor: colors.gray.default,
+    borderColor: props.disabled ? colors.gray.faded : colors.gray.default,
     borderWidth: 2,
   };
 
   const checkedStyle: StyleProp<ViewStyle> = {
-    backgroundColor: colors.victoryPurple.default,
+    backgroundColor: props.disabled
+      ? colors.victoryPurple.faded
+      : colors.victoryPurple.default,
   };
 
   return (

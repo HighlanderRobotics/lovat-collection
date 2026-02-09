@@ -65,7 +65,7 @@ export function Picker<T = string>(props: PickerProps<T>) {
               backgroundColorSet={{
                 default: colors.secondaryContainer.default,
                 hover: colors.gray.default,
-                faded: colors.gray.faded,
+                faded: colors.secondaryContainer.default,
               }}
               borderRadius={0}
               disabled={option.disabled}
@@ -80,7 +80,6 @@ export function Picker<T = string>(props: PickerProps<T>) {
                 paddingHorizontal: 14,
                 paddingTop: i === 0 ? 14 : 8,
                 paddingBlock: i === options.length - 1 ? 14 : 8,
-                opacity: option.disabled ? 0.5 : 1,
               }}
             >
               <View
@@ -92,10 +91,27 @@ export function Picker<T = string>(props: PickerProps<T>) {
                 <SelectionIndicator
                   type={multiSelect ? "checkbox" : "radio"}
                   selected={isSelected(option.value)}
+                  disabled={option.disabled}
                 />
                 <View style={{ flex: 1 }}>
-                  <LabelSmall>{option.label}</LabelSmall>
-                  <BodyMedium>{option.description}</BodyMedium>
+                  <LabelSmall
+                    color={
+                      option.disabled
+                        ? colors.gray.hover
+                        : colors.onBackground.default
+                    }
+                  >
+                    {option.label}
+                  </LabelSmall>
+                  <BodyMedium
+                    style={{
+                      color: option.disabled
+                        ? colors.gray.hover
+                        : colors.body.default,
+                    }}
+                  >
+                    {option.description}
+                  </BodyMedium>
                 </View>
               </View>
             </Button>
