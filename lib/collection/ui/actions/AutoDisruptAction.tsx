@@ -8,6 +8,11 @@ import { GameAction } from "../GameAction";
 export function AutoDisruptAction() {
   const reportState = useReportStateStore();
 
+  // Hide the button if a disrupt event has already been added
+  if (reportState.hasEventOfType(MatchEventType.Disrupt)) {
+    return null;
+  }
+
   return (
     <FieldElement
       edgeInsets={figmaDimensionsToFieldInsets({
