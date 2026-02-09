@@ -31,7 +31,7 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { CommonActions } from "@react-navigation/native";
 import BodyMedium from "../../lib/components/text/BodyMedium";
 import { useTrainingModeStore } from "../../lib/storage/userStores";
-import React from "react";
+import React, { useEffect } from "react";
 import { Checkbox } from "../../lib/components/Checkbox";
 import { RobotRole } from "../../lib/collection/RobotRole";
 import { MatchEventType } from "../../lib/collection/MatchEventType";
@@ -63,6 +63,39 @@ export default function PostMatch() {
   const endgameClimbIsMismatched =
     hasEndgameClimbEvent &&
     reportState.climbResult === EndgameClimb.NotAttempted;
+
+  const hasOutpostIntakeEvent = reportState.hasOutpostIntakeEvent();
+  const autoTraversalTypes = reportState.getAutoTraversalTypes();
+
+  // Auto-set intake type based on events
+  useEffect(() => {
+    if (hasOutpostIntakeEvent) {
+      if (reportState.intakeType === IntakeType.Ground) {
+        reportState.setIntakeType(IntakeType.Both);
+      } else if (reportState.intakeType === IntakeType.Neither) {
+        reportState.setIntakeType(IntakeType.Outpost);
+      }
+    }
+  }, [hasOutpostIntakeEvent]);
+
+  // Auto-set traversal type based on auto events
+  useEffect(() => {
+    if (autoTraversalTypes.trench || autoTraversalTypes.bump) {
+      let newSelection = reportState.fieldTraversal;
+
+      if (autoTraversalTypes.trench && autoTraversalTypes.bump) {
+        newSelection = FieldTraversal.Both;
+      } else if (autoTraversalTypes.trench) {
+        newSelection = FieldTraversal.Trench;
+      } else if (autoTraversalTypes.bump) {
+        newSelection = FieldTraversal.Bump;
+      }
+
+      if (newSelection !== reportState.fieldTraversal) {
+        reportState.setFieldTraversal(newSelection);
+      }
+    }
+  }, [autoTraversalTypes]);
 
   return (
     <>
@@ -148,6 +181,9 @@ export default function PostMatch() {
                 description: desc.localizedLongDescription,
                 value:
                   desc.intakeType === IntakeType.Ground ? "ground" : "outpost",
+                disabled:
+                  desc.intakeType === IntakeType.Outpost &&
+                  hasOutpostIntakeEvent,
               }))}
             selected={
               reportState.intakeType === IntakeType.Both
@@ -182,6 +218,11 @@ export default function PostMatch() {
                 description: desc.localizedLongDescription,
                 value:
                   desc.traversal === FieldTraversal.Trench ? "trench" : "bump",
+                disabled:
+                  (desc.traversal === FieldTraversal.Trench &&
+                    autoTraversalTypes.trench) ||
+                  (desc.traversal === FieldTraversal.Bump &&
+                    autoTraversalTypes.bump),
               }))}
             selected={
               reportState.fieldTraversal === FieldTraversal.Both

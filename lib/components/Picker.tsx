@@ -12,13 +12,14 @@ type UnkeyedPickerOption<T> = {
   description?: string;
   value: T;
   key?: undefined;
+  disabled?: boolean;
 };
 
 type KeyedPickerOption<T> = UnkeyedPickerOption<T> & { key: Key };
 
 export type PickerOption<T> =
   | (T extends Key ? UnkeyedPickerOption<T> : KeyedPickerOption<T>)
-  | KeyedPickerOption<T>;
+  | (KeyedPickerOption<T> & { disabled?: boolean });
 
 type PickerProps<T> = {
   options: PickerOption<T>[];
@@ -67,7 +68,9 @@ export function Picker<T = string>(props: PickerProps<T>) {
                 faded: colors.gray.faded,
               }}
               borderRadius={0}
+              disabled={option.disabled}
               onPress={() => {
+                if (option.disabled) return;
                 if (Platform.OS === "ios") {
                   Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
                 }
@@ -77,6 +80,7 @@ export function Picker<T = string>(props: PickerProps<T>) {
                 paddingHorizontal: 14,
                 paddingTop: i === 0 ? 14 : 8,
                 paddingBlock: i === options.length - 1 ? 14 : 8,
+                opacity: option.disabled ? 0.5 : 1,
               }}
             >
               <View

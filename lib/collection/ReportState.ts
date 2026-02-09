@@ -72,6 +72,9 @@ export type ReportState = {
   stopClimbing: () => void;
   hasEventOfType: (...types: MatchEventType[]) => boolean;
   hasEndgameClimbEvent: () => boolean;
+  hasOutpostIntakeEvent: () => boolean;
+  hasAutoTraversalEvent: () => boolean;
+  getAutoTraversalTypes: () => { trench: boolean; bump: boolean };
 
   addEvent: (event: {
     type: MatchEventType;

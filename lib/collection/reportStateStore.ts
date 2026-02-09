@@ -98,6 +98,50 @@ export const useReportStateStore = create<ReportState>((set, get) => ({
     );
   },
 
+  hasOutpostIntakeEvent: () => {
+    const reportState = get();
+    return reportState.events.some(
+      (event) =>
+        event.type === MatchEventType.Intake &&
+        event.position === MatchEventPosition.Outpost,
+    );
+  },
+
+  hasAutoTraversalEvent: () => {
+    const reportState = get();
+    if (!reportState.startTimestamp) return false;
+
+    const autoEndTime = reportState.startTimestamp.getTime() + 18 * 1000;
+    return reportState.events.some(
+      (event) =>
+        event.type === MatchEventType.Cross && event.timestamp < autoEndTime,
+    );
+  },
+
+  getAutoTraversalTypes: () => {
+    const reportState = get();
+    if (!reportState.startTimestamp) return { trench: false, bump: false };
+
+    const autoEndTime = reportState.startTimestamp.getTime() + 18 * 1000;
+    const autoCrossEvents = reportState.events.filter(
+      (event) =>
+        event.type === MatchEventType.Cross && event.timestamp < autoEndTime,
+    );
+
+    return {
+      trench: autoCrossEvents.some(
+        (event) =>
+          event.position === MatchEventPosition.LeftTrench ||
+          event.position === MatchEventPosition.RightTrench,
+      ),
+      bump: autoCrossEvents.some(
+        (event) =>
+          event.position === MatchEventPosition.LeftBump ||
+          event.position === MatchEventPosition.RightBump,
+      ),
+    };
+  },
+
   stopClimbing: () => {
     const reportState = get();
     if (reportState.events) {
