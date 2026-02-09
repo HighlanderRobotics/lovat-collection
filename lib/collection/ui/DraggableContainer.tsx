@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useRef } from "react";
+import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import { PanResponder, View } from "react-native";
 import {
   FieldOrientation,
@@ -6,6 +6,7 @@ import {
 } from "../../storage/userStores";
 import { AllianceColor } from "../../models/AllianceColor";
 import { useReportStateStore } from "../reportStateStore";
+import { GamePhase } from "../ReportState";
 
 export enum DragDirection {
   Up,
@@ -18,6 +19,7 @@ export const DraggableContainer = ({
   onStart,
   onMove,
   onEnd,
+  forceStop,
   children,
   edgeInsets,
   respectAlliance,
@@ -25,7 +27,12 @@ export const DraggableContainer = ({
 }: {
   onStart: () => void;
   onMove: (displacement: number, totalDistance: number) => void;
-  onEnd: (displacement: number, totalDistance: number) => void;
+  onEnd: (
+    displacement: number,
+    totalDistance: number,
+    timestamp?: number,
+  ) => void;
+  forceStop?: () => void;
   children?: React.ReactNode;
   edgeInsets: [number, number, number, number];
   respectAlliance: boolean;
@@ -34,10 +41,13 @@ export const DraggableContainer = ({
   const fieldOrientation = useFieldOrientationStore((state) => state.value);
   const reportState = useReportStateStore();
   const allianceColor = reportState.meta?.allianceColor;
+  const gamePhase = useReportStateStore((state) => state.gamePhase);
 
   const startXRef = useRef<number>(0);
   const startYRef = useRef<number>(0);
   const initialTouchIdRef = useRef<string | null>(null);
+  const isActiveRef = useRef<boolean>(false);
+  const previousGamePhaseRef = useRef<GamePhase>(gamePhase);
 
   const signGestureDirection = useCallback(
     (dx: number, dy: number) => {
@@ -62,6 +72,33 @@ export const DraggableContainer = ({
     [dragDirection, fieldOrientation, allianceColor, respectAlliance],
   );
 
+  const triggerEndEvent = useCallback(() => {
+    const dx = startXRef.current - startXRef.current; // Will be 0
+    const dy = startYRef.current - startYRef.current; // Will be 0
+    const totalDistance = 0;
+    // Set timestamp to just before 18 seconds (17999ms) to ensure it's in Auto phase
+    const reportState = useReportStateStore.getState();
+    const autoEndTimestamp = reportState.startTimestamp
+      ? reportState.startTimestamp.getTime() + 17999
+      : Date.now();
+    onEnd(signGestureDirection(dx, dy), totalDistance, autoEndTimestamp);
+    // Force stop any ongoing intervals/haptics
+    forceStop?.();
+    isActiveRef.current = false;
+    initialTouchIdRef.current = null;
+  }, [onEnd, signGestureDirection, forceStop]);
+
+  useEffect(() => {
+    if (
+      previousGamePhaseRef.current === GamePhase.Auto &&
+      gamePhase === GamePhase.Teleop &&
+      isActiveRef.current
+    ) {
+      triggerEndEvent();
+    }
+    previousGamePhaseRef.current = gamePhase;
+  }, [gamePhase, triggerEndEvent]);
+
   const panResponder = useMemo(
     () =>
       PanResponder.create({
@@ -84,6 +121,7 @@ export const DraggableContainer = ({
           const { pageX, pageY } = event.nativeEvent;
           startXRef.current = pageX;
           startYRef.current = pageY;
+          isActiveRef.current = true;
           onStart();
         },
         onPanResponderMove: (event) => {
@@ -103,6 +141,7 @@ export const DraggableContainer = ({
           }
 
           initialTouchIdRef.current = null;
+          isActiveRef.current = false;
 
           const { pageX, pageY } = event.nativeEvent;
           const dx = pageX - startXRef.current;
@@ -116,6 +155,7 @@ export const DraggableContainer = ({
           }
 
           initialTouchIdRef.current = null;
+          isActiveRef.current = false;
 
           const { pageX, pageY } = event.nativeEvent;
           const dx = pageX - startXRef.current;
@@ -124,7 +164,7 @@ export const DraggableContainer = ({
           onEnd(signGestureDirection(dx, dy), totalDistance);
         },
       }),
-    [onStart, onMove, onEnd, signGestureDirection],
+    [onStart, onMove, onEnd, signGestureDirection, forceStop],
   );
 
   const [givenTop, givenRight, givenButtom, givenLeft] = edgeInsets;

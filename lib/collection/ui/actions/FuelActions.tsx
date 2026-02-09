@@ -47,6 +47,7 @@ export function ScoreFuelInHubAction() {
     onStart: baseOnStart,
     onMove,
     onEnd: baseOnEnd,
+    forceStop,
   } = useDragFunctionsFromScoringMode(
     scoringMode,
     MatchEventType.StartScoring,
@@ -90,6 +91,7 @@ export function ScoreFuelInHubAction() {
       onStart={onStart}
       onMove={onMove}
       onEnd={onEnd}
+      forceStop={forceStop}
     >
       <Animated.View
         style={{
@@ -154,7 +156,7 @@ function GeneralisedFeedAction({
     textContainerRef.current?.setNativeProps({ text: newValue });
   }, []);
 
-  const { onStart, onMove, onEnd, isCounting } =
+  const { onStart, onMove, onEnd, isCounting, forceStop } =
     useDragFunctionsFromScoringMode(
       scoringMode,
       MatchEventType.StartFeeding,
@@ -173,6 +175,7 @@ function GeneralisedFeedAction({
       onStart={onStart}
       onMove={onMove}
       onEnd={onEnd}
+      forceStop={forceStop}
     >
       <View
         style={{
@@ -245,7 +248,8 @@ function useDragFunctionsFromScoringMode(
   onStart: () => void;
   // unused _ to fit function parameters
   onMove: (_: number, totalDistance: number) => void;
-  onEnd: (_: number, totalDistance: number) => void;
+  onEnd: (_: number, totalDistance: number, timestamp?: number) => void;
+  forceStop: () => void;
   isCounting: boolean;
 } {
   const reportState = useReportStateStore((state) => state);
@@ -300,6 +304,12 @@ function useDragFunctionsFromScoringMode(
     targetIntervalRef.current = BASE_INTERVAL_MS;
   }, []);
 
+  const forceStop = useCallback(() => {
+    stopIncrementing();
+    setIsCounting(false);
+    setShouldClearDisplay(true);
+  }, [stopIncrementing]);
+
   // for count mode - quadratic falloff from gist
   // Using formula: items = (pixels / SCALE_FACTOR)^2
   // Solving for SCALE_FACTOR: 50 = (400 / k)^2 => k = 400 / sqrt(50) ~= 56.57
@@ -333,7 +343,7 @@ function useDragFunctionsFromScoringMode(
           updateDisplay(count.toString());
         }
       },
-      onEnd: (_, totalDistance) => {
+      onEnd: (_, totalDistance, timestamp) => {
         setIsCounting(false);
         const finalCount = pixelsToItems(totalDistance);
         if (finalCount > 0) {
@@ -341,12 +351,14 @@ function useDragFunctionsFromScoringMode(
             type: matchEventEndType,
             position: matchEventPosition,
             quantity: finalCount,
+            timestamp,
           });
         }
         currentCount.current = 0;
         setShouldClearDisplay(true);
       },
       isCounting: isCounting,
+      forceStop,
     };
   } else {
     return {
@@ -376,13 +388,14 @@ function useDragFunctionsFromScoringMode(
             speedMultiplier * (BASE_INTERVAL_MS - MIN_INTERVAL_MS),
         );
       },
-      onEnd: () => {
+      onEnd: (_, __, timestamp) => {
         stopIncrementing();
         if (currentCount.current > 0) {
           reportState.addEvent({
             type: matchEventEndType,
             position: matchEventPosition,
             quantity: currentCount.current,
+            timestamp,
           });
         }
         setIsCounting(false);
@@ -390,6 +403,7 @@ function useDragFunctionsFromScoringMode(
         setShouldClearDisplay(true);
       },
       isCounting: isCounting,
+      forceStop,
     };
   }
 }
