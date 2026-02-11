@@ -84,5 +84,5 @@ export const useMatchSelectionModeStore =
 
 export const useScoringModeStore = createGenericPersistantStore<ScoringMode>(
   "scoringModeStore",
-  ScoringMode.Count,
+  ScoringMode.Rate,
 );

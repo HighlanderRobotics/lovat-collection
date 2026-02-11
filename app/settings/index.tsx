@@ -236,12 +236,12 @@ const HubMode = () => {
         <Picker
           options={[
             {
-              label: "Count",
-              value: ScoringMode.Count,
-            },
-            {
               label: "Rate",
               value: ScoringMode.Rate,
+            },
+            {
+              label: "Count",
+              value: ScoringMode.Count,
             },
           ]}
           selected={scoringMode}
