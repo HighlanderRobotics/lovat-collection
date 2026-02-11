@@ -133,16 +133,18 @@ export default function PostMatch() {
             onChange={reportState.setRobotRole}
             multiSelect
           />
-          <PostMatchSelector
-            title="Accuracy"
-            items={accuracyDescriptions.map((desc) => ({
-              label: desc.localizedDescription,
-              description: desc.localizedLongDescription,
-              value: desc.accuracy,
-            }))}
-            selected={reportState.accuracy}
-            onChange={reportState.setAccuracy}
-          />
+          {reportState.hasEventOfType(MatchEventType.StartScoring) && (
+            <PostMatchSelector
+              title="Accuracy"
+              items={accuracyDescriptions.map((desc) => ({
+                label: desc.localizedDescription,
+                description: desc.localizedLongDescription,
+                value: desc.accuracy,
+              }))}
+              selected={reportState.accuracy}
+              onChange={reportState.setAccuracy}
+            />
+          )}
           {reportState.robotRole.includes(RobotRole.Feeding) && (
             <PostMatchSelector
               title="Feeder Type"
