@@ -50,7 +50,7 @@ export const scoutReportSchema = z.object({
   robotRoles: z.array(RobotRoleString),
   mobility: MobilityString,
   disrupts: z.boolean(),
-  accuracy: z.number(),
+  accuracy: z.number().or(z.null()),
   autoClimb: AutoClimbString,
   intakeType: IntakeTypeString,
   feederTypes: z.array(FeederTypeString),

@@ -36,7 +36,7 @@ export type ReportState = {
   robotRole: RobotRole[];
   robotBrokeDescription: string | null;
   fieldTraversal: FieldTraversal;
-  accuracy: Accuracy;
+  accuracy: Accuracy | null;
   autoClimb: AutoClimb;
   intakeType: IntakeType;
   feederType: FeederType[];
@@ -57,7 +57,7 @@ export type ReportState = {
   setRobotRole: (value: RobotRole[]) => void;
   setRobotBrokeDescription: (value: string | null) => void;
   setFieldTraversal: (value: FieldTraversal) => void;
-  setAccuracy: (value: Accuracy) => void;
+  setAccuracy: (value: Accuracy | null) => void;
   setAutoClimb: (value: AutoClimb) => void;
   setIntakeType: (value: IntakeType) => void;
   setFeederType: (value: FeederType[]) => void;

@@ -8,7 +8,7 @@ import { MatchType } from "../models/match";
 import { ScoutReportEvent } from "./ScoutReport";
 import { RobotRole } from "./RobotRole";
 import { FieldTraversal } from "./FieldTraversal";
-import { Accuracy, accuracyDescriptions } from "./Accuracy";
+import { accuracyDescriptions } from "./Accuracy";
 import { AutoClimb } from "./AutoClimb";
 import { IntakeType } from "./IntakeType";
 import { FeederType } from "./FeederType";
@@ -28,7 +28,7 @@ const initialState = {
   robotBrokeDescription: null as string | null,
   fieldTraversal: FieldTraversal.None,
   disrupts: false,
-  accuracy: Accuracy.LessThan50,
+  accuracy: null,
   autoClimb: AutoClimb.NotAttempted,
   intakeType: IntakeType.Neither,
   feederType: [] as FeederType[],
@@ -315,9 +315,10 @@ export const useReportStateStore = create<ReportState>((set, get) => ({
         robotRoles: reportState.robotRole.map(robotRoleToString),
         mobility: fieldTraversalToString(reportState.fieldTraversal),
         disrupts: get().hasEventOfType(MatchEventType.Disrupt),
-        accuracy: accuracyDescriptions.find(
-          (desc) => desc.accuracy === reportState.accuracy,
-        )!.num,
+        accuracy:
+          accuracyDescriptions.find(
+            (desc) => desc.accuracy === reportState.accuracy,
+          )?.num ?? null,
         autoClimb: autoClimbToString(reportState.autoClimb),
         intakeType: intakeTypeToString(reportState.intakeType),
         feederTypes: reportState.feederType.map(feederTypeToString),
