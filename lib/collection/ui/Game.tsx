@@ -24,6 +24,8 @@ import { OutpostAction } from "./actions/OutpostAction";
 import { CampAction } from "./actions/CampAction";
 import { DefendAction } from "./actions/DefendAction";
 import { MatchEventType } from "../MatchEventType";
+import { FieldTraversal } from "../FieldTraversal";
+import { IntakeType } from "../IntakeType";
 
 export function Game() {
   const reportState = useReportStateStore();
@@ -77,6 +79,35 @@ export function Game() {
   const onEnd = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     clearTimeouts();
+
+    // Auto-set traversal type based on auto events
+    const autoTraversalTypes = reportState.getAutoTraversalTypes();
+
+    if (autoTraversalTypes.trench || autoTraversalTypes.bump) {
+      let newSelection = reportState.fieldTraversal;
+
+      if (autoTraversalTypes.trench && autoTraversalTypes.bump) {
+        newSelection = FieldTraversal.Both;
+      } else if (autoTraversalTypes.trench) {
+        newSelection = FieldTraversal.Trench;
+      } else if (autoTraversalTypes.bump) {
+        newSelection = FieldTraversal.Bump;
+      }
+
+      if (newSelection !== reportState.fieldTraversal) {
+        reportState.setFieldTraversal(newSelection);
+      }
+    }
+
+    // Set default intake type values
+    if (reportState.hasOutpostIntakeEvent()) {
+      if (reportState.intakeType === IntakeType.Ground) {
+        reportState.setIntakeType(IntakeType.Both);
+      } else if (reportState.intakeType === IntakeType.Neither) {
+        reportState.setIntakeType(IntakeType.Outpost);
+      }
+    }
+
     router.replace("/game/post-match");
   };
   const onRestart = () => {
