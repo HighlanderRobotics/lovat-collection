@@ -20,10 +20,13 @@ import { AllianceColor } from "../../../models/AllianceColor";
 
 const ACTIVE_OPACITY = 0.2;
 const TELEOP_SCALE = 1.28;
+const CHECKMARK_DURATION_MS = 200;
 
 export function ScoreFuelInHubAction() {
   const scoringMode = useScoringModeStore((state) => state.value);
   const gamePhase = useReportStateStore((state) => state.gamePhase);
+
+  const [showCheckmark, setShowCheckmark] = useState(false);
 
   // textinput is used to allow direct manipulation
   const textContainerRef = useRef<TextInput>(null);
@@ -73,9 +76,17 @@ export function ScoreFuelInHubAction() {
         useNativeDriver: true,
       }).start();
       baseOnEnd(displacement, totalDistance);
+      setShowCheckmark(true);
+      setTimeout(() => setShowCheckmark(false), CHECKMARK_DURATION_MS);
     },
     [baseOnEnd, hubOpacity],
   );
+
+  const onForceStop = useCallback(() => {
+    forceStop();
+    setShowCheckmark(true);
+    setTimeout(() => setShowCheckmark(false), CHECKMARK_DURATION_MS);
+  }, [forceStop]);
 
   const edgeInsets = figmaDimensionsToFieldInsets({
     x: 139.5,
@@ -91,7 +102,7 @@ export function ScoreFuelInHubAction() {
       onStart={onStart}
       onMove={onMove}
       onEnd={onEnd}
-      forceStop={forceStop}
+      forceStop={onForceStop}
     >
       <Animated.View
         style={{
@@ -124,6 +135,21 @@ export function ScoreFuelInHubAction() {
           opacity: 0.8,
         }}
       />
+      {showCheckmark && (
+        <View
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <Icon name="check" color="#3EE679" size={48} />
+        </View>
+      )}
     </DraggableContainer>
   );
 }
@@ -138,6 +164,8 @@ function GeneralisedFeedAction({
   const allianceColor = useReportStateStore(
     (state) => state.meta?.allianceColor,
   );
+
+  const [showCheckmark, setShowCheckmark] = useState(false);
 
   // Flip icon to face the robot's alliance side
   // Default icon faces right
@@ -165,6 +193,21 @@ function GeneralisedFeedAction({
       updateTextDisplay,
     );
 
+  const handleOnEnd = useCallback(
+    (...args: Parameters<typeof onEnd>) => {
+      onEnd(...args);
+      setShowCheckmark(true);
+      setTimeout(() => setShowCheckmark(false), CHECKMARK_DURATION_MS);
+    },
+    [onEnd],
+  );
+
+  const handleForceStop = useCallback(() => {
+    forceStop();
+    setShowCheckmark(true);
+    setTimeout(() => setShowCheckmark(false), CHECKMARK_DURATION_MS);
+  }, [forceStop]);
+
   console.log({ isCounting });
 
   return (
@@ -174,8 +217,8 @@ function GeneralisedFeedAction({
       dragDirection={DragDirection.Up}
       onStart={onStart}
       onMove={onMove}
-      onEnd={onEnd}
-      forceStop={forceStop}
+      onEnd={handleOnEnd}
+      forceStop={handleForceStop}
     >
       <View
         style={{
@@ -204,13 +247,18 @@ function GeneralisedFeedAction({
             color: colors.onBackground.default,
           }}
         />
-        {!isCounting && (
+        {!isCounting && !showCheckmark && (
           <View style={{ transform: [{ scaleX: shouldFlipIcon ? -1 : 1 }] }}>
             <Icon
               name={"conveyor_belt"}
               color={colors.onBackground.default}
               size={48}
             />
+          </View>
+        )}
+        {showCheckmark && (
+          <View style={{ alignItems: "center", justifyContent: "center" }}>
+            <Icon name="check" color={colors.onBackground.default} size={48} />
           </View>
         )}
       </View>
