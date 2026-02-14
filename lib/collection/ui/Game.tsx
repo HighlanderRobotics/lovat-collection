@@ -50,18 +50,18 @@ export function Game() {
       !timeoutsRef.current.teleop &&
       !timeoutsRef.current.endgame
     ) {
-      timeoutsRef.current.teleop = setTimeout(() => {
-        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-        setPhase(GamePhase.Teleop);
-      }, 18 * 1000);
-
-      timeoutsRef.current.endgame = setTimeout(
-        () => {
-          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-          setPhase(GamePhase.Endgame);
-        },
-        18 * 1000 + 102 * 1000,
-      ); // 18s auto + 102s teleop = last 30 seconds of match
+      // DISABLED FOR TUTORIAL FILMING - Enable for actual matches
+      // timeoutsRef.current.teleop = setTimeout(() => {
+      //   Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+      //   setPhase(GamePhase.Teleop);
+      // }, 18 * 1000);
+      // timeoutsRef.current.endgame = setTimeout(
+      //   () => {
+      //     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+      //     setPhase(GamePhase.Endgame);
+      //   },
+      //   18 * 1000 + 102 * 1000,
+      // ); // 18s auto + 102s teleop = last 30 seconds of match
     }
   }, [reportState?.gamePhase, reportState?.startTimestamp]);
 

@@ -9,10 +9,11 @@ export const GameTimer = (props: { startTime?: Date }) => {
       setTime(0);
     } else {
       const interval = setInterval(() => {
-        setTime(
-          (new Date().getTime() - (props.startTime?.getTime() ?? 0)) / 1000,
-        );
-      }, 1000);
+        const realTime =
+          (new Date().getTime() - (props.startTime?.getTime() ?? 0)) / 1000;
+        const asymptoticTime = 15 * (1 - Math.exp(-realTime / 15));
+        setTime(asymptoticTime);
+      }, 200);
 
       return () => {
         clearInterval(interval);
