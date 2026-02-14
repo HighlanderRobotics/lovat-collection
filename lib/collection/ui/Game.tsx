@@ -18,7 +18,7 @@ import {
   NeutralZoneAutoIntakeAction,
 } from "./actions/AutoIntakeActions";
 import TraversalActions from "./actions/TraversalActions";
-import { AutoClimbAction } from "./actions/AutoClimbAction";
+import { ClimbAction } from "./actions/ClimbAction";
 import { AutoDisruptAction } from "./actions/AutoDisruptAction";
 import { OutpostAction } from "./actions/OutpostAction";
 import { CampAction } from "./actions/CampAction";
@@ -152,7 +152,7 @@ export function Game() {
         <>
           <ScoreFuelInHubAction />
           <DepotIntakeAction />
-          <AutoClimbAction />
+          <ClimbAction phase={GamePhase.Auto} />
           <OutpostAction setOverlay={(value) => setOverlay(value)} />
           <TraversalActions />
         </>
@@ -190,7 +190,7 @@ export function Game() {
           <TeleopFeedAction />
           <CampAction />
           <DefendAction />
-          <AutoClimbAction />
+          <ClimbAction phase={GamePhase.Endgame} />
         </>
       ),
     },

@@ -68,9 +68,9 @@ export type ReportState = {
   setDriverAbility: (value: DriverAbility) => void;
   setNotes: (value: string) => void;
 
-  isClimbing: () => boolean;
   stopClimbing: () => void;
   hasEventOfType: (...types: MatchEventType[]) => boolean;
+  hasAutoClimbEvent: () => boolean;
   hasEndgameClimbEvent: () => boolean;
   hasOutpostIntakeEvent: () => boolean;
   hasAutoTraversalEvent: () => boolean;

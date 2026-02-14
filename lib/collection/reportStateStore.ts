@@ -75,16 +75,20 @@ export const useReportStateStore = create<ReportState>((set, get) => ({
   setDriverAbility: (value) => set({ driverAbility: value }),
   setNotes: (value) => set({ notes: value }),
 
-  isClimbing: () => {
-    const reportState = get();
-    return reportState.events.some(
-      (item) => item.type === MatchEventType.Climb,
-    );
-  },
-
   hasEventOfType: (...types: MatchEventType[]) => {
     const reportState = get();
     return reportState.events.some((event) => types.includes(event.type));
+  },
+
+  hasAutoClimbEvent: () => {
+    const reportState = get();
+    if (!reportState.startTimestamp) return false;
+
+    const autoEndTime = reportState.startTimestamp.getTime() + 18 * 1000;
+    return reportState.events.some(
+      (event) =>
+        event.type === MatchEventType.Climb && event.timestamp <= autoEndTime,
+    );
   },
 
   hasEndgameClimbEvent: () => {
@@ -94,7 +98,7 @@ export const useReportStateStore = create<ReportState>((set, get) => ({
     const autoEndTime = reportState.startTimestamp.getTime() + 18 * 1000;
     return reportState.events.some(
       (event) =>
-        event.type === MatchEventType.Climb && event.timestamp >= autoEndTime,
+        event.type === MatchEventType.Climb && event.timestamp > autoEndTime,
     );
   },
 

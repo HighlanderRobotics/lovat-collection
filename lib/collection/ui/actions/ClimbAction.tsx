@@ -1,19 +1,19 @@
 import { colors } from "../../../colors";
 import { MatchEventType } from "../../MatchEventType";
+import { GamePhase } from "../../ReportState";
 import { useReportStateStore } from "../../reportStateStore";
 import { figmaDimensionsToFieldInsets } from "../../util";
 import { FieldElement } from "../FieldElement";
 import { GameAction } from "../GameAction";
 
-export function AutoClimbAction() {
+export function ClimbAction(props: { phase: GamePhase }) {
+  const { phase } = props;
+
   const reportState = useReportStateStore();
 
-  const hasClimbEvent = reportState.isClimbing();
-
-  // Hide the button if a climb event has already been added
-  if (hasClimbEvent) {
+  if (phase == GamePhase.Auto && reportState.hasAutoClimbEvent()) return null;
+  if (phase == GamePhase.Endgame && reportState.hasEndgameClimbEvent())
     return null;
-  }
 
   return (
     <FieldElement
