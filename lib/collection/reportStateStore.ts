@@ -20,6 +20,10 @@ import {
 import { ScoresWhileMoving } from "./ScoresWhileMoving";
 import { EndgameClimb } from "./EndgameClimb";
 import { MatchEventType } from "./MatchEventType";
+import {
+  filterInvalidStopEvents,
+  filterUnmatchedStartEvents,
+} from "../models/matchEventFilter";
 
 const initialState = {
   events: [],
@@ -184,6 +188,13 @@ export const useReportStateStore = create<ReportState>((set, get) => ({
   exportScoutReport: () => {
     const reportState = get();
     if (reportState.uuid && reportState.meta) {
+      const eventsWithInvalidStopsRemoved = filterInvalidStopEvents(
+        reportState.events as MatchEvent[],
+      );
+      const validatedEvents = filterUnmatchedStartEvents(
+        eventsWithInvalidStopsRemoved,
+      );
+
       // Map RobotRole enum to string
       const robotRoleToString = (
         role: RobotRole,
@@ -348,7 +359,7 @@ export const useReportStateStore = create<ReportState>((set, get) => ({
                 ] satisfies ScoutReportEvent,
               ]
             : []),
-          ...reportState.events.map((event) => {
+          ...validatedEvents.map((event) => {
             const baseEvent: ScoutReportEvent = [
               (event.timestamp - reportState.startTimestamp!.getTime()) / 1000,
               event.type,
