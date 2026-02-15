@@ -84,7 +84,7 @@ export const useReportStateStore = create<ReportState>((set, get) => ({
     const reportState = get();
     if (!reportState.startTimestamp) return false;
 
-    const autoEndTime = reportState.startTimestamp.getTime() + 18 * 1000;
+    const autoEndTime = reportState.startTimestamp.getTime() + 23 * 1000;
     return reportState.events.some(
       (event) =>
         event.type === MatchEventType.Climb && event.timestamp <= autoEndTime,
@@ -95,7 +95,7 @@ export const useReportStateStore = create<ReportState>((set, get) => ({
     const reportState = get();
     if (!reportState.startTimestamp) return false;
 
-    const autoEndTime = reportState.startTimestamp.getTime() + 18 * 1000;
+    const autoEndTime = reportState.startTimestamp.getTime() + 23 * 1000;
     return reportState.events.some(
       (event) =>
         event.type === MatchEventType.Climb && event.timestamp > autoEndTime,
@@ -115,7 +115,7 @@ export const useReportStateStore = create<ReportState>((set, get) => ({
     const reportState = get();
     if (!reportState.startTimestamp) return false;
 
-    const autoEndTime = reportState.startTimestamp.getTime() + 18 * 1000;
+    const autoEndTime = reportState.startTimestamp.getTime() + 23 * 1000;
     return reportState.events.some(
       (event) =>
         event.type === MatchEventType.Cross && event.timestamp < autoEndTime,
@@ -126,7 +126,7 @@ export const useReportStateStore = create<ReportState>((set, get) => ({
     const reportState = get();
     if (!reportState.startTimestamp) return { trench: false, bump: false };
 
-    const autoEndTime = reportState.startTimestamp.getTime() + 18 * 1000;
+    const autoEndTime = reportState.startTimestamp.getTime() + 23 * 1000;
     const autoCrossEvents = reportState.events.filter(
       (event) =>
         event.type === MatchEventType.Cross && event.timestamp < autoEndTime,

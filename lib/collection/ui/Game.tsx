@@ -53,15 +53,12 @@ export function Game() {
       timeoutsRef.current.teleop = setTimeout(() => {
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
         setPhase(GamePhase.Teleop);
-      }, 18 * 1000);
+      }, 23 * 1000);
 
-      timeoutsRef.current.endgame = setTimeout(
-        () => {
-          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-          setPhase(GamePhase.Endgame);
-        },
-        18 * 1000 + 102 * 1000,
-      ); // 18s auto + 102s teleop = last 30 seconds of match
+      timeoutsRef.current.endgame = setTimeout(() => {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+        setPhase(GamePhase.Endgame);
+      }, 133 * 1000); // 40s teleop - 23s auto = last 30 seconds of match
     }
   }, [reportState?.gamePhase, reportState?.startTimestamp]);
 

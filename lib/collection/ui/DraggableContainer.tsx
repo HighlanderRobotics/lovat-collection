@@ -76,10 +76,10 @@ export const DraggableContainer = ({
     const dx = startXRef.current - startXRef.current; // Will be 0
     const dy = startYRef.current - startYRef.current; // Will be 0
     const totalDistance = 0;
-    // Set timestamp to just before 18 seconds (17999ms) to ensure it's in Auto phase
+    // Set timestamp to just before 23 seconds (22999ms) to ensure it's in Auto phase
     const reportState = useReportStateStore.getState();
     const autoEndTimestamp = reportState.startTimestamp
-      ? reportState.startTimestamp.getTime() + 17999
+      ? reportState.startTimestamp.getTime() + 22999
       : Date.now();
     onEnd(signGestureDirection(dx, dy), totalDistance, autoEndTimestamp);
     // Force stop any ongoing intervals/haptics
