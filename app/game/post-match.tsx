@@ -337,7 +337,12 @@ export default function PostMatch() {
           </View>
           <View style={{ gap: 10 }}>
             <Button
-              disabled={trainingModeEnabled || endgameClimbIsMismatched}
+              disabled={
+                trainingModeEnabled ||
+                endgameClimbIsMismatched ||
+                (reportState.hasEventOfType(MatchEventType.StartScoring) &&
+                  reportState.accuracy === null)
+              }
               variant="primary"
               onPress={() => {
                 router.replace("/game/submit");
