@@ -8,13 +8,6 @@ import { AllianceColor } from "../../models/AllianceColor";
 import { useReportStateStore } from "../reportStateStore";
 import { GamePhase } from "../ReportState";
 
-export enum DragDirection {
-  Up,
-  Down,
-  Right,
-  Left,
-}
-
 export const DraggableContainer = ({
   onStart,
   onMove,
@@ -23,12 +16,12 @@ export const DraggableContainer = ({
   children,
   edgeInsets,
   respectAlliance,
-  dragDirection,
 }: {
   onStart: () => void;
-  onMove: (displacement: number, totalDistance: number) => void;
+  onMove: (dx: number, dy: number, totalDistance: number) => void;
   onEnd: (
-    displacement: number,
+    dx: number,
+    dy: number,
     totalDistance: number,
     timestamp?: number,
   ) => void;
@@ -36,7 +29,6 @@ export const DraggableContainer = ({
   children?: React.ReactNode;
   edgeInsets: [number, number, number, number];
   respectAlliance: boolean;
-  dragDirection: DragDirection;
 }) => {
   const fieldOrientation = useFieldOrientationStore((state) => state.value);
   const reportState = useReportStateStore();
@@ -49,44 +41,17 @@ export const DraggableContainer = ({
   const isActiveRef = useRef<boolean>(false);
   const previousGamePhaseRef = useRef<GamePhase>(gamePhase);
 
-  const signGestureDirection = useCallback(
-    (dx: number, dy: number) => {
-      const sign = {
-        [DragDirection.Up]: -1,
-        [DragDirection.Down]: 1,
-        [DragDirection.Left]: -1,
-        [DragDirection.Right]: 1,
-      }[dragDirection];
-      const allianceRespectingConstant =
-        (fieldOrientation === FieldOrientation.Auspicious ? 1 : -1) *
-        (allianceColor === AllianceColor.Blue ? 1 : -1);
-      const vertical =
-        dragDirection === DragDirection.Up ||
-        dragDirection === DragDirection.Down;
-      const displacement =
-        sign *
-        (vertical ? dy : dx) *
-        (respectAlliance ? allianceRespectingConstant : 1);
-      return displacement;
-    },
-    [dragDirection, fieldOrientation, allianceColor, respectAlliance],
-  );
-
   const triggerEndEvent = useCallback(() => {
-    const dx = startXRef.current - startXRef.current; // Will be 0
-    const dy = startYRef.current - startYRef.current; // Will be 0
     const totalDistance = 0;
-    // Set timestamp to just before 23 seconds (22999ms) to ensure it's in Auto phase
     const reportState = useReportStateStore.getState();
     const autoEndTimestamp = reportState.startTimestamp
       ? reportState.startTimestamp.getTime() + 22999
       : Date.now();
-    onEnd(signGestureDirection(dx, dy), totalDistance, autoEndTimestamp);
-    // Force stop any ongoing intervals/haptics
+    onEnd(0, 0, totalDistance, autoEndTimestamp);
     forceStop?.();
     isActiveRef.current = false;
     initialTouchIdRef.current = null;
-  }, [onEnd, signGestureDirection, forceStop]);
+  }, [onEnd, forceStop]);
 
   useEffect(() => {
     if (
@@ -133,7 +98,7 @@ export const DraggableContainer = ({
           const dx = pageX - startXRef.current;
           const dy = pageY - startYRef.current;
           const totalDistance = Math.sqrt(dx * dx + dy * dy);
-          onMove(signGestureDirection(dx, dy), totalDistance);
+          onMove(dx, dy, totalDistance);
         },
         onPanResponderRelease: (event) => {
           if (initialTouchIdRef.current !== event.nativeEvent.identifier) {
@@ -147,7 +112,7 @@ export const DraggableContainer = ({
           const dx = pageX - startXRef.current;
           const dy = pageY - startYRef.current;
           const totalDistance = Math.sqrt(dx * dx + dy * dy);
-          onEnd(signGestureDirection(dx, dy), totalDistance);
+          onEnd(dx, dy, totalDistance);
         },
         onPanResponderTerminate: (event) => {
           if (initialTouchIdRef.current !== event.nativeEvent.identifier) {
@@ -161,10 +126,10 @@ export const DraggableContainer = ({
           const dx = pageX - startXRef.current;
           const dy = pageY - startYRef.current;
           const totalDistance = Math.sqrt(dx * dx + dy * dy);
-          onEnd(signGestureDirection(dx, dy), totalDistance);
+          onEnd(dx, dy, totalDistance);
         },
       }),
-    [onStart, onMove, onEnd, signGestureDirection, forceStop],
+    [onStart, onMove, onEnd, forceStop],
   );
 
   const [givenTop, givenRight, givenButtom, givenLeft] = edgeInsets;

@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { figmaDimensionsToFieldInsets } from "../../util";
-import { DragDirection, DraggableContainer } from "../DraggableContainer";
+import { DraggableContainer } from "../DraggableContainer";
 import {
   FieldOrientation,
   ScoringMode,
@@ -69,13 +69,13 @@ export function ScoreFuelInHubAction() {
   }, [baseOnStart, hubOpacity]);
 
   const onEnd = useCallback(
-    (displacement: number, totalDistance: number) => {
+    (dx: number, dy: number, totalDistance: number) => {
       Animated.timing(hubOpacity, {
         toValue: 1,
         duration: 150,
         useNativeDriver: true,
       }).start();
-      baseOnEnd(displacement, totalDistance);
+      baseOnEnd(dx, dy, totalDistance);
       setShowCheckmark(true);
       setTimeout(() => setShowCheckmark(false), CHECKMARK_DURATION_MS);
     },
@@ -98,7 +98,6 @@ export function ScoreFuelInHubAction() {
     <DraggableContainer
       edgeInsets={edgeInsets}
       respectAlliance={true}
-      dragDirection={DragDirection.Up}
       onStart={onStart}
       onMove={onMove}
       onEnd={onEnd}
@@ -214,7 +213,6 @@ function GeneralisedFeedAction({
     <DraggableContainer
       edgeInsets={edgeInsets}
       respectAlliance={true}
-      dragDirection={DragDirection.Up}
       onStart={onStart}
       onMove={onMove}
       onEnd={handleOnEnd}
@@ -294,25 +292,30 @@ function useDragFunctionsFromScoringMode(
   updateDisplay: (value: string) => void,
 ): {
   onStart: () => void;
-  // unused _ to fit function parameters
-  onMove: (_: number, totalDistance: number) => void;
-  onEnd: (_: number, totalDistance: number, timestamp?: number) => void;
+  onMove: (dx: number, dy: number, totalDistance: number) => void;
+  onEnd: (
+    dx: number,
+    dy: number,
+    totalDistance: number,
+    timestamp?: number,
+  ) => void;
   forceStop: () => void;
   isCounting: boolean;
 } {
   const reportState = useReportStateStore((state) => state);
-  // const scoringSensitivity = useScoringSensitivityStore
 
   const currentCount = useRef(0);
 
-  // for rate mode - using fast polling approach from gist
   const BASE_INTERVAL_MS = 500;
   const MIN_INTERVAL_MS = 25;
   const DRAG_SENSITIVITY = 200;
+  const DIRECTION_LOCK_THRESHOLD = 20;
 
   const targetIntervalRef = useRef(BASE_INTERVAL_MS);
   const lastIncrementTimeRef = useRef(0);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const initialAngleRef = useRef<number | null>(null);
+  const isDecrementingRef = useRef(false);
   const [isCounting, setIsCounting] = useState(false);
   const [shouldClearDisplay, setShouldClearDisplay] = useState(false);
 
@@ -325,23 +328,29 @@ function useDragFunctionsFromScoringMode(
   }, [isCounting, shouldClearDisplay, updateDisplay]);
 
   const startIncrementing = useCallback(() => {
-    if (intervalRef.current) return; // Already running
+    if (intervalRef.current) return;
 
     lastIncrementTimeRef.current = Date.now();
 
-    // Use a fast polling interval and check elapsed time
-    // This allows the rate to change dynamically as the user drags
     intervalRef.current = setInterval(() => {
       const now = Date.now();
       const elapsed = now - lastIncrementTimeRef.current;
 
       if (elapsed >= targetIntervalRef.current) {
-        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-        currentCount.current += 1;
-        updateDisplay(currentCount.current.toString());
+        if (isDecrementingRef.current) {
+          if (currentCount.current > 0) {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft);
+            currentCount.current -= 1;
+            updateDisplay(currentCount.current.toString());
+          }
+        } else {
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+          currentCount.current += 1;
+          updateDisplay(currentCount.current.toString());
+        }
         lastIncrementTimeRef.current = now;
       }
-    }, 16); // ~60fps polling
+    }, 16);
   }, [updateDisplay]);
 
   const stopIncrementing = useCallback(() => {
@@ -381,17 +390,21 @@ function useDragFunctionsFromScoringMode(
         currentCount.current = 0;
         updateDisplay("0");
       },
-      onMove: (_, totalDistance) => {
+      onMove: (dx, dy, totalDistance) => {
         if (!isCounting) return;
 
         const count = pixelsToItems(totalDistance);
         if (count !== currentCount.current) {
-          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+          if (count > currentCount.current) {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+          } else {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft);
+          }
           currentCount.current = count;
           updateDisplay(count.toString());
         }
       },
-      onEnd: (_, totalDistance, timestamp) => {
+      onEnd: (dx, dy, totalDistance, timestamp) => {
         setIsCounting(false);
         const finalCount = pixelsToItems(totalDistance);
         if (finalCount > 0) {
@@ -413,6 +426,8 @@ function useDragFunctionsFromScoringMode(
       onStart: () => {
         if (isCounting) return;
 
+        initialAngleRef.current = null;
+        isDecrementingRef.current = false;
         targetIntervalRef.current = BASE_INTERVAL_MS;
         setIsCounting(true);
         currentCount.current = 0;
@@ -423,10 +438,25 @@ function useDragFunctionsFromScoringMode(
         });
         startIncrementing();
       },
-      onMove: (_, totalDistance) => {
+      onMove: (dx, dy, totalDistance) => {
         if (!isCounting) return;
 
-        // Linear interpolation from BASE_INTERVAL_MS to MIN_INTERVAL_MS
+        if (initialAngleRef.current === null) {
+          if (totalDistance >= DIRECTION_LOCK_THRESHOLD) {
+            initialAngleRef.current = Math.atan2(dy, dx);
+            isDecrementingRef.current = false;
+          }
+        } else {
+          const currentAngle = Math.atan2(dy, dx);
+          let angleDiff = currentAngle - initialAngleRef.current;
+          if (angleDiff > Math.PI) {
+            angleDiff -= 2 * Math.PI;
+          } else if (angleDiff < -Math.PI) {
+            angleDiff += 2 * Math.PI;
+          }
+          isDecrementingRef.current = Math.abs(angleDiff) > Math.PI / 2;
+        }
+
         const speedMultiplier = Math.max(
           0,
           Math.min(1, totalDistance / DRAG_SENSITIVITY),
@@ -436,7 +466,7 @@ function useDragFunctionsFromScoringMode(
             speedMultiplier * (BASE_INTERVAL_MS - MIN_INTERVAL_MS),
         );
       },
-      onEnd: (_, __, timestamp) => {
+      onEnd: (dx, dy, totalDistance, timestamp) => {
         stopIncrementing();
         if (currentCount.current > 0) {
           reportState.addEvent({
