@@ -317,6 +317,8 @@ function useDragFunctionsFromScoringMode(
   const initialAngleRef = useRef<number | null>(null);
   const isDecrementingRef = useRef(false);
   const [isCounting, setIsCounting] = useState(false);
+  const isCountingRef = useRef(isCounting);
+  isCountingRef.current = isCounting;
   const [shouldClearDisplay, setShouldClearDisplay] = useState(false);
 
   // Clear display when isCounting changes to false and shouldClearDisplay is set
@@ -380,7 +382,7 @@ function useDragFunctionsFromScoringMode(
   if (scoringMode === ScoringMode.Count) {
     return {
       onStart: () => {
-        if (isCounting) return;
+        if (isCountingRef.current) return;
 
         setIsCounting(true);
         reportState.addEvent({
@@ -391,7 +393,7 @@ function useDragFunctionsFromScoringMode(
         updateDisplay("0");
       },
       onMove: (dx, dy, totalDistance) => {
-        if (!isCounting) return;
+        if (!isCountingRef.current) return;
 
         const count = pixelsToItems(totalDistance);
         if (count !== currentCount.current) {
@@ -424,7 +426,7 @@ function useDragFunctionsFromScoringMode(
   } else {
     return {
       onStart: () => {
-        if (isCounting) return;
+        if (isCountingRef.current) return;
 
         initialAngleRef.current = null;
         isDecrementingRef.current = false;
@@ -439,7 +441,7 @@ function useDragFunctionsFromScoringMode(
         startIncrementing();
       },
       onMove: (dx, dy, totalDistance) => {
-        if (!isCounting) return;
+        if (!isCountingRef.current) return;
 
         if (initialAngleRef.current === null) {
           if (totalDistance >= DIRECTION_LOCK_THRESHOLD) {

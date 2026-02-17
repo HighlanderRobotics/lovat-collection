@@ -83,6 +83,10 @@ export const DraggableContainer = ({
             return;
           }
 
+          if (isActiveRef.current) {
+            return;
+          }
+
           const { pageX, pageY } = event.nativeEvent;
           startXRef.current = pageX;
           startYRef.current = pageY;
