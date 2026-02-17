@@ -369,14 +369,12 @@ function useDragFunctionsFromScoringMode(
     setShouldClearDisplay(true);
   }, [stopIncrementing]);
 
-  // for count mode - quadratic falloff from gist
-  // Using formula: items = (pixels / SCALE_FACTOR)^2
-  // Solving for SCALE_FACTOR: 50 = (400 / k)^2 => k = 400 / sqrt(50) ~= 56.57
-  const SCALE_FACTOR = 400 / Math.sqrt(50);
+  // for count mode - exponential falloff
+  const SCALE_FACTOR = 80;
 
   const pixelsToItems = (pixels: number): number => {
     if (pixels <= 0) return 0;
-    return Math.floor(Math.pow(pixels / SCALE_FACTOR, 2));
+    return Math.floor(Math.pow(1 + 1 / SCALE_FACTOR, pixels));
   };
 
   if (scoringMode === ScoringMode.Count) {
