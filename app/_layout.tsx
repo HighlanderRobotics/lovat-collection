@@ -4,15 +4,8 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { colors } from "../lib/colors";
 import { KeyboardProvider } from "react-native-keyboard-controller";
 
-import {
-  useFonts,
-  Heebo_400Regular,
-  Heebo_500Medium,
-  Heebo_600SemiBold,
-  Heebo_700Bold,
-} from "@expo-google-fonts/heebo";
-
-import { useCallback, useEffect } from "react";
+import { useEffect } from "react";
+import { useFonts } from "expo-font";
 import { getServiceLoader, useTournamentsStore } from "../lib/services";
 
 import TimeAgo from "javascript-time-ago";
@@ -32,7 +25,7 @@ import { HistoryEntry } from "../lib/storage/historyStore";
 
 const { UIManager } = NativeModules;
 
-if (UIManager.setLayoutAnimationEnabledExperimental) {
+if (UIManager?.setLayoutAnimationEnabledExperimental) {
   UIManager.setLayoutAnimationEnabledExperimental(true);
 }
 
@@ -100,20 +93,27 @@ export default function Layout() {
   });
 
   const [fontsLoaded, fontError] = useFonts({
-    Heebo_400Regular,
-    Heebo_500Medium,
-    Heebo_600SemiBold,
-    Heebo_700Bold,
+    Heebo_400Regular: require("../assets/fonts/Heebo-Regular.ttf"),
+    Heebo_500Medium: require("../assets/fonts/Heebo-Medium.ttf"),
+    Heebo_600SemiBold: require("../assets/fonts/Heebo-SemiBold.ttf"),
+    Heebo_700Bold: require("../assets/fonts/Heebo-Bold.ttf"),
     MaterialSymbols_500Rounded: require("../assets/fonts/Material-Symbols-Rounded.ttf"),
     MaterialSymbols_500Rounded40px: require("../assets/fonts/Material-Symbols-Rounded-40px.ttf"),
     MaterialSymbols_500Rounded48px: require("../assets/fonts/Material-Symbols-Rounded-48px.ttf"),
   });
 
-  const onLayoutRootView = useCallback(async () => {
+  useEffect(() => {
     if (fontsLoaded || fontError) {
-      await SplashScreen.hideAsync();
+      SplashScreen.hideAsync();
     }
   }, [fontsLoaded, fontError]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      SplashScreen.hideAsync();
+    }, 1000);
+    return () => clearTimeout(timer);
+  }, []);
 
   useEffect(() => {
     loadServices();
@@ -131,7 +131,6 @@ export default function Layout() {
     <KeyboardProvider>
       <GestureHandlerRootView
         style={{ backgroundColor: colors.background.default, flex: 1 }}
-        onLayout={onLayoutRootView}
       >
         <Stack
           screenOptions={{
