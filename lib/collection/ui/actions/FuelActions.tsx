@@ -118,6 +118,9 @@ export function ScoreFuelInHubAction() {
       </Animated.View>
       <TextInput
         pointerEvents="none"
+        editable={false}
+        showSoftInputOnFocus={false}
+        selectTextOnFocus={false}
         ref={textContainerRef}
         style={{
           position: "absolute",
@@ -230,6 +233,9 @@ function GeneralisedFeedAction({
       >
         <TextInput
           pointerEvents="none"
+          editable={false}
+          showSoftInputOnFocus={false}
+          selectTextOnFocus={false}
           ref={textContainerRef}
           style={{
             position: "absolute",
