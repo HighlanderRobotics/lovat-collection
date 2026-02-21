@@ -86,15 +86,22 @@ export const ScoutReportCode = ({
   scoutReport: ScoutReport;
 }) => {
   const maxCodeLength = useQrCodeSizeStore((state) => state.value);
-  const { width } = useWindowDimensions();
+  const [width, setWidth] = useState<number | null>(null);
+
   const [activeIndex, setActiveIndex] = useState(0);
   const flatListRef = useRef<FlatList<ReportChunk>>(null);
 
   const chunks = splitScoutReportIntoCodes(scoutReport, maxCodeLength);
   const showPagination = chunks.length > 1;
 
+  const handleLayout = (event) => {
+    setWidth(event.nativeEvent.layout.width);
+  };
+
   const onScroll = useCallback(
     (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+      if (width === null) return false;
+
       const offsetX = event.nativeEvent.contentOffset.x;
       const index = Math.round(offsetX / width);
       setActiveIndex(index);
@@ -105,6 +112,7 @@ export const ScoutReportCode = ({
   const renderItem = useCallback(
     ({ item }: { item: ReportChunk }) => (
       <View
+        onLayout={handleLayout}
         style={{
           width,
           padding: 16,
