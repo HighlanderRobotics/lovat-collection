@@ -1,9 +1,9 @@
 import {
   View,
   FlatList,
-  useWindowDimensions,
   NativeScrollEvent,
   NativeSyntheticEvent,
+  LayoutChangeEvent,
 } from "react-native";
 import { colors } from "../../colors";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -94,7 +94,7 @@ export const ScoutReportCode = ({
   const chunks = splitScoutReportIntoCodes(scoutReport, maxCodeLength);
   const showPagination = chunks.length > 1;
 
-  const handleLayout = (event) => {
+  const handleLayout = (event: LayoutChangeEvent) => {
     setWidth(event.nativeEvent.layout.width);
   };
 
