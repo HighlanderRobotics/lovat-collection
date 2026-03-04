@@ -379,8 +379,7 @@ function useDragFunctionsFromScoringMode(
   const SCALE_FACTOR = 80;
 
   const pixelsToItems = (pixels: number): number => {
-    if (pixels <= 0) return 0;
-    return Math.floor(Math.pow(1 + 1 / SCALE_FACTOR, pixels));
+    return Math.floor(Math.pow(1 + 1 / SCALE_FACTOR, Math.max(0, pixels)));
   };
 
   if (scoringMode === ScoringMode.Count) {
@@ -393,8 +392,9 @@ function useDragFunctionsFromScoringMode(
           type: matchEventStartType,
           position: matchEventPosition,
         });
-        currentCount.current = 0;
-        updateDisplay("0");
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+        currentCount.current = 1;
+        updateDisplay("1");
       },
       onMove: (dx, dy, totalDistance) => {
         if (!isCountingRef.current) return;
@@ -413,14 +413,13 @@ function useDragFunctionsFromScoringMode(
       onEnd: (dx, dy, totalDistance, timestamp) => {
         setIsCounting(false);
         const finalCount = pixelsToItems(totalDistance);
-        if (finalCount > 0) {
-          reportState.addEvent({
-            type: matchEventEndType,
-            position: matchEventPosition,
-            quantity: finalCount,
-            timestamp,
-          });
-        }
+        // Use currentCount which starts at 1, so taps record quantity 1
+        reportState.addEvent({
+          type: matchEventEndType,
+          position: matchEventPosition,
+          quantity: Math.max(finalCount, currentCount.current),
+          timestamp,
+        });
         currentCount.current = 0;
         setShouldClearDisplay(true);
       },
@@ -436,8 +435,9 @@ function useDragFunctionsFromScoringMode(
         isDecrementingRef.current = false;
         targetIntervalRef.current = BASE_INTERVAL_MS;
         setIsCounting(true);
-        currentCount.current = 0;
-        updateDisplay("0");
+        currentCount.current = 1;
+        updateDisplay("1");
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
         reportState.addEvent({
           type: matchEventStartType,
           position: matchEventPosition,
@@ -474,14 +474,18 @@ function useDragFunctionsFromScoringMode(
       },
       onEnd: (dx, dy, totalDistance, timestamp) => {
         stopIncrementing();
-        if (currentCount.current > 0) {
-          reportState.addEvent({
-            type: matchEventEndType,
-            position: matchEventPosition,
-            quantity: currentCount.current,
-            timestamp,
-          });
+        const quantity = Math.max(currentCount.current, 1);
+        // Haptic feedback for taps (when no haptic fired during hold)
+        if (currentCount.current === 0) {
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
         }
+        // Always record a stop event with at least quantity 1 (for taps)
+        reportState.addEvent({
+          type: matchEventEndType,
+          position: matchEventPosition,
+          quantity,
+          timestamp,
+        });
         setIsCounting(false);
         currentCount.current = 0;
         setShouldClearDisplay(true);
