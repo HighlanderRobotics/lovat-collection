@@ -39,6 +39,7 @@ export const EndgameClimbString = z.enum([
 ]);
 
 export const scoutReportSchema = z.object({
+  appVersion: z.string().optional(),
   uuid: z.string(),
   tournamentKey: z.string(),
   matchType: MatchTypeString,

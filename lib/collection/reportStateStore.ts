@@ -20,6 +20,7 @@ import {
 import { ScoresWhileMoving } from "./ScoresWhileMoving";
 import { EndgameClimb } from "./EndgameClimb";
 import { MatchEventType } from "./MatchEventType";
+import Constants from "expo-constants";
 
 const initialState = {
   events: [],
@@ -310,6 +311,7 @@ export const useReportStateStore = create<ReportState>((set, get) => ({
       };
 
       const out = {
+        appVersion: Constants.expoConfig?.version,
         uuid: reportState.uuid,
         tournamentKey: reportState.meta.matchIdentity.tournamentKey,
         matchType: matchTypeToString(reportState.meta.matchIdentity.matchType),

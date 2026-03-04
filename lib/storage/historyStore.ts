@@ -7,6 +7,7 @@ import {
 } from "../models/ScoutReportMeta";
 import { z } from "zod";
 import { persist } from "zustand/middleware";
+import { migrateScoutReport } from "./scoutReportMigrations";
 
 export const historyEntrySchema = z.object({
   scoutReport: scoutReportSchema,
@@ -69,6 +70,21 @@ export const useHistoryStore = create(
     {
       name: "historyStore",
       storage: storage,
+      onRehydrateStorage: () => (state) => {
+        if (!state) return;
+        const migrated = state.history.map((entry) => ({
+          ...entry,
+          scoutReport: migrateScoutReport(entry.scoutReport),
+        }));
+        // Only update if migrations were applied
+        if (
+          migrated.some(
+            (e, i) => e.scoutReport !== state.history[i].scoutReport,
+          )
+        ) {
+          useHistoryStore.setState({ history: migrated });
+        }
+      },
     },
   ),
 );
