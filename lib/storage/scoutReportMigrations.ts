@@ -20,6 +20,24 @@ const startToStopEventType: Partial<Record<MatchEventType, MatchEventType>> = {
   [MatchEventType.StartFeeding]: MatchEventType.StopFeeding,
 };
 
+const undoStartToStopEventType: Partial<
+  Record<MatchEventType, MatchEventType>
+> = {
+  [MatchEventType.StartScoring]: MatchEventType.StopScoring,
+  [MatchEventType.StartFeeding]: MatchEventType.StopFeeding,
+  [MatchEventType.StartDefending]: MatchEventType.StopDefending,
+  [MatchEventType.StartCamping]: MatchEventType.StopCamping,
+};
+
+const undoStopToStartEventType: Partial<
+  Record<MatchEventType, MatchEventType>
+> = {
+  [MatchEventType.StopScoring]: MatchEventType.StartScoring,
+  [MatchEventType.StopFeeding]: MatchEventType.StartFeeding,
+  [MatchEventType.StopDefending]: MatchEventType.StartDefending,
+  [MatchEventType.StopCamping]: MatchEventType.StartCamping,
+};
+
 function migrateOrphanedStartEvents(
   events: ScoutReportEvent[],
 ): ScoutReportEvent[] {
@@ -41,6 +59,39 @@ function migrateOrphanedStartEvents(
   return result;
 }
 
+function migrateBrokenUndoStartEvents(
+  events: ScoutReportEvent[],
+): ScoutReportEvent[] {
+  const result: ScoutReportEvent[] = [];
+  const pendingStops = new Map<MatchEventType, number>();
+
+  for (let i = events.length - 1; i >= 0; i--) {
+    const event = events[i];
+    const eventType = event[1] as MatchEventType;
+
+    const startType = undoStopToStartEventType[eventType];
+    if (startType !== undefined) {
+      pendingStops.set(startType, (pendingStops.get(startType) ?? 0) + 1);
+      result.unshift(event);
+      continue;
+    }
+
+    const stopType = undoStartToStopEventType[eventType];
+    if (stopType !== undefined) {
+      const pending = pendingStops.get(eventType) ?? 0;
+      if (pending > 0) {
+        pendingStops.set(eventType, pending - 1);
+        result.unshift(event);
+      }
+      continue;
+    }
+
+    result.unshift(event);
+  }
+
+  return result;
+}
+
 type ScoutReportMigration = {
   version: string;
   migrate: (scoutReport: ScoutReport) => ScoutReport;
@@ -52,6 +103,13 @@ const scoutReportMigrations: ScoutReportMigration[] = [
     migrate: (scoutReport) => ({
       ...scoutReport,
       events: migrateOrphanedStartEvents(scoutReport.events),
+    }),
+  },
+  {
+    version: "26.0.4",
+    migrate: (scoutReport) => ({
+      ...scoutReport,
+      events: migrateBrokenUndoStartEvents(scoutReport.events),
     }),
   },
 ];

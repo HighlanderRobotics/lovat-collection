@@ -210,8 +210,6 @@ function GeneralisedFeedAction({
     setTimeout(() => setShowCheckmark(false), CHECKMARK_DURATION_MS);
   }, [forceStop]);
 
-  console.log({ isCounting });
-
   return (
     <DraggableContainer
       edgeInsets={edgeInsets}

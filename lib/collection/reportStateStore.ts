@@ -172,14 +172,43 @@ export const useReportStateStore = create<ReportState>((set, get) => ({
           },
         ],
       });
-      console.log(get().events);
+      console.log({ event });
     }
   },
   undoEvent: () => {
     const reportState = get();
     if (reportState.events) {
+      const events = reportState.events as MatchEvent[];
+      if (events.length === 0) {
+        return;
+      }
+
+      const lastEvent = events[events.length - 1];
+      const stopToStartType = new Map<MatchEventType, MatchEventType>([
+        [MatchEventType.StopScoring, MatchEventType.StartScoring],
+        [MatchEventType.StopFeeding, MatchEventType.StartFeeding],
+        [MatchEventType.StopDefending, MatchEventType.StartDefending],
+        [MatchEventType.StopCamping, MatchEventType.StartCamping],
+      ]);
+
+      const startType = stopToStartType.get(lastEvent.type);
+      if (!startType) {
+        set({
+          events: events.slice(0, -1),
+        });
+        return;
+      }
+
+      const updatedEvents = events.slice(0, -1);
+      for (let i = updatedEvents.length - 1; i >= 0; i -= 1) {
+        if (updatedEvents[i].type === startType) {
+          updatedEvents.splice(i, 1);
+          break;
+        }
+      }
+
       set({
-        events: reportState.events.slice(0, -1),
+        events: updatedEvents,
       });
     }
   },
