@@ -339,7 +339,10 @@ const AutomaticMatchSelection = ({
   return (
     <View style={{ alignItems: "center", justifyContent: "center", flex: 1 }}>
       {tournament && (
-        <Heading1Small color={colors.body.default}>
+        <Heading1Small
+          color={colors.body.default}
+          style={{ textAlign: "center" }}
+        >
           {tournament.date.split("-")[0]} {tournament.name}
         </Heading1Small>
       )}
