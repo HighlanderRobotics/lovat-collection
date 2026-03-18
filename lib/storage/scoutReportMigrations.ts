@@ -106,7 +106,7 @@ const scoutReportMigrations: ScoutReportMigration[] = [
     }),
   },
   {
-    version: "26.0.4",
+    version: "26.0.5",
     migrate: (scoutReport) => ({
       ...scoutReport,
       events: migrateBrokenUndoStartEvents(scoutReport.events),
