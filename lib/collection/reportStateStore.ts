@@ -172,7 +172,7 @@ export const useReportStateStore = create<ReportState>((set, get) => ({
           },
         ],
       });
-      console.log({ event });
+      console.log(get().events);
     }
   },
   undoEvent: () => {
@@ -192,10 +192,11 @@ export const useReportStateStore = create<ReportState>((set, get) => ({
       ]);
 
       const startType = stopToStartType.get(lastEvent.type);
-      if (!startType) {
+      if (startType === undefined) {
         set({
           events: events.slice(0, -1),
         });
+        console.log(get().events);
         return;
       }
 
@@ -210,6 +211,7 @@ export const useReportStateStore = create<ReportState>((set, get) => ({
       set({
         events: updatedEvents,
       });
+      console.log(get().events);
     }
   },
   exportScoutReport: () => {
