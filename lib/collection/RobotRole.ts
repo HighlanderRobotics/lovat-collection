@@ -4,6 +4,7 @@ export enum RobotRole {
   Feeding,
   Defending,
   Immobile,
+  Stealing,
 }
 
 export type RobotRoleDescription = {
@@ -48,5 +49,12 @@ export const robotRoleDescriptions = [
     localizedLongDescription:
       "The robot was immobile or non-functional during the match.",
     num: 4,
+  },
+  {
+    role: RobotRole.Stealing,
+    localizedDescription: "Stealing",
+    localizedLongDescription:
+      "The robot focuses on stealing fuel from the opposing alliance.",
+    num: 5,
   },
 ] as const satisfies RobotRoleDescription[];

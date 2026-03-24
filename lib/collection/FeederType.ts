@@ -2,6 +2,7 @@ export enum FeederType {
   Continuous,
   StopToShoot,
   Dump,
+  Push,
 }
 
 export type FeederTypeDescription = {
@@ -30,5 +31,11 @@ export const feederTypeDescriptions = [
     localizedDescription: "Dump",
     localizedLongDescription: "The robot dumps fuel when feeding.",
     num: 2,
+  },
+  {
+    feederType: FeederType.Push,
+    localizedDescription: "Push",
+    localizedLongDescription: "The robot pushes fuel when feeding.",
+    num: 3,
   },
 ] as const satisfies FeederTypeDescription[];

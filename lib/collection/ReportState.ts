@@ -14,6 +14,7 @@ import { Beached } from "./Beached";
 import { DefenseEffectiveness } from "./DefenseEffectiveness";
 import { ScoresWhileMoving } from "./ScoresWhileMoving";
 import { EndgameClimb } from "./EndgameClimb";
+import { StealerType } from "./StealerType";
 
 export enum GamePhase {
   Auto,
@@ -45,6 +46,7 @@ export type ReportState = {
   scoresWhileMoving: ScoresWhileMoving;
   climbResult: EndgameClimb;
   driverAbility: DriverAbility;
+  stealingType: StealerType[];
   notes: string;
 
   // Actions
@@ -61,6 +63,7 @@ export type ReportState = {
   setAutoClimb: (value: AutoClimb) => void;
   setIntakeType: (value: IntakeType) => void;
   setFeederType: (value: FeederType[]) => void;
+  setStealerType: (value: StealerType[]) => void;
   setBeached: (value: Beached) => void;
   setDefenseEffectiveness: (value: DefenseEffectiveness) => void;
   setScoresWhileMoving: (value: ScoresWhileMoving) => void;

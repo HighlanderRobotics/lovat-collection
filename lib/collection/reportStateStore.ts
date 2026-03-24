@@ -21,6 +21,7 @@ import { ScoresWhileMoving } from "./ScoresWhileMoving";
 import { EndgameClimb } from "./EndgameClimb";
 import { MatchEventType } from "./MatchEventType";
 import Constants from "expo-constants";
+import { StealerType } from "./StealerType";
 
 const initialState = {
   events: [],
@@ -39,6 +40,7 @@ const initialState = {
   climbResult: EndgameClimb.NotAttempted,
   driverAbility: DriverAbility.Average,
   notes: "",
+  stealingType: [] as StealerType[],
 };
 
 export const useReportStateStore = create<ReportState>((set, get) => ({
@@ -75,6 +77,7 @@ export const useReportStateStore = create<ReportState>((set, get) => ({
   setClimbResult: (value) => set({ climbResult: value }),
   setDriverAbility: (value) => set({ driverAbility: value }),
   setNotes: (value) => set({ notes: value }),
+  setStealerType: (value) => set({ notes: value }),
 
   hasEventOfType: (...types: MatchEventType[]) => {
     const reportState = get();
@@ -220,7 +223,8 @@ export const useReportStateStore = create<ReportState>((set, get) => ({
       // Map RobotRole enum to string
       const robotRoleToString = (
         role: RobotRole,
-      ): "CYCLING" | "SCORING" | "FEEDING" | "DEFENDING" | "IMMOBILE" => {
+      ): "CYCLING" | "SCORING" | "FEEDING" | "DEFENDING" | "IMMOBILE" 
+      | "STEALING" => {
         switch (role) {
           case RobotRole.Cycling:
             return "CYCLING";
@@ -231,7 +235,10 @@ export const useReportStateStore = create<ReportState>((set, get) => ({
           case RobotRole.Defending:
             return "DEFENDING";
           case RobotRole.Immobile:
+          default:
             return "IMMOBILE";
+          case RobotRole.Stealing:
+            return "STEALING";
         }
       };
 
@@ -284,14 +291,28 @@ export const useReportStateStore = create<ReportState>((set, get) => ({
       // Map FeederType enum to string
       const feederTypeToString = (
         feederType: FeederType,
-      ): "CONTINUOUS" | "STOP_TO_SHOOT" | "DUMP" => {
+      ): "CONTINUOUS" | "STOP_TO_SHOOT" | "PUSH" => {
         switch (feederType) {
           case FeederType.Continuous:
             return "CONTINUOUS";
           case FeederType.StopToShoot:
             return "STOP_TO_SHOOT";
-          case FeederType.Dump:
-            return "DUMP";
+          case FeederType.Push:
+            return "PUSH";
+          default:
+            return "PUSH";
+        }
+      };
+
+      const stealerTypeToString = (
+        stealerType: StealerType,
+      ): "TO_ALLIANCE" | "TO_NEUTRAL"  => {
+        switch (stealerType) {
+          case StealerType.toAlliance:
+            return "TO_ALLIANCE";
+          case StealerType.toNeutral:
+            return "TO_NEUTRAL";
+
         }
       };
 
@@ -367,6 +388,7 @@ export const useReportStateStore = create<ReportState>((set, get) => ({
         scoresWhileMoving:
           reportState.scoresWhileMoving === ScoresWhileMoving.Yes,
         endgameClimb: endgameClimbToString(reportState.climbResult),
+        stealerTypes: reportState.stealerType.map()
         driverAbility: driverAbilityDescriptions.find(
           (desc) => desc.ability === reportState.driverAbility,
         )!.numericalRating,
