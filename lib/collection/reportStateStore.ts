@@ -21,7 +21,7 @@ import { ScoresWhileMoving } from "./ScoresWhileMoving";
 import { EndgameClimb } from "./EndgameClimb";
 import { MatchEventType } from "./MatchEventType";
 import Constants from "expo-constants";
-import { StealerType } from "./StealerType";
+import { StealingType } from "./StealingType";
 
 const initialState = {
   events: [],
@@ -40,7 +40,7 @@ const initialState = {
   climbResult: EndgameClimb.NotAttempted,
   driverAbility: DriverAbility.Average,
   notes: "",
-  stealingType: [] as StealerType[],
+  stealingType: [] as StealingType[],
 };
 
 export const useReportStateStore = create<ReportState>((set, get) => ({
@@ -77,7 +77,7 @@ export const useReportStateStore = create<ReportState>((set, get) => ({
   setClimbResult: (value) => set({ climbResult: value }),
   setDriverAbility: (value) => set({ driverAbility: value }),
   setNotes: (value) => set({ notes: value }),
-  setStealerType: (value) => set({ stealingType: value }),
+  setStealingType: (value) => set({ stealingType: value }),
 
   hasEventOfType: (...types: MatchEventType[]) => {
     const reportState = get();
@@ -309,13 +309,13 @@ export const useReportStateStore = create<ReportState>((set, get) => ({
         }
       };
 
-      const stealerTypeToString = (
-        stealerType: StealerType,
+      const stealingTypeToString = (
+        stealingType: StealingType,
       ): "TO_ALLIANCE" | "TO_NEUTRAL" => {
-        switch (stealerType) {
-          case StealerType.toAlliance:
+        switch (stealingType) {
+          case StealingType.toAlliance:
             return "TO_ALLIANCE";
-          case StealerType.toNeutral:
+          case StealingType.toNeutral:
             return "TO_NEUTRAL";
         }
       };
@@ -392,7 +392,7 @@ export const useReportStateStore = create<ReportState>((set, get) => ({
         scoresWhileMoving:
           reportState.scoresWhileMoving === ScoresWhileMoving.Yes,
         endgameClimb: endgameClimbToString(reportState.climbResult),
-        stealerType: reportState.stealingType.map(stealerTypeToString),
+        stealingType: reportState.stealingType.map(stealingTypeToString),
         driverAbility: driverAbilityDescriptions.find(
           (desc) => desc.ability === reportState.driverAbility,
         )!.numericalRating,

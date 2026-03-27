@@ -35,7 +35,7 @@ import React from "react";
 import { Checkbox } from "../../lib/components/Checkbox";
 import { RobotRole } from "../../lib/collection/RobotRole";
 import { MatchEventType } from "../../lib/collection/MatchEventType";
-import { stealerTypeDescriptions } from "../../lib/collection/StealerType";
+import { stealingTypeDescriptions } from "../../lib/collection/StealingType";
 
 export default function PostMatch() {
   const reportState = useReportStateStore();
@@ -132,13 +132,13 @@ export default function PostMatch() {
           {reportState.robotRole.includes(RobotRole.Stealing) && (
             <PostMatchSelector
               title="Stealing Type"
-              items={stealerTypeDescriptions.map((desc) => ({
+              items={stealingTypeDescriptions.map((desc) => ({
                 label: desc.localizedDescription,
                 description: desc.localizedLongDescription,
-                value: desc.stealerType,
+                value: desc.stealingType,
               }))}
               selected={reportState.stealingType}
-              onChange={reportState.setStealerType}
+              onChange={reportState.setStealingType}
               multiSelect
             />
           )}

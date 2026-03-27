@@ -29,6 +29,7 @@ const EXAMPLE_SCOUT_REPORT: ScoutReport = {
   autoClimb: "FAILED",
   intakeType: "GROUND",
   feederTypes: ["STOP_TO_SHOOT"],
+  stealingType: ["TO_ALLIANCE", "TO_NEUTRAL"],
   beached: "ON_FUEL",
   defenseEffectiveness: 4,
   scoresWhileMoving: true,

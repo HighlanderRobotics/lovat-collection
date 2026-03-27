@@ -35,7 +35,7 @@ export const FeederTypeString = z.enum([
   "DUMP",
   "PUSH",
 ]);
-export const StealerTypeString = z.enum(["TO_ALLIANCE", "TO_NEUTRAL"]);
+export const StealingTypeString = z.enum(["TO_ALLIANCE", "TO_NEUTRAL"]);
 export const BeachedString = z.enum(["ON_FUEL", "ON_BUMP", "BOTH", "NEITHER"]);
 export const EndgameClimbString = z.enum([
   "NOT_ATTEMPTED",
@@ -62,7 +62,7 @@ export const scoutReportSchema = z.object({
   autoClimb: AutoClimbString,
   intakeType: IntakeTypeString,
   feederTypes: z.array(FeederTypeString),
-  stealerType: z.array(StealerTypeString),
+  stealingType: z.array(StealingTypeString),
   beached: BeachedString,
   defenseEffectiveness: z.number().or(z.null()),
   scoresWhileMoving: z.boolean(),

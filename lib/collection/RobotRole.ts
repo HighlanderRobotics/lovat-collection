@@ -54,7 +54,7 @@ export const robotRoleDescriptions = [
     role: RobotRole.Stealing,
     localizedDescription: "Stealing",
     localizedLongDescription:
-      "The robot focuses on stealing fuel from the opposing alliance.",
+      "The robot steals fuel from the opposing alliance.",
     num: 5,
   },
 ] as const satisfies RobotRoleDescription[];
