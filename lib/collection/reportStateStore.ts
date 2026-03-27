@@ -77,7 +77,7 @@ export const useReportStateStore = create<ReportState>((set, get) => ({
   setClimbResult: (value) => set({ climbResult: value }),
   setDriverAbility: (value) => set({ driverAbility: value }),
   setNotes: (value) => set({ notes: value }),
-  setStealerType: (value) => set({ notes: value }),
+  setStealerType: (value) => set({ stealingType: value }),
 
   hasEventOfType: (...types: MatchEventType[]) => {
     const reportState = get();
@@ -223,8 +223,13 @@ export const useReportStateStore = create<ReportState>((set, get) => ({
       // Map RobotRole enum to string
       const robotRoleToString = (
         role: RobotRole,
-      ): "CYCLING" | "SCORING" | "FEEDING" | "DEFENDING" | "IMMOBILE" 
-      | "STEALING" => {
+      ):
+        | "CYCLING"
+        | "SCORING"
+        | "FEEDING"
+        | "DEFENDING"
+        | "IMMOBILE"
+        | "STEALING" => {
         switch (role) {
           case RobotRole.Cycling:
             return "CYCLING";
@@ -306,13 +311,12 @@ export const useReportStateStore = create<ReportState>((set, get) => ({
 
       const stealerTypeToString = (
         stealerType: StealerType,
-      ): "TO_ALLIANCE" | "TO_NEUTRAL"  => {
+      ): "TO_ALLIANCE" | "TO_NEUTRAL" => {
         switch (stealerType) {
           case StealerType.toAlliance:
             return "TO_ALLIANCE";
           case StealerType.toNeutral:
             return "TO_NEUTRAL";
-
         }
       };
 
@@ -388,7 +392,7 @@ export const useReportStateStore = create<ReportState>((set, get) => ({
         scoresWhileMoving:
           reportState.scoresWhileMoving === ScoresWhileMoving.Yes,
         endgameClimb: endgameClimbToString(reportState.climbResult),
-        stealerTypes: reportState.stealerType.map()
+        stealerType: reportState.stealingType.map(stealerTypeToString),
         driverAbility: driverAbilityDescriptions.find(
           (desc) => desc.ability === reportState.driverAbility,
         )!.numericalRating,
