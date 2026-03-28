@@ -35,6 +35,7 @@ import React from "react";
 import { Checkbox } from "../../lib/components/Checkbox";
 import { RobotRole } from "../../lib/collection/RobotRole";
 import { MatchEventType } from "../../lib/collection/MatchEventType";
+import { stealingTypeDescriptions } from "../../lib/collection/StealingType";
 
 export default function PostMatch() {
   const reportState = useReportStateStore();
@@ -59,7 +60,7 @@ export default function PostMatch() {
     );
 
   const hasEndgameClimbEvent = reportState.hasEndgameClimbEvent();
-
+  const hasAutoClimbEvent = reportState.hasAutoClimbEvent();
   const endgameClimbIsMismatched =
     hasEndgameClimbEvent &&
     reportState.climbResult === EndgameClimb.NotAttempted;
@@ -125,6 +126,19 @@ export default function PostMatch() {
               }))}
               selected={reportState.feederType}
               onChange={reportState.setFeederType}
+              multiSelect
+            />
+          )}
+          {reportState.robotRole.includes(RobotRole.Stealing) && (
+            <PostMatchSelector
+              title="Stealing Type"
+              items={stealingTypeDescriptions.map((desc) => ({
+                label: desc.localizedDescription,
+                description: desc.localizedLongDescription,
+                value: desc.stealingType,
+              }))}
+              selected={reportState.stealingType}
+              onChange={reportState.setStealingType}
               multiSelect
             />
           )}
@@ -216,16 +230,19 @@ export default function PostMatch() {
               return FieldTraversal.None;
             }}
           />
-          <PostMatchSelector
-            title="Auto Climb"
-            items={autoClimbDescriptions.map((desc) => ({
-              label: desc.localizedDescription,
-              description: desc.localizedLongDescription,
-              value: desc.climb,
-            }))}
-            selected={reportState.autoClimb}
-            onChange={reportState.setAutoClimb}
-          />
+          {hasAutoClimbEvent && (
+            <PostMatchSelector
+              title="Auto Climb"
+              items={autoClimbDescriptions.map((desc) => ({
+                label: desc.localizedDescription,
+                description: desc.localizedLongDescription,
+                value: desc.climb,
+              }))}
+              selected={reportState.autoClimb}
+              onChange={reportState.setAutoClimb}
+            />
+          )}
+
           {hasEndgameClimbEvent && (
             <PostMatchSelector
               title="Endgame Climb"
@@ -285,16 +302,18 @@ export default function PostMatch() {
             onChange={reportState.setDriverAbility}
           />
 
-          <PostMatchSelector
-            title="Scores While Moving"
-            items={scoresWhileMovingDescriptions.map((desc) => ({
-              label: desc.localizedDescription,
-              description: desc.localizedLongDescription,
-              value: desc.scoresWhileMoving,
-            }))}
-            selected={reportState.scoresWhileMoving}
-            onChange={reportState.setScoresWhileMoving}
-          />
+          {reportState.hasEventOfType(MatchEventType.StartScoring) && (
+            <PostMatchSelector
+              title="Scores While Moving"
+              items={scoresWhileMovingDescriptions.map((desc) => ({
+                label: desc.localizedDescription,
+                description: desc.localizedLongDescription,
+                value: desc.scoresWhileMoving,
+              }))}
+              selected={reportState.scoresWhileMoving}
+              onChange={reportState.setScoresWhileMoving}
+            />
+          )}
 
           <View style={{ marginVertical: 18 }}>
             <Checkbox

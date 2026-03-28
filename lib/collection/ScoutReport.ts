@@ -20,6 +20,7 @@ export const RobotRoleString = z.enum([
   "FEEDING",
   "DEFENDING",
   "IMMOBILE",
+  "STEALING",
 ]);
 export const AutoClimbString = z.enum(["NOT_ATTEMPTED", "FAILED", "SUCCEEDED"]);
 export const IntakeTypeString = z.enum([
@@ -28,7 +29,13 @@ export const IntakeTypeString = z.enum([
   "BOTH",
   "NEITHER",
 ]);
-export const FeederTypeString = z.enum(["CONTINUOUS", "STOP_TO_SHOOT", "DUMP"]);
+export const FeederTypeString = z.enum([
+  "CONTINUOUS",
+  "STOP_TO_SHOOT",
+  "DUMP",
+  "PUSH",
+]);
+export const StealingTypeString = z.enum(["TO_ALLIANCE", "TO_NEUTRAL"]);
 export const BeachedString = z.enum(["ON_FUEL", "ON_BUMP", "BOTH", "NEITHER"]);
 export const EndgameClimbString = z.enum([
   "NOT_ATTEMPTED",
@@ -55,8 +62,9 @@ export const scoutReportSchema = z.object({
   autoClimb: AutoClimbString,
   intakeType: IntakeTypeString,
   feederTypes: z.array(FeederTypeString),
+  stealingType: z.array(StealingTypeString),
   beached: BeachedString,
-  defenseEffectiveness: z.number(),
+  defenseEffectiveness: z.number().or(z.null()),
   scoresWhileMoving: z.boolean(),
   endgameClimb: EndgameClimbString,
   driverAbility: z.number(),
