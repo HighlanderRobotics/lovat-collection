@@ -22,7 +22,7 @@ export const stealingTypeDescriptions = [
     stealingType: StealingType.toNeutral,
     localizedDescription: "To Neutral",
     localizedLongDescription:
-      "The robot moves fuel from the opposing alliance zone to the neutral zone..",
+      "The robot moves fuel from the opposing alliance zone to the neutral zone.",
     num: 1,
   },
 ] as const satisfies StealingTypeDescription[];
