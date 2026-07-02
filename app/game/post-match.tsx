@@ -284,18 +284,23 @@ export default function PostMatch() {
             selected={reportState.driverAbility}
             onChange={reportState.setDriverAbility}
           />
-
-          <PostMatchSelector
-            title="Scores While Moving"
-            items={scoresWhileMovingDescriptions.map((desc) => ({
-              label: desc.localizedDescription,
-              description: desc.localizedLongDescription,
-              value: desc.scoresWhileMoving,
-            }))}
-            selected={reportState.scoresWhileMoving}
-            onChange={reportState.setScoresWhileMoving}
-          />
-
+          {reportState.hasEventOfType(
+            MatchEventType.StartScoring,
+            MatchEventType.StopScoring,
+            MatchEventType.StartFeeding,
+            MatchEventType.StopFeeding,
+          ) && (
+            <PostMatchSelector
+              title="Scores While Moving"
+              items={scoresWhileMovingDescriptions.map((desc) => ({
+                label: desc.localizedDescription,
+                description: desc.localizedLongDescription,
+                value: desc.scoresWhileMoving,
+              }))}
+              selected={reportState.scoresWhileMoving}
+              onChange={reportState.setScoresWhileMoving}
+            />
+          )}
           <View style={{ marginVertical: 18 }}>
             <Checkbox
               label="Robot broke"
