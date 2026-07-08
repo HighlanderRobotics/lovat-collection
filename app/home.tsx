@@ -132,37 +132,52 @@ export default function Home() {
                   variant="primary"
                   disabled={!meta || !startMatchEnabled}
                   onPress={async () => {
-                    if (!meta) return;
-                    const match = await checkMatch(
-                      meta.matchIdentity,
-                      meta.teamNumber,
-                    );
-                    if (!match.ok) {
+                    try {
+                      if (!meta) return;
+                      const match = await checkMatch(
+                        meta.matchIdentity,
+                        meta.teamNumber,
+                        meta.allianceColor,
+                      );
+                      if (!match.exists) {
+                        Alert.alert(
+                          "Match does not exist",
+                          "Check the match number, match type, and team number",
+                          [
+                            {
+                              text: "Back",
+                            },
+                            {
+                              text: "Proceed",
+                              style: "destructive",
+                              onPress: () => {
+                                reportState.scoutMatch(meta);
+                              },
+                            },
+                          ],
+                        );
+                        return;
+                      }
+                      reportState.scoutMatch({
+                        ...meta,
+                        allianceColor: match.alliance,
+                      });
+                    } catch {
                       Alert.alert(
-                        "Match does not exist",
-                        "Check the match number, match type, and team number",
+                        "Unable to verify match",
+                        "Could not reach the server. Check your connection and try again.",
                         [
-                          {
-                            text: "Back",
-                          },
+                          { text: "OK" },
                           {
                             text: "Proceed",
                             style: "destructive",
                             onPress: () => {
-                              reportState.scoutMatch(meta);
+                              if (meta) reportState.scoutMatch(meta);
                             },
                           },
                         ],
                       );
-                      return;
                     }
-                    if (match.data !== "") {
-                      meta.allianceColor =
-                        match.data.alliance.toString() === "red"
-                          ? AllianceColor.Red
-                          : AllianceColor.Blue;
-                    }
-                    reportState.scoutMatch(meta);
                   }}
                 >
                   Scout this match
