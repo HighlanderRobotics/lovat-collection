@@ -4,6 +4,7 @@ import {
   ActivityIndicator,
   Platform,
   Pressable,
+  Alert,
 } from "react-native";
 import TitleMedium from "../lib/components/text/TitleMedium";
 import TextField from "../lib/components/TextField";
@@ -52,6 +53,7 @@ import {
   useMatchSelectionModeStore,
 } from "../lib/storage/userStores";
 import { createGenericPersistantStore } from "../lib/storage/zustandStorage";
+import { checkMatch } from "../lib/lovatAPI/checkMatch";
 
 export default function Home() {
   const { value: matchSelectionMode, setValue: setMatchSelectionMode } =
@@ -129,8 +131,37 @@ export default function Home() {
                 <Button
                   variant="primary"
                   disabled={!meta || !startMatchEnabled}
-                  onPress={() => {
+                  onPress={async () => {
                     if (!meta) return;
+                    const match = await checkMatch(
+                      meta.matchIdentity,
+                      meta.teamNumber,
+                    );
+                    if (!match.ok) {
+                      Alert.alert(
+                        "Match does not exist",
+                        "Check the match number, match type, and team number",
+                        [
+                          {
+                            text: "Back",
+                          },
+                          {
+                            text: "Proceed",
+                            style: "destructive",
+                            onPress: () => {
+                              reportState.scoutMatch(meta);
+                            },
+                          },
+                        ],
+                      );
+                      return;
+                    }
+                    if (match.data !== "") {
+                      meta.allianceColor =
+                        match.data.alliance.toString() === "red"
+                          ? AllianceColor.Red
+                          : AllianceColor.Blue;
+                    }
                     reportState.scoutMatch(meta);
                   }}
                 >
