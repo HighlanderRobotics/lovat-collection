@@ -12,13 +12,16 @@ import TimeAgo from "javascript-time-ago";
 import en from "javascript-time-ago/locale/en.json";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
+  useFieldOrientationStore,
   useOnboardingCompleteStore,
+  useQrCodeSizeStore,
   useScouterStore,
   useStartMatchEnabledStore,
   useTeamStore,
   useTournamentStore,
   useTrainingModeStore,
 } from "../lib/storage/userStores";
+import { HistoryEntry } from "../lib/storage/historyStore";
 
 const { UIManager } = NativeModules;
 
@@ -52,6 +55,9 @@ const storageMigratorsByLegacyKey: Record<string, (value: any) => void> = {
     })();
   },
   trainingMode: useTrainingModeStore.getState().setValue,
+  qrCodeSize: useQrCodeSizeStore.getState().setValue,
+  fieldOrientation: useFieldOrientationStore.getState().setValue,
+  history: (data: HistoryEntry[]) => data,
 } as const;
 
 export default function Layout() {

@@ -11,11 +11,15 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { CommonActions } from "@react-navigation/native";
 import React from "react";
 import {
+  useFieldOrientationStore,
   useOnboardingCompleteStore,
+  useQrCodeSizeStore,
   useScouterStore,
   useTeamStore,
   useTournamentStore,
+  useTrainingModeStore,
 } from "../../lib/storage/userStores";
+import { useHistoryStore } from "../../lib/storage/historyStore";
 import {
   useTeamScoutersStore,
   useTournamentsStore,
@@ -33,6 +37,12 @@ export default function Reset() {
     );
     useScouterStore.setState(useScouterStore.getInitialState());
     useTournamentStore.setState(useTournamentStore.getInitialState());
+    useTrainingModeStore.setState(useTrainingModeStore.getInitialState());
+    useQrCodeSizeStore.setState(useQrCodeSizeStore.getInitialState());
+    useFieldOrientationStore.setState(
+      useFieldOrientationStore.getInitialState(),
+    );
+    useHistoryStore.setState(useHistoryStore.getInitialState());
     useTeamScoutersStore.setState(useTeamScoutersStore.getInitialState());
     useTournamentsStore.setState(useTournamentsStore.getInitialState());
     useScouterScheduleStore.setState(useScouterScheduleStore.getInitialState());
@@ -75,7 +85,7 @@ export default function Reset() {
           <BodyMedium>
             You&apos;re about to permanently delete all Lovat Collection data
             stored on this device. This includes all settings, cached data, and
-            locally cached information.
+            match history.
           </BodyMedium>
 
           <View

@@ -1,15 +1,38 @@
-import { ActivityIndicator, ScrollView, View } from "react-native";
-import { router } from "expo-router";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { Suspense } from "react";
-import React from "react";
+import { Link, router } from "expo-router";
+import {
+  ActivityIndicator,
+  ScrollView,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import BodyMedium from "../../lib/components/text/BodyMedium";
 import Button from "../../lib/components/Button";
-import Heading1Small from "../../lib/components/text/Heading1Small";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { IconButton } from "../../lib/components/IconButton";
-import { NavBar } from "../../lib/components/NavBar";
+
+import {
+  FieldOrientation,
+  ScoringMode,
+  useFieldOrientationStore,
+  useScoringModeStore,
+} from "../../lib/storage/userStores";
+import { Picker } from "../../lib/components/Picker";
 import { colors } from "../../lib/colors";
+import {
+  FieldImage,
+  fieldHeight,
+  fieldWidth,
+} from "../../lib/components/FieldImage";
+import Heading1Small from "../../lib/components/text/Heading1Small";
+import { Suspense } from "react";
+import { NavBar } from "../../lib/components/NavBar";
 import { useTournamentStore } from "../../lib/storage/userStores";
+import { Switch } from "react-native-gesture-handler";
+import LabelSmall from "../../lib/components/text/LabelSmall";
+import { useQrCodeSizeStore } from "../../lib/storage/userStores";
+import { Icon } from "../../lib/components/Icon";
+import { useTrainingModeStore } from "../../lib/storage/userStores";
+import React from "react";
 import { useUrlPrefix } from "../../lib/lovatAPI/lovatAPI";
 
 export default function Settings() {
@@ -21,21 +44,50 @@ export default function Settings() {
           <IconButton
             icon="arrow_back_ios"
             label="Back"
-            onPress={() => router.back()}
+            onPress={() => {
+              router.back();
+            }}
             color={colors.onBackground.default}
           />
         }
       />
       <Suspense fallback={<ActivityIndicator style={{ flex: 1 }} />}>
-        <ScrollView style={{ flex: 1, padding: 26 }}>
-          <SafeAreaView edges={["bottom", "left", "right"]}>
-            <View style={{ gap: 14, maxWidth: 450 }}>
+        <ScrollView
+          style={{ flex: 1, paddingVertical: 16, paddingHorizontal: 26 }}
+        >
+          <SafeAreaView
+            edges={["bottom", "left", "right"]}
+            style={{
+              flex: 1,
+              gap: 14,
+              flexDirection: "row",
+              justifyContent: "center",
+            }}
+          >
+            <View
+              style={{
+                flex: 1,
+                maxWidth: 450,
+                gap: 14,
+              }}
+            >
+              <FieldOrientationEditor />
+              <HubMode />
               <TournamentSelector />
+              <TrainingModeSelector />
+              <QRCodeSizeLink />
               <CustomAPIUrlEditor />
-              <View style={{ marginVertical: 50 }}>
+              <View
+                style={{
+                  marginTop: 50,
+                  marginBottom: 50,
+                }}
+              >
                 <Button
                   variant="secondary"
-                  onPress={() => router.push("/settings/reset")}
+                  onPress={() => {
+                    router.push("/settings/reset");
+                  }}
                 >
                   Reset all settings and data
                 </Button>
@@ -48,27 +100,201 @@ export default function Settings() {
   );
 }
 
-const TournamentSelector = () => {
-  const tournament = useTournamentStore((state) => state.value);
+const TrainingModeSelector = () => {
+  const trainingModeEnabled = useTrainingModeStore((state) => state.value);
+  const setTrainingModeEnabled = useTrainingModeStore(
+    (state) => state.setValue,
+  );
   return (
     <View style={{ gap: 7 }}>
-      <Heading1Small>Tournament</Heading1Small>
       <View
         style={{
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
+          marginTop: 7,
           padding: 14,
           borderRadius: 10,
           backgroundColor: colors.secondaryContainer.default,
           gap: 7,
         }}
       >
-        <BodyMedium numberOfLines={1}>
-          {tournament
-            ? `${tournament.date.split("-")[0]} ${tournament.name}`
-            : "No tournament selected"}
-        </BodyMedium>
-        <Button onPress={() => router.push("/settings/tournament")}>
-          {tournament ? "Change" : "Select a tournament"}
-        </Button>
+        <LabelSmall>Training mode</LabelSmall>
+        <Switch
+          trackColor={{
+            true: colors.victoryPurple.default,
+            false: colors.gray.default,
+          }}
+          thumbColor={colors.background.default}
+          value={trainingModeEnabled}
+          onChange={() => setTrainingModeEnabled(!trainingModeEnabled)}
+        />
+      </View>
+      <BodyMedium>
+        Disables data saving and uploading for training, testing, etc.
+      </BodyMedium>
+    </View>
+  );
+};
+
+const QRCodeSizeLink = () => {
+  const qrCodeSize = useQrCodeSizeStore((state) => state.value);
+
+  return (
+    <Link href="/settings/qrcode-size" asChild>
+      <TouchableOpacity
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
+          marginTop: 7,
+          padding: 14,
+          borderRadius: 10,
+          backgroundColor: colors.secondaryContainer.default,
+          gap: 7,
+        }}
+      >
+        <LabelSmall>QR Code size</LabelSmall>
+        <View style={{ flexDirection: "row", alignItems: "center", gap: 4 }}>
+          <BodyMedium>
+            {qrCodeSize === 600
+              ? "Default"
+              : qrCodeSize < 600
+                ? "Quicker scans"
+                : "Fewer codes"}
+          </BodyMedium>
+          <Icon
+            name="arrow_forward_ios"
+            size={18}
+            color={colors.body.default}
+          />
+        </View>
+      </TouchableOpacity>
+    </Link>
+  );
+};
+
+const FieldOrientationEditor = () => {
+  const fieldOrientation = useFieldOrientationStore((state) => state.value);
+  const setFieldOrientation = useFieldOrientationStore(
+    (state) => state.setValue,
+  );
+
+  return (
+    <View>
+      <Heading1Small>Field orientation</Heading1Small>
+      <View
+        style={{
+          marginTop: 7,
+          padding: 7,
+          borderRadius: 10,
+          backgroundColor: colors.secondaryContainer.default,
+          gap: 7,
+        }}
+      >
+        <View
+          style={{
+            aspectRatio: fieldWidth / fieldHeight,
+          }}
+        >
+          <FieldImage />
+        </View>
+        <Picker
+          options={[
+            {
+              label: "Auspicious",
+              value: FieldOrientation.Auspicious,
+            },
+            {
+              label: "Sinister",
+              value: FieldOrientation.Sinister,
+            },
+          ]}
+          selected={fieldOrientation}
+          onChange={setFieldOrientation}
+        />
+      </View>
+    </View>
+  );
+};
+
+const HubMode = () => {
+  const scoringMode = useScoringModeStore((state) => state.value);
+  const setScoringMode = useScoringModeStore((state) => state.setValue);
+  return (
+    <View>
+      <Heading1Small>Scoring mode</Heading1Small>
+      <View
+        style={{
+          marginTop: 7,
+          padding: 7,
+          borderRadius: 10,
+          backgroundColor: colors.secondaryContainer.default,
+          gap: 7,
+        }}
+      >
+        <Picker
+          options={[
+            {
+              label: "Rate",
+              value: ScoringMode.Rate,
+            },
+            {
+              label: "Count",
+              value: ScoringMode.Count,
+            },
+          ]}
+          selected={scoringMode}
+          onChange={(value) => setScoringMode(value)}
+        />
+      </View>
+    </View>
+  );
+};
+
+const TournamentSelector = () => {
+  const tournament = useTournamentStore((state) => state.value);
+
+  return (
+    <View>
+      <Heading1Small>Tournament</Heading1Small>
+      <View
+        style={{
+          marginTop: 7,
+          padding: 7,
+          borderRadius: 10,
+          backgroundColor: colors.secondaryContainer.default,
+          gap: 7,
+        }}
+      >
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+            gap: 7,
+          }}
+        >
+          <View
+            style={{
+              padding: 7,
+              flex: 1,
+            }}
+          >
+            <BodyMedium numberOfLines={1}>
+              {tournament
+                ? `${tournament.date.split("-")[0]} ${tournament.name}`
+                : "No tournament selected"}
+            </BodyMedium>
+          </View>
+          <Button
+            onPress={() => {
+              router.push("/settings/tournament");
+            }}
+          >
+            {tournament ? "Change" : "Select a tournament"}
+          </Button>
+        </View>
       </View>
     </View>
   );
@@ -77,24 +303,43 @@ const TournamentSelector = () => {
 const CustomAPIUrlEditor = () => {
   const prefixIsCustom = useUrlPrefix((state) => state.getIsCustom());
   const setUrlPrefix = useUrlPrefix((state) => state.setUrlPrefix);
-  if (!prefixIsCustom) return null;
+
+  if (!prefixIsCustom) {
+    return null;
+  }
+
   return (
-    <View style={{ gap: 7 }}>
+    <View>
       <Heading1Small>Custom API URL</Heading1Small>
       <View
         style={{
-          padding: 14,
+          marginTop: 7,
+          padding: 7,
           borderRadius: 10,
           backgroundColor: colors.secondaryContainer.default,
           gap: 7,
         }}
       >
-        <BodyMedium numberOfLines={1}>
-          {useUrlPrefix.getState().getUrlPrefix()}
-        </BodyMedium>
-        <Button variant="secondary" onPress={() => setUrlPrefix(null)}>
-          Reset API URL
-        </Button>
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+            gap: 7,
+          }}
+        >
+          <View
+            style={{
+              padding: 7,
+              flex: 1,
+            }}
+          >
+            <BodyMedium numberOfLines={1}>
+              {useUrlPrefix.getState().getUrlPrefix()}
+            </BodyMedium>
+          </View>
+          <Button onPress={() => setUrlPrefix(null)}>Reset</Button>
+        </View>
       </View>
     </View>
   );
