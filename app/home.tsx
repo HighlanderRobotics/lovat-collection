@@ -540,6 +540,7 @@ const ManualMatchSelection = (props: ManualMatchSelectionProps) => {
       <TextField
         placeholder="8033"
         value={teamNumber}
+        borderColor={"#b59aff"}
         onChangeText={(text) => setTeamNumber(text)}
         keyboardType="number-pad"
       />

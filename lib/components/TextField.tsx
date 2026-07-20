@@ -9,6 +9,7 @@ type TextInputProps = {
   autoFocus?: boolean;
   autoCapitalize?: "none" | "sentences" | "words" | "characters";
   autoCorrect?: boolean;
+  borderColor?: string;
   returnKeyType?: "done" | "go" | "next" | "search" | "send";
   onChangeText?: (text: string) => void;
   onSubmitEditing?: () => void;
@@ -28,6 +29,7 @@ const TextField: ForwardRefRenderFunction<TextInput, TextInputProps> = (
     autoFocus,
     autoCapitalize,
     autoCorrect,
+    borderColor,
     returnKeyType,
     onChangeText,
     onSubmitEditing,
@@ -62,8 +64,8 @@ const TextField: ForwardRefRenderFunction<TextInput, TextInputProps> = (
           ? colors.danger.default
           : editable
             ? isFocused
-              ? colors.gray.hover
-              : colors.gray.default
+              ? (borderColor ?? colors.gray.hover)
+              : (borderColor ?? colors.gray.default)
             : "#2F2F2F",
       }}
       placeholder={placeholder}
