@@ -59,6 +59,9 @@ export function Picker<T = string>(props: PickerProps<T>) {
         }}
       >
         {options.map((option, i) => {
+          // Options without a description render as a single compact,
+          // vertically-centered row so the label lines up with the indicator.
+          const compact = !option.description;
           return (
             <Button
               key={option.key ?? option.value}
@@ -78,14 +81,15 @@ export function Picker<T = string>(props: PickerProps<T>) {
               }}
               style={{
                 paddingHorizontal: 14,
-                paddingTop: i === 0 ? 14 : 8,
-                paddingBlock: i === options.length - 1 ? 14 : 8,
+                paddingTop: i === 0 ? 14 : compact ? 6 : 8,
+                paddingBottom: i === options.length - 1 ? 14 : compact ? 6 : 8,
               }}
             >
               <View
                 style={{
                   flexDirection: "row",
                   gap: 12,
+                  alignItems: compact ? "center" : "flex-start",
                 }}
               >
                 <SelectionIndicator
@@ -103,15 +107,17 @@ export function Picker<T = string>(props: PickerProps<T>) {
                   >
                     {option.label}
                   </LabelSmall>
-                  <BodyMedium
-                    style={{
-                      color: option.disabled
-                        ? colors.gray.hover
-                        : colors.body.default,
-                    }}
-                  >
-                    {option.description}
-                  </BodyMedium>
+                  {option.description ? (
+                    <BodyMedium
+                      style={{
+                        color: option.disabled
+                          ? colors.gray.hover
+                          : colors.body.default,
+                      }}
+                    >
+                      {option.description}
+                    </BodyMedium>
+                  ) : null}
                 </View>
               </View>
             </Button>

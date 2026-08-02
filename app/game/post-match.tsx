@@ -30,7 +30,7 @@ import TextField from "../../lib/components/TextField";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { CommonActions } from "@react-navigation/native";
 import BodyMedium from "../../lib/components/text/BodyMedium";
-import Heading1Small from "../../lib/components/text/Heading1Small";
+import LabeledDivider from "../../lib/components/LabeledDivider";
 import { colors } from "../../lib/colors";
 import { CustomField } from "../../lib/lovatAPI/getCustomFields";
 import { useTrainingModeStore } from "../../lib/storage/userStores";
@@ -355,7 +355,7 @@ export default function PostMatch() {
           </View>
           {reportState.customFields.length > 0 && (
             <View style={{ gap: 14, marginBottom: 18 }}>
-              <Heading1Small>Asked by your team</Heading1Small>
+              <LabeledDivider label="Asked by your team" />
               {reportState.customFields.map((field) => (
                 <CustomFieldInput
                   key={field.uuid}
