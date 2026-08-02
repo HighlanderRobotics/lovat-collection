@@ -355,7 +355,12 @@ export default function PostMatch() {
           </View>
           {reportState.customFields.length > 0 && (
             <View style={{ gap: 14, marginBottom: 18 }}>
-              <LabeledDivider label="Asked by your team" />
+              {/* Center the divider between the Notes block above (which adds
+                  its own 18px bottom margin on top of the 14px column gap) and
+                  the fields below (14px column gap). */}
+              <View style={{ marginBottom: 18 }}>
+                <LabeledDivider label="Asked by your team" />
+              </View>
               {reportState.customFields.map((field) => (
                 <CustomFieldInput
                   key={field.uuid}
