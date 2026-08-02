@@ -114,7 +114,9 @@ export function Picker<T = string>(props: PickerProps<T>) {
               <View
                 style={{
                   flexDirection: "row",
-                  gap: 12,
+                  // Uncontained rows match the labeled Checkbox (e.g. "Robot
+                  // broke"): 10px indicator-to-label gap, centered.
+                  gap: contained ? 12 : 10,
                   alignItems: compact ? "center" : "flex-start",
                 }}
               >
@@ -128,7 +130,9 @@ export function Picker<T = string>(props: PickerProps<T>) {
                     color={
                       option.disabled
                         ? colors.gray.hover
-                        : colors.onBackground.default
+                        : contained
+                          ? colors.onBackground.default
+                          : colors.body.default
                     }
                   >
                     {option.label}
