@@ -355,10 +355,12 @@ export default function PostMatch() {
           </View>
           {reportState.customFields.length > 0 && (
             <View style={{ gap: 14, marginBottom: 18 }}>
-              {/* Center the divider between the Notes block above (which adds
-                  its own 18px bottom margin on top of the 14px column gap) and
-                  the fields below (14px column gap). */}
-              <View style={{ marginBottom: 18 }}>
+              {/* Keep the divider centered between the Notes block above and
+                  the fields below, with tight equal spacing. Above it there's
+                  the Notes block's 18px bottom margin + the 14px column gap
+                  (32); the negative top margin trims that to match the bottom
+                  (14px column gap + 4px). */}
+              <View style={{ marginTop: -14, marginBottom: 4 }}>
                 <LabeledDivider label="Asked by your team" />
               </View>
               {reportState.customFields.map((field) => (
