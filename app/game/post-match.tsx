@@ -615,6 +615,7 @@ const CustomFieldSelector = ({
       <LabelSmall>{title}</LabelSmall>
       <Picker
         style="inset-picker"
+        contained={false}
         options={options.map((option) => ({
           label: option,
           value: option,

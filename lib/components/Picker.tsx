@@ -27,6 +27,12 @@ type PickerProps<T> = {
   onChange: (value: T) => void;
   multiSelect?: boolean;
   style?: PickerStyle;
+  /**
+   * inset-picker only: when false, drops the filled row containers and their
+   * horizontal padding, rendering bare selection rows. Useful when options
+   * have no descriptions and the filled container feels too heavy.
+   */
+  contained?: boolean;
 };
 
 export type PickerStyle =
@@ -41,6 +47,7 @@ export function Picker<T = string>(props: PickerProps<T>) {
     onChange,
     multiSelect = false,
     style = "horizontal-group",
+    contained = true,
   } = props;
 
   const isSelected = (value: T) => {
@@ -54,7 +61,7 @@ export function Picker<T = string>(props: PickerProps<T>) {
     return (
       <View
         style={{
-          borderRadius: 7,
+          borderRadius: contained ? 7 : 0,
           overflow: "hidden",
         }}
       >
@@ -65,11 +72,19 @@ export function Picker<T = string>(props: PickerProps<T>) {
           return (
             <Button
               key={option.key ?? option.value}
-              backgroundColorSet={{
-                default: colors.secondaryContainer.default,
-                hover: colors.gray.default,
-                faded: colors.secondaryContainer.default,
-              }}
+              backgroundColorSet={
+                contained
+                  ? {
+                      default: colors.secondaryContainer.default,
+                      hover: colors.gray.default,
+                      faded: colors.secondaryContainer.default,
+                    }
+                  : {
+                      default: "transparent",
+                      hover: colors.secondaryContainer.default,
+                      faded: "transparent",
+                    }
+              }
               borderRadius={0}
               disabled={option.disabled}
               onPress={() => {
@@ -80,9 +95,15 @@ export function Picker<T = string>(props: PickerProps<T>) {
                 onChange(option.value);
               }}
               style={{
-                paddingHorizontal: 14,
-                paddingTop: i === 0 ? 14 : compact ? 6 : 8,
-                paddingBottom: i === options.length - 1 ? 14 : compact ? 6 : 8,
+                paddingHorizontal: contained ? 14 : 0,
+                paddingTop: contained ? (i === 0 ? 14 : compact ? 6 : 8) : 8,
+                paddingBottom: contained
+                  ? i === options.length - 1
+                    ? 14
+                    : compact
+                      ? 6
+                      : 8
+                  : 8,
               }}
             >
               <View
