@@ -96,14 +96,17 @@ export function Picker<T = string>(props: PickerProps<T>) {
               }}
               style={{
                 paddingHorizontal: contained ? 14 : 0,
-                paddingTop: contained ? (i === 0 ? 14 : compact ? 6 : 8) : 8,
+                // Uncontained: uniform 5px top/bottom puts a 10px gap between
+                // the 24px selection indicators. No leading/trailing overrides
+                // are needed without a container to hug.
+                paddingTop: contained ? (i === 0 ? 14 : compact ? 6 : 8) : 5,
                 paddingBottom: contained
                   ? i === options.length - 1
                     ? 14
                     : compact
                       ? 6
                       : 8
-                  : 8,
+                  : 5,
               }}
             >
               <View
