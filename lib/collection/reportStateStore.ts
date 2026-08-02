@@ -21,6 +21,8 @@ import { ScoresWhileMoving } from "./ScoresWhileMoving";
 import { EndgameClimb } from "./EndgameClimb";
 import { MatchEventType } from "./MatchEventType";
 import Constants from "expo-constants";
+import { CustomField } from "../lovatAPI/getCustomFields";
+import { useCustomFieldsStore } from "../services";
 
 const initialState = {
   events: [],
@@ -39,10 +41,14 @@ const initialState = {
   climbResult: EndgameClimb.NotAttempted,
   driverAbility: DriverAbility.Average,
   notes: "",
+  customFieldAnswers: {} as Record<string, string | string[]>,
 };
 
 export const useReportStateStore = create<ReportState>((set, get) => ({
   ...initialState,
+
+  // Not in initialState so the snapshot survives restartMatch
+  customFields: [] as CustomField[],
 
   scoutMatch: (meta) =>
     set(() => ({
@@ -50,6 +56,7 @@ export const useReportStateStore = create<ReportState>((set, get) => ({
       meta: meta!,
       startPosition: undefined,
       uuid: v4(),
+      customFields: useCustomFieldsStore.getState().data?.data ?? [],
     })),
   restartMatch: () =>
     set(() => ({
@@ -75,6 +82,16 @@ export const useReportStateStore = create<ReportState>((set, get) => ({
   setClimbResult: (value) => set({ climbResult: value }),
   setDriverAbility: (value) => set({ driverAbility: value }),
   setNotes: (value) => set({ notes: value }),
+  setCustomFieldAnswer: (uuid, value) =>
+    set((state) => {
+      const customFieldAnswers = { ...state.customFieldAnswers };
+      if (value === null) {
+        delete customFieldAnswers[uuid];
+      } else {
+        customFieldAnswers[uuid] = value;
+      }
+      return { customFieldAnswers };
+    }),
 
   hasEventOfType: (...types: MatchEventType[]) => {
     const reportState = get();
@@ -341,6 +358,45 @@ export const useReportStateStore = create<ReportState>((set, get) => ({
         }
       };
 
+      // Convert custom field answers to the wire shape, dropping
+      // unanswered or invalid ones
+      const customFieldAnswers = reportState.customFields.flatMap(
+        (field): { fieldUuid: string; value: string | number | string[] }[] => {
+          const answer = reportState.customFieldAnswers[field.uuid];
+          if (answer === undefined) return [];
+
+          switch (field.type) {
+            case "TEXT": {
+              if (typeof answer !== "string") return [];
+              const trimmed = answer.trim();
+              if (trimmed === "") return [];
+              return [{ fieldUuid: field.uuid, value: trimmed }];
+            }
+            case "NUMBER": {
+              if (typeof answer !== "string") return [];
+              const trimmed = answer.trim();
+              if (trimmed === "") return [];
+              const parsed = Number(trimmed);
+              if (!Number.isFinite(parsed)) return [];
+              return [{ fieldUuid: field.uuid, value: parsed }];
+            }
+            case "SINGLE_SELECT": {
+              if (typeof answer !== "string") return [];
+              if (!field.options.includes(answer)) return [];
+              return [{ fieldUuid: field.uuid, value: answer }];
+            }
+            case "MULTI_SELECT": {
+              if (!Array.isArray(answer)) return [];
+              const selections = answer.filter((option) =>
+                field.options.includes(option),
+              );
+              if (selections.length === 0) return [];
+              return [{ fieldUuid: field.uuid, value: selections }];
+            }
+          }
+        },
+      );
+
       const out = {
         appVersion: Constants.expoConfig?.version,
         uuid: reportState.uuid,
@@ -399,6 +455,7 @@ export const useReportStateStore = create<ReportState>((set, get) => ({
             return baseEvent;
           }),
         ],
+        ...(customFieldAnswers.length > 0 ? { customFieldAnswers } : {}),
       };
       return out;
     }
@@ -410,6 +467,7 @@ export const useReportStateStore = create<ReportState>((set, get) => ({
       meta: undefined,
       startTimestamp: undefined,
       startPosition: undefined,
+      customFields: [],
       ...initialState,
     }),
 }));

@@ -14,6 +14,7 @@ import { Beached } from "./Beached";
 import { DefenseEffectiveness } from "./DefenseEffectiveness";
 import { ScoresWhileMoving } from "./ScoresWhileMoving";
 import { EndgameClimb } from "./EndgameClimb";
+import { CustomField } from "../lovatAPI/getCustomFields";
 
 export enum GamePhase {
   Auto,
@@ -47,6 +48,10 @@ export type ReportState = {
   driverAbility: DriverAbility;
   notes: string;
 
+  // Custom fields (snapshot taken when the match starts scouting)
+  customFields: CustomField[];
+  customFieldAnswers: Record<string, string | string[]>;
+
   // Actions
   scoutMatch: (meta: ScoutReportMeta) => void;
   restartMatch: () => void;
@@ -67,6 +72,7 @@ export type ReportState = {
   setClimbResult: (value: EndgameClimb) => void;
   setDriverAbility: (value: DriverAbility) => void;
   setNotes: (value: string) => void;
+  setCustomFieldAnswer: (uuid: string, value: string | string[] | null) => void;
 
   stopClimbing: () => void;
   hasEventOfType: (...types: MatchEventType[]) => boolean;

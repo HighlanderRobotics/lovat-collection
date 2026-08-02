@@ -30,6 +30,9 @@ import TextField from "../../lib/components/TextField";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { CommonActions } from "@react-navigation/native";
 import BodyMedium from "../../lib/components/text/BodyMedium";
+import LabeledDivider from "../../lib/components/LabeledDivider";
+import { colors } from "../../lib/colors";
+import { CustomField } from "../../lib/lovatAPI/getCustomFields";
 import { useTrainingModeStore } from "../../lib/storage/userStores";
 import React from "react";
 import { Checkbox } from "../../lib/components/Checkbox";
@@ -66,6 +69,16 @@ export default function PostMatch() {
 
   const hasOutpostIntakeEvent = reportState.hasOutpostIntakeEvent();
   const autoTraversalTypes = reportState.getAutoTraversalTypes();
+
+  const hasInvalidCustomNumber = reportState.customFields.some((field) => {
+    if (field.type !== "NUMBER") return false;
+    const answer = reportState.customFieldAnswers[field.uuid];
+    return (
+      typeof answer === "string" &&
+      answer.trim() !== "" &&
+      !Number.isFinite(Number(answer.trim()))
+    );
+  });
 
   return (
     <>
@@ -340,13 +353,36 @@ export default function PostMatch() {
               </BodyMedium>
             </View>
           </View>
+          {reportState.customFields.length > 0 && (
+            <View style={{ gap: 14, marginBottom: 18 }}>
+              {/* Keep the divider centered between the Notes block above and
+                  the fields below, with tight equal spacing. Above it there's
+                  the Notes block's 18px bottom margin + the 14px column gap
+                  (32); the negative top margin trims that to match the bottom
+                  (14px column gap + 4px). */}
+              <View style={{ marginTop: -14, marginBottom: 4 }}>
+                <LabeledDivider label="Asked by your team" />
+              </View>
+              {reportState.customFields.map((field) => (
+                <CustomFieldInput
+                  key={field.uuid}
+                  field={field}
+                  value={reportState.customFieldAnswers[field.uuid]}
+                  onChange={(value) =>
+                    reportState.setCustomFieldAnswer(field.uuid, value)
+                  }
+                />
+              ))}
+            </View>
+          )}
           <View style={{ gap: 10 }}>
             <Button
               disabled={
                 trainingModeEnabled ||
                 endgameClimbIsMismatched ||
                 (reportState.hasEventOfType(MatchEventType.StartScoring) &&
-                  reportState.accuracy === null)
+                  reportState.accuracy === null) ||
+                hasInvalidCustomNumber
               }
               variant="primary"
               onPress={() => {
@@ -481,3 +517,120 @@ function PostMatchSelector<TItem, TOutput = TItem>(
     </View>
   );
 }
+
+type CustomFieldInputProps = {
+  field: CustomField;
+  value: string | string[] | undefined;
+  onChange: (value: string | string[] | null) => void;
+};
+
+const CustomFieldInput = ({
+  field,
+  value,
+  onChange,
+}: CustomFieldInputProps) => {
+  switch (field.type) {
+    case "TEXT": {
+      const text = typeof value === "string" ? value : "";
+      return (
+        <View style={{ gap: 7 }}>
+          <LabelSmall>{field.name}</LabelSmall>
+          <TextField
+            value={text}
+            onChangeText={(newText) =>
+              onChange(newText === "" ? null : newText)
+            }
+            multiline={true}
+            returnKeyType="done"
+          />
+        </View>
+      );
+    }
+    case "NUMBER": {
+      const text = typeof value === "string" ? value : "";
+      const invalid =
+        text.trim() !== "" && !Number.isFinite(Number(text.trim()));
+      return (
+        <View style={{ gap: 7 }}>
+          <LabelSmall>{field.name}</LabelSmall>
+          <TextField
+            value={text}
+            onChangeText={(newText) =>
+              onChange(newText === "" ? null : newText)
+            }
+            keyboardType="decimal-pad"
+            error={invalid}
+          />
+          {invalid && (
+            <BodyMedium color={colors.danger.default}>
+              Enter a number
+            </BodyMedium>
+          )}
+        </View>
+      );
+    }
+    case "SINGLE_SELECT": {
+      const selectedOption = typeof value === "string" ? value : null;
+      return (
+        <CustomFieldSelector
+          title={field.name}
+          options={field.options}
+          selected={selectedOption}
+          onChange={(option) =>
+            onChange(option === selectedOption ? null : option)
+          }
+        />
+      );
+    }
+    case "MULTI_SELECT": {
+      const selectedOptions = Array.isArray(value) ? value : [];
+      return (
+        <CustomFieldSelector
+          title={field.name}
+          options={field.options}
+          selected={selectedOptions}
+          onChange={(option) => {
+            const newSelected = selectedOptions.includes(option)
+              ? selectedOptions.filter((o) => o !== option)
+              : [...selectedOptions, option];
+            onChange(newSelected.length === 0 ? null : newSelected);
+          }}
+          multiSelect
+        />
+      );
+    }
+  }
+};
+
+// PostMatchSelector's typing doesn't allow a nullable plain-string selection,
+// so this variant renders the same visuals for custom select fields.
+const CustomFieldSelector = ({
+  title,
+  options,
+  selected,
+  onChange,
+  multiSelect = false,
+}: {
+  title: string;
+  options: string[];
+  selected: string | string[] | null;
+  onChange: (option: string) => void;
+  multiSelect?: boolean;
+}) => {
+  return (
+    <View style={{ gap: 7 }}>
+      <LabelSmall>{title}</LabelSmall>
+      <Picker
+        style="inset-picker"
+        contained={false}
+        options={options.map((option) => ({
+          label: option,
+          value: option,
+        }))}
+        selected={selected ?? []}
+        onChange={onChange}
+        multiSelect={multiSelect}
+      />
+    </View>
+  );
+};

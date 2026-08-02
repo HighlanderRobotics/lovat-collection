@@ -18,6 +18,7 @@ import { IconButton } from "../lib/components/IconButton";
 import { Suspense, useCallback, useEffect, useMemo, useState } from "react";
 import {
   getServiceLoader,
+  useCustomFieldsStore,
   useServiceErrorStore,
   useServicesLoadingStore,
   useTeamScoutersStore,
@@ -559,6 +560,7 @@ const ServiceStatus = () => {
     useTeamScoutersStore.getState(),
     useScouterScheduleStore.getState(),
     useTournamentsStore.getState(),
+    useCustomFieldsStore.getState(),
   ];
 
   const serviceCacheTimes = servicesCached.map((item) => item.timestamp);

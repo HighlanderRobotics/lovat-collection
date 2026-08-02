@@ -27,6 +27,12 @@ type PickerProps<T> = {
   onChange: (value: T) => void;
   multiSelect?: boolean;
   style?: PickerStyle;
+  /**
+   * inset-picker only: when false, drops the filled row containers and their
+   * horizontal padding, rendering bare selection rows. Useful when options
+   * have no descriptions and the filled container feels too heavy.
+   */
+  contained?: boolean;
 };
 
 export type PickerStyle =
@@ -41,6 +47,7 @@ export function Picker<T = string>(props: PickerProps<T>) {
     onChange,
     multiSelect = false,
     style = "horizontal-group",
+    contained = true,
   } = props;
 
   const isSelected = (value: T) => {
@@ -54,19 +61,32 @@ export function Picker<T = string>(props: PickerProps<T>) {
     return (
       <View
         style={{
-          borderRadius: 7,
+          borderRadius: contained ? 7 : 0,
           overflow: "hidden",
         }}
       >
         {options.map((option, i) => {
+          // Options without a description render as a single compact,
+          // vertically-centered row so the label lines up with the indicator.
+          const compact = !option.description;
           return (
             <Button
               key={option.key ?? option.value}
-              backgroundColorSet={{
-                default: colors.secondaryContainer.default,
-                hover: colors.gray.default,
-                faded: colors.secondaryContainer.default,
-              }}
+              backgroundColorSet={
+                contained
+                  ? {
+                      default: colors.secondaryContainer.default,
+                      hover: colors.gray.default,
+                      faded: colors.secondaryContainer.default,
+                    }
+                  : {
+                      // No container to highlight, so keep rows transparent on
+                      // press too — haptics and the indicator convey the tap.
+                      default: "transparent",
+                      hover: "transparent",
+                      faded: "transparent",
+                    }
+              }
               borderRadius={0}
               disabled={option.disabled}
               onPress={() => {
@@ -77,15 +97,27 @@ export function Picker<T = string>(props: PickerProps<T>) {
                 onChange(option.value);
               }}
               style={{
-                paddingHorizontal: 14,
-                paddingTop: i === 0 ? 14 : 8,
-                paddingBlock: i === options.length - 1 ? 14 : 8,
+                paddingHorizontal: contained ? 14 : 0,
+                // Uncontained: uniform 5px top/bottom puts a 10px gap between
+                // the 24px selection indicators. No leading/trailing overrides
+                // are needed without a container to hug.
+                paddingTop: contained ? (i === 0 ? 14 : compact ? 6 : 8) : 5,
+                paddingBottom: contained
+                  ? i === options.length - 1
+                    ? 14
+                    : compact
+                      ? 6
+                      : 8
+                  : 5,
               }}
             >
               <View
                 style={{
                   flexDirection: "row",
-                  gap: 12,
+                  // Uncontained rows match the labeled Checkbox (e.g. "Robot
+                  // broke"): 10px indicator-to-label gap, centered.
+                  gap: contained ? 12 : 10,
+                  alignItems: compact ? "center" : "flex-start",
                 }}
               >
                 <SelectionIndicator
@@ -98,20 +130,24 @@ export function Picker<T = string>(props: PickerProps<T>) {
                     color={
                       option.disabled
                         ? colors.gray.hover
-                        : colors.onBackground.default
+                        : contained
+                          ? colors.onBackground.default
+                          : colors.body.default
                     }
                   >
                     {option.label}
                   </LabelSmall>
-                  <BodyMedium
-                    style={{
-                      color: option.disabled
-                        ? colors.gray.hover
-                        : colors.body.default,
-                    }}
-                  >
-                    {option.description}
-                  </BodyMedium>
+                  {option.description ? (
+                    <BodyMedium
+                      style={{
+                        color: option.disabled
+                          ? colors.gray.hover
+                          : colors.body.default,
+                      }}
+                    >
+                      {option.description}
+                    </BodyMedium>
+                  ) : null}
                 </View>
               </View>
             </Button>
