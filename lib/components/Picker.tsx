@@ -80,8 +80,10 @@ export function Picker<T = string>(props: PickerProps<T>) {
                       faded: colors.secondaryContainer.default,
                     }
                   : {
+                      // No container to highlight, so keep rows transparent on
+                      // press too — haptics and the indicator convey the tap.
                       default: "transparent",
-                      hover: colors.secondaryContainer.default,
+                      hover: "transparent",
                       faded: "transparent",
                     }
               }
