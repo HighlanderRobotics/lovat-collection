@@ -24,8 +24,9 @@ const styles = StyleSheet.create({
   },
   line: {
     flex: 1,
-    height: StyleSheet.hairlineWidth,
-    backgroundColor: colors.gray.hover,
+    // Matches the 2px dividers used elsewhere in Lovat (e.g. the NavBar).
+    height: 2,
+    backgroundColor: colors.gray.default,
   },
   label: {
     color: colors.body.default,
