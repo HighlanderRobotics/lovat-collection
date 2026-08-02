@@ -8,12 +8,17 @@ import {
 import { Scouter } from "./models/scouter";
 import { getTeamScouters } from "./lovatAPI/getTeamScouters";
 import { getTournaments, Tournament } from "./lovatAPI/getTournaments";
+import {
+  CustomFieldsManifest,
+  getCustomFields,
+} from "./lovatAPI/getCustomFields";
 
 export function getServiceLoader() {
   const fetchScouterSchedule =
     useScouterScheduleStore.getInitialState().fetchData;
   const fetchTeamScouters = useTeamScoutersStore.getInitialState().fetchData;
   const fetchTournaments = useTournamentsStore.getInitialState().fetchData;
+  const fetchCustomFields = useCustomFieldsStore.getInitialState().fetchData;
   const setServicesLoading = useServicesLoadingStore.getInitialState().setValue;
   const setServiceError = useServiceErrorStore.getInitialState().setValue;
 
@@ -24,6 +29,7 @@ export function getServiceLoader() {
       await fetchTournaments();
       await fetchTeamScouters();
       await fetchScouterSchedule();
+      await fetchCustomFields();
     } catch (e) {
       console.error(e);
       error = JSON.stringify(e);
@@ -92,3 +98,9 @@ export const useTournamentsStore = createGenericServiceStore<Tournament[]>(
   getTournaments,
   "tournamentsListStore",
 );
+
+export const useCustomFieldsStore =
+  createGenericServiceStore<CustomFieldsManifest>(
+    getCustomFields,
+    "customFieldsStore",
+  );

@@ -62,6 +62,14 @@ export const scoutReportSchema = z.object({
   driverAbility: z.number(),
   scouterUuid: z.string(),
   events: z.array(scoutReportEventSchema),
+  customFieldAnswers: z
+    .array(
+      z.object({
+        fieldUuid: z.string(),
+        value: z.union([z.string(), z.number(), z.array(z.string())]),
+      }),
+    )
+    .optional(),
 });
 
 export type ScoutReport = z.infer<typeof scoutReportSchema>;
