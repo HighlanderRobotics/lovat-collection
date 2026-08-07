@@ -4,6 +4,7 @@ import {
   ActivityIndicator,
   Platform,
   Pressable,
+  Alert,
 } from "react-native";
 import TitleMedium from "../lib/components/text/TitleMedium";
 import TextField from "../lib/components/TextField";
@@ -52,6 +53,7 @@ import {
   useMatchSelectionModeStore,
 } from "../lib/storage/userStores";
 import { createGenericPersistantStore } from "../lib/storage/zustandStorage";
+import { checkMatch } from "../lib/lovatAPI/checkMatch";
 
 export default function Home() {
   const { value: matchSelectionMode, setValue: setMatchSelectionMode } =
@@ -129,9 +131,53 @@ export default function Home() {
                 <Button
                   variant="primary"
                   disabled={!meta || !startMatchEnabled}
-                  onPress={() => {
-                    if (!meta) return;
-                    reportState.scoutMatch(meta);
+                  onPress={async () => {
+                    try {
+                      if (!meta) return;
+                      const match = await checkMatch(
+                        meta.matchIdentity,
+                        meta.teamNumber,
+                        meta.allianceColor,
+                      );
+                      if (!match.exists) {
+                        Alert.alert(
+                          "Match does not exist",
+                          "Check the match number, match type, and team number",
+                          [
+                            {
+                              text: "Back",
+                            },
+                            {
+                              text: "Proceed",
+                              style: "destructive",
+                              onPress: () => {
+                                reportState.scoutMatch(meta);
+                              },
+                            },
+                          ],
+                        );
+                        return;
+                      }
+                      reportState.scoutMatch({
+                        ...meta,
+                        allianceColor: match.alliance,
+                      });
+                    } catch {
+                      Alert.alert(
+                        "Unable to verify match",
+                        "Could not reach the server. Check your connection and try again.",
+                        [
+                          { text: "OK" },
+                          {
+                            text: "Proceed",
+                            style: "destructive",
+                            onPress: () => {
+                              if (meta) reportState.scoutMatch(meta);
+                            },
+                          },
+                        ],
+                      );
+                    }
                   }}
                 >
                   Scout this match
@@ -494,6 +540,7 @@ const ManualMatchSelection = (props: ManualMatchSelectionProps) => {
       <TextField
         placeholder="8033"
         value={teamNumber}
+        borderColor={"#b59aff"}
         onChangeText={(text) => setTeamNumber(text)}
         keyboardType="number-pad"
       />
